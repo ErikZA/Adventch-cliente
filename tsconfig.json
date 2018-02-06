@@ -15,5 +15,12 @@
       "es2017",
       "dom"
     ]
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "src/**/*.spec.ts",
+    "src/**/*.e2e.ts",
+    "e2e/**/*.e2e-spec.ts"
+  ]
 }

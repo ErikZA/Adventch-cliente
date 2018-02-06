@@ -1,0 +1,21 @@
+{
+    "login": {
+        "title": "ForLogic Timesheet",
+        "subtitle": "Faça login em sua conta",
+        "email":"E-mail",
+        "password":"Senha",
+        "remember-me":"Lembrar-me",
+        "sign-in":"Entrar",
+        "forgot-password":"Esqueceu a senha?",
+        "create-account":"Criar nova conta"
+    },
+    "dashboard": "Visão geral",
+    "metrology": {
+        "accreditation-area": "Áreas de acreditação",
+        "instruments": "Instrumentos",
+        "measurements": "Unidades de medida",
+        "models": "Modelos",
+        "quantities": "Grandezas",
+        "types": "Tipos"
+    }
+}
