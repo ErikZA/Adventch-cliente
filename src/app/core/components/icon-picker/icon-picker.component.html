@@ -1,0 +1,9 @@
+<button mat-button [matMenuTriggerFor]="iconMenu" class="btn-open">
+    <mat-icon [style.color]="color">{{selectedIcon}}</mat-icon>
+    <mat-icon>arrow_drop_down</mat-icon>
+</button>
+<mat-menu #iconMenu="matMenu">
+  <div *ngFor="let array of icons">
+    <button *ngFor="let icon of array" (click)="setIcon(icon)" class="btn-icon" [class.selected]="icon == selectedIcon" [style.color]="color"><mat-icon>{{icon}}</mat-icon></button>
+  </div>
+</mat-menu>

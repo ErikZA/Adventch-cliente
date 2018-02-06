@@ -1,0 +1,33 @@
+<div fxLayoutAlign="center center" class="container-login">
+  <mat-card>
+    <mat-card-header fxLayoutAlign="center center">
+      <div class="register-header" fxlayout="column" fxlayoutalign="center center">
+        <img src="../assets/img/logo_login.png">
+      </div>
+    </mat-card-header>
+    <br/>
+    <mat-card-title fxLayoutAlign="center center">Entre com seu e-mail</mat-card-title>
+    <br/>
+    <mat-card-content fxLayout="column" fxLayoutAlign="space-between stretch">
+      <div class="form-login" fxLayout="column" fxLayoutAlign="start stretch">
+        <div>
+          <mat-form-field fxFlex="auto">
+            <input matInput name="userEmail" placeholder="E-mail" #userEmail />
+            <mat-icon matSuffix>person</mat-icon>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field fxFlex="auto">
+            <input matInput name="userPassword" type="password" placeholder="Senha" #userPassword (keyup.enter)="login()"/>
+            <mat-icon matSuffix>lock</mat-icon>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-checkbox color="primary" checked="checked">Lembrar-me</mat-checkbox>
+        </div>
+        <br/>
+      </div>
+      <button mat-raised-button color="primary" (click)="login()">Entrar</button>
+    </mat-card-content>
+  </mat-card>
+</div>

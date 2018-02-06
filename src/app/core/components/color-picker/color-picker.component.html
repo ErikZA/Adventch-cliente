@@ -1,0 +1,9 @@
+<button mat-button [matMenuTriggerFor]="colorMenu" [style.backgroundColor]="selectedColor" class="btn-open">
+    <span>Cor</span>
+    <mat-icon>arrow_drop_down</mat-icon>
+</button>
+<mat-menu #colorMenu="matMenu">
+  <div *ngFor="let array of colors">
+    <button *ngFor="let color of array" (click)="setColor(color)" [style.backgroundColor]="color" class="btn-color" [class.selected]="color == selectedColor"> </button>
+  </div>
+</mat-menu>

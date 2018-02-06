@@ -1,0 +1,15 @@
+<div my-dt-footer fxLayout="row" fxLayoutAlign="end center">
+  <span>Registros por Página: </span>
+  <button mat-icon-button [matMenuTriggerFor]="appMenu" class="page-size-btn">
+    <span class="page-size-text">{{pageSize}}</span>
+    <mat-icon>arrow_drop_down</mat-icon>
+  </button>
+  <mat-menu #appMenu="matMenu">
+    <button mat-menu-item *ngFor="let n of [10, 20, 50, 100, 1000]" (click)="setPageSize(n)" [disabled]="n == pageSize"> {{ n }} </button>
+  </mat-menu>
+  <span>{{getStartRow()}}-{{totalRows>getEndRow()?getEndRow():totalRows}} de {{totalRows}}</span>
+  <span>
+    <button mat-icon-button class="page-size-prev" (click)="prevPage()" [disabled]="currentPage==1"><mat-icon>keyboard_arrow_left</mat-icon></button>
+    <button mat-icon-button class="page-size-next" (click)="nextPage()" [disabled]="currentPage>totalRows/pageSize"><mat-icon>keyboard_arrow_right</mat-icon></button>
+  </span>
+</div>

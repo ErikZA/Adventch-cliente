@@ -1,0 +1,14 @@
+.btn-open{
+	text-align: right;
+}
+
+.btn-color{
+	width: 26px;
+	height: 26px;
+	margin: 2px;
+	border: 1px solid #FFF;
+}
+
+.btn-color.selected{
+	border: 1px solid #000;
+}

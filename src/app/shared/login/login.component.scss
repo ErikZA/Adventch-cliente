@@ -1,0 +1,17 @@
+.container-login {
+  //background-image: url('../../../assets/img/bg-img/bg-img-3.jpg');
+  background-attachment: fixed;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+  opacity: .8;
+}
+
+.form-login {
+  margin-bottom: 10px;
+}
+
+mat-card-header {
+  text-align: center;
+}

@@ -1,0 +1,17 @@
+<div fxLayout="column" fxLayoutAlign="space-between stretch">
+    <div style="text-align: center;">
+        <mat-icon class="mat-36" *ngIf="userPhotoUrl === ''">account_circle</mat-icon>
+        <img class="mat-elevation-z3 material-icons mat-140 circle-70" src="{{userPhotoUrl}}?size=140" *ngIf="userPhotoUrl !== ''">
+    </div>
+    <br/>
+    <div style="text-align: center;">
+        {{userName}}
+    </div>
+    <br/>
+    <mat-input-container>
+        <input mdInput type="password" name="password" placeholder="Password" #userPassword (keyup.enter)="unlock()">
+        <mat-icon mdSuffix>lock</mat-icon>
+    </mat-input-container>
+    <br/>
+    <button mat-raised-button color="primary" (click)="unlock()">Unlock</button>
+</div>
