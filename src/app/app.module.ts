@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule, Http, XHRBackend, RequestOptions } from '@angular/http';
 import { NgModule, Injector } from '@angular/core';
 import { Router } from '@angular/router';
+import 'hammerjs';
 // translate
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
