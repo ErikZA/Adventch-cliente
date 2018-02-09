@@ -19,13 +19,13 @@ const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   {
     path: '', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
-      { path: 'dashboard', component: DashboardComponent },
+      { path: 'dashboard', component: DashboardComponent }
       /*{
         path: 'tipos-de-bonificacao', component: BonificationTypesComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
           { path: 'novo', component: BonificationTypesDataComponent },
           { path: ':id/:name', component: BonificationTypesDataComponent }
         ]
-      }*/,
+      }*/
     ]
   },
   // otherwise redirect to home
