@@ -1,5 +1,5 @@
 .container-login {
-  //background-image: url('../../../assets/img/bg-img/bg-img-3.jpg');
+  background-image: url('../../../assets/img/bg-img/5.jpg');
   background-attachment: fixed;
   background-position: center center;
   background-repeat: no-repeat;
@@ -14,4 +14,10 @@
 
 mat-card-header {
   text-align: center;
+}
+
+mat-card {
+  text-align: center;
+  background-color: white;
+  width: 300px;
 }
