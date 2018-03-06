@@ -11,7 +11,7 @@
   </button>
   <mat-menu [overlapTrigger]="false" #appMenuSoftware="matMenu" class="module-menu">
     <a mat-menu-item href="..." [routerLink]="['dashboard']" (click)="updateCurrentNav('dashboard')">Dashboard</a>
-    <a mat-menu-item href="..." [routerLink]="['bonificacao']" (click)="updateCurrentNav('bonificacao')">Bonificação</a>
+    <!-- <a mat-menu-item href="..." [routerLink]="['bonificacao']" (click)="updateCurrentNav('bonificacao')">Bonificação</a> -->
   </mat-menu>
   <span class="fill-space"></span>
 
@@ -46,10 +46,27 @@
 
 <mat-sidenav-container>
   <mat-sidenav #sidenav [mode]="isOpen ? 'side' : 'over'" [opened]="isOpen" class="mat-elevation-z5">
-    <mat-nav-list id="nav-list-menu" [ngClass]="{'nav-list-mobile': isMobile, 'nav-list-web': !isMobile}">
-      <a mat-list-item routerLinkActive="active-link" [routerLink]="['campos-de-producao']">Campos de produção</a>
-      <a mat-list-item routerLinkActive="active-link" [routerLink]="['regioes-de-validade']">Regiões de validade</a>
-      <a mat-list-item routerLinkActive="active-link" [routerLink]="['tipos-de-bonificacao']">Tipos de bonificação</a>
+    <mat-nav-list id="nav-list-menu" [ngClass]="{'nav-list-mobile': isMobile, 'nav-list-web': !isMobile}">      
+
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header><mat-panel-title>Pagamentos</mat-panel-title></mat-expansion-panel-header>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Comprovanates</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Pagamentos</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']">Orçamentos</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Contas a Pagar</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Entidade</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Fornecedores</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Bancos</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Departamentos</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Contas Despesas</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Tipo de Adiantamento</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Tipo de Fornecedores</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Importação</a>
+          
+        </mat-expansion-panel> 
+      </mat-accordion>
+
     </mat-nav-list>
   </mat-sidenav>
   <div class="page-container mat-elevation-z4" fxFlex.gt-md="62%">
