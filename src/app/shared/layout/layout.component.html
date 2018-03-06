@@ -51,17 +51,14 @@
       <a mat-list-item routerLinkActive="active-link" [routerLink]="['regioes-de-validade']">Regiões de validade</a>
       <a mat-list-item routerLinkActive="active-link" [routerLink]="['tipos-de-bonificacao']">Tipos de bonificação</a>
     </mat-nav-list>
-
   </mat-sidenav>
   <div class="page-container mat-elevation-z4" fxFlex.gt-md="62%">
     <router-outlet></router-outlet>
     <div [ngStyle]="{'position': 'relative'}">
       <footer fxLayout="row">
-        <div fxFlex="110px" class="footer-unit">©FORLOGIC {{year}}</div>
+        <div fxFlex="155px" class="footer-unit">©FORLOGIC 2004 - {{year}}</div>
         <div fxFlex="145px" class="footer-software">Adventistas</div>
-        <div fxFlex="flex" class="footer-version">
-          <div fxHide.lt-sm>v1.0</div>
-        </div>
+        <div fxFlex="flex" class="footer-version"><div fxHide.lt-sm>v1.0</div></div>
       </footer>
     </div>
   </div>
