@@ -4,19 +4,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpModule, Http, XHRBackend, RequestOptions } from '@angular/http';
-import { NgModule, Injector } from '@angular/core';
-import { Router } from '@angular/router';
-import 'hammerjs';
+//import { HttpModule, Http, XHRBackend, RequestOptions } from '@angular/http';
+import { NgModule/*, Injector*/ } from '@angular/core';
+
+//import { Router } from '@angular/router';
+//import 'hammerjs';
 // translate
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+//import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+//import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
-import { AppRouting } from './app.routing';
+import { AppRouting } from './app-routing.module';
 import { AuthGuard } from './shared/auth.guard';
 import { AuthService } from './shared/auth.service';
-import { HttpInterceptor } from './shared/http-interceptor.service';
 
 // core
 import { CoreModule } from './core/core.module';
@@ -39,15 +39,6 @@ import { SharedService } from './shared/shared.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './shared/token.interceptor';
 
-
-// export function createTranslateLoader(http: Http) {
-//   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-// }
-
-// export function HttpInterceptorFactory(backend: XHRBackend, options: RequestOptions, router: Router, injector: Injector) {
-//   return new HttpInterceptor(backend, options, router, injector);
-// }
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -63,19 +54,12 @@ import { TokenInterceptor } from './shared/token.interceptor';
     FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
-    // HttpModule,
     HttpClientModule,
     CoreModule,
-    // TranslateModule.forRoot({
-    //   loader: {
-    //     provide: TranslateLoader,
-    //     useFactory: (createTranslateLoader),
-    //     deps: [Http]
-    //   }
-    // }),
-    AppRouting,
-
-    // BonificationModule
+    // BonificationModule,
+    // deixar AppRouting sempre por último
+    AppRouting
+    
   ],
   exports: [
     AppComponent,
@@ -85,16 +69,6 @@ import { TokenInterceptor } from './shared/token.interceptor';
     PageNotFoundComponent,
     EmptyPageComponent
   ],
-  // providers: [
-  //   AuthGuard,
-  //   AuthService,
-  //   {
-  //     provide: Http,
-  //     useFactory: HttpInterceptorFactory,
-  //     deps: [XHRBackend, RequestOptions, Router, Injector]
-  //   },
-  //   SharedService
-  // ],
   providers: [
     AuthGuard,
     AuthService,
