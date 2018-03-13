@@ -4,14 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-//import { HttpModule, Http, XHRBackend, RequestOptions } from '@angular/http';
-import { NgModule/*, Injector*/ } from '@angular/core';
-
-//import { Router } from '@angular/router';
-//import 'hammerjs';
-// translate
-//import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-//import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { AppRouting } from './app-routing.module';
@@ -34,7 +27,7 @@ import { EmptyPageComponent } from './shared/empty-page/empty-page.component';
 import { SharedService } from './shared/shared.service';
 
 //modules
-// import { BonificationModule } from './bonification/bonification.module';
+ import { PaymentModule } from './payment/payment.module';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './shared/token.interceptor';
@@ -56,10 +49,9 @@ import { TokenInterceptor } from './shared/token.interceptor';
     FlexLayoutModule,
     HttpClientModule,
     CoreModule,
-    // BonificationModule,
+    PaymentModule,    
     // deixar AppRouting sempre por último
-    AppRouting
-    
+    AppRouting    
   ],
   exports: [
     AppComponent,

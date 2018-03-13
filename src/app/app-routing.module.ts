@@ -22,7 +22,7 @@ const appRoutes: Routes = [
   //   path: '', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
   //     { path: 'dashboard', component: DashboardComponent }]},
   // otherwise redirect to home
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'payment', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent }
 ];
 

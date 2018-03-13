@@ -10,7 +10,7 @@
     <mat-icon>apps</mat-icon>
   </button>
   <mat-menu [overlapTrigger]="false" #appMenuSoftware="matMenu" class="module-menu">
-    <a mat-menu-item href="..." [routerLink]="['dashboard']" (click)="updateCurrentNav('dashboard')">Dashboard</a>
+    <a mat-menu-item href="..." [routerLink]="['payment']" (click)="updateCurrentNav('payment')">Dashboard</a>
     <!-- <a mat-menu-item href="..." [routerLink]="['bonificacao']" (click)="updateCurrentNav('bonificacao')">Bonificação</a> -->
   </mat-menu>
   <span class="fill-space"></span>
@@ -53,7 +53,7 @@
           <mat-expansion-panel-header><mat-panel-title>Pagamentos</mat-panel-title></mat-expansion-panel-header>
           <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Comprovanates</a>
           <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Pagamentos</a>
-          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']">Orçamentos</a>
+          <a mat-list-item routerLinkActive="active-link" [routerLink]="['budgets']">Orçamentos</a>          
           <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Contas a Pagar</a>
           <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Entidade</a>
           <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Fornecedores</a>
