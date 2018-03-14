@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 
-import { AuthService } from 'app/shared/auth.service';
+import { AuthService } from '../../../../app/shared/auth.service';
 
 @Component({
   selector: 'lock-screen',
