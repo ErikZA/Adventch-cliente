@@ -1,0 +1,39 @@
+<!-- <div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"
+  [ngStyle.xs]="{'width.vw': 100}">
+  <mat-toolbar color="accent">
+    <button mat-icon-button (click)="close()" matTooltip="Fechar">
+      <mat-icon>clear</mat-icon>
+    </button>
+    <span class="fill-space"></span>
+    <button *ngIf="budgets.id" mat-icon-button (click)="delete(budgets.id)" matTooltip="Remover"><mat-icon>delete</mat-icon></button>
+  </mat-toolbar>
+
+  <ng-template #loading>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </ng-template>
+
+  <ng-container *ngIf="!isLoading else loading">
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div>
+        <mat-form-field fxFlexFill>
+          <input matInput formControlName="name" [(ngModel)]="budgets.name" placeholder="Nome" tabindex="1" />
+          <mat-error *ngIf="form.dirty && form.get('name').hasError('required')" style="font-size: 75%;">Obrigatório</mat-error>
+          <mat-error *ngIf="form.dirty && form.get('name').hasError('maxlength')" style="font-size: 75%;">Tamanho máximo: {{form.get('name').errors['maxlength'].actualLength + '/' + form.get('name').errors['maxlength'].requiredLength}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field fxFlexFill>
+          <textarea matInput formControlName="description" [(ngModel)]="budgets.description" placeholder="Descrição" tabindex="2"></textarea>
+          <mat-error *ngIf="form.dirty && form.get('description').hasError('maxlength')" style="font-size: 75%;">Tamanho máximo: {{form.get('description').errors['maxlength'].actualLength + '/' + form.get('description').errors['maxlength'].requiredLength}}</mat-error>
+        </mat-form-field>
+      </div>
+      <br />
+      <div>
+        <div fxLayout="row" fxLayoutAlign="end center">
+          <button type="button" class="btn-cancel" mat-button (click)="close()" tabindex="3">CANCELAR</button>
+          <button type="submit" class="btn-ok" mat-button color="primary" *ngIf="form.dirty" tabindex="4">SALVAR</button>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</div> -->
