@@ -46,12 +46,11 @@ import { TokenInterceptor } from './shared/token.interceptor';
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    FlexLayoutModule,
     HttpClientModule,
     CoreModule,
-    PaymentModule,    
+    PaymentModule,
     // deixar AppRouting sempre por último
-    AppRouting    
+    AppRouting
   ],
   exports: [
     AppComponent,

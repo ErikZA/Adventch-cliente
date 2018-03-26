@@ -1,0 +1,8 @@
+<ng-container *ngIf="state">
+    <div class="loading-shade" *ngIf="state.isLoadingResults || state.isRateLimitReached">
+        <mat-spinner *ngIf="state.isLoadingResults"></mat-spinner>
+        <div class="rate-limit-reached" *ngIf="state.isRateLimitReached">
+            {{ state?.messageRateLimitReached || "Sistema Indisponível, tente recarregar a página novamente." }}
+        </div>
+    </div>
+</ng-container>

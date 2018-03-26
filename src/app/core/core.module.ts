@@ -1,42 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpModule } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NativeDateModule, RippleGlobalOptions, MAT_RIPPLE_GLOBAL_OPTIONS } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import {
-  DateAdapter,
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatButtonToggleModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatCommonModule,
-  MatDatepickerModule,
-  MatDialogModule,
-  MatExpansionModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatNativeDateModule,
-  MatProgressBarModule,
-  MatProgressSpinnerModule,
-  MatRadioModule,
-  MatSelectModule,
-  MatSidenavModule,
-  MatSliderModule,
-  MatSnackBarModule,
-  MatSortModule,
-  MatTabsModule,
-  MatChipsModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MAT_DATE_LOCALE,
-  MAT_DATE_FORMATS
-} from '@angular/material';
 
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -55,93 +21,53 @@ import { MyDTRow } from "./components/my-dt/my-dt-row.directive";
 import { MyDTColumn } from "./components/my-dt/my-dt-column.directive";
 import { MyDtPaginationComponent } from './components/my-dt/my-dt-pagination/my-dt-pagination.component';
 
-const globalRippleConfig: RippleGlobalOptions = {
-  disabled: false,
-  baseSpeedFactor: 1.5 // Ripples will animate 50% faster than before.
-}
+import { MaterialModule } from './material/material.module';
+import { DataTableComponent } from './components/data-table/data-table.component';
+import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
+
+// const globalRippleConfig: RippleGlobalOptions = {
+//   disabled: false,
+//   baseSpeedFactor: 1.5 // Ripples will animate 50% faster than before.
+// }
 
 @NgModule({
   imports: [
     CommonModule,
-    HttpModule,
     FormsModule,
     RouterModule,
 
     TranslateModule,
 
     FlexLayoutModule,
-
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatCommonModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatNativeDateModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatTabsModule,
-    MatChipsModule,
-    MatToolbarModule,
-    MatTooltipModule
+    MaterialModule
   ],
   exports: [
+    // old Components
     ColorPickerComponent,
     ConfirmDialogComponent,
     IconPickerComponent,
     LockScreenComponent,
     MyDT, MyDTHeader, MyDTHeaderOptions, MyDTFooter, MyDTRow, MyDTColumn, FocusDirective, MyDtPaginationComponent,
 
-    FlexLayoutModule,
+    // new Components
+    DataTableComponent,
 
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatCommonModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatNativeDateModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatTabsModule,
-    MatChipsModule,
-    MatToolbarModule,
-    MatTooltipModule
+    // modules Generics
+    FlexLayoutModule,
+    MaterialModule
   ],
   declarations: [
+    // old Declarations
     ColorPickerComponent,
     ConfirmDialogComponent,
     IconPickerComponent,
     LockScreenComponent,
-    MyDT, MyDTHeader, MyDTHeaderOptions, MyDTFooter, MyDTRow, MyDTColumn, FocusDirective, MyDtPaginationComponent
+    MyDT, MyDTHeader, MyDTHeaderOptions, MyDTFooter, MyDTRow, MyDTColumn, FocusDirective, MyDtPaginationComponent,
+
+    // new Declarations
+    DataTableComponent,
+
+    ProgressSpinnerComponent
   ],
   providers: [
     LockScreenService,
