@@ -2,10 +2,9 @@
 
 /* main */
 
-.container {
-    height: calc(100vh - 50px);
-}
-
+// .container {
+//     height: calc(100vh - 50px);
+// }
 .page-container {
     background-color: rgb(255, 255, 255);
     margin: auto;
@@ -19,7 +18,7 @@
 }
 
 .sidenav-right {
-    width: 500px;
+    width: calc(35%);
 }
 
 footer {
@@ -52,4 +51,16 @@ footer {
 .track-close {
     background-color: rgba(0, 0, 255, 0.75);
     height: 40px;
+}
+
+@media screen and (max-width: 1024px) {
+    .sidenav-right {
+        width: calc(50%);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .sidenav-right {
+        width: calc(100% - 40px);
+    }
 }
