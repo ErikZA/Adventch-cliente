@@ -1,21 +1,21 @@
 <mat-toolbar color="primary" class="mat-elevation-z6">
-  <button mat-icon-button (click)="sidenav.toggle()">
+    <button mat-icon-button (click)="sidenav.toggle()">
     <mat-icon>menu</mat-icon>
   </button>
 
-  <img src="../../../../favicon.ico" style="width: 30px; height: 30px; margin-left: 20px;" />
-  <div style="margin-left: 10px;">Adven.Tech</div>
+    <img src="../../../../favicon.ico" style="width: 30px; height: 30px; margin-left: 20px;" />
+    <div style="margin-left: 10px;">Adven.Tech</div>
 
-  <button mat-icon-button [matMenuTriggerFor]="appMenuSoftware" style="margin-left: 10px;">
+    <button mat-icon-button [matMenuTriggerFor]="appMenuSoftware" style="margin-left: 10px;">
     <mat-icon>apps</mat-icon>
   </button>
-  <mat-menu [overlapTrigger]="false" #appMenuSoftware="matMenu" class="module-menu">
-    <a mat-menu-item href="..." [routerLink]="['payment']" (click)="updateCurrentNav('payment')">Dashboard</a>
-    <!-- <a mat-menu-item href="..." [routerLink]="['bonificacao']" (click)="updateCurrentNav('bonificacao')">Bonificação</a> -->
-  </mat-menu>
-  <span class="fill-space"></span>
+    <mat-menu [overlapTrigger]="false" #appMenuSoftware="matMenu" class="module-menu">
+        <a mat-menu-item href="..." [routerLink]="['payment']" (click)="updateCurrentNav('payment')">Dashboard</a>
+        <!-- <a mat-menu-item href="..." [routerLink]="['bonificacao']" (click)="updateCurrentNav('bonificacao')">Bonificação</a> -->
+    </mat-menu>
+    <span class="fill-space"></span>
 
-  <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
+    <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
     <table style="line-height: normal; text-align: right;">
       <tr>
         <td>
@@ -24,12 +24,12 @@
       </tr>
     </table>
   </button>
-  <button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
+    <button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
     <!--<mat-icon class="mat-36" *ngIf="app.currentUser.photoDate === ''">account_circle</mat-icon>
         <img class="material-icons mat-36 circle-18" src="{{app.currentUser.photoUrl}}?size=36" *ngIf="app.currentUser.photoDate !== ''">-->
   </button>
-  <mat-menu [overlapTrigger]="false" xPosition="before" #appMenu="matMenu">
-    <!--<button mat-menu-item>
+    <mat-menu [overlapTrigger]="false" xPosition="before" #appMenu="matMenu">
+        <!--<button mat-menu-item>
             <mat-icon>person</mat-icon>
             <span>Editar perfil</span>
         </button>
@@ -37,46 +37,62 @@
             <mat-icon>lock_outline</mat-icon>
             <span>Altera senha</span>
         </button>-->
-    <button mat-menu-item (click)="logoff()">
+        <button mat-menu-item (click)="logoff()">
       <mat-icon>exit_to_app</mat-icon>
       <span>Sair</span>
     </button>
-  </mat-menu>
+    </mat-menu>
 </mat-toolbar>
+<mat-drawer-container class="container" autosize>
+    <mat-drawer #sidenav class="sidenav-left mat-elevation-z5" [mode]="isOpen ? 'side' : 'over'" [opened]="isOpen">
+        <mat-nav-list id="nav-list-menu" [ngClass]="{'nav-list-mobile': isMobile, 'nav-list-web': !isMobile}">
+            <mat-accordion>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Pagamentos</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <a mat-list-item routerLinkActive="active-link" [routerLink]="['budgets']">Orçamentos</a>
+                    <!-- <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Comprovanates</a>
+                        <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Pagamentos</a> -->
+                    <!-- <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Contas a Pagar</a>
+                        <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Entidade</a>
+                        <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Fornecedores</a>
+                        <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Bancos</a>
+                        <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Departamentos</a>
+                        <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Contas Despesas</a>
+                        <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Tipo de Adiantamento</a>
+                        <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Tipo de Fornecedores</a>
+                        <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Importação</a> -->
+                </mat-expansion-panel>
+            </mat-accordion>
+        </mat-nav-list>
+    </mat-drawer>
 
-<mat-sidenav-container>
-  <mat-sidenav #sidenav [mode]="isOpen ? 'side' : 'over'" [opened]="isOpen" class="mat-elevation-z5">
-    <mat-nav-list id="nav-list-menu" [ngClass]="{'nav-list-mobile': isMobile, 'nav-list-web': !isMobile}">      
-
-      <mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header><mat-panel-title>Pagamentos</mat-panel-title></mat-expansion-panel-header>
-          <!-- <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Comprovanates</a>
-          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Pagamentos</a> -->
-          <a mat-list-item routerLinkActive="active-link" [routerLink]="['budgets']">Orçamentos</a>          
-          <!-- <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Contas a Pagar</a>
-          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Entidade</a>
-          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Fornecedores</a>
-          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Bancos</a>
-          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Departamentos</a>
-          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Contas Despesas</a>
-          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Tipo de Adiantamento</a>
-          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Tipo de Fornecedores</a>
-          <a mat-list-item routerLinkActive="active-link" [routerLink]="['...']" >Importação</a> -->
-          
-        </mat-expansion-panel> 
-      </mat-accordion>
-
-    </mat-nav-list>
-  </mat-sidenav>
-  <div class="page-container mat-elevation-z4" fxFlex.gt-md="62%">
-    <router-outlet></router-outlet>
-    <div [ngStyle]="{'position': 'relative'}">
-      <footer fxLayout="row">
-        <div fxFlex="155px" class="footer-unit">©FORLOGIC 2004 - {{year}}</div>
-        <div fxFlex="145px" class="footer-software">Adventistas</div>
-        <div fxFlex="flex" class="footer-version"><div fxHide.lt-sm>v1.0</div></div>
-      </footer>
+    <div class="example-sidenav-content">
+        <div class="page-container mat-elevation-z4" [fxFlex.gt-md]="drawerR.opened ? 95 : 80">
+            <router-outlet></router-outlet>
+            <div [ngStyle]="{'position': 'relative'}">
+                <footer fxLayout="row">
+                    <div fxFlex="155px" class="footer-unit">©FORLOGIC 2004 - {{year}}</div>
+                    <div fxFlex="145px" class="footer-software">Adventistas</div>
+                    <div fxFlex="flex" class="footer-version">
+                        <div fxHide.lt-sm>v1.0</div>
+                    </div>
+                </footer>
+            </div>
+        </div>
     </div>
-  </div>
-</mat-sidenav-container>
+
+    <mat-drawer #drawerR class="sidenav-right mat-elevation-z2" [mode]="isOpen ? 'side' : 'over'" opened="false" align="end">
+        <div class="track-close" fxLayout="row">
+            <button mat-icon-button (click)="drawerR.toggle()">
+                  <mat-icon aria-label="Fechar Sidenav" matTooltip="Fechar">close</mat-icon>
+              </button>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center">
+            <div fxFlex="95%">
+                <router-outlet name="sidenav"></router-outlet>
+            </div>
+        </div>
+    </mat-drawer>
+</mat-drawer-container>

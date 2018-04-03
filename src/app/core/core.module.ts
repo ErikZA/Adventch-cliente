@@ -24,6 +24,7 @@ import { MyDtPaginationComponent } from './components/my-dt/my-dt-pagination/my-
 import { MaterialModule } from './material/material.module';
 import { DataTableComponent } from './components/data-table/data-table.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
+import { SidenavService } from './services/sidenav.service';
 
 // const globalRippleConfig: RippleGlobalOptions = {
 //   disabled: false,
@@ -66,12 +67,12 @@ import { ProgressSpinnerComponent } from './components/progress-spinner/progress
 
     // new Declarations
     DataTableComponent,
-
     ProgressSpinnerComponent
   ],
   providers: [
     LockScreenService,
     ConfirmDialogService,
+    SidenavService
     // { provide: DateAdapter, useClass: CustomDateAdapter },
     // { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
     // { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
