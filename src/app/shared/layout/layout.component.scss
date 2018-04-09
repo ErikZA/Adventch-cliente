@@ -2,15 +2,70 @@
 
 /* main */
 
-// .container {
-//     height: calc(100vh - 50px);
-// }
 .page-container {
     background-color: rgb(255, 255, 255);
     margin: auto;
     max-height: 200px;
     min-height: calc(100vh - 55px);
     padding: 16px 16px 70px 16px !important;
+}
+
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0), 0 2px 2px 0 rgba(0, 0, 0, 0), 0 1px 5px 0 rgba(0, 0, 0, 0);
+}
+
+.mat-expansion-panel {
+    background: white;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.mat-expansion-panel-spacing {
+    margin: 0 0;
+}
+
+.mat-expansion-panel,
+.mat-elevation-z6,
+
+/*.mat-elevation-z5,*/
+
+.mat-elevation-z4 {
+    -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px 0px rgba(0, 0, 0, 0);
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px 0px rgba(0, 0, 0, 0);
+}
+
+
+/*
+.sidenav{
+  border-right: 1px solid #f3f3f3;
+  /*background-color: #f1f1f1;
+  -webkit-box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+}*/
+
+.mat-expansion-panel {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.mat-expansion-panel-header {
+    height: 40px;
+}
+
+::ng-deep .mat-sidenav {
+    .mat-expansion-panel-body {
+        padding: 0 0 0 25px;
+    }
+}
+
+.menu-options {
+    font-size: 10px;
+}
+
+.mat-nav-list {
+    padding: 0;
+}
+
+mat-sidenav-container {
+    height: calc(100vh - 50px);
 }
 
 .sidenav-left {
