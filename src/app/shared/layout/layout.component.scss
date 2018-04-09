@@ -15,16 +15,24 @@
   margin: 0 0;
 }
 
-.mat-expansion-panel, .mat-elevation-z6, .mat-elevation-z5, .mat-elevation-z4 {
+.mat-expansion-panel, .mat-elevation-z6, /*.mat-elevation-z5,*/ .mat-elevation-z4 {
   -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px 0px rgba(0, 0, 0, 0);
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px 0px rgba(0, 0, 0, 0);
 }
-
+/*
 .sidenav{
   border-right: 1px solid #f3f3f3;
   /*background-color: #f1f1f1;
   -webkit-box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
-  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);*/
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+}*/
+
+.mat-expansion-panel{
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.mat-expansion-panel-header {
+  height: 40px;
 }
 
 ::ng-deep .mat-sidenav {
