@@ -1,0 +1,23 @@
+<div class="mat-elevation-z8">
+    <app-progress-spinner [state]="state"></app-progress-spinner>
+
+    <div class="example-header" fxLayout="row" fxLayoutAlign="center start">
+        <mat-form-field fxFlex="95%">
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Pesquisar">
+        </mat-form-field>
+    </div>
+    <mat-table [dataSource]="dataSource" matSort>
+
+        <div *ngFor="let item of (table.columns)">
+            <ng-container [matColumnDef]="item.header">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ item.label }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element[item.header] }} </mat-cell>
+            </ng-container>
+        </div>
+
+        <mat-header-row *matHeaderRowDef="headersColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: headersColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 15]" [showFirstLastButtons]="true">
+    </mat-paginator>
+</div>
