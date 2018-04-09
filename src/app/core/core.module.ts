@@ -25,6 +25,11 @@ import { MaterialModule } from './material/material.module';
 import { DataTableComponent } from './components/data-table/data-table.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import { SidenavService } from './services/sidenav.service';
+import { ChangePasswordComponent } from './components/password/change-password/change-password.component';
+import { ChangePasswordService } from './components/password/change-password/change-password.service';
+import { StrengthMeterComponent } from './components/password/strength-meter/strength-meter.component';
+import { PasswordFeedbackComponent } from './components/password/password-feedback/password-feedback.component';
+import { StrongPasswordDirective } from './components/password/strong-password.directive';
 
 // const globalRippleConfig: RippleGlobalOptions = {
 //   disabled: false,
@@ -36,6 +41,7 @@ import { SidenavService } from './services/sidenav.service';
     CommonModule,
     FormsModule,
     RouterModule,
+    ReactiveFormsModule,
 
     TranslateModule,
 
@@ -52,10 +58,13 @@ import { SidenavService } from './services/sidenav.service';
 
     // new Components
     DataTableComponent,
+    ChangePasswordComponent,
 
     // modules Generics
     FlexLayoutModule,
-    MaterialModule
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [
     // old Declarations
@@ -67,12 +76,17 @@ import { SidenavService } from './services/sidenav.service';
 
     // new Declarations
     DataTableComponent,
-    ProgressSpinnerComponent
+    ProgressSpinnerComponent,
+    ChangePasswordComponent,
+    StrengthMeterComponent,
+    PasswordFeedbackComponent,
+    StrongPasswordDirective
   ],
   providers: [
     LockScreenService,
     ConfirmDialogService,
-    SidenavService
+    SidenavService,
+    ChangePasswordService
     // { provide: DateAdapter, useClass: CustomDateAdapter },
     // { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
     // { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },

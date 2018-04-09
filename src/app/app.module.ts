@@ -1,10 +1,11 @@
 // angular
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule } from '@angular/platform-browser';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 import { AppComponent } from './app.component';
 import { AppRouting } from './app-routing.module';
@@ -27,10 +28,11 @@ import { EmptyPageComponent } from './shared/empty-page/empty-page.component';
 import { SharedService } from './shared/shared.service';
 
 //modules
- import { PaymentModule } from './payment/payment.module';
+import { PaymentModule } from './payment/payment.module';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './shared/token.interceptor';
+
 
 @NgModule({
   declarations: [

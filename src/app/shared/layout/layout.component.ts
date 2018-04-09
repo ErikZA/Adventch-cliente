@@ -7,7 +7,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { AppComponent } from './../../../app/app.component';
 import { AuthService } from './../../../app/shared/auth.service';
 import { SidenavService } from '../../core/services/sidenav.service';
-import { MatDrawer } from '@angular/material';
+import { MatDrawer, MatDialog, MatDialogRef } from '@angular/material';
+import { ChangePasswordComponent } from '../../core/components/password/change-password/change-password.component';
 
 @Component({
   selector: 'app-layout',
@@ -21,11 +22,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   isMobile: boolean = false;
   isOpen: boolean = true;
   get year(): number { return new Date().getFullYear() };
-  value = 95;
+  dialogRef: MatDialogRef<ChangePasswordComponent>;
 
   constructor(
     private authService: AuthService,
     private media: ObservableMedia,
+    private dialog: MatDialog,
     private router: Router,
     public app: AppComponent,
     public navService: SidenavService
@@ -39,8 +41,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.navService.toggle
       .asObservable()
       .subscribe(() => this.nav.toggle());
-      console.log(this.nav);
-
   }
 
   ngOnDestroy() {
@@ -53,5 +53,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   updateCurrentNav(nav: string) {
     this.router.navigate([this.router.url.replace(/.*/, nav)]);
+  }
+
+  changePassword() {
+    this.dialogRef = this.dialog.open(ChangePasswordComponent);
+    this.dialogRef.afterClosed().subscribe(result => {
+      if (!result) return;
+    });
   }
 }
