@@ -1,6 +1,6 @@
-import { EGender } from "./Enums";
+import { EGender, EFunction } from "./Enums";
 
-export class EFunction {
+export class TreasurerModel {
   id: string;
   function: EFunction;
   gender?: EGender;  

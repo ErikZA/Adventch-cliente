@@ -1,7 +1,4 @@
 <form [formGroup]="form" novalidate fxLayout="column" fxLayoutAlign="space-between stretch">
-  <div>
-    <mat-form-field style="width: 100%">
-      <input matInput type="text" formControlName="search" placeholder="Buscar por..." />
-    </mat-form-field>
-  </div>
+  <app-data-table [table]="table" [state]="state">
+  </app-data-table>
 </form>
