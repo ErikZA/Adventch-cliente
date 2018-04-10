@@ -56,7 +56,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   changePassword() {
-    this.dialogRef = this.dialog.open(ChangePasswordComponent);
+    this.dialogRef = this.dialog.open(ChangePasswordComponent, {
+      width: '400px',
+      height: '500px'
+    });
     this.dialogRef.afterClosed().subscribe(result => {
       if (!result) return;
     });
