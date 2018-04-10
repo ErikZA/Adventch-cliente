@@ -29,10 +29,10 @@ import { SharedService } from './shared/shared.service';
 
 //modules
 import { PaymentModule } from './payment/payment.module';
+import { TreasuryModule } from './treasury/treasury.module';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './shared/token.interceptor';
-
 
 @NgModule({
   declarations: [
@@ -51,6 +51,7 @@ import { TokenInterceptor } from './shared/token.interceptor';
     HttpClientModule,
     CoreModule,
     PaymentModule,
+    TreasuryModule,
     // deixar AppRouting sempre por último
     AppRouting
   ],

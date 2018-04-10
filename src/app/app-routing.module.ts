@@ -18,7 +18,9 @@ import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.co
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: 'payment', pathMatch: 'full' },
+  { path: 'treasury', redirectTo: 'treasury', pathMatch: 'full' },
+  { path: 'payment', redirectTo: 'payment', pathMatch: 'full' },
+  { path: '', redirectTo: 'treasury', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent }
 ];
 
