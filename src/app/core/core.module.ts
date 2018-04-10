@@ -94,6 +94,7 @@ import { StrongPasswordDirective } from './components/password/strong-password.d
   ],
   entryComponents: [
     ConfirmDialogComponent,
+    ChangePasswordComponent,
     LockScreenComponent
   ]
 })

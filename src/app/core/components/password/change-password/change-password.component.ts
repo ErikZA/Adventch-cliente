@@ -15,7 +15,8 @@ import { User } from '../../../../shared/models/user.model';
 export class ChangePasswordComponent implements OnInit {
 
   form: FormGroup;
-
+  hideNew = true;
+  hideConfirm = true;
   strength: number;
   valFn: ValidatorFn;     // the validation function
 
@@ -35,14 +36,18 @@ export class ChangePasswordComponent implements OnInit {
     private fb: FormBuilder,
     // private changePasswordService: ChangePasswordService,
     private router: Router,
-    public dialogRef: MatDialogRef<ChangePasswordComponent>,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    public dialogRef: MatDialogRef<ChangePasswordComponent>
   ) {
     this.valFn = StrongPasswordValidator(this.level, this.user_inputs);
   }
 
   ngOnInit() {
     this.initForm();
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 
   initForm() {
@@ -72,6 +77,21 @@ export class ChangePasswordComponent implements OnInit {
 
   cancel() {
     this.dialogRef.close(false);
+  }
+
+  getMensage(): string {
+    switch (this.strength) {
+      case 0:
+        return "Senha muito fraca. Tente adicionar letras, simbolos e ou número.";
+      case 1:
+        return "Senha fraca. Tente melhorar a complexidade da senha.";
+      case 2:
+        return "Senha média.";
+      case 3:
+        return "Senha forte.";
+      case 4:
+        return "Senha estremamente forte."
+    }
   }
 
   onSubmit(e) {
