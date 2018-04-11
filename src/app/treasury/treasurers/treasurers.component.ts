@@ -13,7 +13,7 @@ import { Observable } from 'rxjs/Observable';
 })
 export class TreasurersComponent implements OnInit {
 
-  form: FormGroup;  
+  form: FormGroup;
   table: Table = {
     data: [],
     columns: [{
@@ -46,7 +46,7 @@ export class TreasurersComponent implements OnInit {
     //  .get('values/getTreasurers')
       //.map((res: String) => {
       //  const data = res.json() as String;
-        
+
       //  data.forEach((o: TreasurerModel) => {
       //    o.items.forEach(i => i.parentObj = o);
       //  });

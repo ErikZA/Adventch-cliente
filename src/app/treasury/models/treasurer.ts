@@ -3,7 +3,7 @@ import { EGender, EFunction } from "./Enums";
 export class TreasurerModel {
   id: string;
   function: EFunction;
-  gender?: EGender;  
+  gender?: EGender;
   name: string;
   dateRegister?: Date;
   contact?: string;

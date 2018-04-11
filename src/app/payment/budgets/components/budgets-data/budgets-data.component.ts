@@ -7,11 +7,12 @@ import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import * as _ from 'lodash';
 import { Subscription } from 'rxjs/Rx';
 
-import { BudgetsComponent } from './../budgets/budgets.component';
-import { ConfirmDialogService } from './../../core/components/confirm-dialog/confirm-dialog.service';
 
-import { BudgetService } from './../payment.service';
-import { Budgets } from './../models/budgets';
+import { ConfirmDialogService } from '../../../../core/components/confirm-dialog/confirm-dialog.service';
+
+import { BudgetService } from '../../../payment.service';
+import { Budgets } from '../../../models/budgets';
+import { BudgetsComponent } from '../../budgets.component';
 
 @Component({
   selector: 'app-budgets-data',

@@ -5,7 +5,7 @@ import { LayoutComponent } from '../shared/layout/layout.component';
 
 import { AuthGuard } from '../shared/auth.guard';
 
-import { TreasurersDataComponent } from './treasurers-data/treasurers-data.component';
+import { TreasurersDataComponent } from './treasurers/components/treasurers-data/treasurers-data.component';
 import { TreasurersComponent } from './treasurers/treasurers.component';
 import { DashboardComponent } from '../shared/dashboard/dashboard.component';
 import { EmptyPageComponent } from '../shared/empty-page/empty-page.component';

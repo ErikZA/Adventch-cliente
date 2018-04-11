@@ -5,7 +5,7 @@ import { LayoutComponent } from '../shared/layout/layout.component';
 
 import { AuthGuard } from '../shared/auth.guard';
 
-import { BudgetsDataComponent } from './budgets-data/budgets-data.component';
+import { BudgetsDataComponent } from './budgets/components/budgets-data/budgets-data.component';
 import { BudgetsComponent } from './budgets/budgets.component';
 import { DashboardComponent } from '../shared/dashboard/dashboard.component';
 import { EmptyPageComponent } from '../shared/empty-page/empty-page.component';
