@@ -6,9 +6,15 @@
     right: 0;
     background: rgba(0, 0, 0, 0.15);
     z-index: 1;
+    height: calc(100vh - 55px);
     display: flex;
     align-items: center;
+    flex-direction: column;
     justify-content: center;
+}
+
+.item {
+    margin: 20px;
 }
 
 .rate-limit-reached {
