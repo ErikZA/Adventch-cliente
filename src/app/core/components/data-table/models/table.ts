@@ -4,4 +4,7 @@ import { Column } from './column';
 export interface Table {
   data?: Observable<any> | any,
   columns?: Array<Column>
+  options?: {
+    buttonNew?: boolean
+  }
 }

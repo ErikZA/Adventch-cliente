@@ -1,10 +1,16 @@
 <div class="mat-elevation-z8">
     <app-progress-spinner [state]="state"></app-progress-spinner>
 
-    <div class="example-header" fxLayout="row" fxLayoutAlign="center start">
-        <mat-form-field fxFlex="95%">
-            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Pesquisar">
-        </mat-form-field>
+    <div class="example-header" fxLayout="row" fxLayoutAlign="center">
+        <div fxFlex="96%" fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-form-field fxFlex>
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Pesquisar">
+            </mat-form-field>
+
+            <button mat-icon-button color="primary" *ngIf="table.options?.buttonNew || false" (click)="navService.toggleSideNav() && addButton()">
+            <mat-icon aria-label="Adicionar novo" matTooltip="Adicionar Novo">add</mat-icon>
+            </button>
+        </div>
     </div>
     <mat-table [dataSource]="dataSource" matSort>
 

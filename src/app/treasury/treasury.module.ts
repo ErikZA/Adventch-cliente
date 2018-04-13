@@ -5,6 +5,7 @@ import { TreasurersComponent } from './treasurers/treasurers.component';
 import { TreasuryRoutingModule } from './treasury-routing.module';
 import { TreasurersDataComponent } from './treasurers/components/treasurers-data/treasurers-data.component';
 import { CoreModule } from '../core/core.module';
+import { TreasurersFormComponent } from './treasurers/components/treasurers-form/treasurers-form.component';
 
 @NgModule({
   imports: [
@@ -12,6 +13,10 @@ import { CoreModule } from '../core/core.module';
     CoreModule,
     TreasuryRoutingModule
   ],
-  declarations: [TreasurersComponent, TreasurersDataComponent]
+  declarations: [
+    TreasurersComponent,
+    TreasurersDataComponent,
+    TreasurersFormComponent
+  ]
 })
 export class TreasuryModule { }

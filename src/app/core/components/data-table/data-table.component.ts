@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
@@ -6,6 +6,8 @@ import { Table } from './models/table';
 import { Column } from './models/column';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { State } from '../progress-spinner/models/state';
+import { SidenavService } from '../../services/sidenav.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-data-table',
@@ -16,14 +18,18 @@ export class DataTableComponent implements OnInit {
 
   @Input() table: Table;
   @Input() state: State;
+  @Output() createEvent = new EventEmitter();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   dataSource: MatTableDataSource<any>;
   headersColumns: any;
 
-  paginationDetail;
-  constructor() {}
+  constructor(
+    private navService: SidenavService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     if(this.table != null || this.table != undefined){
@@ -50,6 +56,10 @@ export class DataTableComponent implements OnInit {
     this.paginator._intl.nextPageLabel = "Próxima página";
     this.paginator._intl.previousPageLabel = "Página anterior";
     this.paginator._intl.itemsPerPageLabel = "Itens por página:";
+  }
+
+  addButton() {
+    this.createEvent.emit();
   }
 }
 

@@ -1,0 +1,102 @@
+<mat-horizontal-stepper linear>
+    <mat-step label="Pessoal" [stepControl]="formPersonal">
+        <form [formGroup]="formPersonal" fxLayout="column">
+            <mat-form-field fxFlex>
+                <input matInput type="text" formControlName="name" placeholder="Nome" required>
+                <mat-error *ngIf="formPersonal.get('name').hasError('required')">Este campo é obrigatório</mat-error>
+            </mat-form-field>
+            <mat-form-field fxFlex>
+                <input matInput type="text" formControlName="cpf" placeholder="CPF">
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput [matDatepicker]="picker" placeholder="Data de Aniversário" formControlName="birthday">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <mat-list>
+                <h3 mat-subheader>Gênero</h3>
+                <mat-radio-group formControlName="gender" name="gender" aria-label="Gênero" fxLayout="column">
+                    <mat-radio-button value="1" aria-label="Feminino">Feminino</mat-radio-button>
+                    <mat-radio-button value="2" aria-label="Masculino">Masculino</mat-radio-button>
+                </mat-radio-group>
+            </mat-list>
+            <div>
+                <button mat-button matStepperPrevious type="button">Voltar</button>
+                <button mat-button matStepperNext type="button">Próximo</button>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step label="Contato" [stepControl]="formContact">
+        <form [formGroup]="formContact" fxLayout="column">
+            <mat-form-field>
+                <input matInput placeholder="Email" formControlName="email">
+                <mat-error *ngIf="formPersonal.get('name').hasError('email')">
+                    Digite um email válido
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <span matPrefix>+55 &nbsp;</span>
+                <input type="tel" matInput placeholder="Telefone">
+                <mat-icon matSuffix>mode_edit</mat-icon>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Endereço" formControlName="address">
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput #postalCode maxlength="8" placeholder="CEP" formControlName="cep">
+                <mat-hint align="end">{{ postalCode.value.length }} / 8</mat-hint>
+            </mat-form-field>
+            <div>
+                <button mat-button matStepperPrevious type="button">Voltar</button>
+                <button mat-button matStepperNext type="button">Próximo</button>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step label="Trabalho" [stepControl]="formBusiness">
+        <form [formGroup]="formBusiness" fxLayout="column">
+            <mat-form-field>
+                <input type="text" matInput formControlName="church" [matAutocomplete]="auto" placeholder="Igreja" required>
+            </mat-form-field>
+
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let option of roles" [value]="option.value">
+                    {{ option.value }}
+                </mat-option>
+            </mat-autocomplete>
+            <mat-form-field>
+                <mat-select placeholder="Cargo" formControlName="role" required>
+                    <mat-option *ngFor="let role of roles" [value]="role.value">
+                        {{ role.viewValue }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput [matDatepicker]="pickerRegistration" placeholder="Data de Registro" formControlName="registrationDate">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #pickerRegistration></mat-datepicker>
+            </mat-form-field>
+            <div>
+                <button mat-button matStepperPrevious type="button">Voltar</button>
+                <button mat-button matStepperNext type="button">Próximo</button>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step label="Preferências" [stepControl]="formTreasurer">
+        <form [formGroup]="formTreasurer" fxLayout="column">
+            <mat-form-field>
+                <mat-select placeholder="Contato Preferencial" formControlName="preferentialContact">
+                    <mat-option *ngFor="let role of roles" [value]="role.value">
+                        {{ role.viewValue }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <textarea formControlName="complement" matInput placeholder="Complemento" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5"></textarea>
+            </mat-form-field>
+            <div>
+                <button mat-button matStepperPrevious type="button">Voltar</button>
+                <button mat-button matStepperNext type="submit">Salvar</button>
+            </div>
+        </form>
+    </mat-step>
+</mat-horizontal-stepper>

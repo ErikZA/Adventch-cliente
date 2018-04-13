@@ -5,20 +5,26 @@ import { LayoutComponent } from '../shared/layout/layout.component';
 
 import { AuthGuard } from '../shared/auth.guard';
 
-import { TreasurersDataComponent } from './treasurers/components/treasurers-data/treasurers-data.component';
 import { TreasurersComponent } from './treasurers/treasurers.component';
+import { TreasurersDataComponent } from './treasurers/components/treasurers-data/treasurers-data.component';
+import { TreasurersFormComponent } from './treasurers/components/treasurers-form/treasurers-form.component';
 import { DashboardComponent } from '../shared/dashboard/dashboard.component';
 import { EmptyPageComponent } from '../shared/empty-page/empty-page.component';
 
 const routes: Routes = [
-  { path: 'treasury', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
-    { path: '', component: DashboardComponent },
-    {
-      path: 'treasurers', component: TreasurersComponent, children: [
-        { path: 'novo', component: TreasurersDataComponent },
-        { path: ':id/:name', component: TreasurersDataComponent }
-      ]
-    }
+  { path: 'treasury', canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
+    { path: '', component: LayoutComponent, children: [
+      { path: '', component: DashboardComponent },
+    ]},
+    { path: 'treasurers', children: [
+      { path: '', component: LayoutComponent, children:[
+        { path: '', component: TreasurersComponent },
+      ]},
+      { path: 'new', component: LayoutComponent, children: [
+        { path: '', component: TreasurersComponent },
+        { path: '', component: TreasurersFormComponent, outlet: 'sidenav' },
+      ]},
+    ]}
   ]}
 ];
 

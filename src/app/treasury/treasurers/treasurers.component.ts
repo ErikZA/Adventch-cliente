@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { State } from '../../core/components/progress-spinner/models/state';
 import { Table } from '../../core/components/data-table/models/table';
 import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { SidenavService } from '../../core/services/sidenav.service';
 
 @Component({
   selector: 'app-treasurer',
@@ -19,7 +20,10 @@ export class TreasurersComponent implements OnInit {
     columns: [{
       header: 'Name',
       label: 'Nome'
-    }]
+    }],
+    options: {
+      buttonNew: true
+    }
   };
   state: State = {
     isLoadingResults: false,
@@ -28,7 +32,9 @@ export class TreasurersComponent implements OnInit {
   };
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private sidenavService: SidenavService
   ) { }
 
   ngOnInit() {
@@ -54,6 +60,11 @@ export class TreasurersComponent implements OnInit {
        // return data;
       //})
     //  .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
+  createTreasurer(): void {
+    debugger
+    this.router.navigate(['new'], { relativeTo: this.route });
   }
 
 }
