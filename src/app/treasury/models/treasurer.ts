@@ -1,10 +1,14 @@
 import { EGender, EFunction } from "./Enums";
+import { Unit } from "../../shared/models/unit.model";
+import { Church } from "./church";
 
-export class TreasurerModel {
+export class Treasurer {
   id: string;
+  unit: Unit;
+  church: Church;
+  name: string;
   function: EFunction;
   gender?: EGender;
-  name: string;
   dateRegister?: Date;
   contact?: string;
   address?: string;

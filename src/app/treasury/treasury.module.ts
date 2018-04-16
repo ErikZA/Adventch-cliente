@@ -6,6 +6,8 @@ import { TreasuryRoutingModule } from './treasury-routing.module';
 import { TreasurersDataComponent } from './treasurers/components/treasurers-data/treasurers-data.component';
 import { CoreModule } from '../core/core.module';
 import { TreasurersFormComponent } from './treasurers/components/treasurers-form/treasurers-form.component';
+import { TreasuryService } from './treasury.service';
+import { DataTableComponent } from '../core/components/data-table/data-table.component';
 
 @NgModule({
   imports: [
@@ -17,6 +19,10 @@ import { TreasurersFormComponent } from './treasurers/components/treasurers-form
     TreasurersComponent,
     TreasurersDataComponent,
     TreasurersFormComponent
+  ],
+  providers:[
+    TreasuryService,
+    DataTableComponent
   ]
 })
 export class TreasuryModule { }

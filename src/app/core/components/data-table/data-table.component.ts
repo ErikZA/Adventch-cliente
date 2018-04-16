@@ -38,6 +38,11 @@ export class DataTableComponent implements OnInit {
     }
   }
 
+  refreshData(){
+    debugger;
+    this.dataSource = new MatTableDataSource<any>(this.table.data);
+  }
+
   ngAfterViewInit() {
     this.configurePaginator();
     this.dataSource.paginator = this.paginator;
