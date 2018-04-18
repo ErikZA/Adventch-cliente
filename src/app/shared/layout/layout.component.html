@@ -10,8 +10,13 @@
     <mat-icon>apps</mat-icon>
   </button>
     <mat-menu [overlapTrigger]="false" #appMenuSoftware="matMenu" class="module-menu">
-        <a mat-menu-item href="..." [routerLink]="['payment']" (click)="updateCurrentNav('payment')">Dashboard</a>
-        <!-- <a mat-menu-item href="..." [routerLink]="['bonificacao']" (click)="updateCurrentNav('bonificacao')">Bonificação</a> -->
+        <div *ngFor="let item of (lstUnits)">
+            <mat-list-item>                
+                <a mat-menu-item (click)="updateUnit(item)"  [class.selected]="unit?.id === item.id">
+                    <mat-icon>fiber_manual_record</mat-icon>{{ item.name }}
+                </a>
+            </mat-list-item>
+        </div>
     </mat-menu>
     <span class="fill-space"></span>
 
@@ -52,14 +57,14 @@
                     <mat-expansion-panel-header class="background-side-nav">
                         <mat-panel-title>Tesouraria</mat-panel-title>
                     </mat-expansion-panel-header>
-                    <a mat-list-item routerLinkActive="active-link" [routerLink]="['treasurers']">Tesoureiros</a>
+                    <a mat-list-item routerLinkActive="active-link" [routerLink]="['/treasury/treasurers']">Tesoureiros</a>
                 </mat-expansion-panel>
 
                 <mat-expansion-panel>
                     <mat-expansion-panel-header class="background-side-nav">
                         <mat-panel-title>Pagamentos</mat-panel-title>
                     </mat-expansion-panel-header>
-                    <a mat-list-item routerLinkActive="active-link" [routerLink]="['budgets']">Orçamentos</a>
+                    <a mat-list-item routerLinkActive="active-link" [routerLink]="['/payment/budgets']">Orçamentos</a>
                 </mat-expansion-panel>
             </mat-accordion>
 

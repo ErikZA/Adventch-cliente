@@ -8,6 +8,7 @@ import 'rxjs/add/operator/retry';
 
 import { User } from './models/user.model';
 import { environment } from './../../environments/environment';
+import { Unit } from './models/unit.model';
 
 @Injectable()
 export class AuthService {
@@ -59,6 +60,7 @@ export class AuthService {
   logoff() {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
+    localStorage.removeItem('currentUnit');
     let user: User = new User();
     user.email = localStorage.getItem('lastLogin');
     this.currentUser.emit(user);
@@ -66,4 +68,12 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
+  setCurrentUnit(unit){    
+    localStorage.setItem('currentUnit', JSON.stringify(unit));
+  }
+
+  getCurrentUnit(){    
+    let unit: Unit = JSON.parse(localStorage.getItem('currentUnit'));
+    return unit;
+  }
 }

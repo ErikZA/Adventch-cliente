@@ -9,6 +9,8 @@ import { AuthService } from './../../../app/shared/auth.service';
 import { SidenavService } from '../../core/services/sidenav.service';
 import { MatDrawer, MatDialog, MatDialogRef } from '@angular/material';
 import { ChangePasswordComponent } from '../../core/components/password/change-password/change-password.component';
+import { SharedService } from '../shared.service';
+import { Unit } from '../models/unit.model';
 
 @Component({
   selector: 'app-layout',
@@ -23,6 +25,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
   isOpen: boolean = true;
   get year(): number { return new Date().getFullYear() };
   dialogRef: MatDialogRef<ChangePasswordComponent>;
+  subscribe1: Subscription;
+  lstUnits: Unit[] = new Array<Unit>();
+  unit: Unit;
 
   constructor(
     private authService: AuthService,
@@ -30,10 +35,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private router: Router,
     public app: AppComponent,
-    public navService: SidenavService
+    public navService: SidenavService,
+    public sharedService: SharedService
   ) { }
 
   ngOnInit() {
+    this.getUnits();
     this.subscribe = this.media.subscribe((change: MediaChange) => {
       this.isMobile = (change.mqAlias == 'xs');
       this.isOpen = !(this.isMobile || (change.mqAlias == 'sm') || (change.mqAlias == 'md'));
@@ -63,5 +70,21 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.dialogRef.afterClosed().subscribe(result => {
       if (!result) return;
     });
+  }
+
+  getUnits(){
+    var user = JSON.parse(localStorage.getItem('currentUser'));
+    this.unit = this.authService.getCurrentUnit();
+    this.subscribe1 = this.sharedService.getUnits(user.identifier).subscribe((data: Unit[]) =>{
+      this.lstUnits = Object.assign(this.lstUnits, data as Unit[]);
+      if(this.unit == null)
+        this.unit = this.lstUnits[0];
+      this.authService.setCurrentUnit(this.unit);
+    });    
+  }
+
+  updateUnit(unit){
+    this.unit = unit;
+    this.authService.setCurrentUnit(unit);
   }
 }
