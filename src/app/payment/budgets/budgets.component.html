@@ -1,5 +1,5 @@
 <div class="container">
     <!-- <h1>Aqui deverá apresentar a grid de Orçamentos!</h1> -->
-    <app-data-table [table]="table" [state]="state">
+    <app-data-table (removeEvent)="removeBudgets($event)" [table]="table" [state]="state">
     </app-data-table>
 </div>

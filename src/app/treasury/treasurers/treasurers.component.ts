@@ -62,17 +62,10 @@ export class TreasurersComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.initForm(); 
-    this.getData();   
+    this.getData();
   }
 
-  initForm() {
-    this.form = this.fb.group({
-      search: [null, null],
-    });
-  }
-
-  getData(){   
+  getData(){
     this.subscribe1 = this.TrasureService.getTreasurers().subscribe((data: Treasurer[]) =>{
       this.treasurers = Object.assign(this.treasurers, data as Treasurer[]);
     });
@@ -91,8 +84,10 @@ export class TreasurersComponent implements OnInit {
   }
 
   createTreasurer(): void {
-    debugger
     this.router.navigate(['new'], { relativeTo: this.route });
   }
 
+  removeTreasurers(treasurers) {
+    console.log(treasurers);
+  }
 }

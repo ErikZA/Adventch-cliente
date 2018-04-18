@@ -2,6 +2,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { Table } from '../../core/components/data-table/models/table';
 import { State } from './../../core/components/progress-spinner/models/state';
+import { Size } from '../../core/components/data-table/models/column';
 
 @Component({
   selector: 'app-budgets',
@@ -14,17 +15,25 @@ export class BudgetsComponent implements OnInit {
     data: ELEMENT_DATA,
     columns: [{
       header: 'position',
-      label: 'No.'
+      label: 'No.',
+      // size: Size.Small
     }, {
       header: 'name',
-      label: 'Name'
+      label: 'Name',
+      // size: Size.Large
     }, {
       header: 'weight',
-      label: 'Weight'
+      label: 'Weight',
+      // size: '30%'
     }, {
       header: 'symbol',
-      label: 'Symbol'
-    }]
+      label: 'Symbol',
+      // size: '20%'
+    }],
+    options: {
+      buttonNew: true,
+      // select: false
+    }
   };
 
   state: State = {
@@ -38,6 +47,9 @@ export class BudgetsComponent implements OnInit {
   ngOnInit() {
   }
 
+  removeBudgets(budgets) {
+    console.log(budgets);
+  }
 }
 
 

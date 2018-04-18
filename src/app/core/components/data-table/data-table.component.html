@@ -6,23 +6,38 @@
             <mat-form-field fxFlex>
                 <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Pesquisar">
             </mat-form-field>
-
-            <button mat-icon-button color="primary" *ngIf="table.options?.buttonNew || false" (click)="navService.toggleSideNav() && addButton()">
-            <mat-icon aria-label="Adicionar novo" matTooltip="Adicionar Novo">add</mat-icon>
-            </button>
+            <div class="butons">
+                <button mat-icon-button color="primary" *ngIf="table.options?.buttonNew || false" (click)="navService.toggleSideNav() && addButton()">
+              <mat-icon aria-label="Adicionar novo" matTooltip="Adicionar Novo">add</mat-icon>
+              </button>
+                <button mat-icon-button color="warn" *ngIf="selection.selected.length > 0" (click)="removeAllSelected()">
+                  <mat-icon aria-label="Adicionar novo" matTooltip="Excluir Selecionado(s)">delete_forever</mat-icon>
+                </button>
+            </div>
         </div>
     </div>
     <mat-table [dataSource]="dataSource" matSort>
-
+        <div *ngIf="selectVisible(table.options?.select != false)">
+            <ng-container matColumnDef="select">
+                <mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+        </div>
         <div *ngFor="let item of (table.columns)">
             <ng-container [matColumnDef]="item.header">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ item.label }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{ element[item.header] }} </mat-cell>
+                <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" [ngStyle]="setSizeColumn(item)"> {{ item.label }} </mat-header-cell>
+                <mat-cell *matCellDef="let element" [ngStyle]="setSizeColumn(item)"> {{ element[item.header] }} </mat-cell>
             </ng-container>
         </div>
 
         <mat-header-row *matHeaderRowDef="headersColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: headersColumns;"></mat-row>
+        <mat-row *matRowDef="let row; columns: headersColumns;" (click)="rowItem(row)"></mat-row>
     </mat-table>
     <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 15]" [showFirstLastButtons]="true">
     </mat-paginator>
