@@ -33,4 +33,10 @@ export class TreasuryService {
       .post(url, treasure)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+
+  deleteTreasurer(id): Observable<any> {
+    return this.http
+      .delete(`/treasury/deleteTreasurer/${id}`)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 }
