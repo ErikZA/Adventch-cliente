@@ -14,86 +14,87 @@ export class CustomValidators {
      }
   }
 
-  // static cpfCnpjValidator(ctrl) {
-  //   if (!MyValidator.cnpjValidator(ctrl.value) && !MyValidator.cpfValidator(ctrl.value))
-  //     return { validcpfCnpj: true };
-  //   return null;
-  // }
+  static cpfCnpjValidator(ctrl) {
+    if (!CustomValidators.cnpjValidator(ctrl.value) && !CustomValidators.cpfValidator(ctrl.value))
+      return { validcpfCnpj: true };
+    return null;
+  }
+  
+  static nullableCpfCnpjValidator(ctrl) {
+    if (!ctrl.value)
+      return true;
+    else
+      if (!CustomValidators.cnpjValidator(ctrl.value) && !CustomValidators.cpfValidator(ctrl.value))
+        return { validcpfCnpj: true };
+    return null;
+  }
+  
+  static cnpjValidator(cnpj: string): boolean {
+    if (!cnpj || cnpj.length < 14)
+      return false;
+    cnpj = cnpj.replace(/[^\d]/g, '');
+    if (cnpj.length !== 14)
+      return false;
+    if (cnpj.split('').every(c => c === cnpj[0]))
+      return false;
+    let lst = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    let dig1 = 0;
+    let dig2 = 0;
+    for (let i = 0; i < lst.length; i++) {
+      dig1 += (i > 0 ? (parseInt(cnpj.charAt(i - 1)) * lst[i]) : 0);
+      dig2 += parseInt(cnpj.charAt(i)) * lst[i];
+    }
+    dig1 = (dig1 % 11 < 2) ? 0 : (11 - (dig1 % 11));
+    dig2 = (dig2 % 11 < 2) ? 0 : (11 - (dig2 % 11));
+    let dig = parseInt(cnpj.charAt(12)) + parseInt(cnpj.charAt(13));
+    return dig1 + dig2 === dig;
+  }
+  
+  static cpfValidator(cpf: string): boolean {
+    if (!cpf || cpf.length < 11)
+      return false;
+    cpf = cpf.replace(/[^\d]+/g, '');
+    if (!cpf || cpf.length !== 11)
+      return false;
+    if (cpf.split('').every(c => c === cpf[0]))
+      return false;
+    let add1 = 0;
+    for (let i = 0; i < 9; i++)
+      add1 += parseInt(cpf.charAt(i)) * (10 - i);
+    let rev = 11 - (add1 % 11);
+    if (rev === 10 || rev === 11)
+      rev = 0;
+    if (rev !== parseInt(cpf.charAt(9)))
+      return false;
+    let add2 = 0;
+    for (let i = 0; i < 10; i++)
+      add2 += parseInt(cpf.charAt(i)) * (11 - i);
+    rev = 11 - (add2 % 11);
+    if (rev === 10 || rev === 11)
+      rev = 0;
+    if (rev !== parseInt(cpf.charAt(10)))
+      return false;
+    return true;
+  }
+  
+  static cepValidator(cep) {
+    let cepValue: string = cep.value;
+  
+    if (!cepValue)
+      return null;
+    else
+      cepValue = cepValue.replace(/[^\d]/g, '');
+  
+    if (cepValue.length !== 8)
+      return { invalidCep: true };
+  
+    //for (let i = 0; i < CustomValidators.cep.length; i++)
+    //  if (cepValue >= CustomValidators.cep[i][1] && cepValue <= CustomValidators.cep[i][2])
+    //    return null;
+  
+    return { invalidCep: true };
+  }
 
-  // static nullableCpfCnpjValidator(ctrl) {
-  //   if (!ctrl.value)
-  //     return true;
-  //   else
-  //     if (!MyValidator.cnpjValidator(ctrl.value) && !MyValidator.cpfValidator(ctrl.value))
-  //       return { validcpfCnpj: true };
-  //   return null;
-  // }
-
-  // static cnpjValidator(cnpj: string): boolean {
-  //   if (!cnpj || cnpj.length < 14)
-  //     return false;
-  //   cnpj = cnpj.replace(/[^\d]/g, '');
-  //   if (cnpj.length !== 14)
-  //     return false;
-  //   if (cnpj.split('').every(c => c === cnpj[0]))
-  //     return false;
-  //   let lst = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-  //   let dig1 = 0;
-  //   let dig2 = 0;
-  //   for (let i = 0; i < lst.length; i++) {
-  //     dig1 += (i > 0 ? (parseInt(cnpj.charAt(i - 1)) * lst[i]) : 0);
-  //     dig2 += parseInt(cnpj.charAt(i)) * lst[i];
-  //   }
-  //   dig1 = (dig1 % 11 < 2) ? 0 : (11 - (dig1 % 11));
-  //   dig2 = (dig2 % 11 < 2) ? 0 : (11 - (dig2 % 11));
-  //   let dig = parseInt(cnpj.charAt(12)) + parseInt(cnpj.charAt(13));
-  //   return dig1 + dig2 === dig;
-  // }
-
-  // static cpfValidator(cpf: string): boolean {
-  //   if (!cpf || cpf.length < 11)
-  //     return false;
-  //   cpf = cpf.replace(/[^\d]+/g, '');
-  //   if (!cpf || cpf.length !== 11)
-  //     return false;
-  //   if (cpf.split('').every(c => c === cpf[0]))
-  //     return false;
-  //   let add1 = 0;
-  //   for (let i = 0; i < 9; i++)
-  //     add1 += parseInt(cpf.charAt(i)) * (10 - i);
-  //   let rev = 11 - (add1 % 11);
-  //   if (rev === 10 || rev === 11)
-  //     rev = 0;
-  //   if (rev !== parseInt(cpf.charAt(9)))
-  //     return false;
-  //   let add2 = 0;
-  //   for (let i = 0; i < 10; i++)
-  //     add2 += parseInt(cpf.charAt(i)) * (11 - i);
-  //   rev = 11 - (add2 % 11);
-  //   if (rev === 10 || rev === 11)
-  //     rev = 0;
-  //   if (rev !== parseInt(cpf.charAt(10)))
-  //     return false;
-  //   return true;
-  // }
-
-  // static cepValidator(cep) {
-  //   let cepValue: string = cep.value;
-
-  //   if (!cepValue)
-  //     return null;
-  //   else
-  //     cepValue = cepValue.replace(/[^\d]/g, '');
-
-  //   if (cepValue.length !== 8)
-  //     return { invalidCep: true };
-
-  //   for (let i = 0; i < MyValidator.cep.length; i++)
-  //     if (cepValue >= MyValidator.cep[i][1] && cepValue <= MyValidator.cep[i][2])
-  //       return null;
-
-  //   return { invalidCep: true };
-  // }
 
   // static cep: Array<any[]> = [
   //   ['Abatiá', 86460000, 86460970],

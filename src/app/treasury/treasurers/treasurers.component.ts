@@ -84,7 +84,7 @@ export class TreasurersComponent implements OnInit {
   }
 
   createTreasurer(): void {
-    this.router.navigate(['new'], { relativeTo: this.route });
+    this.router.navigate(['/new'], { relativeTo: this.route });
   }
 
   removeTreasurers(treasurers) {

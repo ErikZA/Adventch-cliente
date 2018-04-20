@@ -19,11 +19,8 @@ const routes: Routes = [
     { path: 'treasurers', children: [
       { path: '', component: LayoutComponent, children:[
         { path: '', component: TreasurersComponent },
-      ]},
-      { path: 'new', component: LayoutComponent, children: [
-        { path: '', component: TreasurersComponent },
         { path: '', component: TreasurersFormComponent, outlet: 'sidenav' },
-      ]},
+      ]}
     ]}
   ]}
 ];
