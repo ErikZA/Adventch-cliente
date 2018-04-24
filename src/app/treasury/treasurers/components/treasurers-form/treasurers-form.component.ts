@@ -41,17 +41,16 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
     this.subscribe2 = this.activatedRoute.params.subscribe((data) => {
       this.editTreasurer(this.treasureComponent.treasurer);
     });
-  }
-
-  ngOnDestroy() {
-    if (this.subscribe1) this.subscribe1.unsubscribe();
-    if (this.subscribe2) this.subscribe2.unsubscribe();
-    this.editTreasurer(this.treasureComponent.treasurer);
     this.dates = {
       now: new Date(new Date().setFullYear(new Date().getFullYear())),
       min: new Date(new Date().setFullYear(new Date().getFullYear() - 95)),
       max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
     }
+  }
+
+  ngOnDestroy() {
+    if (this.subscribe1) this.subscribe1.unsubscribe();
+    if (this.subscribe2) this.subscribe2.unsubscribe();
   }
 
   editTreasurer(treasurer){
