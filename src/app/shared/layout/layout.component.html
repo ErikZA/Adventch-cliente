@@ -11,8 +11,8 @@
   </button>
     <mat-menu [overlapTrigger]="false" #appMenuSoftware="matMenu" class="module-menu">
         <div *ngFor="let item of (lstUnits)">
-            <mat-list-item>                
-                <a mat-menu-item (click)="updateUnit(item)"  [class.selected]="unit?.id === item.id">
+            <mat-list-item>
+                <a mat-menu-item (click)="updateUnit(item)" [class.selected]="unit?.id === item.id">
                     <mat-icon>fiber_manual_record</mat-icon>{{ item.name }}
                 </a>
             </mat-list-item>

@@ -1,5 +1,5 @@
-import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormGroupDirective } from '@angular/forms';
 import { AuthService } from '../../../../shared/auth.service';
 import { Church } from '../../../models/church';
 import { TreasuryService } from '../../../treasury.service';
@@ -24,6 +24,7 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
   subscribe1: Subscription;
   subscribe2: Subscription;
   treasurer: Treasurer = new Treasurer();
+  dates: any;
 
   constructor(
     private authService: AuthService,
@@ -45,6 +46,12 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.subscribe1) this.subscribe1.unsubscribe();
     if (this.subscribe2) this.subscribe2.unsubscribe();
+    this.editTreasurer(this.treasureComponent.treasurer);
+    this.dates = {
+      now: new Date(new Date().setFullYear(new Date().getFullYear())),
+      min: new Date(new Date().setFullYear(new Date().getFullYear() - 95)),
+      max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+    }
   }
 
   editTreasurer(treasurer){
@@ -55,20 +62,20 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
     }
     this.formPersonal.setValue({
         name: treasurer.name,
-        church: treasurer.church.id,
-        role: treasurer.function,
-        registrationDate: treasurer.dateRegister,
+        churchId: treasurer.church.id,
+        functionId: treasurer.function,
+        dateRegister: treasurer.dateRegister,
         cpf: treasurer.cpf,
         phone: treasurer.phone,
-        gender: treasurer.gender
+        genderId: treasurer.gender
     });
 
     this.formContact.setValue({
       email: treasurer.email,
-      birthday: treasurer.dateBirth,
-      preferentialContact: treasurer.contact,
+      dateBirth: treasurer.dateBirth,
+      contact: treasurer.contact,
       address: treasurer.address,
-      complement: treasurer.addressComplement,
+      addressComplement: treasurer.addressComplement,
       cep: treasurer.cep
     });
   }
@@ -76,19 +83,19 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
   initForm(): void {
     this.formPersonal = this.formBuilder.group({
       name: [null, Validators.required],
-      church: [null, Validators.required],
-      role: [null, Validators.required],
-      registrationDate: [null],
+      churchId: [null, Validators.required],
+      functionId: [null, Validators.required],
+      dateRegister: [null],
       cpf: [null],
       phone: [null],
-      gender: [null]
+      genderId: [null]
     });
     this.formContact = this.formBuilder.group({
       email: [null],
-      birthday: [null],
-      preferentialContact: [null],
+      dateBirth: [null],
+      contact: [null],
       address: [null],
-      complement: [null],
+      addressComplement: [null],
       cep: [null]
     });
     this.formTreasurer = this.formBuilder.group({
@@ -97,7 +104,7 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  getChurches(){    
+  getChurches(){
     var unit = this.authService.getCurrentUnit();
     this.subscribe1 = this.treasuryService.getChurches(unit.id).subscribe((data: Church[]) =>{
       this.lstChurches = Object.assign(this.lstChurches, data as Church[]);
@@ -112,30 +119,22 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
     this.router.navigate(['treasury/treasurers']);
   }
 
-  saveTreasurer(){
-    let body = JSON.stringify({
-      name: this.formPersonal.value.name,
-      churchId: this.formPersonal.value.church,
-      functionId: this.formPersonal.value.role,
-      dateRegister: this.formPersonal.value.registrationDate,
-      phone: this.formPersonal.value.phone,
-      genderId: this.formPersonal.value.gender,
-      cpf: this.formPersonal.value.cpf,
-      address: this.formContact.value.address,
-      dateBirth: this.formContact.value.birthday,
-      cep: this.formContact.value.cep,
-      addressComplement: this.formContact.value.complement,
-      email: this.formContact.value.email,
-      contact: this.formContact.value.preferentialContact,
+  saveTreasurer() {
+    let treasurer = {
+      ...this.formPersonal.value,
+      ...this.formContact.value,
       unitId: this.authService.getCurrentUnit().id
-    });
-    this.treasuryService.saveNewTreasurer(body)
-    .then((data: any) => {
-      this.snackBar.open('Tesoureiro cadastrado!', 'OK', { duration: 10000 });
-      this.formPersonal.reset();
-      this.formContact.reset();
-      this.formTreasurer.reset();
-      this.navService.toggleSideNav();
-    });
+    };
+    if (this.formTreasurer.valid) {
+      this.treasuryService.saveNewTreasurer(treasurer).subscribe(() =>{
+        this.snackBar.open('Tesoureiro cadastrado!', 'OK', { duration: 5000 });
+        this.formTreasurer.markAsUntouched();
+        this.formTreasurer.reset();
+      }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao cadastrar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+      });
+    }
+    this.close();
   }
 }
