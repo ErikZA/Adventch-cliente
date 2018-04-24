@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8">
+
     <app-progress-spinner [state]="state"></app-progress-spinner>
 
     <div class="example-header" fxLayout="row" fxLayoutAlign="center">
@@ -7,8 +7,9 @@
                 <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Pesquisar">
             </mat-form-field>
             <div class="butons">
-                <button mat-icon-button color="primary" *ngIf="table.options?.buttonNew || false" (click)="navService.toggleSideNav() && addButton()">
-              <mat-icon aria-label="Adicionar novo" matTooltip="Adicionar Novo">add</mat-icon>
+                <!--(click)="navService.toggleSideNav() && addButton()"-->
+                <button mat-icon-button color="primary" *ngIf="table.options?.buttonNew || false" >
+              <mat-icon aria-label="Adicionar novo" matTooltip="Adicionar Novo" routerLink="new">add</mat-icon>
               </button>
                 <button mat-icon-button color="warn" *ngIf="selection.selected.length > 0" (click)="removeAllSelected()">
                   <mat-icon aria-label="Adicionar novo" matTooltip="Excluir Selecionado(s)">delete_forever</mat-icon>
@@ -24,7 +25,7 @@
                     </mat-checkbox>
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row">
-                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+                    <mat-checkbox (click)="$event.stopPropagation(); rowItem(row);" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
                     </mat-checkbox>
                 </mat-cell>
             </ng-container>
@@ -37,8 +38,7 @@
         </div>
 
         <mat-header-row *matHeaderRowDef="headersColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: headersColumns;" (click)="rowItem(row)"></mat-row>
+        <mat-row *matRowDef="let row; columns: headersColumns;" (click)="rowItem(row);"></mat-row>
     </mat-table>
     <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 15]" [showFirstLastButtons]="true">
     </mat-paginator>
-</div>

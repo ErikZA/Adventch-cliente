@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { State } from '../../core/components/progress-spinner/models/state';
@@ -9,6 +9,11 @@ import { SidenavService } from '../../core/services/sidenav.service';
 import { Subscription } from 'rxjs';
 import { TreasuryService } from '../treasury.service';
 import { Treasurer } from '../models/treasurer';
+import { Unit } from '../../shared/models/unit.model';
+import { Church } from '../models/church';
+import { MatSidenav } from '@angular/material';
+import { TreasurersFormComponent } from './components/treasurers-form/treasurers-form.component';
+import { EFunction } from '../models/Enums';
 
 @Component({
   selector: 'app-treasurer',
@@ -16,36 +21,34 @@ import { Treasurer } from '../models/treasurer';
   styleUrls: ['./treasurers.component.scss']
 })
 export class TreasurersComponent implements OnInit {
+  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
 
   subscribe1: Subscription;
   treasurers: Treasurer[] = new Array<Treasurer>();
+  treasurer: Treasurer = new Treasurer();
   form: FormGroup;
   table: Table = {
-    data: [],
+    data: ELEMENT_DATA,
     columns: [{
-      header: 'Nome',
-      label: 'Nome'
-    },{
-      header: 'Igreja',
-      label: 'Igreja'
-    },{
-      header: 'Distrito',
-      label: 'Distrito'
-    },{
-      header: 'Cidade',
-      label: 'Cidade'
-    },{
-      header: 'Cargo',
-      label: 'Cargo'
-    },{
-      header: 'Endereço',
-      label: 'Endereco'
-    },{
-      header: 'Telefone',
-      label: 'Telefone'
+      header: 'position',
+      label: 'No.',
+      // size: Size.Small
+    }, {
+      header: 'name',
+      label: 'Name',
+      // size: Size.Large
+    }, {
+      header: 'weight',
+      label: 'Weight',
+      // size: '30%'
+    }, {
+      header: 'symbol',
+      label: 'Symbol',
+      // size: '20%'
     }],
     options: {
-      buttonNew: true
+      buttonNew: true,
+      // select: false
     }
   };
   state: State = {
@@ -62,6 +65,7 @@ export class TreasurersComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.table.options.buttonNew = false;
     this.getData();
   }
 
@@ -84,10 +88,90 @@ export class TreasurersComponent implements OnInit {
   }
 
   createTreasurer(): void {
-    this.router.navigate(['/new'], { relativeTo: this.route });
+    this.router.navigate(['/new']);
+  }
+
+  editTreasurer(treasurer): void{
+    this.treasurer = treasurer;
+    this.router.navigate([treasurer.id + '/edit'], { relativeTo: this.route });
+    this.sidenavRight.open();
   }
 
   removeTreasurers(treasurers) {
     console.log(treasurers);
   }
+
+  openSidenav() {
+    this.sidenavRight.open();
+  }
 }
+
+export interface Element {
+  name: string;
+  position: number;
+  weight: number;
+  symbol: string;
+  id: string;
+}
+
+const ELEMENT_DATA: Treasurer[] = [
+  {
+    id: 'A65XaCfH',
+    church: new Church(), 
+    unit: new Unit(),
+    function: EFunction.AssistantTreasurer,
+    dateRegister: new Date(),
+    dateBirth: new Date(),
+    gender: 1,
+    name: 'teste 123',
+    contact: 'teste',
+    address: 'teste',
+    addressComplement: 'teste',
+    cep: '123213',
+    phone: '123',
+    email: 'teste@teste.com',
+    cpf: '12312312323',
+  },
+  {
+    id: 'FjGulpJa',
+    church: new Church(), 
+    unit: new Unit(),
+    function: EFunction.AssistantTreasurer,
+    dateRegister: new Date(),
+    dateBirth: new Date(),
+    gender: 1,
+    name: 'teste 321',
+    contact: 'teste',
+    address: 'teste',
+    addressComplement: 'teste',
+    cep: '123213',
+    phone: '123',
+    email: 'teste@teste.com',
+    cpf: '12312312323'
+  },
+  {
+    id: '6RxhJ6RF',
+    church: new Church(), 
+    unit: new Unit(),
+    function: EFunction.AssistantTreasurer,
+    dateRegister: new Date(),
+    dateBirth: new Date(),
+    gender: 1,
+    name: 'teste 213',
+    contact: 'teste',
+    address: 'teste',
+    addressComplement: 'teste',
+    cep: '123213',
+    phone: '123',
+    email: 'teste@teste.com',
+    cpf: '12312312323'
+  }
+];
+
+ELEMENT_DATA[0].church.id = '08jmxGpV';
+ELEMENT_DATA[1].church.id = '2721ENm8';
+ELEMENT_DATA[2].church.id = '33qBspAF';
+
+ELEMENT_DATA[0].unit.id = 2;
+ELEMENT_DATA[1].unit.id = 2;
+ELEMENT_DATA[2].unit.id = 2;

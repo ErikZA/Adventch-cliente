@@ -5,9 +5,9 @@ import { Church } from '../../../models/church';
 import { TreasuryService } from '../../../treasury.service';
 import { Subscription } from 'rxjs';
 import { Treasurer } from '../../../models/treasurer';
-import { CustomValidators } from '../../../../core/custom-validators';
 import { MatSnackBar } from '@angular/material';
-import { SidenavService } from '../../../../core/services/sidenav.service';
+import { TreasurersComponent } from '../../treasurers.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-treasurers-form',
@@ -22,18 +22,43 @@ export class TreasurersFormComponent implements OnInit {
   formContact: FormGroup;
   lstChurches: Church[] = new Array<Church>();
   subscribe1: Subscription;
-  treasurer: Treasurer;
+  treasurer: Treasurer = new Treasurer();
 
   constructor(
     private authService: AuthService,
     private treasuryService: TreasuryService,
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
-    public navService: SidenavService,) { }
+    private router: Router,
+    public treasureComponent: TreasurersComponent) { }
 
   ngOnInit() {
     this.initForm();
     this.getChurches();
+    this.editTreasurer(this.treasureComponent.treasurer);
+  }
+
+  editTreasurer(treasurer){
+    if(treasurer.id == undefined)
+      return;
+    this.formPersonal.setValue({
+        name: treasurer.name,
+        church: treasurer.church.id,
+        role: treasurer.function,
+        registrationDate: treasurer.dateRegister,
+        cpf: treasurer.cpf,
+        phone: treasurer.phone,
+        gender: treasurer.gender
+    });
+
+    this.formContact.setValue({
+      email: treasurer.email,
+      birthday: treasurer.dateBirth,
+      preferentialContact: treasurer.contact,
+      address: treasurer.address,
+      complement: treasurer.addressComplement,
+      cep: treasurer.cep
+    });
   }
 
   initForm(): void {
@@ -65,6 +90,14 @@ export class TreasurersFormComponent implements OnInit {
     this.subscribe1 = this.treasuryService.getChurches(unit.id).subscribe((data: Church[]) =>{
       this.lstChurches = Object.assign(this.lstChurches, data as Church[]);
     });
+  }
+
+  close() {
+    this.treasurer = new Treasurer();
+    //if (this.treasureComponent && this.treasureComponent.sidenavRight.opened){
+      this.treasureComponent.sidenavRight.close();
+    //}
+    this.router.navigate(['treasury/treasurers']);
   }
 
   saveTreasurer(){

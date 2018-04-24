@@ -8,7 +8,6 @@ export class Church {
   name: string;
   code: string;
   district: string;
-  constructor(
-  ) { }
+  constructor() { }
 }
 

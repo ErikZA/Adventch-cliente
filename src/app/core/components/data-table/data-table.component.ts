@@ -8,7 +8,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { State } from '../progress-spinner/models/state';
 import { SidenavService } from '../../services/sidenav.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SelectionModel } from '@angular/cdk/collections';
+import { SelectionModel, DataSource } from '@angular/cdk/collections';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-data-table',
@@ -94,7 +95,7 @@ export class DataTableComponent implements OnInit {
     this.removeEvent.emit(this.selection.selected);
   }
 
-  rowItem(row) {
+  rowItem(row) {    
     this.clickRow.emit(row);
   }
 
