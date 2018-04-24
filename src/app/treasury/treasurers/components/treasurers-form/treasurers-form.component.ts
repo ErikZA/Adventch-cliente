@@ -117,7 +117,6 @@ export class TreasurersFormComponent implements OnInit {
     if (this.formTreasurer.valid) {
       this.treasuryService.saveNewTreasurer(treasurer).subscribe(() =>{
         this.snackBar.open('Tesoureiro cadastrado!', 'OK', { duration: 5000 });
-        this.navService.toggleSideNav();
         this.formTreasurer.markAsUntouched();
         this.formTreasurer.reset();
       }, err => {
@@ -125,5 +124,6 @@ export class TreasurersFormComponent implements OnInit {
         this.snackBar.open('Erro ao cadastrar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
       });
     }
+    this.close();
   }
 }
