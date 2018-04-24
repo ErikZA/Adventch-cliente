@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../../shared/auth.service';
 import { Church } from '../../../models/church';
@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { Treasurer } from '../../../models/treasurer';
 import { MatSnackBar } from '@angular/material';
 import { TreasurersComponent } from '../../treasurers.component';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-treasurers-form',
@@ -15,18 +15,20 @@ import { Router } from '@angular/router';
   styleUrls: ['./treasurers-form.component.scss']
 })
 
-export class TreasurersFormComponent implements OnInit {
+export class TreasurersFormComponent implements OnInit, OnDestroy {
   [x: string]: any;
   formTreasurer: FormGroup;
   formPersonal: FormGroup;
   formContact: FormGroup;
   lstChurches: Church[] = new Array<Church>();
   subscribe1: Subscription;
+  subscribe2: Subscription;
   treasurer: Treasurer = new Treasurer();
 
   constructor(
     private authService: AuthService,
     private treasuryService: TreasuryService,
+    private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
     private router: Router,
@@ -35,12 +37,22 @@ export class TreasurersFormComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.getChurches();
-    this.editTreasurer(this.treasureComponent.treasurer);
+    this.subscribe2 = this.activatedRoute.params.subscribe((data) => {
+      this.editTreasurer(this.treasureComponent.treasurer);
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscribe1) this.subscribe1.unsubscribe();
+    if (this.subscribe2) this.subscribe2.unsubscribe();
   }
 
   editTreasurer(treasurer){
-    if(treasurer.id == undefined)
+    if(treasurer.id == undefined){
+      this.formPersonal.reset();
+      this.formContact.reset();
       return;
+    }
     this.formPersonal.setValue({
         name: treasurer.name,
         church: treasurer.church.id,
