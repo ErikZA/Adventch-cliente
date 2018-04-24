@@ -9,9 +9,9 @@
                     <div fxLayout="column">
                         <mat-form-field fxFlex>
                             <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
-                            <mat-error *ngIf="formPersonal.get('name').hasError('required') && formPersonal.get('name').dirty">Este campo é obrigatório</mat-error>
-                            <mat-error *ngIf="formPersonal.get('name').hasError('minlength') && formPersonal.get('name').dirty">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
-                            <mat-error *ngIf="formPersonal.get('name').hasError('maxlenght') && formPersonal.get('name').dirty">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
+                            <mat-error *ngIf="formPersonal.get('name').hasError('required')">Este campo é obrigatório</mat-error>
+                            <mat-error *ngIf="formPersonal.get('name').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
+                            <mat-error *ngIf="formPersonal.get('name').hasError('maxlenght')">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
                         </mat-form-field>
 
                         <mat-form-field>
@@ -20,7 +20,7 @@
                                     ({{ church.code }}) {{ church.name }}
                                 </mat-option>
                             </mat-select>
-                            <mat-error *ngIf="formPersonal.get('churchId').hasError('required') && formPersonal.get('churchId').dirty">Este campo é obrigatório</mat-error>
+                            <mat-error *ngIf="formPersonal.get('churchId').hasError('required')">Este campo é obrigatório</mat-error>
                         </mat-form-field>
 
                         <mat-form-field>
@@ -29,7 +29,7 @@
                                 <mat-option [value]="2">Tesoureiro (a) Associado (a)</mat-option>
                                 <mat-option [value]="3">Tesoureiro (a) Assistente</mat-option>
                             </mat-select>
-                            <mat-error *ngIf="formPersonal.get('functionId').hasError('required') && formPersonal.get('functionId').dirty">Este campo é obrigatório</mat-error>
+                            <mat-error *ngIf="formPersonal.get('functionId').hasError('required')">Este campo é obrigatório</mat-error>
                         </mat-form-field>
 
                         <mat-form-field fxFlexFill>
