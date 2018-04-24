@@ -27,8 +27,8 @@ export class TreasuryService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  saveNewTreasurer(treasure): Observable<any> {
-    let url = '/treasury/treasurers/newTreasurer';
+  saveTreasurer(treasure): Observable<any> {
+    let url = (treasure.id == null ? '/treasury/treasurers/newTreasurer' : '/treasury/treasurers/updateTreasurer');
     return this.http
       .post(url, treasure)
       .catch((error: any) => Observable.throw(error || 'Server error'));

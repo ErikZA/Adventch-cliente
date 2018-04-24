@@ -87,10 +87,6 @@ export class TreasurersComponent implements OnInit {
     //  .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
 
-  createTreasurer(): void {
-    this.router.navigate(['/new']);
-  }
-
   editTreasurer(treasurer): void{
     this.treasurer = treasurer;
     this.router.navigate([treasurer.id + '/edit'], { relativeTo: this.route });
@@ -102,6 +98,7 @@ export class TreasurersComponent implements OnInit {
   }
 
   openSidenav() {
+    this.treasurer = new Treasurer();
     this.sidenavRight.open();
   }
 }
