@@ -27,11 +27,10 @@ export class TreasuryService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  saveNewTreasurer(body){
-    let url = '/treasury/treasurers/newTreasure/';
-    return this.http.post.bind(this.http)(url, body)
-      .toPromise()
-      .then((res: Response) => res.json())
+  saveNewTreasurer(treasure): Observable<any> {
+    let url = '/treasury/treasurers/newTreasurer';
+    return this.http
+      .post(url, treasure)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }

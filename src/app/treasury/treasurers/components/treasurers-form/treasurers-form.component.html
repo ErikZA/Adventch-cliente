@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"
   [ngStyle.xs]="{'width.vw': 100}">
     <button mat-icon-button type="button" matTooltip="Fechar" (click)="close()">
@@ -99,3 +100,115 @@
         </mat-horizontal-stepper>
     </div>
 </div>
+=======
+<script></script>
+<mat-horizontal-stepper linear>
+    <mat-step label="Pessoal" [stepControl]="formPersonal">
+        <form [formGroup]="formPersonal" #formDirective="ngForm" fxLayout="column" fxLayoutGap="60px">
+            <div fxLayout="column">
+                <mat-form-field fxFlex>
+                    <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
+                    <mat-error *ngIf="formPersonal.get('name').hasError('required') && formPersonal.get('name').dirty">Este campo é obrigatório</mat-error>
+                    <mat-error *ngIf="formPersonal.get('name').hasError('minlength') && formPersonal.get('name').dirty">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
+                    <mat-error *ngIf="formPersonal.get('name').hasError('maxlenght') && formPersonal.get('name').dirty">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-select placeholder="Igreja" formControlName="churchId" required>
+                        <mat-option *ngFor="let church of lstChurches" [value]="church.id">
+                            ({{ church.code }}) {{ church.name }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="formPersonal.get('churchId').hasError('required') && formPersonal.get('churchId').dirty">Este campo é obrigatório</mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-select placeholder="Cargo" formControlName="functionId" required>
+                        <mat-option [value]="1">Tesoureiro (a)</mat-option>
+                        <mat-option [value]="2">Tesoureiro (a) Associado (a)</mat-option>
+                        <mat-option [value]="3">Tesoureiro (a) Assistente</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="formPersonal.get('functionId').hasError('required') && formPersonal.get('functionId').dirty">Este campo é obrigatório</mat-error>
+                </mat-form-field>
+
+                <mat-form-field fxFlexFill>
+                    <input matInput [matDatepicker]="pickerRegistration" placeholder="Data de Registro no Cargo" formControlName="dateRegister" [min]="dates.min" [max]="dates.now">
+                    <mat-datepicker-toggle matSuffix [for]="pickerRegistration"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerRegistration></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field fxFlex>
+                    <input matInput type="text" formControlName="cpf" placeholder="CPF" mixlength="14" maxlength="14" InputMask="999.999.999-99" pattern="[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}">
+                    <mat-error *ngIf="formPersonal.get('cpf').hasError('pattern')">
+                        Digite um CPF válido
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <input type="tel" matInput placeholder="Telefone" formControlName="phone" maxlength="18" InputMask="(99)9 9999-9999" pattern="\([0-9]{2}\)[0-9]{1} [0-9]{4,6}-[0-9]{3,4}$">
+                    <mat-icon matSuffix>mode_edit</mat-icon>
+                    <mat-error *ngIf="formPersonal.get('phone').hasError('pattern')">
+                        Digite um telefone válido
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-list>
+                    <h3 mat-subheader style="padding: 0">Gênero</h3>
+                    <mat-radio-group formControlName="genderId" name="gender" aria-label="Gênero">
+                        <mat-radio-button value="1" val aria-label="Masculino" style="margin: 0" [checked]="true">Masculino</mat-radio-button>
+                        <mat-radio-button value="2" aria-label="Feminino">Feminino</mat-radio-button>
+                    </mat-radio-group>
+                </mat-list>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <button mat-button matStepperPrevious type="button">Voltar</button>
+                <button mat-button matStepperNext type="button">Próximo</button>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step label="Contato" [stepControl]="formContact">
+        <form [formGroup]="formContact" fxLayout="column" fxLayoutGap="120px">
+            <div fxLayout="column">
+                <mat-form-field>
+                    <input matInput placeholder="Email" formControlName="email" maxlength="100" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+                    <mat-error *ngIf="formContact.get('email').hasError('pattern')">
+                        Digite um email válido
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field fxFlexFill>
+                    <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerBirth" placeholder="Data de Nascimento" formControlName="dateBirth" [min]="dates.min" [max]="dates.max">
+                    <mat-datepicker-toggle matSuffix [for]="pickerBirth"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerBirth></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <textarea matInput placeholder="Melhor Tipo Contato" formControlName="contact" maxlength="300" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="4"></textarea>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <input matInput #postalCode mixlength="8" maxlength="9" placeholder="CEP" formControlName="cep" InputMask="99999-999" pattern="[0-9]{5}-[0-9]{3}$">
+                    <mat-hint align="end">{{ postalCode.value.length
+                        < 5 ? postalCode.value.length : postalCode.value.length - 1 }} / 8</mat-hint>
+                            <mat-error *ngIf="formContact.get('cep').hasError('pattern')">
+                                Digite um CEP válido
+                            </mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <textarea matInput placeholder="Endereço" formControlName="address" maxlength="200" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="3"></textarea>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <textarea formControlName="addressComplement" matInput placeholder="Complemento" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5" maxlength="500"></textarea>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <button mat-button matStepperPrevious type="button">Voltar</button>
+                <button mat-button type="submit" (click)="saveTreasurer()">Salvar</button>
+            </div>
+        </form>
+    </mat-step>
+</mat-horizontal-stepper>
+>>>>>>> #6141 (mudança) Ajustes na cadastro de tesoureiro

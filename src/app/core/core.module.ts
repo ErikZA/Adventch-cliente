@@ -30,6 +30,7 @@ import { ChangePasswordService } from './components/password/change-password/cha
 import { StrengthMeterComponent } from './components/password/strength-meter/strength-meter.component';
 import { PasswordFeedbackComponent } from './components/password/password-feedback/password-feedback.component';
 import { StrongPasswordDirective } from './components/password/strong-password.directive';
+import { InputMaskDirective } from './components/input-mask.directive';
 
 // const globalRippleConfig: RippleGlobalOptions = {
 //   disabled: false,
@@ -59,6 +60,7 @@ import { StrongPasswordDirective } from './components/password/strong-password.d
     // new Components
     DataTableComponent,
     ChangePasswordComponent,
+    InputMaskDirective,
 
     // modules Generics
     FlexLayoutModule,
@@ -80,7 +82,8 @@ import { StrongPasswordDirective } from './components/password/strong-password.d
     ChangePasswordComponent,
     StrengthMeterComponent,
     PasswordFeedbackComponent,
-    StrongPasswordDirective
+    StrongPasswordDirective,
+    InputMaskDirective
   ],
   providers: [
     LockScreenService,
