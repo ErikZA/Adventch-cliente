@@ -28,10 +28,9 @@ export class TreasurersComponent implements OnInit {
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-
   dataSource: MatTableDataSource<any>;
   selection = new SelectionModel<Element>(true, []);
-  displayedColumns = ["name", "church", "function", "registrationDate", "phone", "email"];
+  displayedColumns = ["select", "name", "church", "function", "registrationDate", "phone", "email"];
 
   subscribe1: Subscription;
   treasurers: Treasurer[] = new Array<Treasurer>();
@@ -102,5 +101,18 @@ export class TreasurersComponent implements OnInit {
     this.paginator._intl.nextPageLabel = "Próxima página";
     this.paginator._intl.previousPageLabel = "Página anterior";
     this.paginator._intl.itemsPerPageLabel = "Itens por página:";
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected() ?
+        this.selection.clear() :
+        this.dataSource.data.forEach(row => this.selection.select(row));
+    console.log(this.selection);
   }
 }

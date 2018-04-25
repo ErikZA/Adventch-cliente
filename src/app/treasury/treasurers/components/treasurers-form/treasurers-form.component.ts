@@ -5,9 +5,10 @@ import { Church } from '../../../models/church';
 import { TreasuryService } from '../../../treasury.service';
 import { Subscription } from 'rxjs';
 import { Treasurer } from '../../../models/treasurer';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatTableDataSource } from '@angular/material';
 import { TreasurersComponent } from '../../treasurers.component';
 import { Router, ActivatedRoute } from '@angular/router';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-treasurers-form',
@@ -127,8 +128,7 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
     };
     if (this.formTreasurer.valid) {
       this.treasuryService.saveTreasurer(treasurer).subscribe(() =>{
-        this.treasureComponent.treasurers = this.treasureComponent.treasurers.filter(p => p.id != treasurer.id);
-        this.treasureComponent.treasurers.push(treasurer);
+        this.treasureComponent.getData();
         this.snackBar.open('Tesoureiro salvo!', 'OK', { duration: 5000 });
         this.formTreasurer.markAsUntouched();
         this.formTreasurer.reset();
