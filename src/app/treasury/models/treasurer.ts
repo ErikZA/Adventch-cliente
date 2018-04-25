@@ -8,8 +8,10 @@ export class Treasurer {
   church: Church;
   name: string;
   function: EFunction;
+  functionName: string; //não mapeado
   gender?: EGender;
   dateRegister?: Date;
+  dateRegisterFormatted: string; //não mapeado
   contact?: string;
   address?: string;
   addressComplement?: string;
@@ -20,5 +22,13 @@ export class Treasurer {
   cpf?: string;
   constructor(
   ) { }
+
+  getFunction(){
+    if(this.function == 1)
+      return "Tesoureiro (a)";
+    if(this.function == 2)
+      return "Tesoureiro (a) Associado (a)";
+    return "Tesoureiro (a) Assistente";
+  }
 }
 

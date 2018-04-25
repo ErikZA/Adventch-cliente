@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { State } from '../../core/components/progress-spinner/models/state';
@@ -11,9 +11,13 @@ import { TreasuryService } from '../treasury.service';
 import { Treasurer } from '../models/treasurer';
 import { Unit } from '../../shared/models/unit.model';
 import { Church } from '../models/church';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav, MatTableDataSource, MatPaginator } from '@angular/material';
 import { TreasurersFormComponent } from './components/treasurers-form/treasurers-form.component';
 import { EFunction } from '../models/Enums';
+import { AuthService } from '../../shared/auth.service';
+import { SelectionModel } from '@angular/cdk/collections';
+import { forEach } from '@angular/router/src/utils/collection';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-treasurer',
@@ -22,41 +26,19 @@ import { EFunction } from '../models/Enums';
 })
 export class TreasurersComponent implements OnInit {
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+
+  dataSource: MatTableDataSource<any>;
+  selection = new SelectionModel<Element>(true, []);
+  displayedColumns = ["name", "church", "function", "registrationDate", "phone", "email"];
 
   subscribe1: Subscription;
   treasurers: Treasurer[] = new Array<Treasurer>();
   treasurer: Treasurer = new Treasurer();
   form: FormGroup;
-  table: Table = {
-    data: ELEMENT_DATA,
-    columns: [{
-      header: 'position',
-      label: 'No.',
-      // size: Size.Small
-    }, {
-      header: 'name',
-      label: 'Name',
-      // size: Size.Large
-    }, {
-      header: 'weight',
-      label: 'Weight',
-      // size: '30%'
-    }, {
-      header: 'symbol',
-      label: 'Symbol',
-      // size: '20%'
-    }],
-    options: {
-      buttonNew: true,
-      // select: false
-    }
-  };
-  state: State = {
-    isLoadingResults: false,
-    isRateLimitReached: false,
-    // messageRateLimitReached: "GitHub's API rate limit has been reached. It will be reset in one minute."
-  };
   constructor(
+    private authService: AuthService,
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
@@ -65,29 +47,28 @@ export class TreasurersComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.table.options.buttonNew = false;
+    moment.locale("pt");
     this.getData();
   }
 
   getData(){
-    this.subscribe1 = this.TrasureService.getTreasurers().subscribe((data: Treasurer[]) =>{
+    var unit = this.authService.getCurrentUnit();
+    this.TrasureService.getTreasurers(unit.id).subscribe((data: Treasurer[]) =>{
       this.treasurers = Object.assign(this.treasurers, data as Treasurer[]);
-    });
-    //return this.http
-    //  .get('values/getTreasurers')
-      //.map((res: String) => {
-      //  const data = res.json() as String;
-
-      //  data.forEach((o: TreasurerModel) => {
-      //    o.items.forEach(i => i.parentObj = o);
-      //  });
-
-       // return data;
-      //})
-    //  .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+      this.treasurers.forEach(
+        item => { 
+          item.functionName = (item.function == 1 ? "Tesoureiro (a)" : item.function == 2 ? "Associado (a)" : "Assistente");
+          if(item.dateRegister != null)
+            item.dateRegisterFormatted = moment(item.dateRegister).fromNow();           
+        }        
+      );
+      this.dataSource = new MatTableDataSource<any>(this.treasurers);
+    })
   }
 
   editTreasurer(treasurer): void{
+    if(treasurer.id == undefined)
+      return;
     this.treasurer = treasurer;
     this.router.navigate([treasurer.id + '/edit'], { relativeTo: this.route });
     this.sidenavRight.open();
@@ -97,78 +78,29 @@ export class TreasurersComponent implements OnInit {
     console.log(treasurers);
   }
 
+
   openSidenav() {
     this.treasurer = new Treasurer();
     this.sidenavRight.open();
   }
-}
 
-export interface Element {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-  id: string;
-}
-
-const ELEMENT_DATA: Treasurer[] = [
-  {
-    id: 'A65XaCfH',
-    church: new Church(), 
-    unit: new Unit(),
-    function: EFunction.AssistantTreasurer,
-    dateRegister: new Date(),
-    dateBirth: new Date(),
-    gender: 1,
-    name: 'teste 123',
-    contact: 'teste',
-    address: 'teste',
-    addressComplement: 'teste',
-    cep: '123213',
-    phone: '123',
-    email: 'teste@teste.com',
-    cpf: '12312312323',
-  },
-  {
-    id: 'FjGulpJa',
-    church: new Church(), 
-    unit: new Unit(),
-    function: EFunction.AssistantTreasurer,
-    dateRegister: new Date(),
-    dateBirth: new Date(),
-    gender: 1,
-    name: 'teste 321',
-    contact: 'teste',
-    address: 'teste',
-    addressComplement: 'teste',
-    cep: '123213',
-    phone: '123',
-    email: 'teste@teste.com',
-    cpf: '12312312323'
-  },
-  {
-    id: '6RxhJ6RF',
-    church: new Church(), 
-    unit: new Unit(),
-    function: EFunction.AssistantTreasurer,
-    dateRegister: new Date(),
-    dateBirth: new Date(),
-    gender: 1,
-    name: 'teste 213',
-    contact: 'teste',
-    address: 'teste',
-    addressComplement: 'teste',
-    cep: '123213',
-    phone: '123',
-    email: 'teste@teste.com',
-    cpf: '12312312323'
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim();
+    filterValue = filterValue.toLowerCase();
+    this.dataSource.filter = filterValue;
   }
-];
 
-ELEMENT_DATA[0].church.id = '08jmxGpV';
-ELEMENT_DATA[1].church.id = '2721ENm8';
-ELEMENT_DATA[2].church.id = '33qBspAF';
+  ngAfterViewInit() {
+    this.configurePaginator();
+    if(this.dataSource != undefined)
+      this.dataSource.paginator = this.paginator;
+  }
 
-ELEMENT_DATA[0].unit.id = 2;
-ELEMENT_DATA[1].unit.id = 2;
-ELEMENT_DATA[2].unit.id = 2;
+  configurePaginator() {
+    this.paginator._intl.firstPageLabel = "Primeira página";
+    this.paginator._intl.lastPageLabel = "Ultima página";
+    this.paginator._intl.nextPageLabel = "Próxima página";
+    this.paginator._intl.previousPageLabel = "Página anterior";
+    this.paginator._intl.itemsPerPageLabel = "Itens por página:";
+  }
+}

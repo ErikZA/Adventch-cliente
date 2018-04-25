@@ -10,6 +10,57 @@
       </a>
     </div>
 
-    <app-data-table (removeEvent)="removeTreasurers($event)" (clickRow)="editTreasurer($event)" [table]="table" [state]="state">
-    </app-data-table>
+    <div class="example-header" fxLayout="row" fxLayoutAlign="center">
+        <div fxFlex="96%" fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-form-field fxFlex>
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Pesquisar">
+            </mat-form-field>
+            <div class="butons">
+                <button mat-icon-button color="warn" *ngIf="selection.selected.length > 0" (click)="removeTreasurers($event)">
+                  <mat-icon aria-label="Adicionar novo" matTooltip="Excluir Selecionado(s)">delete_forever</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div>
+        <mat-table [dataSource]="dataSource">
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
+            <mat-cell *matCellDef="let treasurer" (click)="editTreasurer(treasurer)">{{ treasurer.name }}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef>id</mat-header-cell>
+            <mat-cell *matCellDef="let treasurer">{{ treasurer.id }}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="church">
+            <mat-header-cell *matHeaderCellDef>Igreja</mat-header-cell>
+            <mat-cell *matCellDef="let treasurer" (click)="editTreasurer(treasurer)">{{ treasurer.church.name }}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="function">
+            <mat-header-cell *matHeaderCellDef>Função</mat-header-cell>
+            <mat-cell *matCellDef="let treasurer" (click)="editTreasurer(treasurer)">{{ treasurer.functionName }}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="registrationDate">
+            <mat-header-cell *matHeaderCellDef>Data de registro</mat-header-cell>
+            <mat-cell *matCellDef="let treasurer" (click)="editTreasurer(treasurer)">{{ treasurer.dateRegisterFormatted }}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="phone">
+            <mat-header-cell *matHeaderCellDef>Telefone</mat-header-cell>
+            <mat-cell *matCellDef="let treasurer" (click)="editTreasurer(treasurer)">{{ treasurer.phone }}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="email">
+            <mat-header-cell *matHeaderCellDef>E-mail</mat-header-cell>
+            <mat-cell *matCellDef="let treasurer" (click)="editTreasurer(treasurer)">{{ treasurer.email }}</mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </div>
+    
+    <mat-paginator #paginator [length]="dataSource?.data?.length" [pageSize]="100" [pageSizeOptions]="[25, 50, 100]" [showFirstLastButtons]="true">
+    </mat-paginator>
+
+
+    <!-- <app-data-table (removeEvent)="removeTreasurers($event)" (clickRow)="editTreasurer($event)" [table]="table" [state]="state"> -->
+    <!-- </app-data-table> -->
   </div>

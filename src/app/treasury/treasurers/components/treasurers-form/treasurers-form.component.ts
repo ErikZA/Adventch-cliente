@@ -125,10 +125,8 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
       unitId: this.authService.getCurrentUnit().id,
       id: this.treasureComponent.treasurer.id
     };
-    debugger;
     if (this.formTreasurer.valid) {
       this.treasuryService.saveTreasurer(treasurer).subscribe(() =>{
-        debugger;
         this.treasureComponent.treasurers = this.treasureComponent.treasurers.filter(p => p.id != treasurer.id);
         this.treasureComponent.treasurers.push(treasurer);
         this.snackBar.open('Tesoureiro salvo!', 'OK', { duration: 5000 });
@@ -136,7 +134,7 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
         this.formTreasurer.reset();
       }, err => {
         console.log(err);
-        this.snackBar.open('Erro ao cadastrar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+        this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
       });      
     }
     this.close();

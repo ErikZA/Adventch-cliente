@@ -11,8 +11,8 @@ export class TreasuryService {
     private http: HttpClient
   ) { }
 
-  getTreasurers(): Observable<Treasurer[]> {
-    let url = '/treasury/treasurers/getAllTreasurers/1';
+  getTreasurers(unitId): Observable<Treasurer[]> {
+    let url = '/treasury/treasurers/getAllTreasurers/' + unitId;
     return this.http
       .get(url)
       .map((res: Response) => res)

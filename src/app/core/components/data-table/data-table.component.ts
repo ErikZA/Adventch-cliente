@@ -37,6 +37,7 @@ export class DataTableComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log('ngOnInit dataTable');
     if(this.table != null || this.table != undefined){
       this.dataSource = new MatTableDataSource<any>(this.table.data);
       this.headersColumns = this.table.columns.map(obj => obj.header);
@@ -57,7 +58,7 @@ export class DataTableComponent implements OnInit {
   }
 
   refreshData(){
-    this.dataSource = new MatTableDataSource<any>(this.table.data);
+    this.dataSource = new MatTableDataSource<any>(this.table.data);    
   }
 
   ngAfterViewInit() {
