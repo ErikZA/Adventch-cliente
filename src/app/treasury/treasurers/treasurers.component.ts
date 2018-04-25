@@ -53,9 +53,13 @@ export class TreasurersComponent implements OnInit {
     this.getData();
     this.currentUnit = this.authService.getCurrentUnit();
   }
-
-  teste(){
-    alert('aow');
+  
+  ngDoCheck() {
+    if (this.authService.getCurrentUnit().id !== this.currentUnit.id) {
+      this.cd.detectChanges();
+      this.currentUnit = this.authService.getCurrentUnit();
+      this.getData();
+    }
   }
 
   getData(){
@@ -80,14 +84,6 @@ export class TreasurersComponent implements OnInit {
     this.treasurer = treasurer;
     this.router.navigate([treasurer.id + '/edit'], { relativeTo: this.route });
     this.sidenavRight.open();
-  }
-
-  ngDoCheck() {
-    if (this.authService.getCurrentUnit().id !== this.currentUnit.id) {
-      this.cd.detectChanges();
-      this.currentUnit = this.authService.getCurrentUnit();
-      this.getData();
-    }
   }
 
   removeTreasurers(treasurers) {

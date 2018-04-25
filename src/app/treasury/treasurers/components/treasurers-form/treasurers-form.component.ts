@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, EventEmitter, OnDestroy, ViewChild, Input, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormGroupDirective } from '@angular/forms';
 import { AuthService } from '../../../../shared/auth.service';
 import { Church } from '../../../models/church';
@@ -17,6 +17,8 @@ import * as moment from 'moment';
 })
 
 export class TreasurersFormComponent implements OnInit, OnDestroy {
+  @Input() currentUnit: any;
+
   [x: string]: any;
   formTreasurer: FormGroup;
   formPersonal: FormGroup;
@@ -34,9 +36,11 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
     private router: Router,
-    public treasureComponent: TreasurersComponent) { }
+    public treasureComponent: TreasurersComponent,
+    public cd: ChangeDetectorRef) { }
 
   ngOnInit() {
+    this.currentUnit = this.authService.getCurrentUnit();
     this.initForm();
     this.getChurches();
     this.subscribe2 = this.activatedRoute.params.subscribe((data) => {
@@ -46,6 +50,15 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
       now: new Date(new Date().setFullYear(new Date().getFullYear())),
       min: new Date(new Date().setFullYear(new Date().getFullYear() - 95)),
       max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+    }
+  }
+
+  ngDoCheck() {
+    if (this.authService.getCurrentUnit().id !== this.currentUnit.id) {
+      this.cd.detectChanges();
+      this.currentUnit = this.authService.getCurrentUnit();
+      this.getChurches();
+      this.formTreasurer.reset();
     }
   }
 
@@ -106,16 +119,15 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
 
   getChurches(){
     var unit = this.authService.getCurrentUnit();
-    this.subscribe1 = this.treasuryService.getChurches(unit.id).subscribe((data: Church[]) =>{
+    this.lstChurches = [];
+    this.subscribe1 = this.treasuryService.getChurches(unit.id).subscribe((data: Church[]) =>{      
       this.lstChurches = Object.assign(this.lstChurches, data as Church[]);
     });
   }
 
   close() {
     this.treasurer = new Treasurer();
-    //if (this.treasureComponent && this.treasureComponent.sidenavRight.opened){
-      this.treasureComponent.sidenavRight.close();
-    //}
+    this.treasureComponent.sidenavRight.close();    
     this.router.navigate(['treasury/treasurers']);
   }
 
