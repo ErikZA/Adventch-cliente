@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, Input } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { State } from '../../core/components/progress-spinner/models/state';
@@ -18,6 +18,7 @@ import { AuthService } from '../../shared/auth.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { forEach } from '@angular/router/src/utils/collection';
 import * as moment from 'moment';
+import { LayoutComponent } from '../../shared/layout/layout.component';
 
 @Component({
   selector: 'app-treasurer',
@@ -27,6 +28,7 @@ import * as moment from 'moment';
 export class TreasurersComponent implements OnInit {
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @Input() currentUnit: any;
 
   dataSource: MatTableDataSource<any>;
   selection = new SelectionModel<Element>(true, []);
@@ -42,16 +44,23 @@ export class TreasurersComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private sidenavService: SidenavService,
-    public TrasureService: TreasuryService
+    public TrasureService: TreasuryService,
+    public cd: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
     moment.locale("pt");
     this.getData();
+    this.currentUnit = this.authService.getCurrentUnit();
+  }
+
+  teste(){
+    alert('aow');
   }
 
   getData(){
     var unit = this.authService.getCurrentUnit();
+    this.treasurers = [];
     this.TrasureService.getTreasurers(unit.id).subscribe((data: Treasurer[]) =>{
       this.treasurers = Object.assign(this.treasurers, data as Treasurer[]);
       this.treasurers.forEach(
@@ -71,6 +80,14 @@ export class TreasurersComponent implements OnInit {
     this.treasurer = treasurer;
     this.router.navigate([treasurer.id + '/edit'], { relativeTo: this.route });
     this.sidenavRight.open();
+  }
+
+  ngDoCheck() {
+    if (this.authService.getCurrentUnit().id !== this.currentUnit.id) {
+      this.cd.detectChanges();
+      this.currentUnit = this.authService.getCurrentUnit();
+      this.getData();
+    }
   }
 
   removeTreasurers(treasurers) {

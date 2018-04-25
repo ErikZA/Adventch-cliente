@@ -19,5 +19,4 @@ export class SharedService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
-
 }

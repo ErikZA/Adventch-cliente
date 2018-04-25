@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ViewChild, Output, ChangeDetectorRef } from '@angular/core';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { Router } from '@angular/router';
 
@@ -11,6 +11,7 @@ import { MatDrawer, MatDialog, MatDialogRef } from '@angular/material';
 import { ChangePasswordComponent } from '../../core/components/password/change-password/change-password.component';
 import { SharedService } from '../shared.service';
 import { Unit } from '../models/unit.model';
+import { EventEmitter } from 'events';
 
 @Component({
   selector: 'app-layout',
@@ -36,7 +37,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private router: Router,
     public app: AppComponent,
     public navService: SidenavService,
-    public sharedService: SharedService
+    public sharedService: SharedService,
+    public cd: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -86,5 +88,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
   updateUnit(unit){
     this.unit = unit;
     this.authService.setCurrentUnit(unit);
+    this.cd.detectChanges();
   }
 }
