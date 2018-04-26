@@ -12,6 +12,7 @@ import { ChangePasswordComponent } from '../../core/components/password/change-p
 import { SharedService } from '../shared.service';
 import { Unit } from '../models/unit.model';
 import { EventEmitter } from 'events';
+import { Modules } from '../models/modules.enum';
 
 @Component({
   selector: 'app-layout',
@@ -82,12 +83,34 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if(this.unit == null)
         this.unit = this.lstUnits[0];
       this.authService.setCurrentUnit(this.unit);
-    });    
+    });
+
   }
 
   updateUnit(unit){
     this.unit = unit;
     this.authService.setCurrentUnit(unit);
     this.cd.detectChanges();
+  }
+
+  public isRouteActive(route) {
+    return this.router.url.indexOf(route) != -1;
+  }
+
+  public checkPermission(module: Modules) {
+    /*
+      Verificar se a unidade atual possui permissão para acessar o modulo
+      -unit- pode accesar o -module-
+        return true
+      else
+        return false
+    */
+
+    for (const permission of this.unit.permissions) {
+      if (permission.module == module) {
+        return permission.access;
+      }
+      return false;
+    }
   }
 }

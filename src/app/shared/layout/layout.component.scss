@@ -123,4 +123,17 @@ footer {
 .selected {
     background-color: #CFD8DC !important;
     font-weight: 900;
-  }
+}
+
+.active-sub-menu {
+    background-color: rgba(186, 205, 209, 0.479) !important;
+    color: rgba(34, 73, 99, 0.7) !important;
+}
+
+::ng-deep .mat-expansion-panel .mat-expansion-panel-body {
+    padding: 0 0 16px;
+}
+
+.mat-list-item {
+    padding: 0 18px;
+}
