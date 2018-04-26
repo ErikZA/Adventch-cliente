@@ -19,6 +19,10 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { forEach } from '@angular/router/src/utils/collection';
 import * as moment from 'moment';
 import { LayoutComponent } from '../../shared/layout/layout.component';
+import { ConfirmDialogService } from './../../core/components/confirm-dialog/confirm-dialog.service';
+import { MatSnackBar } from '@angular/material';
+import { debounceTime } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-treasurer',
@@ -45,7 +49,9 @@ export class TreasurersComponent implements OnInit {
     private route: ActivatedRoute,
     private sidenavService: SidenavService,
     public TrasureService: TreasuryService,
-    public cd: ChangeDetectorRef
+    public cd: ChangeDetectorRef,
+    public confirmDialogService: ConfirmDialogService,
+    public snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -53,7 +59,7 @@ export class TreasurersComponent implements OnInit {
     this.getData();
     this.currentUnit = this.authService.getCurrentUnit();
   }
-  
+
   ngDoCheck() {
     if (this.authService.getCurrentUnit().id !== this.currentUnit.id) {
       this.cd.detectChanges();
@@ -68,11 +74,11 @@ export class TreasurersComponent implements OnInit {
     this.TrasureService.getTreasurers(unit.id).subscribe((data: Treasurer[]) =>{
       this.treasurers = Object.assign(this.treasurers, data as Treasurer[]);
       this.treasurers.forEach(
-        item => { 
+        item => {
           item.functionName = (item.function == 1 ? "Tesoureiro (a)" : item.function == 2 ? "Associado (a)" : "Assistente");
           if(item.dateRegister != null)
-            item.dateRegisterFormatted = moment(item.dateRegister).fromNow();           
-        }        
+            item.dateRegisterFormatted = moment(item.dateRegister).fromNow();
+        }
       );
       this.dataSource = new MatTableDataSource<any>(this.treasurers);
     })
@@ -86,8 +92,33 @@ export class TreasurersComponent implements OnInit {
     this.sidenavRight.open();
   }
 
-  removeTreasurers(treasurers) {
-    console.log(treasurers);
+  remove(treasurers) {
+    let response;
+    this.confirmDialogService
+      .confirm("Remover registro(s)", "Você deseja realmente remover este(s) tesoureiro(s)?", "REMOVER")
+      .subscribe(res => {
+        if (res == true) {
+          if (this.removeTreasurers(treasurers)) {
+            this.snackBar.open('Tesoureiros removidos com sucesso!', 'OK', { duration: 3000 });
+          } else {
+            this.snackBar.open('Erro ao excluir tesoureiros, tente novamente!', 'OK', { duration: 3000 });
+          }
+        }
+      });
+  }
+
+  removeTreasurers(treasurers: Treasurer[]): boolean {
+    if (!treasurers) {
+      return false;
+    }
+    let status = false;
+    for (const treasurer of treasurers) {
+      this.TrasureService.deleteTreasurer(treasurer.id).subscribe(success => status = true, err =>{
+        console.log(err);
+        status = false;
+      });
+    }
+    return status;
   }
 
 
@@ -122,6 +153,10 @@ export class TreasurersComponent implements OnInit {
     return numSelected === numRows;
   }
 
+  removeAllSelected() {
+    this.remove(this.selection.selected);
+  }
+
   masterToggle() {
     this.isAllSelected() ?
         this.selection.clear() :
@@ -131,7 +166,7 @@ export class TreasurersComponent implements OnInit {
 
   closeSidenav() {
     this.treasurer = new Treasurer();
-    this.sidenavRight.close();    
+    this.sidenavRight.close();
     this.router.navigate(['treasury/treasurers']);
   }
 }
