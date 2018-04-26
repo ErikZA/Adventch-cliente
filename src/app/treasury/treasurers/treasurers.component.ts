@@ -128,4 +128,10 @@ export class TreasurersComponent implements OnInit {
         this.dataSource.data.forEach(row => this.selection.select(row));
     console.log(this.selection);
   }
+
+  closeSidenav() {
+    this.treasurer = new Treasurer();
+    this.sidenavRight.close();    
+    this.router.navigate(['treasury/treasurers']);
+  }
 }
