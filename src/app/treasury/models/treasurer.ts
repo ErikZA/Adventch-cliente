@@ -4,7 +4,7 @@ import { Church } from "./church";
 
 export class Treasurer {
   id: number;
-  codeId: string;
+  identity: string;
   unit: Unit;
   church: Church;
   name: string;

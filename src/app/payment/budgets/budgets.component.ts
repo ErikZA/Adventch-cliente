@@ -31,7 +31,7 @@ export class BudgetsComponent implements OnInit {
       // size: '20%'
     }],
     options: {
-      buttonNew: true,
+      buttonNew: false,
       // select: false
     }
   };
