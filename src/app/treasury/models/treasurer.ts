@@ -3,7 +3,8 @@ import { Unit } from "../../shared/models/unit.model";
 import { Church } from "./church";
 
 export class Treasurer {
-  id: string;
+  id: number;
+  codeId: string;
   unit: Unit;
   church: Church;
   name: string;

@@ -82,7 +82,7 @@ export class TreasurersComponent implements OnInit {
     if(treasurer.id == undefined)
       return;
     this.treasurer = treasurer;
-    this.router.navigate([treasurer.id + '/edit'], { relativeTo: this.route });
+    this.router.navigate([treasurer.codeId + '/edit'], { relativeTo: this.route });
     this.sidenavRight.open();
   }
 

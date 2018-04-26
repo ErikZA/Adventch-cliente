@@ -136,7 +136,8 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
       ...this.formPersonal.value,
       ...this.formContact.value,
       unitId: this.authService.getCurrentUnit().id,
-      id: this.treasureComponent.treasurer.id
+      id: this.treasureComponent.treasurer.id,
+      codeId: this.treasureComponent.treasurer.codeId
     };
     if (this.formTreasurer.valid) {
       this.treasuryService.saveTreasurer(treasurer).subscribe(() =>{
