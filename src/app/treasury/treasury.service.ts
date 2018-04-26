@@ -36,7 +36,15 @@ export class TreasuryService {
 
   deleteTreasurer(id): Observable<any> {
     return this.http
-      .delete(`/treasury/deleteTreasurer/${id}`)
+      .delete('/treasury/treasurers/deleteTreasurer/' + id)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  deleteTreasurers(ids): Observable<Church[]> {
+    let url = '/treasury/treasurers/deleteTreasurers/\'' + ids + '\'';
+    return this.http
+      .delete(url)
+      .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }

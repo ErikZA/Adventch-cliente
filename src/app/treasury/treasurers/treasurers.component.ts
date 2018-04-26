@@ -48,7 +48,7 @@ export class TreasurersComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private sidenavService: SidenavService,
-    public TrasureService: TreasuryService,
+    public treasureService: TreasuryService,
     public cd: ChangeDetectorRef,
     public confirmDialogService: ConfirmDialogService,
     public snackBar: MatSnackBar
@@ -71,7 +71,7 @@ export class TreasurersComponent implements OnInit {
   getData(){
     var unit = this.authService.getCurrentUnit();
     this.treasurers = [];
-    this.TrasureService.getTreasurers(unit.id).subscribe((data: Treasurer[]) =>{
+    this.treasureService.getTreasurers(unit.id).subscribe((data: Treasurer[]) =>{
       this.treasurers = Object.assign(this.treasurers, data as Treasurer[]);
       this.treasurers.forEach(
         item => {
@@ -81,6 +81,7 @@ export class TreasurersComponent implements OnInit {
         }
       );
       this.dataSource = new MatTableDataSource<any>(this.treasurers);
+      setTimeout(() => this.dataSource.paginator = this.paginator);
     })
   }
 
@@ -98,11 +99,19 @@ export class TreasurersComponent implements OnInit {
       .confirm("Remover registro(s)", "Você deseja realmente remover este(s) tesoureiro(s)?", "REMOVER")
       .subscribe(res => {
         if (res == true) {
-          if (this.removeTreasurers(treasurers)) {
-            this.snackBar.open('Tesoureiros removidos com sucesso!', 'OK', { duration: 3000 });
-          } else {
-            this.snackBar.open('Erro ao excluir tesoureiros, tente novamente!', 'OK', { duration: 3000 });
-          }
+          let status = false;
+          let ids = [];
+          for (const treasurer of treasurers)
+            ids.push(treasurer.id);
+
+          this.treasureService.deleteTreasurers(ids).subscribe(() =>{
+            this.snackBar.open('Tesoureiro(s) removido(s)!', 'OK', { duration: 5000 });
+            this.getData();
+            this.selection.clear();
+          }, err => {
+            console.log(err);
+            this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+          });      
         }
       });
   }
@@ -113,11 +122,12 @@ export class TreasurersComponent implements OnInit {
     }
     let status = false;
     for (const treasurer of treasurers) {
-      this.TrasureService.deleteTreasurer(treasurer.id).subscribe(success => status = true, err =>{
+      this.treasureService.deleteTreasurer(treasurer.id).subscribe(success => status = true, err =>{
         console.log(err);
         status = false;
       });
     }
+    this.getData();
     return status;
   }
 

@@ -145,11 +145,14 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
         this.snackBar.open('Tesoureiro salvo!', 'OK', { duration: 5000 });
         this.formTreasurer.markAsUntouched();
         this.formTreasurer.reset();
+        this.close();
       }, err => {
         console.log(err);
         this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+        this.close();
       });      
+    }else{
+      return;
     }
-    this.close();
   }
 }
