@@ -70,6 +70,7 @@ export class TreasurersComponent implements OnInit {
   }
 
   getData(){
+    this.selection.clear();
     var unit = this.authService.getCurrentUnit();
     this.treasurers = [];
     this.treasureService.getTreasurers(unit.id).subscribe((data: Treasurer[]) =>{
