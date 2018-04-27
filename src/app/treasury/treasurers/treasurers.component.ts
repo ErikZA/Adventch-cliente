@@ -42,6 +42,7 @@ export class TreasurersComponent implements OnInit {
   treasurers: Treasurer[] = new Array<Treasurer>();
   treasurer: Treasurer = new Treasurer();
   form: FormGroup;
+  search: string;
   constructor(
     private authService: AuthService,
     private fb: FormBuilder,
@@ -82,6 +83,7 @@ export class TreasurersComponent implements OnInit {
       );
       this.dataSource = new MatTableDataSource<any>(this.treasurers);
       setTimeout(() => this.dataSource.paginator = this.paginator);
+      this.applyFilter(this.search);
     })
   }
 

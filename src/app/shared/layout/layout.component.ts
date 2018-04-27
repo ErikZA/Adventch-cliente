@@ -105,7 +105,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
       else
         return false
     */
-
+    if(this.unit == undefined)
+      return false;
     for (const permission of this.unit.permissions) {
       if (permission.module == module) {
         return permission.access;

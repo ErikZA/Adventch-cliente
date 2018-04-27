@@ -11,7 +11,7 @@
     <div class="example-header" fxLayout="row" fxLayoutAlign="center">
         <div fxFlex="96%" fxLayout="row" fxLayoutAlign="space-between center">
             <mat-form-field fxFlex>
-                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Pesquisar">
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Pesquisar"  [(ngModel)]="search">
             </mat-form-field>
             <div class="butons">
                 <button mat-icon-button color="warn" *ngIf="selection.selected.length > 0" (click)="removeAllSelected()">
