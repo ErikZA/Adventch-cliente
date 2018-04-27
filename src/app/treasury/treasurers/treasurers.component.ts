@@ -83,7 +83,8 @@ export class TreasurersComponent implements OnInit {
       );
       this.dataSource = new MatTableDataSource<any>(this.treasurers);
       setTimeout(() => this.dataSource.paginator = this.paginator);
-      this.applyFilter(this.search);
+      if(this.search != undefined)
+        this.applyFilter(this.search);
     })
   }
 
