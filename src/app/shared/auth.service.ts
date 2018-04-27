@@ -9,12 +9,14 @@ import 'rxjs/add/operator/retry';
 import { User } from './models/user.model';
 import { environment } from './../../environments/environment';
 import { Unit } from './models/unit.model';
+import { Modules } from './models/modules.enum';
 
 @Injectable()
 export class AuthService {
 
   currentUser = new EventEmitter<User>();
   showApp = new EventEmitter<boolean>();
+  showMenu = new EventEmitter<boolean>();
 
   constructor(
     private http: HttpClient,
@@ -57,6 +59,19 @@ export class AuthService {
       });
   }
 
+  public visibleModule() {
+    let { permissions } = this.getCurrentUnit();
+    for (const permission of permissions) {
+      switch (permission.module) {
+        case Modules.Treasury:
+          return permission.access;
+        default:
+          this.router.navigate(['']);
+          return false;
+      }
+    }
+  }
+
   logoff() {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
@@ -68,11 +83,11 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  setCurrentUnit(unit){    
+  setCurrentUnit(unit){
     localStorage.setItem('currentUnit', JSON.stringify(unit));
   }
 
-  getCurrentUnit(){    
+  getCurrentUnit(){
     let unit: Unit = JSON.parse(localStorage.getItem('currentUnit'));
     return unit;
   }

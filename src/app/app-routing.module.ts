@@ -20,7 +20,10 @@ const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'treasury', redirectTo: 'treasury', pathMatch: 'full' },
   { path: 'payment', redirectTo: 'payment', pathMatch: 'full' },
-  { path: '', redirectTo: 'treasury', pathMatch: 'full' },
+  { path: '', component: LayoutComponent, pathMatch: 'full', canActivate: [AuthGuard], canLoad: [AuthGuard], children:[
+    {path: '', component: DashboardComponent }
+  ]},
+  // { path: '', redirectTo: 'treasury', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent }
 ];
 
