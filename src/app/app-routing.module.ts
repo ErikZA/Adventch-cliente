@@ -18,8 +18,11 @@ import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.co
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'treasury', redirectTo: 'treasury', pathMatch: 'full' },
-  { path: 'payment', redirectTo: 'payment', pathMatch: 'full' },
+  { path: 'tesouraria', redirectTo: 'treasury', pathMatch: 'full' },
+  { path: 'pagamentos', redirectTo: 'payment', pathMatch: 'full' },
+  { path: 'dashboard', component: LayoutComponent, pathMatch: 'full', canActivate: [AuthGuard], canLoad: [AuthGuard], children:[
+    {path: '', component: DashboardComponent }
+  ]},
   { path: '', component: LayoutComponent, pathMatch: 'full', canActivate: [AuthGuard], canLoad: [AuthGuard], children:[
     {path: '', component: DashboardComponent }
   ]},

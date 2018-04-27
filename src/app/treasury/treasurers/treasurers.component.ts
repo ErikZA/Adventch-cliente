@@ -93,7 +93,7 @@ export class TreasurersComponent implements OnInit {
     if(treasurer.id == undefined)
       return;
     this.treasurer = treasurer;
-    this.router.navigate([treasurer.identity + '/edit'], { relativeTo: this.route });
+    this.router.navigate(['editar'], { relativeTo: this.route });
     this.sidenavRight.open();
   }
 
@@ -134,7 +134,6 @@ export class TreasurersComponent implements OnInit {
     this.getData();
     return status;
   }
-
 
   openSidenav() {
     this.treasurer = new Treasurer();
@@ -181,6 +180,6 @@ export class TreasurersComponent implements OnInit {
   closeSidenav() {
     this.treasurer = new Treasurer();
     this.sidenavRight.close();
-    this.router.navigate(['treasury/treasurers']);
+    this.router.navigate(['tesouraria/tesoureiros']);
   }
 }

@@ -11,16 +11,12 @@ import { DashboardComponent } from '../shared/dashboard/dashboard.component';
 import { EmptyPageComponent } from '../shared/empty-page/empty-page.component';
 
 const routes: Routes = [
-   { path: 'payment', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
-      { path: '', component: DashboardComponent },
-      {
-        path: 'budgets', component: BudgetsComponent, children: [
-           { path: 'novo', component: BudgetsDataComponent },
-           { path: ':id/:name', component: BudgetsDataComponent }
-        ]
-      }
-    ]
-  },
+  { path: 'pagamentos', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
+    { path: 'orcamentos', component: BudgetsComponent, children: [
+      { path: 'novo', component: BudgetsDataComponent },
+      { path: ':id/name', component: BudgetsDataComponent }
+    ]}
+  ]}
 ];
 
 @NgModule({

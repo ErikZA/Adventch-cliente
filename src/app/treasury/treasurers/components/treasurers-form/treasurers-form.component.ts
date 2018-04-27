@@ -128,7 +128,7 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
   close() {
     this.treasurer = new Treasurer();
     this.treasureComponent.sidenavRight.close();    
-    this.router.navigate(['treasury/treasurers']);
+    this.router.navigate(['tesouraria/tesoureiros']);
   }
 
   saveTreasurer() {

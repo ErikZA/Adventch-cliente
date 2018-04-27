@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
         if (!user || !user.identifier)
           this.invalidLogin();
         else
-          this.router.navigate(['/payment']);
+          this.router.navigate(['/dashboard']);
       }).catch((err) => {
         if (err.status === 401) {
           this.invalidLogin();

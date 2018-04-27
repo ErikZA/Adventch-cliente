@@ -3,8 +3,8 @@
     <mat-icon>menu</mat-icon>
   </button>
 
-    <img src="../../../../favicon.ico" style="width: 30px; height: 30px; margin-left: 20px;" />
-    <div style="margin-left: 10px;">Adven.Tech</div>
+    <img src="../../../../favicon.ico" style="width: 30px; height: 30px; margin-left: 20px;" [routerLink]="['/']" class="click"/>
+    <div style="margin-left: 10px;" [routerLink]="['/']" class="click">Adven.Tech</div>
 
     <button mat-icon-button [matMenuTriggerFor]="appMenuSoftware" style="margin-left: 10px;">
     <mat-icon>apps</mat-icon>
@@ -52,19 +52,19 @@
     <mat-drawer #sidenav class="sidenav-left mat-elevation-z5" [mode]="isOpen ? 'side' : 'over'" [opened]="isOpen">
         <mat-nav-list id="nav-list-menu" [ngClass]="{'nav-list-mobile': isMobile, 'nav-list-web': !isMobile}">
             <mat-accordion>
-                <mat-expansion-panel [expanded]="isRouteActive('/treasury')" [disabled]="!checkPermission(1)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermission(1)" matTooltipPosition="after">
+                <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!checkPermission(1)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermission(1)" matTooltipPosition="after">
                     <!--Novo Módulo-->
                     <mat-expansion-panel-header class="background-side-nav">
                         <mat-panel-title>Tesouraria</mat-panel-title>
                     </mat-expansion-panel-header>
-                    <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/treasury/treasurers']">Tesoureiros</a>
+                    <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/tesoureiros']">Tesoureiros</a>
                 </mat-expansion-panel>
 
-                <mat-expansion-panel [expanded]="isRouteActive('/payment')" [disabled]="!checkPermission(1)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermission(1)" matTooltipPosition="after">
+                <mat-expansion-panel [expanded]="isRouteActive('/pagamentos')" [disabled]="!checkPermission(1)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermission(1)" matTooltipPosition="after">
                     <mat-expansion-panel-header class="background-side-nav">
                         <mat-panel-title>Pagamentos</mat-panel-title>
                     </mat-expansion-panel-header>
-                    <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/payment/budgets']">Orçamentos</a>
+                    <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/pagamentos/orcamentos']">Orçamentos</a>
                 </mat-expansion-panel>
             </mat-accordion>
         </mat-nav-list>
