@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'tesouraria', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
     { path: 'tesoureiros', component: TreasurersComponent, children: [
       { path: 'novo', component: TreasurersFormComponent },
-      { path: 'editar', component: TreasurersFormComponent }
+      { path: ':idTreasurer/editar', component: TreasurersFormComponent }
     ]}
   ]}
 ];

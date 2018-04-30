@@ -91,6 +91,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.unit = unit;
     this.authService.setCurrentUnit(unit);
     this.cd.detectChanges();
+    if(!this.authService.checkAccess(this.router.url, unit))
+      this.router.navigate(['/']);
   }
 
   public isRouteActive(route) {
