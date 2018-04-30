@@ -56,8 +56,8 @@
                         <mat-list>
                             <h3 mat-subheader style="padding: 0">Gênero</h3>
                             <mat-radio-group formControlName="genderId" name="gender" aria-label="Gênero">
-                                <mat-radio-button value="1" val aria-label="Masculino" style="margin: 0" [checked]="true">Masculino</mat-radio-button>
-                                <mat-radio-button value="2" aria-label="Feminino">Feminino</mat-radio-button>
+                                <mat-radio-button value="1" val aria-label="Masculino" style="margin: 0" [checked]="treasurer == undefined || treasurer.gender == undefined || treasurer.gender == 1">Masculino</mat-radio-button>
+                                <mat-radio-button value="2" aria-label="Feminino" [checked]="treasurer.gender == 2">Feminino</mat-radio-button>
                             </mat-radio-group>
                         </mat-list>
                     </div>

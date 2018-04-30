@@ -66,6 +66,7 @@ export class TreasurersComponent implements OnInit {
       this.cd.detectChanges();
       this.currentUnit = this.authService.getCurrentUnit();
       this.getData();
+      this.closeSidenav();
     }
   }
 
@@ -109,9 +110,9 @@ export class TreasurersComponent implements OnInit {
             ids.push(treasurer.id);
 
           this.treasureService.deleteTreasurers(ids).subscribe(() =>{
-            this.snackBar.open('Tesoureiro(s) removido(s)!', 'OK', { duration: 5000 });
             this.getData();
             this.selection.clear();
+            this.snackBar.open('Tesoureiro(s) removido(s)!', 'OK', { duration: 5000 });
           }, err => {
             console.log(err);
             this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });

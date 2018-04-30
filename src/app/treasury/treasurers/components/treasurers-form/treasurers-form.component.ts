@@ -41,9 +41,11 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.currentUnit = this.authService.getCurrentUnit();
+    this.treasurer.gender = 1;
     this.initForm();
     this.getChurches();
     this.subscribe2 = this.activatedRoute.params.subscribe((data) => {
+      this.treasurer.gender = this.treasureComponent.treasurer.gender;
       this.editTreasurer(this.treasureComponent.treasurer);
     });
     this.dates = {
