@@ -28,7 +28,6 @@ import { EmptyPageComponent } from './shared/empty-page/empty-page.component';
 import { SharedService } from './shared/shared.service';
 
 //modules
-import { PaymentModule } from './payment/payment.module';
 import { TreasuryModule } from './treasury/treasury.module';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -50,7 +49,6 @@ import { TokenInterceptor } from './shared/token.interceptor';
     ReactiveFormsModule,
     HttpClientModule,
     CoreModule,
-    PaymentModule,
     TreasuryModule,
     // deixar AppRouting sempre por último
     AppRouting
@@ -71,9 +69,9 @@ import { TokenInterceptor } from './shared/token.interceptor';
       useClass: TokenInterceptor,
       multi: true
     },
-    { 
-      provide: LOCALE_ID, 
-      useValue: 'pt-BR' 
+    {
+      provide: LOCALE_ID,
+      useValue: 'pt-BR'
     },
     SharedService
   ],

@@ -19,7 +19,6 @@ import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.co
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'tesouraria', redirectTo: 'treasury', pathMatch: 'full' },
-  { path: 'pagamentos', redirectTo: 'payment', pathMatch: 'full' },
   { path: 'dashboard', component: LayoutComponent, pathMatch: 'full', canActivate: [AuthGuard], canLoad: [AuthGuard], children:[
     {path: '', component: DashboardComponent }
   ]},
