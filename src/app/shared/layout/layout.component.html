@@ -5,10 +5,6 @@
 
     <img src="../../../../favicon.ico" style="width: 30px; height: 30px; margin-left: 20px;" [routerLink]="['/']" class="click" />
     <div style="margin-left: 10px;" [routerLink]="['/']" class="click">Adven.tech</div>
-
-    <button mat-icon-button [matMenuTriggerFor]="appMenuSoftware" style="margin-left: 10px;">
-    <mat-icon>apps</mat-icon>
-  </button>
     <mat-menu [overlapTrigger]="false" #appMenuSoftware="matMenu" class="module-menu">
         <div *ngFor="let item of (lstUnits)" style="height: 45px;">
             <mat-list-item>
@@ -19,7 +15,9 @@
         </div>
     </mat-menu>
     <span class="fill-space"></span>
-
+    <button mat-icon-button [matMenuTriggerFor]="appMenuSoftware" style="margin-left: 10px;">
+      <mat-icon>business</mat-icon>
+    </button>
     <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
     <table style="line-height: normal; text-align: right;">
       <tr>
