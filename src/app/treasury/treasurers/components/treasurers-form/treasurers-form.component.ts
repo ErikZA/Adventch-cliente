@@ -40,6 +40,7 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
     public cd: ChangeDetectorRef) { }
 
   ngOnInit() {
+    moment.locale("pt");
     this.currentUnit = this.authService.getCurrentUnit();
     this.treasurer.gender = 1;
     this.initForm();
@@ -122,14 +123,14 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
   getChurches(){
     var unit = this.authService.getCurrentUnit();
     this.lstChurches = [];
-    this.subscribe1 = this.treasuryService.getChurches(unit.id).subscribe((data: Church[]) =>{      
+    this.subscribe1 = this.treasuryService.getChurches(unit.id).subscribe((data: Church[]) =>{
       this.lstChurches = Object.assign(this.lstChurches, data as Church[]);
     });
   }
 
   close() {
     this.treasurer = new Treasurer();
-    this.treasureComponent.sidenavRight.close();    
+    this.treasureComponent.sidenavRight.close();
     this.router.navigate(['tesouraria/tesoureiros']);
   }
 
@@ -152,9 +153,23 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
         console.log(err);
         this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
         this.close();
-      });      
+      });
     }else{
       return;
     }
+  }
+
+  getSelectDateTime() {
+    let date = this.formPersonal.get('dateRegister').value;
+    if (this.dateRegisterValid()) {
+      return moment(date).fromNow();
+    }
+  }
+
+  dateRegisterValid() {
+    if(this.formPersonal.get('dateRegister').value != null && this.formPersonal.get('dateRegister').value != undefined) {
+      return true;
+    }
+    return false;
   }
 }

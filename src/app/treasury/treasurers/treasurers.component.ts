@@ -1,27 +1,19 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, Input } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { State } from '../../core/components/progress-spinner/models/state';
-import { Table } from '../../core/components/data-table/models/table';
-import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { SidenavService } from '../../core/services/sidenav.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { TreasuryService } from '../treasury.service';
 import { Treasurer } from '../models/treasurer';
 import { Unit } from '../../shared/models/unit.model';
 import { Church } from '../models/church';
-import { MatSidenav, MatTableDataSource, MatPaginator } from '@angular/material';
-import { TreasurersFormComponent } from './components/treasurers-form/treasurers-form.component';
+import { MatSidenav } from '@angular/material';
 import { EFunction } from '../models/Enums';
 import { AuthService } from '../../shared/auth.service';
-import { SelectionModel } from '@angular/cdk/collections';
 import { forEach } from '@angular/router/src/utils/collection';
 import * as moment from 'moment';
 import { LayoutComponent } from '../../shared/layout/layout.component';
 import { ConfirmDialogService } from './../../core/components/confirm-dialog/confirm-dialog.service';
 import { MatSnackBar } from '@angular/material';
-import { debounceTime } from 'rxjs/operators';
 
 
 @Component({
@@ -31,24 +23,21 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class TreasurersComponent implements OnInit {
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() currentUnit: any;
 
-  dataSource: MatTableDataSource<any>;
-  selection = new SelectionModel<Element>(true, []);
-  displayedColumns = ["select", "name", "church", "function", "registrationDate", "phone", "email"];
+  searchButton: boolean = false;
+  showList: number = 15;
+  search$ = new Subject<string>();
+  treasurers$: Observable<Treasurer[]>;
 
   subscribe1: Subscription;
   treasurers: Treasurer[] = new Array<Treasurer>();
   treasurer: Treasurer = new Treasurer();
-  form: FormGroup;
-  search: string;
+
   constructor(
     private authService: AuthService,
-    private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private sidenavService: SidenavService,
     public treasureService: TreasuryService,
     public cd: ChangeDetectorRef,
     public confirmDialogService: ConfirmDialogService,
@@ -59,6 +48,9 @@ export class TreasurersComponent implements OnInit {
     moment.locale("pt");
     this.getData();
     this.currentUnit = this.authService.getCurrentUnit();
+    this.search$.subscribe(search => {
+      this.searchTreasurers(search);
+    });
   }
 
   ngDoCheck() {
@@ -70,8 +62,17 @@ export class TreasurersComponent implements OnInit {
     }
   }
 
+  searchTreasurers(search) {
+    if (search === '' || search === undefined || search === null) {
+      this.treasurers$ = Observable.of(this.treasurers);
+    } else {
+      this.treasurers$ = Observable.of(this.treasurers.filter(data => {
+        return data.name.toLowerCase().indexOf(search) !== -1 || data.church.name.toLowerCase().indexOf(search) !== -1 || data.functionName.toLowerCase().indexOf(search) !== -1;
+      }));
+    }
+  }
+
   getData(){
-    this.selection.clear();
     var unit = this.authService.getCurrentUnit();
     this.treasurers = [];
     this.treasureService.getTreasurers(unit.id).subscribe((data: Treasurer[]) =>{
@@ -83,10 +84,7 @@ export class TreasurersComponent implements OnInit {
             item.dateRegisterFormatted = moment(item.dateRegister).fromNow();
         }
       );
-      this.dataSource = new MatTableDataSource<any>(this.treasurers);
-      setTimeout(() => this.dataSource.paginator = this.paginator);
-      if(this.search != undefined)
-        this.applyFilter(this.search);
+      this.treasurers$ = Observable.of(this.treasurers);
     })
   }
 
@@ -111,12 +109,11 @@ export class TreasurersComponent implements OnInit {
 
           this.treasureService.deleteTreasurers(ids).subscribe(() =>{
             this.getData();
-            this.selection.clear();
             this.snackBar.open('Tesoureiro(s) removido(s)!', 'OK', { duration: 5000 });
           }, err => {
             console.log(err);
             this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
-          });      
+          });
         }
       });
   }
@@ -141,46 +138,13 @@ export class TreasurersComponent implements OnInit {
     this.sidenavRight.open();
   }
 
-  applyFilter(filterValue: string) {
-    filterValue = filterValue.trim();
-    filterValue = filterValue.toLowerCase();
-    this.dataSource.filter = filterValue;
-  }
-
-  ngAfterViewInit() {
-    this.configurePaginator();
-    if(this.dataSource != undefined)
-      this.dataSource.paginator = this.paginator;
-  }
-
-  configurePaginator() {
-    this.paginator._intl.firstPageLabel = "Primeira página";
-    this.paginator._intl.lastPageLabel = "Ultima página";
-    this.paginator._intl.nextPageLabel = "Próxima página";
-    this.paginator._intl.previousPageLabel = "Página anterior";
-    this.paginator._intl.itemsPerPageLabel = "Itens por página:";
-  }
-
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  removeAllSelected() {
-    this.remove(this.selection.selected);
-  }
-
-  masterToggle() {
-    this.isAllSelected() ?
-        this.selection.clear() :
-        this.dataSource.data.forEach(row => this.selection.select(row));
-    console.log(this.selection);
-  }
-
   closeSidenav() {
     this.treasurer = new Treasurer();
     this.sidenavRight.close();
     this.router.navigate(['tesouraria/tesoureiros']);
+  }
+
+  onScroll() {
+    this.showList += 15;
   }
 }

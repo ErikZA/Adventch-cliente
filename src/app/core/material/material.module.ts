@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { NativeDateModule, RippleGlobalOptions, MAT_RIPPLE_GLOBAL_OPTIONS } from '@angular/material';
 
 import {
+  MatDividerModule,
   MatStepperModule,
   MatTableModule,
   MatPaginatorModule,
@@ -41,6 +42,7 @@ import {
 
 @NgModule({
   exports: [
+    MatDividerModule,
     MatStepperModule,
     MatTableModule,
     MatPaginatorModule,

@@ -1,7 +1,4 @@
 <div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}" [ngStyle.xs]="{'width.vw': 100}">
-    <button mat-icon-button type="button" matTooltip="Fechar" (click)="close()">
-        <mat-icon>clear</mat-icon>
-    </button>
     <div fxLayout="column" fxLayoutAlign="start" class="container beautiful-scroll-x">
         <mat-horizontal-stepper linear>
             <mat-step label="Pessoal" [stepControl]="formPersonal">
@@ -32,12 +29,16 @@
                             <mat-error *ngIf="formPersonal.get('functionId').hasError('required')">Este campo é obrigatório</mat-error>
                         </mat-form-field>
 
-                        <mat-form-field fxFlexFill>
-                            <input matInput [matDatepicker]="pickerRegistration" placeholder="Data de Registro no Cargo" formControlName="dateRegister" [min]="dates.min" [max]="dates.now">
-                            <mat-datepicker-toggle matSuffix [for]="pickerRegistration"></mat-datepicker-toggle>
-                            <mat-datepicker #pickerRegistration></mat-datepicker>
-                        </mat-form-field>
-
+                        <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="20px">
+                            <mat-form-field fxFlex>
+                                <input matInput [matDatepicker]="pickerRegistration" placeholder="Tempo no Cargo" formControlName="dateRegister" [min]="dates.min" [max]="dates.now">
+                                <mat-datepicker-toggle matSuffix [for]="pickerRegistration"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerRegistration></mat-datepicker>
+                            </mat-form-field>
+                            <div fxFlex *ngIf="dateRegisterValid()">
+                                <div class="text-bold">Tempo no Cargo Estimado: </div>{{ getSelectDateTime() }}
+                            </div>
+                        </div>
                         <mat-form-field fxFlex>
                             <input matInput type="text" formControlName="cpf" placeholder="CPF" mixlength="14" maxlength="14" InputMask="999.999.999-99" pattern="[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}">
                             <mat-error *ngIf="formPersonal.get('cpf').hasError('pattern')">
@@ -84,7 +85,7 @@
                         </mat-form-field>
 
                         <mat-form-field>
-                            <textarea matInput placeholder="Melhor Tipo Contato" formControlName="contact" maxlength="300" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="4"></textarea>
+                            <textarea matInput placeholder="Melhor Tipo de Contato" formControlName="contact" maxlength="300" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="4"></textarea>
                         </mat-form-field>
 
                         <mat-form-field>

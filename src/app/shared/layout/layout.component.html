@@ -5,32 +5,35 @@
 
     <img src="../../../../favicon.ico" style="width: 30px; height: 30px; margin-left: 20px;" [routerLink]="['/']" class="click" />
     <div style="margin-left: 10px;" [routerLink]="['/']" class="click">Adven.tech</div>
-    <mat-menu [overlapTrigger]="false" #appMenuSoftware="matMenu" class="module-menu">
-        <div *ngFor="let item of (lstUnits)" style="height: 45px;">
-            <mat-list-item>
-                <a mat-menu-item (click)="updateUnit(item);" [class.selected]="unit?.id === item.id">
-                    <mat-icon>fiber_manual_record</mat-icon>{{ item.name }}
-                </a>
-            </mat-list-item>
+    <mat-menu [overlapTrigger]="false" #appMenuSoftware="matMenu">
+        <div *ngFor="let item of (lstUnits)">
+            <button mat-menu-item (click)="updateUnit(item);" [class.selected]="unit?.id === item.id" [disabled]="unit?.id === item.id">
+                <mat-icon>fiber_manual_record</mat-icon><span>{{ item.name }}</span>
+            </button>
         </div>
     </mat-menu>
     <span class="fill-space"></span>
-    <button mat-icon-button [matMenuTriggerFor]="appMenuSoftware" style="margin-left: 10px;">
-      <mat-icon>business</mat-icon>
-    </button>
-    <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
-    <table style="line-height: normal; text-align: right;">
-      <tr>
-        <td>
-          {{app.currentUser.name}}
-        </td>
-      </tr>
-    </table>
-  </button>
-    <button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
-    <!--<mat-icon class="mat-36" *ngIf="app.currentUser.photoDate === ''">account_circle</mat-icon>
-        <img class="material-icons mat-36 circle-18" src="{{app.currentUser.photoUrl}}?size=36" *ngIf="app.currentUser.photoDate !== ''">-->
-  </button>
+    <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-button [matMenuTriggerFor]="appMenuSoftware" *ngIf="lstUnits.length > 1">
+            <span fxShow fxHide.xs>{{ unit.name }}</span><mat-icon class="margin-left-10">business</mat-icon>
+        </button>
+        <button mat-button *ngIf="lstUnits.length == 1" disabled style="color:rgb(255, 255, 255);">
+            <span fxShow fxHide.xs>{{ unit.name }}</span><mat-icon class="margin-left-10">business</mat-icon>
+        </button>
+        <button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
+          <!--<mat-icon class="mat-36" *ngIf="app.currentUser.photoDate === ''">account_circle</mat-icon>
+              <img class="material-icons mat-36 circle-18" src="{{app.currentUser.photoUrl}}?size=36" *ngIf="app.currentUser.photoDate !== ''">-->
+        </button>
+        <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
+          <table style="line-height: normal; text-align: right;">
+            <tr>
+              <td>
+                {{ app.currentUser.name }}
+              </td>
+            </tr>
+          </table>
+        </button>
+    </div>
     <mat-menu [overlapTrigger]="false" xPosition="before" #appMenu="matMenu">
         <!-- <button mat-menu-item>
             <mat-icon>person</mat-icon>
@@ -61,18 +64,16 @@
         </mat-nav-list>
     </mat-drawer>
 
-    <div class="example-sidenav-content">
-        <div class="page-container mat-elevation-z4" fxFlex.gt-md="95">
-            <router-outlet></router-outlet>
-            <div [ngStyle]="{'position': 'relative'}">
-                <footer fxLayout="row">
-                    <div fxFlex="155px" class="footer-unit">©FORLOGIC 2004 - {{year}}</div>
-                    <div fxFlex="145px" class="footer-software">
-                        <div style="width: 90px; float: left">Adven.tech</div>
-                        <div style="width: 30px; float: right; text-align: right">v1.0</div>
-                    </div>
-                </footer>
-            </div>
+    <div class="page-container mat-elevation-z4" fxFlex="94%">
+        <router-outlet></router-outlet>
+        <div [ngStyle]="{'position': 'relative'}">
+            <footer fxLayout="row">
+                <div fxFlex="155px" class="footer-unit">©FORLOGIC 2004 - {{year}}</div>
+                <div fxFlex="145px" class="footer-software">
+                    <div style="width: 90px; float: left">Adven.tech</div>
+                    <div style="width: 30px; float: right; text-align: right">v1.0</div>
+                </div>
+            </footer>
         </div>
     </div>
 

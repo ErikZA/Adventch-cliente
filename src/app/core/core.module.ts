@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -47,6 +48,7 @@ import { InputMaskDirective } from './components/input-mask.directive';
     TranslateModule,
 
     FlexLayoutModule,
+    InfiniteScrollModule,
     MaterialModule
   ],
   exports: [
@@ -64,6 +66,7 @@ import { InputMaskDirective } from './components/input-mask.directive';
 
     // modules Generics
     FlexLayoutModule,
+    InfiniteScrollModule,
     MaterialModule,
     FormsModule,
     ReactiveFormsModule

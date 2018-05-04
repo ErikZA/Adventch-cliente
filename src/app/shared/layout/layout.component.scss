@@ -7,7 +7,7 @@
     margin: auto;
     max-height: 200px;
     min-height: calc(100vh - 55px);
-    padding: 16px 16px 70px 16px !important;
+    padding: 16px 16px 0 16px !important;
 }
 
 .mat-expansion-panel:not([class*=mat-elevation-z]) {
@@ -54,10 +54,6 @@
     .mat-expansion-panel-body {
         padding: 0 0 0 25px;
     }
-}
-
-.menu-options {
-    font-size: 10px;
 }
 
 .mat-nav-list {
@@ -138,6 +134,10 @@ footer {
     padding: 0 18px;
 }
 
-.click:hover{
+.click:hover {
     cursor: pointer;
+}
+
+.margin-left-10 {
+    margin-left: 10px;
 }
