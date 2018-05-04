@@ -80,8 +80,10 @@ export class TreasurersComponent implements OnInit {
       this.treasurers.forEach(
         item => {
           item.functionName = (item.function == 1 ? "Tesoureiro (a)" : item.function == 2 ? "Associado (a)" : "Assistente");
-          if(item.dateRegister != null)
-            item.dateRegisterFormatted = moment(item.dateRegister).fromNow();
+          if(item.dateRegister != null){
+            item.dateRegister = new Date(item.dateRegister);
+            item.dateRegisterFormatted = moment(item.dateRegister).fromNow();          
+          }
         }
       );
       this.treasurers$ = Observable.of(this.treasurers);

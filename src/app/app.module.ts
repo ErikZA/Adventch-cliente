@@ -33,6 +33,11 @@ import { TreasuryModule } from './treasury/treasury.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './shared/token.interceptor';
 
+import { registerLocaleData } from '@angular/common';
+import ptBr from '@angular/common/locales/pt';
+registerLocaleData(ptBr)
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -71,7 +76,7 @@ import { TokenInterceptor } from './shared/token.interceptor';
     },
     {
       provide: LOCALE_ID,
-      useValue: 'pt-BR'
+      useValue: 'pt-PT'
     },
     SharedService
   ],

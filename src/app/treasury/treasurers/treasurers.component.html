@@ -84,7 +84,7 @@
                                     <div fxLayout="column" fxFlex matLine>
                                         <span class="text-bold">Tempo no Cargo: </span>
                                         <p *ngIf="treasurer.dateRegister != null && treasurer.dateRegister != undefined; else dateIsNull">
-                                            {{ treasurer.dateRegister }} {{ " - Aproximadamente " + treasurer.dateRegisterFormatted }}
+                                            {{ treasurer.dateRegister | date: "dd/MM/yyyy" }} {{ " - Aproximadamente " + treasurer.dateRegisterFormatted }}
                                         </p>
                                         <ng-template #dateIsNull>
                                             <p>Não Informado</p>
