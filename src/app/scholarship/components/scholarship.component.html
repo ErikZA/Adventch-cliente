@@ -1,6 +1,6 @@
 <div [formGroup]="formDashboard">
 <mat-form-field>                         
-    <mat-select placeholder="Escola" formControlName="school" required [(ngModel)]="school">
+    <mat-select placeholder="Escola" formControlName="school" required [(ngModel)]="scholarshipService.schoolSelected">
         <mat-option *ngIf="authService.getCurrentUser().idSchool == 0" value="-1">[Todas]</mat-option>
         <mat-option *ngFor="let s of schools" [value]="s.id">
             ({{ s.id }}) {{ s.name }}

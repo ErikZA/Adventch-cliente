@@ -4,11 +4,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { ScholarshipComponent } from './components/scholarship.component';
 import { AuthGuard } from '../shared/auth.guard';
 import { LayoutComponent } from '../shared/layout/layout.component';
+import { ProcessDataComponent } from './components/process-data/process-data.component';
 
 const routes: Routes = [
   { path: 'bolsas', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
-    { path: 'dashboard', component: ScholarshipComponent },
-    { path: 'processos', component: ScholarshipComponent }
+    { path: 'processos', component: ProcessDataComponent },
+    { path: 'dashboard', component: ScholarshipComponent }
   ]}
 ];
 

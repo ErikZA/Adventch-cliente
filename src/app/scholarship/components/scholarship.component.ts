@@ -17,7 +17,6 @@ export class ScholarshipComponent implements OnInit {
   schools$: Observable<School[]>;
   schools: School[] = new Array<School>();
   formDashboard: FormGroup;
-  school = '-1';
 
   
   constructor(
@@ -47,15 +46,14 @@ export class ScholarshipComponent implements OnInit {
       if(idSchool == 0){
         this.schools = Object.assign(this.schools, data as School[]);
         this.schools$ = Observable.of(this.schools);
-        this.school = '-1';
+        this.scholarshipService.schoolSelected = '-1';
       }else{
         var lst = Object.assign(this.schools, data as School[]);
         this.schools = [];
         this.schools.push(lst.find(f => f.id == idSchool));
         this.schools$ = Observable.of(this.schools);
-        this.school = idSchool.toString();
+        this.scholarshipService.schoolSelected = idSchool.toString();
       }
     });
   }
-
 }

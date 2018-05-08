@@ -6,6 +6,7 @@ import { ScholarshipComponent } from './components/scholarship.component';
 import { ScholarshipRoutingModule } from './scholarship-routing.module';
 import { MatCardModule, MatGridListModule } from '@angular/material';
 import { ScholarshipService } from './scholarship.service';
+import { ProcessDataComponent } from './components/process-data/process-data.component';
 
 @NgModule({
   imports: [
@@ -15,8 +16,8 @@ import { ScholarshipService } from './scholarship.service';
     ScholarshipRoutingModule
   ],
   providers:[
-    ScholarshipService    
+    ScholarshipService
   ],
-  declarations: [ScholarshipComponent]
+  declarations: [ScholarshipComponent, ProcessDataComponent]
 })
 export class ScholarshipModule { }
