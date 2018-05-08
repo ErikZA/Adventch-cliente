@@ -51,16 +51,24 @@ export class TreasurersComponent implements OnInit {
     this.search$.subscribe(search => {
       this.searchTreasurers(search);
     });
+    this.subscribe1 = this.authService.currentUnit.subscribe(() => {
+      this.getData();
+      this.closeSidenav();
+    });
   }
 
-  ngDoCheck() {
+  ngOnDestroy() {
+    this.subscribe1.unsubscribe();
+  }
+
+  /*ngDoCheck() {
     if (this.authService.getCurrentUnit().id !== this.currentUnit.id) {
       this.cd.detectChanges();
       this.currentUnit = this.authService.getCurrentUnit();
       this.getData();
       this.closeSidenav();
     }
-  }
+  }*/
 
   searchTreasurers(search) {
     if (search === '' || search === undefined || search === null) {

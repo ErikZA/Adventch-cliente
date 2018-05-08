@@ -4,6 +4,7 @@ export class User {
   firstName: string;
   email: string;
   isSysAdmin: number;
+  isScholarship: boolean;
 
   constructor() { }
 }

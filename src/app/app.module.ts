@@ -35,6 +35,7 @@ import { TokenInterceptor } from './shared/token.interceptor';
 
 import { registerLocaleData } from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
+import { ScholarshipModule } from './scholarship/scholarship.module';
 registerLocaleData(ptBr)
 
 
@@ -55,6 +56,7 @@ registerLocaleData(ptBr)
     HttpClientModule,
     CoreModule,
     TreasuryModule,
+    ScholarshipModule,
     // deixar AppRouting sempre por último
     AppRouting
   ],

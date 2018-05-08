@@ -17,6 +17,7 @@ export class AuthService {
   currentUser = new EventEmitter<User>();
   showApp = new EventEmitter<boolean>();
   showMenu = new EventEmitter<boolean>();
+  currentUnit = new EventEmitter<Unit>();
 
   constructor(
     private http: HttpClient,
@@ -85,6 +86,7 @@ export class AuthService {
 
   setCurrentUnit(unit){
     localStorage.setItem('currentUnit', JSON.stringify(unit));
+    this.currentUnit.emit();
   }
 
   getCurrentUnit(){
@@ -92,9 +94,17 @@ export class AuthService {
     return unit;
   }
 
+  getCurrentUser(){    
+    let user: User = JSON.parse(localStorage.getItem('currentUser'));
+    return user;
+  }
+
   checkPermission(module: Modules, unit: Unit) {
     if(module == Modules.Dashboard)
         return true;
+
+    if(module == Modules.Scholarship)
+      return this.getCurrentUser().isScholarship;
 
     if(unit == undefined || module == undefined)
       return false;
@@ -109,6 +119,8 @@ export class AuthService {
   getModule(url: String){
     if(url.toLowerCase().match("tesouraria"))
         return Modules.Treasury;
+    if(url.toLowerCase().match("bolsas"))
+      return Modules.Scholarship;
     if(url == "/")
         return Modules.Dashboard;
     return undefined;

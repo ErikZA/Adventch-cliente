@@ -116,4 +116,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
       return false;
     }
   }
+
+  public checkPermissionScholarship(){
+    return this.authService.getCurrentUser().isScholarship;
+  }
 }

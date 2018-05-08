@@ -1,0 +1,48 @@
+<mat-grid-list cols="{{ columns }}" rowHeight="2:1" (window:resize)="onResize($event)">
+  <mat-grid-tile>
+    <mat-card  class="process process-total">
+      <br/>
+      <p class="process-count process-total">10</p>
+      <p class="process-description">Processos</p>
+      <br/>
+    </mat-card>
+  </mat-grid-tile>
+  
+  <mat-grid-tile>
+    <mat-card  class="process process-analyse">
+      <br/>
+      <p class="process-count process-analyse">2</p>
+      <p class="process-description">Em Análise (20%)</p>
+      <br/>
+    </mat-card>
+  </mat-grid-tile>
+  
+  <mat-grid-tile>
+    <mat-card  class="process process-pendency">
+      <br/>
+      <p class="process-count process-pendency">3</p>
+      <p class="process-description">Pendência (30%)</p>
+      <br/>
+    </mat-card>
+  </mat-grid-tile>
+  
+  <mat-grid-tile>
+    <mat-card  class="process process-waiting">
+      <br/>
+      <p class="process-count process-waiting">3</p>
+      <p class="process-description">Aguardando vaga (30%)</p>
+      <br/>
+    </mat-card>
+  </mat-grid-tile>
+  
+  <mat-grid-tile>
+    <mat-card  class="process process-rejected">
+      <br/>
+      <p class="process-count process-rejected">2</p>
+      <p class="process-description">Indeferido (20%)</p>
+      <br/>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
+<br/>
+<br/>

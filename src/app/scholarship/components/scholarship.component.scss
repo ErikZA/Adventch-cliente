@@ -1,0 +1,42 @@
+.process {
+    color: #fff; 
+    width: calc(((90% - 0.8px) * 1) + 0px);
+    padding: 10px 0px;
+    text-align: center;
+}
+
+.process:hover{
+    cursor: pointer;
+}
+
+.process-total{
+    background-color: #03a9f4!important;
+}
+
+.process-analyse{
+    background-color: #76d275!important;
+}
+
+.process-pendency{
+    background-color: #f44336!important;
+}
+
+.process-waiting{
+    background-color: #ff9800!important;
+}
+
+.process-rejected{
+    background-color: #607d8b!important;
+}
+
+.process-count{
+    font-weight: 500;
+    font-size: 45px;   
+    margin: 0;
+}
+
+.process-description{
+    font-size: 15px;
+    font-weight: 200;
+    margin: 0;
+}
