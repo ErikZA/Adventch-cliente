@@ -26,4 +26,11 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
+  getChildrenStudents(responsableId): Observable<Responsible[]> {
+    let url = '/scholarship/process/getAllResponsibles/' + responsableId;
+    return this.http
+      .get(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
 }
