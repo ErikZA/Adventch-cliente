@@ -26,6 +26,7 @@
         "@angular/platform-server": "^5.2.9",
         "@angular/router": "^5.2.9",
         "@angular/tsc-wrapped": "^4.4.6",
+        "@material/button": "^0.35.0",
         "@ngx-translate/core": "^10.0.1",
         "@ngx-translate/http-loader": "^3.0.1",
         "angular-in-memory-web-api": "^0.6.0",

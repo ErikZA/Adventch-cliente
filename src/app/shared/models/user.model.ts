@@ -5,6 +5,7 @@ export class User {
   email: string;
   isSysAdmin: number;
   isScholarship: boolean;
+  idSchool: number;
 
   constructor() { }
 }
