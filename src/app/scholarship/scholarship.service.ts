@@ -67,4 +67,18 @@ export class ScholarshipService {
       .post(url, processPendency)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+
+  updateToStatus(idProcess, idStatus, description){
+    let url = '/scholarship/Process/changeStatus/';    
+    let process = {
+      id: idProcess,
+      status: idStatus,
+      description: description,
+      user:this.auth.getCurrentUser().identifier,
+    };
+    return this.http
+      .post(url, process)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+
+  }
 }

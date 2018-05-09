@@ -9,7 +9,7 @@ import { Responsible } from '../../models/responsible';
 import { ScholarshipService } from '../../scholarship.service';
 import { ScholarshipComponent } from '../scholarship.component';
 import { AuthService } from '../../../shared/auth.service';
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog, MatSnackBar } from '@angular/material';
 import { PendencyComponent } from '../pendency/pendency.component';
 
 @Component({
@@ -31,7 +31,8 @@ export class ProcessDataComponent implements OnInit {
   constructor(    
     public scholarshipService: ScholarshipService,
     public authService: AuthService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -96,8 +97,13 @@ export class ProcessDataComponent implements OnInit {
     this.showList += 15;
   }
 
-  toWaiting(process){
-
+  toWaiting(p){
+    this.scholarshipService.updateToStatus(p[0].id, 3, 'Iniciando processo').subscribe(() =>{
+      p[0].status = 2;
+      this.updateProcess(p[0]);
+    }, err => {
+      this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+    });
   }
 
   toPendency(process){ 
