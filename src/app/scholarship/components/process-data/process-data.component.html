@@ -70,6 +70,7 @@
                                         <span class="text-bold" class="details-title"><b>Telefone: </b>{{ process.student.responsible.phone }}</span>
                                         <br/> -->
                                         <span *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }}</span>
+                                        <span *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title"><b>Matrícula: </b> até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</span>
                                     </div>
                                 </mat-list-item>
                             </mat-list>

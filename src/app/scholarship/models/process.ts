@@ -15,5 +15,6 @@ export class Process {
   status: EStatus;
   statusString: string;
   pendency: string;
+  dateRegistration?: Date;
   constructor() { }
 }

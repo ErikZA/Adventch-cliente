@@ -46,7 +46,7 @@ export class PendencyComponent implements OnInit {
         this.cancel()
       }, err => {
         console.log(err);
-        this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+        this.snackBar.open('Erro ao salvar pendência, tente novamente.', 'OK', { duration: 5000 });
         this.cancel();
       });
     }else{

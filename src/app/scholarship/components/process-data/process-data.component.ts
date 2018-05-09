@@ -11,6 +11,7 @@ import { ScholarshipComponent } from '../scholarship.component';
 import { AuthService } from '../../../shared/auth.service';
 import { MatDialogRef, MatDialog, MatSnackBar } from '@angular/material';
 import { PendencyComponent } from '../pendency/pendency.component';
+import { VacancyComponent } from '../vacancy/vacancy.component';
 
 @Component({
   selector: 'app-process-data',
@@ -27,6 +28,7 @@ export class ProcessDataComponent implements OnInit {
   processes$: Observable<Process[]>;
   
   dialogRef: MatDialogRef<PendencyComponent>;
+  dialogRef2: MatDialogRef<VacancyComponent>;
 
   constructor(    
     public scholarshipService: ScholarshipService,
@@ -98,7 +100,7 @@ export class ProcessDataComponent implements OnInit {
   }
 
   toWaiting(p){
-    this.scholarshipService.updateToStatus(p[0].id, 3, 'Iniciando processo').subscribe(() =>{
+    this.scholarshipService.updateToStatus(p[0].id, 2, 'Iniciado').subscribe(() =>{
       p[0].status = 2;
       this.updateProcess(p[0]);
     }, err => {
@@ -122,7 +124,25 @@ export class ProcessDataComponent implements OnInit {
 
   }
 
-  toApprove(process){
+  toApprove(p){
+    if(p[0].status == 2 || p[0].status == 3){
+      this.scholarshipService.updateToStatus(p[0].id, 4, 'Aguardando vaga').subscribe(() =>{
+        p[0].status = 4;
+        this.updateProcess(p[0]);
+      }, err => {
+        this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+      });
+    }else{
+      this.scholarshipService.updateProcess(p[0]);
+      this.dialogRef2 = this.dialog.open(VacancyComponent, {
+        width: '400px'
+      });
+      this.dialogRef2.afterClosed().subscribe(result => {
+        this.updateProcess(this.scholarshipService.processSelected);
+        if (!result) 
+          return;
+      });     
+    }
 
   }
 

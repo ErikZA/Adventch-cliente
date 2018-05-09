@@ -8,6 +8,7 @@ import { MatCardModule, MatGridListModule } from '@angular/material';
 import { ScholarshipService } from './scholarship.service';
 import { ProcessDataComponent } from './components/process-data/process-data.component';
 import { PendencyComponent } from './components/pendency/pendency.component';
+import { VacancyComponent } from './components/vacancy/vacancy.component';
 
 @NgModule({
   imports: [
@@ -22,10 +23,12 @@ import { PendencyComponent } from './components/pendency/pendency.component';
   declarations: [
     ScholarshipComponent, 
     ProcessDataComponent, 
-    PendencyComponent
+    PendencyComponent, 
+    VacancyComponent
   ],
   entryComponents: [
-    PendencyComponent
+    PendencyComponent, 
+    VacancyComponent
   ]
 })
 export class ScholarshipModule { }

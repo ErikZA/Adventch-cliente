@@ -59,7 +59,9 @@ export class ScholarshipService {
     let processPendency = {
       id: this.processSelected[0].id,
       pendency: pendency,
-      user: this.auth.getCurrentUser().identifier
+      user: this.auth.getCurrentUser().identifier,
+      status: 3,
+      description: 'Adicionando pendência'
     };
     this.processSelected[0].pendency = pendency;
     this.processSelected[0].status = 3;
@@ -74,11 +76,27 @@ export class ScholarshipService {
       id: idProcess,
       status: idStatus,
       description: description,
-      user:this.auth.getCurrentUser().identifier,
+      user: this.auth.getCurrentUser().identifier,
     };
     return this.http
       .post(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
 
+  }
+
+  saveVacancy(dateRegistration, idStatus, description){
+    let url = '/scholarship/Process/saveVacancy/';    
+    let process = {
+      id: this.processSelected.id,
+      status: idStatus,
+      description: description,
+      dateRegistration: dateRegistration,
+      user: this.auth.getCurrentUser().identifier
+    }
+    this.processSelected.status = idStatus;
+    this.processSelected.dateRegistration = dateRegistration;
+    return this.http
+      .post(url, process)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }
