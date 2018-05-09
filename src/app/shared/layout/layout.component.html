@@ -65,7 +65,7 @@
                 <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!checkPermissionScholarship()" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermissionScholarship()" matTooltipPosition="after">
                     <!--Novo Módulo-->
                     <mat-expansion-panel-header class="background-side-nav">
-                        <mat-panel-title [routerLink]="['/bolsas/dashboard']">Bolsas</mat-panel-title>
+                        <mat-panel-title [routerLink]="['/bolsas/dashboard']">Bolsas de Estudo</mat-panel-title>
                     </mat-expansion-panel-header>
                     <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/bolsas/processos']">Processos</a>
                     <button mat-button type="button" class="new-process" [disabled]="scholarshipService.schoolSelected == '-1'" [class.new-process-disabled]="scholarshipService.schoolSelected == '-1'">Novo Processo</button>
