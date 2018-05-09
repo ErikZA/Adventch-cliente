@@ -13,7 +13,7 @@ import { AuthService } from '../../shared/auth.service';
 })
 export class ScholarshipComponent implements OnInit {
 
-  columns: any = 5;
+  columns: any = 4;
   schools$: Observable<School[]>;
   schools: School[] = new Array<School>();
   formDashboard: FormGroup;
@@ -27,14 +27,14 @@ export class ScholarshipComponent implements OnInit {
   ngOnInit() {
     this.formDashboard = new FormGroup({
       school: new FormControl()
-   });
+    });
     this.getSchools();
   }
 
   onResize(event) {
     const element = event.target.innerWidth;
     if(element > 750)
-      this.columns = 5
+      this.columns = 4
     else
       this.columns = 1
   }
@@ -46,14 +46,20 @@ export class ScholarshipComponent implements OnInit {
       if(idSchool == 0){
         this.schools = Object.assign(this.schools, data as School[]);
         this.schools$ = Observable.of(this.schools);
-        this.scholarshipService.schoolSelected = '-1';
+        this.scholarshipService.updateSchool('-1');
       }else{
         var lst = Object.assign(this.schools, data as School[]);
         this.schools = [];
         this.schools.push(lst.find(f => f.id == idSchool));
         this.schools$ = Observable.of(this.schools);
-        this.scholarshipService.schoolSelected = idSchool.toString();
+        this.scholarshipService.updateSchool(idSchool.toString());        
+        //this.scholarshipService.schoolSelected = ;
       }
     });
+  }
+  compareIds(id1: any, id2: any): boolean {
+    const a1 = id1;
+    const a2 = id2;
+    return a1 == a2;
   }
 }

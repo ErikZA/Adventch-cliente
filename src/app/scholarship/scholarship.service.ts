@@ -13,6 +13,10 @@ export class ScholarshipService {
     private http: HttpClient
   ) { }
 
+  updateSchool(id){
+    this.schoolSelected = id;
+  }
+
   getSchools(): Observable<School[]> {
     let url = '/scholarship/Process/getAllSchools/';
     return this.http
