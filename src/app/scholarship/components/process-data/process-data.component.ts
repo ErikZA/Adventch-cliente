@@ -9,6 +9,8 @@ import { Responsible } from '../../models/responsible';
 import { ScholarshipService } from '../../scholarship.service';
 import { ScholarshipComponent } from '../scholarship.component';
 import { AuthService } from '../../../shared/auth.service';
+import { MatDialogRef, MatDialog } from '@angular/material';
+import { PendencyComponent } from '../pendency/pendency.component';
 
 @Component({
   selector: 'app-process-data',
@@ -23,10 +25,13 @@ export class ProcessDataComponent implements OnInit {
 
   processes: Process[] = new Array<Process>();
   processes$: Observable<Process[]>;
+  
+  dialogRef: MatDialogRef<PendencyComponent>;
 
   constructor(    
     public scholarshipService: ScholarshipService,
-    public authService: AuthService
+    public authService: AuthService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -95,8 +100,16 @@ export class ProcessDataComponent implements OnInit {
 
   }
 
-  toPendency(process){
-
+  toPendency(process){ 
+    this.scholarshipService.updateProcess(process);
+    this.dialogRef = this.dialog.open(PendencyComponent, {
+      width: '70%'
+    });
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.updateProcess(this.scholarshipService.processSelected[0]);
+      if (!result) 
+        return;
+    });
   }
 
   toReject(process){
@@ -105,5 +118,12 @@ export class ProcessDataComponent implements OnInit {
 
   toApprove(process){
 
+  }
+
+  updateProcess(newProcess){
+    var index = this.processes.findIndex(f => f.id == newProcess.id);
+    //this.processes.splice(index, 1);  
+    newProcess.statusString = this.getStatusToString(newProcess.status);
+    this.processes[index] = newProcess;
   }
 }

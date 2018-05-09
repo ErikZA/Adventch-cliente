@@ -69,15 +69,15 @@
                                         <span class="text-bold" class="details-title"><b>E-mail: </b>{{ process.student.responsible.email }}</span>
                                         <span class="text-bold" class="details-title"><b>Telefone: </b>{{ process.student.responsible.phone }}</span>
                                         <br/> -->
-                                        <span *ngIf="process.pendency != null" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }}</span>
+                                        <span *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }}</span>
                                     </div>
                                 </mat-list-item>
                             </mat-list>
                             <mat-action-row>
                                 <button *ngIf="process.status == 1" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="toWaiting([process])">INICIAR</button>
-                                <button *ngIf="process.status == 2 || process.status == 3" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency([process])">PENDÊNCIA</button>
-                                <button *ngIf="process.status == 2 || process.status == 3 || process.status == 4" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" (click)="toReject([process])">INDEFERIR</button>
-                                <button *ngIf="process.status == 2 || process.status == 3 || process.status == 4" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove([process])">APROVAR</button>
+                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3)" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency([process])">PENDÊNCIA</button>
+                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3 || process.status == 4)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" (click)="toReject([process])">INDEFERIR</button>
+                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3 || process.status == 4)" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove([process])">APROVAR</button>
                                 <button *ngIf="process.status == 1" mat-button color="primary" matTooltip="Editar" (click)="toWaiting([process])">EDITAR</button>
                             </mat-action-row>
                         </mat-expansion-panel>

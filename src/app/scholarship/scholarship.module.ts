@@ -7,6 +7,7 @@ import { ScholarshipRoutingModule } from './scholarship-routing.module';
 import { MatCardModule, MatGridListModule } from '@angular/material';
 import { ScholarshipService } from './scholarship.service';
 import { ProcessDataComponent } from './components/process-data/process-data.component';
+import { PendencyComponent } from './components/pendency/pendency.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,13 @@ import { ProcessDataComponent } from './components/process-data/process-data.com
   providers:[
     ScholarshipService
   ],
-  declarations: [ScholarshipComponent, ProcessDataComponent]
+  declarations: [
+    ScholarshipComponent, 
+    ProcessDataComponent, 
+    PendencyComponent
+  ],
+  entryComponents: [
+    PendencyComponent
+  ]
 })
 export class ScholarshipModule { }
