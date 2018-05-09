@@ -34,7 +34,7 @@ export class PendencyComponent implements OnInit {
 
   checkPendencies(){
     this.formPendency.setValue({
-      pendency: this.scholarshipService.processSelected[0].pendency      
+      pendency: this.scholarshipService.processSelected.pendency      
     });
   }
 

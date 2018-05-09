@@ -57,14 +57,14 @@ export class ScholarshipService {
   savePendency(pendency): Observable<Process> {
     let url = '/scholarship/Process/savePendency/';    
     let processPendency = {
-      id: this.processSelected[0].id,
+      id: this.processSelected.id,
       pendency: pendency,
       user: this.auth.getCurrentUser().identifier,
       status: 3,
       description: 'Adicionando pendência'
     };
-    this.processSelected[0].pendency = pendency;
-    this.processSelected[0].status = 3;
+    this.processSelected.pendency = pendency;
+    this.processSelected.status = 3;
     return this.http
       .post(url, processPendency)
       .catch((error: any) => Observable.throw(error || 'Server error'));

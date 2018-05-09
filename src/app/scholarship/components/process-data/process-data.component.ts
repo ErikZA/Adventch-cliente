@@ -108,13 +108,13 @@ export class ProcessDataComponent implements OnInit {
     });
   }
 
-  toPendency(process){ 
-    this.scholarshipService.updateProcess(process);
+  toPendency(p){ 
+    this.scholarshipService.updateProcess(p[0]);
     this.dialogRef = this.dialog.open(PendencyComponent, {
       width: '70%'
     });
     this.dialogRef.afterClosed().subscribe(result => {
-      this.updateProcess(this.scholarshipService.processSelected[0]);
+      this.updateProcess(this.scholarshipService.processSelected);
       if (!result) 
         return;
     });
