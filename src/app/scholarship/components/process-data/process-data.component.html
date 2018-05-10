@@ -71,13 +71,21 @@
                                         <br/> -->
                                         <span *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }}</span>
                                         <span *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title"><b>Matrícula: </b> até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</span>
+                                        <span *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title"><b>{{ process.motiveReject }}: </b>{{ getMotiveToReject(process.motiveReject) }}</span>
                                     </div>
                                 </mat-list-item>
                             </mat-list>
                             <mat-action-row>
                                 <button *ngIf="process.status == 1" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="toWaiting([process])">INICIAR</button>
                                 <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3)" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency([process])">PENDÊNCIA</button>
-                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3 || process.status == 4)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" (click)="toReject([process])">INDEFERIR</button>
+                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3 || process.status == 4)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu"><mat-icon>list</mat-icon> INDEFERIR</button>
+                                <mat-menu #menu="matMenu">
+                                    <button (click)="toReject([process], 1)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.">Acadêmico</button>
+                                    <button (click)="toReject([process], 2)" mat-menu-item matTooltip="Indeferido em virtude de pendências junto ao setor financeiro.">Financeiro</button>
+                                    <button (click)="toReject([process], 3)" mat-menu-item matTooltip="Indeferido em virtude da renda familiar não se enquadrar no perfil de carência apropriado à avaliação correspondente.">Renda</button>
+                                    <button (click)="toReject([process], 4)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos disciplinares levados em conta para o indeferimento.">Disciplinar</button>
+                                    <button (click)="toReject([process], 5)" mat-menu-item matTooltip="Indeferido pela apresentação da documentação inconsistente à análise correspondente.">Documentação</button>
+                                  </mat-menu>
                                 <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3 || process.status == 4)" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove([process])">APROVAR</button>
                                 <button *ngIf="process.status == 1" mat-button color="primary" matTooltip="Editar" (click)="toWaiting([process])">EDITAR</button>
                             </mat-action-row>

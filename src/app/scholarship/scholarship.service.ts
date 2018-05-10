@@ -99,4 +99,19 @@ export class ScholarshipService {
       .post(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+
+  saveReject(idProcess, idStatus, description, motive){
+    let url = '/scholarship/Process/saveReject/';    
+    let process = {
+      id: idProcess,
+      status: idStatus,
+      description: description,
+      motive: motive,
+      user: this.auth.getCurrentUser().identifier,
+    };
+    return this.http
+      .post(url, process)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+
+  }
 }

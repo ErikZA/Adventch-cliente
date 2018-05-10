@@ -104,7 +104,7 @@ export class ProcessDataComponent implements OnInit {
       p[0].status = 2;
       this.updateProcess(p[0]);
     }, err => {
-      this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+      this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
     });
   }
 
@@ -120,8 +120,38 @@ export class ProcessDataComponent implements OnInit {
     });
   }
 
-  toReject(process){
+  toReject(p, idMotive){
+    let motive = '';
+    if(idMotive == 1)
+      motive = 'Acadêmico';
+    else if (idMotive == 2)
+      motive = 'Financeiro';
+    else if(idMotive == 3)
+      motive = 'Renda';
+    else if(idMotive == 4)
+      motive = 'Disciplinar';
+    else 
+      motive = 'Documentação';
+     
+    this.scholarshipService.saveReject(p[0].id, 7, 'Indeferido', motive).subscribe(() =>{
+        p[0].status = 7;
+        p[0].motiveReject = motive;
+        this.updateProcess(p[0]);
+      }, err => {
+        this.snackBar.open('Erro ao indeferir, tente novamente.', 'OK', { duration: 5000 });
+      });
+  }
 
+  getMotiveToReject(motive){
+    if(motive == 'Acadêmico')
+      return 'O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.';
+    if (motive == 'Financeiro')
+      return 'Indeferido em virtude de pendências junto ao setor financeiro.';
+    if(motive == 'Renda')
+      return 'Indeferido em virtude da renda familiar não se enquadrar no perfil de carência apropriado à avaliação correspondente.';
+    if(motive == 'Disciplinar')
+      return 'O perfil global foi analisado e em especial os aspectos disciplinares levados em conta para o indeferimento.';
+    return 'Indeferido pela apresentação da documentação inconsistente à análise correspondente.';
   }
 
   toApprove(p){
@@ -130,7 +160,7 @@ export class ProcessDataComponent implements OnInit {
         p[0].status = 4;
         this.updateProcess(p[0]);
       }, err => {
-        this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+        this.snackBar.open('Erro ao aprovar o processo, tente novamente.', 'OK', { duration: 5000 });
       });
     }else{
       this.scholarshipService.updateProcess(p[0]);
