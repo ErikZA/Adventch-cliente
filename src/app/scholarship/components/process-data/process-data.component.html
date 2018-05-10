@@ -1,4 +1,4 @@
-<div class="page-container mat-elevation-z2" fxLayoutAlign="center">
+<div class="mat-elevation-z2" fxLayoutAlign="center">
     <div fxFlex="95%">
         <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
             <h2 class="title" *ngIf="!searchButton">Lista de Processos</h2>
@@ -7,13 +7,53 @@
             </mat-form-field>
             <div class="buttons" fxLayoutAlign="start center">
                 <button mat-icon-button (click)="searchButton = !searchButton">
-                <mat-icon aria-label="Pesquisar Processo">search</mat-icon>
-              </button>
-                <!-- <button mat-icon-button>
-                <mat-icon aria-label="Filtrar lista de tesoureiro">filter_list</mat-icon>
-              </button> -->
+                    <mat-icon aria-label="Pesquisar Processo">search</mat-icon>
+                </button>
+                <button mat-icon-button (click)="expandPanel(matExpansionPanel)">
+                    <mat-icon aria-label="Filtrar lista de tesoureiro">filter_list</mat-icon>
+                </button> 
             </div>
         </div>
+
+        <mat-accordion class="example-headers-align" #matExpansionPanel>
+            <mat-expansion-panel #matExpansionPanel hideToggle="true">
+                <div fxLayout="{{ layout }}"  (window:resize)="onResize($event)">
+                    <mat-list flex="auto" class="margin-search" *ngIf="authService.getCurrentUser().idSchool == 0">
+                        <h3 mat-subheader style="color: #000">ESCOLAS</h3>
+                        <mat-divider></mat-divider>
+                        <mat-list-item *ngFor="let s of schools">
+                            <button mat-button (click)="filterBySchool(s.id)">({{ s.id }}) {{ s.name }}</button>
+                        </mat-list-item>
+                    </mat-list>
+                    <mat-list flex="auto" class="margin-search">
+                        <h3 mat-subheader style="color: #000">STATUS</h3>
+                        <mat-divider></mat-divider>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(1)">Aguardando Início</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(2)">Em Análise</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(3)">Pendência</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(4)">Aguardando Vaga</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(5)">Bolsa Concedida (50%)</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(6)">Bolsa Concedida (100%)</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(7)">Indeferida</button>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+            </mat-expansion-panel>             
+        </mat-accordion>
+
         <mat-divider></mat-divider>
         <div fxFlex>
             <div class="header">
@@ -31,7 +71,7 @@
                 </mat-list>
                 <mat-divider></mat-divider>
             </div>
-            <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
+            <div layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
                 <mat-accordion>
                     <div *ngFor="let process of (processes$ | async ); index as i">
                         <mat-expansion-panel hideToggle *ngIf="i <= showList">

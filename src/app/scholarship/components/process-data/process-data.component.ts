@@ -9,9 +9,10 @@ import { Responsible } from '../../models/responsible';
 import { ScholarshipService } from '../../scholarship.service';
 import { ScholarshipComponent } from '../scholarship.component';
 import { AuthService } from '../../../shared/auth.service';
-import { MatDialogRef, MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialogRef, MatDialog, MatSnackBar, MatExpansionPanel, matExpansionAnimations } from '@angular/material';
 import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
+import { School } from '../../models/school';
 
 @Component({
   selector: 'app-process-data',
@@ -21,7 +22,9 @@ import { VacancyComponent } from '../vacancy/vacancy.component';
 export class ProcessDataComponent implements OnInit {
   searchButton: boolean = false;
   search$ = new Subject<string>();
+  searchString: string = '';
   showList: number = 15;
+  schools: School[] = new Array<School>();
   showSchool: boolean = false;
 
   processes: Process[] = new Array<Process>();
@@ -29,6 +32,8 @@ export class ProcessDataComponent implements OnInit {
   
   dialogRef: MatDialogRef<PendencyComponent>;
   dialogRef2: MatDialogRef<VacancyComponent>;
+
+  layout: String = 'row';
 
   constructor(    
     public scholarshipService: ScholarshipService,
@@ -40,7 +45,7 @@ export class ProcessDataComponent implements OnInit {
   ngOnInit() {
     this.getData();
     this.search$.subscribe(search => {
-      this.searchTreasurers(search);
+      this.searchProcess(search, 0, 0);
     });
   }
 
@@ -62,6 +67,12 @@ export class ProcessDataComponent implements OnInit {
       );
       this.processes$ = Observable.of(this.processes);
     })
+
+    if(this.authService.getCurrentUser().idSchool == 0){
+      this.scholarshipService.getSchools().subscribe((data: School[]) => {
+        this.schools = Object.assign(this.schools, data as School[]);
+      })
+    }
   }  
   
   getStatusToString(status){
@@ -81,16 +92,19 @@ export class ProcessDataComponent implements OnInit {
       return 'Bolsa Indeferida';
   }
 
-  searchTreasurers(search) {
-    if (search === '' || search === undefined || search === null) {
+  searchProcess(search, idStatus, idSchool) {
+    this.searchString = search;
+    if ((search === '' || search === undefined || search === null) && idStatus != 0 && idSchool != 0) {
       this.processes$ = Observable.of(this.processes);
     } else {
       this.processes$ = Observable.of(this.processes.filter(data => {
-        return data.student.name.toLowerCase().indexOf(search) !== -1 || 
+        return (idStatus == 0 ? data.status != idStatus : data.status == idStatus) &&
+          (idSchool == 0 ? data.student.school.id != idSchool : data.student.school.id == idSchool) &&        
+          (data.student.name.toLowerCase().indexOf(search) !== -1 || 
           data.student.responsible.name.toLowerCase().indexOf(search) !== -1 || 
           data.student.school.name.toLowerCase().indexOf(search) !== -1 ||
           data.statusString.toLowerCase().indexOf(search) !== -1 ||
-          data.protocol.toLowerCase().indexOf(search) !== -1;
+          data.protocol.toLowerCase().indexOf(search) !== -1);
       }));
     }
   }
@@ -181,5 +195,27 @@ export class ProcessDataComponent implements OnInit {
     //this.processes.splice(index, 1);  
     newProcess.statusString = this.getStatusToString(newProcess.status);
     this.processes[index] = newProcess;
+  }
+
+  filterBySchool(idSchool){
+    this.searchProcess(this.searchString, 0, idSchool);
+  }
+
+  filterByStatus(idStatus){
+    this.searchProcess(this.searchString, idStatus, 0);
+  }
+
+  expandPanel(matExpansionPanel){
+    matExpansionPanel.toggle();
+    if(!matExpansionPanel._expanded)
+      this.processes$ = Observable.of(this.processes);
+  }
+
+  onResize(event) {
+    const element = event.target.innerWidth;
+    if(element > 600)
+      this.layout = 'row';
+    else
+      this.layout = 'column'
   }
 }
