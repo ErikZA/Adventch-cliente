@@ -60,11 +60,11 @@
                 <mat-list>
                     <mat-list-item>
                         <h3 matLine fxLayout="row">
-                            <span *ngIf="showSchool" fxFlex="40%">Escola</span>
                             <div fxLayout="row" fxFlex>
+                                <span *ngIf="showSchool" fxFlex="40%">Escola</span>
                                 <span fxFlex="50%">Aluno</span>
-                                <span fxFlex fxFlexAlign="center">Protocolo</span>
-                                <span fxFlex fxFlexAlign="center">Status</span>
+                                <span fxFlex="150px" fxFlexAlign="center">Protocolo</span>
+                                <span fxFlex="180px" fxFlexAlign="center">Status</span>
                             </div>
                         </h3>
                     </mat-list-item>
@@ -76,17 +76,20 @@
                     <div *ngFor="let process of (processes$ | async ); index as i">
                         <mat-expansion-panel hideToggle *ngIf="i <= showList">
                             <mat-expansion-panel-header>
-                                <mat-panel-title *ngIf="showSchool" fxFlex="38%">
+                                <!-- <mat-panel-title *ngIf="showSchool" fxFlex="38%">
                                     {{ process.student.school.name }}
-                                </mat-panel-title>
+                                </mat-panel-title> -->
                                 <mat-panel-description fxLayout="row" fxFlex>
-                                    <span fxFlex="50%">
+                                    <span *ngIf="showSchool" fxFlex="38%" style="white-space: nowrap;">
+                                        {{ process.student.school.name }}
+                                    </span>
+                                    <span fxFlex="50%" style="white-space: nowrap;">
                                       {{ process.student.name }}
                                     </span>
-                                    <span fxFlex fxFlexAlign="center">
+                                    <span fxFlex="150px" fxFlexAlign="center">
                                       {{ process.protocol }}
                                     </span>
-                                    <span fxFlex fxFlexAlign="center">
+                                    <span fxFlex="180px" fxFlexAlign="center">
                                       {{ process.statusString }}
                                     </span>
                                 </mat-panel-description>
@@ -95,12 +98,12 @@
                                 <h2 matSubheader>Informações do Processo</h2>
                                 <mat-list-item fxLayout="row" style="height: auto">
                                     <div fxLayout="column" fxFlex matLine>
-                                        <span class="text-bold" class="details-title"><b>Documentos pessoais:</b> {{ process.isPersonalDocuments ? "Enviado" : "Não Enviado" }}</span>
-                                        <span class="text-bold" class="details-title"><b>Declaração do imposto de renda:</b> {{ process.isIR ? "Enviado" : "Não Enviado" }}</span>
-                                        <span class="text-bold" class="details-title"><b>Carteira de trabalho:</b> {{ process.isCTPS ? "Enviado" : "Não Enviado" }}</span>
-                                        <span class="text-bold" class="details-title"><b>Comprovante de rendimentos:</b> {{ process.isIncome ? "Enviado" : "Não Enviado" }}</span>
-                                        <span class="text-bold" class="details-title"><b>Comprovante de despesas:</b> {{ process.isExpenses ? "Enviado" : "Não Enviado" }}</span>
-                                        <span class="text-bold" class="details-title"><b>Comprovante acadêmico:</b> {{ process.isAcademic ? "Enviado" : "Não Enviado" }}</span>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Documentos pessoais:</b> {{ process.isPersonalDocuments ? "Enviado" : "Não Enviado" }}</span>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Declaração do imposto de renda:</b> {{ process.isIR ? "Enviado" : "Não Enviado" }}</span>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Carteira de trabalho:</b> {{ process.isCTPS ? "Enviado" : "Não Enviado" }}</span>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Comprovante de rendimentos:</b> {{ process.isIncome ? "Enviado" : "Não Enviado" }}</span>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Comprovante de despesas:</b> {{ process.isExpenses ? "Enviado" : "Não Enviado" }}</span>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Comprovante acadêmico:</b> {{ process.isAcademic ? "Enviado" : "Não Enviado" }}</span>
                                         <!-- <br/>
                                         <span class="text-bold" class="details-title"><b>RC estudante: </b>{{ process.student.rc }}</span>
                                         <br/>
@@ -109,9 +112,9 @@
                                         <span class="text-bold" class="details-title"><b>E-mail: </b>{{ process.student.responsible.email }}</span>
                                         <span class="text-bold" class="details-title"><b>Telefone: </b>{{ process.student.responsible.phone }}</span>
                                         <br/> -->
-                                        <span *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }}</span>
-                                        <span *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title"><b>Matrícula: </b> até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</span>
-                                        <span *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title"><b>{{ process.motiveReject }}: </b>{{ getMotiveToReject(process.motiveReject) }}</span>
+                                        <span style="white-space: normal;" *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }}</span>
+                                        <span style="white-space: normal;" *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title"><b>Matrícula: </b> até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</span>
+                                        <span style="white-space: normal;" *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title"><b>{{ process.motiveReject }}: </b>{{ getMotiveToReject(process.motiveReject) }}</span>
                                     </div>
                                 </mat-list-item>
                             </mat-list>
