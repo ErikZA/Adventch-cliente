@@ -5,14 +5,10 @@ import { School } from '../models/school';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup, FormControl } from '@angular/forms';
 import { AuthService } from '../../shared/auth.service';
-<<<<<<< HEAD
 import { MatSidenav } from '@angular/material';
 import { Router } from '@angular/router';
 import { SidenavService } from '../../core/services/sidenav.service';
-=======
 import { Process } from '../models/process';
-import { Router } from '@angular/router';
->>>>>>> af95def0f4221e50252dc82871eab74d1d2da3ed
 
 @Component({
   selector: 'app-scholarship',
@@ -27,23 +23,15 @@ export class ScholarshipComponent implements OnInit {
   schools: School[] = new Array<School>();
   idSchool: string = '-1';
   formDashboard: FormGroup;
+  processes: Process[] = new Array<Process>();
+  processes$: Observable<Process[]>;
 
-<<<<<<< HEAD
 
   constructor(
     public scholarshipService: ScholarshipService,
     public authService: AuthService,
     private router: Router,
-    private sidenavService: SidenavService
-=======
-  processes: Process[] = new Array<Process>();
-  processes$: Observable<Process[]>;
-  
-  constructor(
-    public scholarshipService: ScholarshipService,
-    public authService: AuthService,
-    private router: Router
->>>>>>> af95def0f4221e50252dc82871eab74d1d2da3ed
+    private sidenavService: SidenavService,
   ) { }
 
   ngOnInit() {
@@ -51,21 +39,19 @@ export class ScholarshipComponent implements OnInit {
       school: new FormControl()
     });
     this.getSchools();
-<<<<<<< HEAD
     this.sidenavService.setSidenav(this.sidenavRight);
   }
 
   closeSidenav() {
     this.sidenavRight.close();
     this.router.navigate(['bolsas/processos']);
-=======
     this.getData();
   }
 
   getData(){
     if(this.authService.getCurrentUser().idSchool != 0)
       this.idSchool = this.authService.getCurrentUser().idSchool.toString();
-    this.processes = [];  
+    this.processes = [];
     this.scholarshipService.getProcess(this.idSchool).subscribe((data: Process[]) =>{
       this.processes = Object.assign(this.processes, data as Process[]);
       this.processes$ = Observable.of(this.processes);
@@ -94,7 +80,6 @@ export class ScholarshipComponent implements OnInit {
       return 0;
     let filteredItens = this.processes.filter(f => {return f.status == idStatus});
     return (filteredItens.length / this.processes.length * 100);
->>>>>>> af95def0f4221e50252dc82871eab74d1d2da3ed
   }
 
   onResize(event) {
