@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { equalSegments } from '@angular/router/src/url_tree';
 import { ScholarshipService } from '../scholarship.service';
 import { School } from '../models/school';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup, FormControl } from '@angular/forms';
 import { AuthService } from '../../shared/auth.service';
-import { Process } from '../models/process';
+import { MatSidenav } from '@angular/material';
 import { Router } from '@angular/router';
+import { SidenavService } from '../../core/services/sidenav.service';
+import { Process } from '../models/process';
 
 @Component({
   selector: 'app-scholarship',
@@ -15,19 +17,21 @@ import { Router } from '@angular/router';
 })
 export class ScholarshipComponent implements OnInit {
 
+  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
   columns: any = 4;
   schools$: Observable<School[]>;
   schools: School[] = new Array<School>();
   idSchool: string = '-1';
   formDashboard: FormGroup;
-
   processes: Process[] = new Array<Process>();
   processes$: Observable<Process[]>;
-  
+
+
   constructor(
     public scholarshipService: ScholarshipService,
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    private sidenavService: SidenavService,
   ) { }
 
   ngOnInit() {
@@ -35,13 +39,19 @@ export class ScholarshipComponent implements OnInit {
       school: new FormControl()
     });
     this.getSchools();
+    this.sidenavService.setSidenav(this.sidenavRight);
+  }
+
+  closeSidenav() {
+    this.sidenavRight.close();
+    this.router.navigate(['bolsas/processos']);
     this.getData();
   }
 
   getData(){
     if(this.authService.getCurrentUser().idSchool != 0)
       this.idSchool = this.authService.getCurrentUser().idSchool.toString();
-    this.processes = [];  
+    this.processes = [];
     this.scholarshipService.getProcess(this.idSchool).subscribe((data: Process[]) =>{
       this.processes = Object.assign(this.processes, data as Process[]);
       this.processes$ = Observable.of(this.processes);
@@ -93,7 +103,7 @@ export class ScholarshipComponent implements OnInit {
         this.schools = [];
         this.schools.push(lst.find(f => f.id == idSchool));
         this.schools$ = Observable.of(this.schools);
-        this.scholarshipService.updateSchool(idSchool.toString());        
+        this.scholarshipService.updateSchool(idSchool.toString());
         //this.scholarshipService.schoolSelected = ;
       }
     });

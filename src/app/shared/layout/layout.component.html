@@ -54,13 +54,13 @@
         <mat-nav-list id="nav-list-menu" [ngClass]="{'nav-list-mobile': isMobile, 'nav-list-web': !isMobile}">
             <mat-accordion>
                 <div *ngIf="!checkPermissionScholarship()">
-                <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!checkPermission(1)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermission(1)" matTooltipPosition="after">
-                    <!--Novo Módulo-->
-                    <mat-expansion-panel-header class="background-side-nav">
-                        <mat-panel-title>Tesouraria</mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/tesoureiros']">Tesoureiros</a>
-                </mat-expansion-panel>
+                    <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!checkPermission(1)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermission(1)" matTooltipPosition="after">
+                        <!--Novo Módulo-->
+                        <mat-expansion-panel-header class="background-side-nav">
+                            <mat-panel-title>Tesouraria</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/tesoureiros']">Tesoureiros</a>
+                    </mat-expansion-panel>
                 </div>
                 <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!checkPermissionScholarship()" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermissionScholarship()" matTooltipPosition="after">
                     <!--Novo Módulo-->
@@ -68,7 +68,7 @@
                         <mat-panel-title [routerLink]="['/bolsas/dashboard']">Bolsas de Estudo</mat-panel-title>
                     </mat-expansion-panel-header>
                     <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/bolsas/processos']">Processos</a>
-                    <button mat-button type="button" class="new-process" [disabled]="scholarshipService.schoolSelected == '-1'" [class.new-process-disabled]="scholarshipService.schoolSelected == '-1'">Novo Processo</button>
+                    <button mat-button type="button" class="new-process" [disabled]="scholarshipService.schoolSelected == '-1'" (click)="openSidenav()" routerLink="/bolsas/processos/novo" [class.new-process-disabled]="scholarshipService.schoolSelected == '-1'">Novo Processo</button>
                 </mat-expansion-panel>
             </mat-accordion>
         </mat-nav-list>

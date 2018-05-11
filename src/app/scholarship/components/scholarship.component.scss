@@ -1,55 +1,59 @@
 .process {
-    color: #fff; 
+    color: #fff;
     width: calc(((90% - 0.8px) * 1) + 0px);
     padding: 10px 0px;
     text-align: center;
 }
 
-.process:hover{
+.process:hover {
     cursor: pointer;
 }
 
-.process-1{
+.process-1 {
     border: 1px solid #b2b2b2;
     //background-color: #67daff!important;
 }
 
-.process-2{
+.process-2 {
     background-color: #03a9f4!important;
 }
 
-.process-3{
+.process-3 {
     background-color: #76d275!important;
 }
 
-.process-4{
+.process-4 {
     background-color: #f44336!important;
 }
 
-.process-5{
+.process-5 {
     background-color: #ffc947!important;
 }
 
-.process-6{
+.process-6 {
     background-color: #ff9800!important;
 }
 
-.process-7{
+.process-7 {
     background-color: #c66900!important;
 }
 
-.process-8{
+.process-8 {
     background-color: #607d8b!important;
 }
 
-.process-count{
+.process-count {
     font-weight: 500;
-    font-size: 45px;   
+    font-size: 45px;
     margin: 0;
 }
 
-.process-description{
+.process-description {
     font-size: 15px;
     font-weight: 200;
     margin: 0;
+}
+
+.sidenav-right {
+    width: 99%;
 }

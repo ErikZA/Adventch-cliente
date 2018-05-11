@@ -6,6 +6,7 @@ import { ScholarshipComponent } from './components/scholarship.component';
 import { ScholarshipRoutingModule } from './scholarship-routing.module';
 import { MatCardModule, MatGridListModule } from '@angular/material';
 import { ScholarshipService } from './scholarship.service';
+import { ProcessFormComponent } from './components/process-form/process-form.component';
 import { ProcessDataComponent } from './components/process-data/process-data.component';
 import { PendencyComponent } from './components/pendency/pendency.component';
 import { VacancyComponent } from './components/vacancy/vacancy.component';
@@ -21,13 +22,14 @@ import { VacancyComponent } from './components/vacancy/vacancy.component';
     ScholarshipService
   ],
   declarations: [
-    ScholarshipComponent, 
-    ProcessDataComponent, 
-    PendencyComponent, 
+    ScholarshipComponent,
+    ProcessFormComponent,
+    ProcessDataComponent,
+    PendencyComponent,
     VacancyComponent
   ],
   entryComponents: [
-    PendencyComponent, 
+    PendencyComponent,
     VacancyComponent
   ]
 })

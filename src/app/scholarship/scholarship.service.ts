@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { School } from './models/school';
 import { Responsible } from './models/responsible';
+import { Student } from './models/student';
 import { Process } from './models/process';
 import { AuthService } from '../shared/auth.service';
 
@@ -44,10 +45,23 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getChildrenStudents(responsableId): Observable<Responsible[]> {
-    let url = '/scholarship/process/getAllResponsibles/' + responsableId;
+  getChildrenStudents(responsibleId): Observable<Student[]> {
+    let url = '/scholarship/process/getAllChildrenStudents/' + responsibleId;
     return this.http
       .get(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  getResponsible(schoolId, responsibleCPF): Observable<Responsible> {
+    let url = `/scholarship/process/getResponsible?schoolId=${schoolId}&responsibleCPF=${responsibleCPF}`;
+    return this.http
+      .get(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  postProcess(data): Observable<any>{
+    let url = `/scholarship/process/newProcess`;
+    return this.http.post(url, data)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
@@ -60,8 +74,8 @@ export class ScholarshipService {
   }
 
   savePendency(pendency): Observable<Process> {
-    let url = '/scholarship/Process/savePendency/';    
-    let processPendency = {
+    let url = '/scholarship/Process/savePendency/';
+    let processPendency: any = {
       id: this.processSelected.id,
       pendency: pendency,
       user: this.auth.getCurrentUser().identifier,
@@ -76,7 +90,7 @@ export class ScholarshipService {
   }
 
   updateToStatus(idProcess, idStatus, description){
-    let url = '/scholarship/Process/changeStatus/';    
+    let url = '/scholarship/Process/changeStatus/';
     let process = {
       id: idProcess,
       status: idStatus,
@@ -90,7 +104,7 @@ export class ScholarshipService {
   }
 
   saveVacancy(dateRegistration, idStatus, description){
-    let url = '/scholarship/Process/saveVacancy/';    
+    let url = '/scholarship/Process/saveVacancy/';
     let process = {
       id: this.processSelected.id,
       status: idStatus,
@@ -106,7 +120,7 @@ export class ScholarshipService {
   }
 
   saveReject(idProcess, idStatus, description, motive){
-    let url = '/scholarship/Process/saveReject/';    
+    let url = '/scholarship/Process/saveReject/';
     let process = {
       id: idProcess,
       status: idStatus,

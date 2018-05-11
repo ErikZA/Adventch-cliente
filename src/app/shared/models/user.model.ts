@@ -1,4 +1,5 @@
 export class User {
+  id: number;
   identifier: string;
   name: string;
   firstName: string;

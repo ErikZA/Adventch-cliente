@@ -30,7 +30,6 @@ export class InputMaskDirective implements ControlValueAccessor {
   @HostListener('keyup', ['$event'])
   onKeyup($event: any) {
     let valor = $event.target.value.replace(/\D/g, '');
-    console.log(this);
 
     // retorna caso pressionado backspace
     if ($event.keyCode === 8) {

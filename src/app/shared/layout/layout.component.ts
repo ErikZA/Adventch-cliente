@@ -39,9 +39,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private router: Router,
     public scholarshipService: ScholarshipService,
     public app: AppComponent,
-    public navService: SidenavService,
     public sharedService: SharedService,
-    public cd: ChangeDetectorRef
+    public cd: ChangeDetectorRef,
+    private sidenavService: SidenavService
   ) { }
 
   ngOnInit() {
@@ -50,9 +50,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.isMobile = (change.mqAlias == 'xs');
       this.isOpen = !(this.isMobile || (change.mqAlias == 'sm') || (change.mqAlias == 'md'));
     });
-    this.navService.toggle
-      .asObservable()
-      .subscribe(() => this.nav.toggle());
   }
 
   ngOnDestroy() {
@@ -121,5 +118,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   public checkPermissionScholarship(){
     return this.authService.getCurrentUser().isScholarship;
+  }
+
+  openSidenav() {
+    this.sidenavService.open();
   }
 }
