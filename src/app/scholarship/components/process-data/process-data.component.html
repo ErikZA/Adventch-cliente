@@ -28,25 +28,25 @@
                         <h3 mat-subheader style="color: #000">STATUS</h3>
                         <mat-divider></mat-divider>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[0].selected" (click)="filterByStatus(1)">Aguardando Início</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 1" (click)="filterByStatus(1)">Aguardando Início</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[1].selected" (click)="filterByStatus(2)">Em Análise</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 2" (click)="filterByStatus(2)">Em Análise</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[2].selected" (click)="filterByStatus(3)">Pendência</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 3" (click)="filterByStatus(3)">Pendência</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[3].selected" (click)="filterByStatus(4)">Aguardando Vaga</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 4" (click)="filterByStatus(4)">Aguardando Vaga</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[4].selected" (click)="filterByStatus(5)">Bolsa Concedida (50%)</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 5" (click)="filterByStatus(5)">Bolsa Concedida (50%)</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[5].selected" (click)="filterByStatus(6)">Bolsa Concedida (100%)</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 6" (click)="filterByStatus(6)">Bolsa Concedida (100%)</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[6].selected" (click)="filterByStatus(7)">Indeferida</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 7" (click)="filterByStatus(7)">Indeferida</mat-checkbox>
                         </mat-list-item>
                     </mat-list>
                 </div>

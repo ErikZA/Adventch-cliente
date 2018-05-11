@@ -58,12 +58,21 @@ export class ProcessDataComponent implements OnInit {
 
   getData(){
     this.processes = [];
+    //get data from schools
+    if(this.authService.getCurrentUser().idSchool == 0){
+      this.scholarshipService.getSchools().subscribe((data: School[]) => {
+        this.schools = Object.assign(this.schools, data as School[]);
+        this.setSchoolsFilters();
+      })
+    } 
     this.idSchool = this.scholarshipService.schoolSelected;
     this.showSchool = this.idSchool == '-1';
     if(this.idSchool == '-1' && this.authService.getCurrentUser().idSchool != 0){
       this.idSchool = this.authService.getCurrentUser().idSchool.toString();
       this.showSchool = false;
     }
+    if(this.scholarshipService.statusSelected > 0)
+      return;
     this.scholarshipService.getProcess(this.idSchool).subscribe((data: Process[]) =>{
       this.processes = Object.assign(this.processes, data as Process[]);
       this.processes.forEach(
@@ -76,16 +85,7 @@ export class ProcessDataComponent implements OnInit {
         this.searchProcess("", this.scholarshipService.statusSelected, this.idSchool);
         this.scholarshipService.updateStatus(0);
       }*/
-    })
-
-    //get data from schools
-    if(this.authService.getCurrentUser().idSchool == 0){
-      this.scholarshipService.getSchools().subscribe((data: School[]) => {
-        this.schools = Object.assign(this.schools, data as School[]);
-        this.setSchoolsFilters();
-      })
-    }
-      
+    })     
   }  
 
   loadSelected(){
@@ -99,8 +99,10 @@ export class ProcessDataComponent implements OnInit {
   }
 
   setFilters(){
-    if(this.scholarshipService.statusSelected > 0)
+    if(this.scholarshipService.statusSelected > 0){
       this.statusSelecteds[this.scholarshipService.statusSelected-1].selected = true;
+      this.searchProcess('', true, false);
+    }
     else{
       this.statusSelecteds.forEach(item =>{
         item.selected = true;
