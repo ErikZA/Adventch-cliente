@@ -5,6 +5,8 @@ import { School } from '../models/school';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup, FormControl } from '@angular/forms';
 import { AuthService } from '../../shared/auth.service';
+import { Process } from '../models/process';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-scholarship',
@@ -16,12 +18,16 @@ export class ScholarshipComponent implements OnInit {
   columns: any = 4;
   schools$: Observable<School[]>;
   schools: School[] = new Array<School>();
+  idSchool: string = '-1';
   formDashboard: FormGroup;
 
+  processes: Process[] = new Array<Process>();
+  processes$: Observable<Process[]>;
   
   constructor(
     public scholarshipService: ScholarshipService,
     public authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -29,6 +35,41 @@ export class ScholarshipComponent implements OnInit {
       school: new FormControl()
     });
     this.getSchools();
+    this.getData();
+  }
+
+  getData(){
+    if(this.authService.getCurrentUser().idSchool != 0)
+      this.idSchool = this.authService.getCurrentUser().idSchool.toString();
+    this.processes = [];  
+    this.scholarshipService.getProcess(this.idSchool).subscribe((data: Process[]) =>{
+      this.processes = Object.assign(this.processes, data as Process[]);
+      this.processes$ = Observable.of(this.processes);
+    })
+  }
+
+  changeDashboard(){
+    this.scholarshipService.schoolSelected = this.idSchool;
+    this.getData();
+  }
+
+  redirectToProcess(idStatus){
+    this.scholarshipService.updateStatus(idStatus);
+    this.router.navigate(['/bolsas/processos']);
+  }
+
+  getTotalByStatus(idStatus){
+    if(this.processes.length == 0)
+      return 0;
+    let filteredItens = this.processes.filter(f => {return f.status == idStatus});
+    return filteredItens.length;
+  }
+
+  getPercentByStatus(idStatus){
+    if(this.processes.length == 0)
+      return 0;
+    let filteredItens = this.processes.filter(f => {return f.status == idStatus});
+    return (filteredItens.length / this.processes.length * 100);
   }
 
   onResize(event) {

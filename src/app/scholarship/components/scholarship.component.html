@@ -1,82 +1,82 @@
 <div [formGroup]="formDashboard">
-<mat-form-field>                         
-    <mat-select placeholder="Escola" formControlName="school" required [(ngModel)]="scholarshipService.schoolSelected" [compareWith]="compareIds">
+<mat-form-field>   
+    <mat-select placeholder="Escola" formControlName="school" required [(ngModel)]="idSchool" [compareWith]="compareIds" (change)="changeDashboard()">
         <mat-option *ngIf="authService.getCurrentUser().idSchool == 0" [value]="-1">[Todas]</mat-option>
         <mat-option *ngFor="let s of schools" [value]="s.id">
             ({{ s.id }}) {{ s.name }}
         </mat-option>
     </mat-select>
-</mat-form-field>
+</mat-form-field>        
 
 <mat-grid-list cols="{{ columns }}" rowHeight="2:1" (window:resize)="onResize($event)">
   <mat-grid-tile>
-    <mat-card  class="process process-1" style="color: #0f0f0f">
+    <mat-card class="process process-1" style="color: #0f0f0f" (click)="redirectToProcess(0)">
       <br/>
-      <p class="process-count">10</p>
+      <p class="process-count">{{ processes?.length }}</p>
       <p class="process-description">Processos</p>
       <br/>
     </mat-card>
   </mat-grid-tile>
 
   <mat-grid-tile>
-      <mat-card  class="process process-2">
+      <mat-card  class="process process-2" (click)="redirectToProcess(1)">
         <br/>
-        <p class="process-count process-2">1</p>
-        <p class="process-description">Aguardando Início (10%)</p>
+        <p class="process-count process-2">{{ getTotalByStatus(1) }}</p>
+        <p class="process-description">Aguardando Início ({{ getPercentByStatus(1) | number: '1.0-0' }}%)</p>
         <br/>
       </mat-card>
     </mat-grid-tile>
   
   <mat-grid-tile>
-    <mat-card  class="process process-3">
+    <mat-card  class="process process-3" (click)="redirectToProcess(2)">
       <br/>
-      <p class="process-count process-3">1</p>
-      <p class="process-description">Em Análise (10%)</p>
-      <br/>
-    </mat-card>
-  </mat-grid-tile>
-  
-  <mat-grid-tile>
-    <mat-card  class="process process-4">
-      <br/>
-      <p class="process-count process-4">1</p>
-      <p class="process-description">Pendência (10%)</p>
+      <p class="process-count process-3">{{ getTotalByStatus(2) }}</p>
+      <p class="process-description">Em Análise ({{ getPercentByStatus(2) | number: '1.0-0' }}%)</p>
       <br/>
     </mat-card>
   </mat-grid-tile>
   
   <mat-grid-tile>
-    <mat-card  class="process process-5">
+    <mat-card  class="process process-4" (click)="redirectToProcess(3)">
       <br/>
-      <p class="process-count process-5">1</p>
-      <p class="process-description">Aguardando vaga (10%)</p>
+      <p class="process-count process-4">{{ getTotalByStatus(3) }}</p>
+      <p class="process-description">Pendência ({{ getPercentByStatus(3) | number: '1.0-0' }}%)</p>
+      <br/>
+    </mat-card>
+  </mat-grid-tile>
+  
+  <mat-grid-tile>
+    <mat-card  class="process process-5" (click)="redirectToProcess(4)">
+      <br/>
+      <p class="process-count process-5">{{ getTotalByStatus(4) }}</p>
+      <p class="process-description">Aguardando vaga ({{ getPercentByStatus(4) | number: '1.0-0' }}%)</p>
       <br/>
     </mat-card>
   </mat-grid-tile>
 
   <mat-grid-tile>
-    <mat-card  class="process process-6">
+    <mat-card  class="process process-6" (click)="redirectToProcess(5)">
       <br/>
-      <p class="process-count process-6">1</p>
-      <p class="process-description">Vaga Liberada - 50% (10%)</p>
+      <p class="process-count process-6">{{ getTotalByStatus(5) }}</p>
+      <p class="process-description">Vaga Liberada 50% - ({{ getPercentByStatus(5) | number: '1.0-0' }}%)</p>
       <br/>
     </mat-card>
   </mat-grid-tile>
 
   <mat-grid-tile>
-    <mat-card  class="process process-7">
+    <mat-card  class="process process-7" (click)="redirectToProcess(6)">
       <br/>
-      <p class="process-count process-7">1</p>
-      <p class="process-description">Vaga Liberada - 100% (10%)</p>
+      <p class="process-count process-7">{{ getTotalByStatus(6) }}</p>
+      <p class="process-description">Vaga Liberada 100% - ({{ getPercentByStatus(6) | number: '1.0-0' }}%)</p>
       <br/>
     </mat-card>
   </mat-grid-tile>
   
   <mat-grid-tile>
-    <mat-card  class="process process-8">
+    <mat-card  class="process process-8" (click)="redirectToProcess(7)">
       <br/>
-      <p class="process-count process-8">4</p>
-      <p class="process-description">Indeferido (40%)</p>
+      <p class="process-count process-8">{{ getTotalByStatus(7) }}</p>
+      <p class="process-description">Indeferido ({{ getPercentByStatus(7) | number: '1.0-0' }}%)</p>
       <br/>
     </mat-card>
   </mat-grid-tile>
