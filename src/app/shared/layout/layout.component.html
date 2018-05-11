@@ -53,21 +53,22 @@
     <mat-drawer #sidenav class="sidenav-left mat-elevation-z5" [mode]="isOpen ? 'side' : 'over'" [opened]="isOpen">
         <mat-nav-list id="nav-list-menu" [ngClass]="{'nav-list-mobile': isMobile, 'nav-list-web': !isMobile}">
             <mat-accordion>
-                <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!checkPermission(1)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermission(1)" matTooltipPosition="after">
-                    <!--Novo Módulo-->
-                    <mat-expansion-panel-header class="background-side-nav">
-                        <mat-panel-title>Tesouraria</mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/tesoureiros']">Tesoureiros</a>
-                </mat-expansion-panel>
-
+                <div *ngIf="!checkPermissionScholarship()">
+                    <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!checkPermission(1)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermission(1)" matTooltipPosition="after">
+                        <!--Novo Módulo-->
+                        <mat-expansion-panel-header class="background-side-nav">
+                            <mat-panel-title>Tesouraria</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/tesoureiros']">Tesoureiros</a>
+                    </mat-expansion-panel>
+                </div>
                 <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!checkPermissionScholarship()" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermissionScholarship()" matTooltipPosition="after">
                     <!--Novo Módulo-->
                     <mat-expansion-panel-header class="background-side-nav">
-                        <mat-panel-title [routerLink]="['/bolsas/dashboard']">Bolsas</mat-panel-title>
+                        <mat-panel-title [routerLink]="['/bolsas/dashboard']">Bolsas de Estudo</mat-panel-title>
                     </mat-expansion-panel-header>
                     <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/bolsas/processos']">Processos</a>
-                    <button style="margin: 5px 0 5px 45px" mat-button type="button" class="new-process" (click)="openSidenav()" routerLink="/bolsas/processos/novo">Novo Processo</button>
+                    <button mat-button type="button" class="new-process" [disabled]="scholarshipService.schoolSelected == '-1'" (click)="openSidenav()" routerLink="/bolsas/processos/novo" [class.new-process-disabled]="scholarshipService.schoolSelected == '-1'">Novo Processo</button>
                 </mat-expansion-panel>
             </mat-accordion>
         </mat-nav-list>

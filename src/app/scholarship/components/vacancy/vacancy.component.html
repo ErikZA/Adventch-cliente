@@ -1,0 +1,24 @@
+<mat-card>
+    <form [formGroup]="formVacancy" novalidate fxLayout="column" fxLayoutAlign="space-between stretch">
+        <mat-card-title fxFlex fxFlexAlign="center">Aprovação da bolsa</mat-card-title>
+          <br/>
+          <div style="width: 100%">
+            <mat-radio-group formControlName="type" name="type" aria-label="Tipo da bolsa" layout="row">
+              <mat-radio-button value="1" aria-label="50% (Meia)" style="margin: 0 20px 0 0" [checked]="true">50% (Meia)</mat-radio-button>
+              <mat-radio-button value="2" aria-label="100% (Completa)">100% (Completa)</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <br/>
+          <div style="width: 100%">
+            <mat-form-field fxFlexFill>
+              <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerRegistration" placeholder="Data da matrícula" formControlName="dateRegistration" required>
+              <mat-datepicker-toggle matSuffix [for]="pickerRegistration"></mat-datepicker-toggle>
+              <mat-datepicker #pickerRegistration></mat-datepicker>
+            </mat-form-field>
+          </div>
+        <div class="buttons" fxLayout="row" fxLayoutAlign="space-between stretch" fxFlex>
+            <button mat-button type="button" class="btn-cancel" (click)="cancel()">CANCELAR</button>
+            <button mat-button type="submit" (click)="saveType()" color="primary" [disabled]="formVacancy.invalid">SALVAR</button>
+        </div>
+    </form>
+  </mat-card>

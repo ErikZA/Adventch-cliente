@@ -17,11 +17,10 @@ import { SidenavService } from '../../core/services/sidenav.service';
 export class ScholarshipComponent implements OnInit {
 
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
-  columns: any = 5;
+  columns: any = 4;
   schools$: Observable<School[]>;
   schools: School[] = new Array<School>();
   formDashboard: FormGroup;
-  school = '-1';
 
 
   constructor(
@@ -47,7 +46,7 @@ export class ScholarshipComponent implements OnInit {
   onResize(event) {
     const element = event.target.innerWidth;
     if(element > 750)
-      this.columns = 5
+      this.columns = 4
     else
       this.columns = 1
   }
@@ -59,15 +58,20 @@ export class ScholarshipComponent implements OnInit {
       if(idSchool == 0){
         this.schools = Object.assign(this.schools, data as School[]);
         this.schools$ = Observable.of(this.schools);
-        this.school = '-1';
+        this.scholarshipService.updateSchool('-1');
       }else{
         var lst = Object.assign(this.schools, data as School[]);
         this.schools = [];
         this.schools.push(lst.find(f => f.id == idSchool));
         this.schools$ = Observable.of(this.schools);
-        this.school = idSchool.toString();
+        this.scholarshipService.updateSchool(idSchool.toString());
+        //this.scholarshipService.schoolSelected = ;
       }
     });
   }
-
+  compareIds(id1: any, id2: any): boolean {
+    const a1 = id1;
+    const a2 = id2;
+    return a1 == a2;
+  }
 }

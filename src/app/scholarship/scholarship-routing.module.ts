@@ -5,6 +5,7 @@ import { ScholarshipComponent } from './components/scholarship.component';
 import { AuthGuard } from '../shared/auth.guard';
 import { LayoutComponent } from '../shared/layout/layout.component';
 import { ProcessFormComponent } from './components/process-form/process-form.component';
+import { ProcessDataComponent } from './components/process-data/process-data.component';
 
 const routes: Routes = [
   { path: 'bolsas', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [

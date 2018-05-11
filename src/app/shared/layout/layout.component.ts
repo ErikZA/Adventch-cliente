@@ -13,6 +13,7 @@ import { SharedService } from '../shared.service';
 import { Unit } from '../models/unit.model';
 import { EventEmitter } from 'events';
 import { Modules } from '../models/modules.enum';
+import { ScholarshipService } from '../../scholarship/scholarship.service';
 
 @Component({
   selector: 'app-layout',
@@ -36,6 +37,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private media: ObservableMedia,
     private dialog: MatDialog,
     private router: Router,
+    public scholarshipService: ScholarshipService,
     public app: AppComponent,
     public sharedService: SharedService,
     public cd: ChangeDetectorRef,

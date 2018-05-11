@@ -1,4 +1,5 @@
 import { Student } from './student';
+import { EStatus } from './enums';
 
 export class Process {
   id: number;
@@ -11,6 +12,10 @@ export class Process {
   isIncome: boolean = false;
   isExpenses: boolean = false;
   isAcademic: boolean = false;
-  // status: Status;
+  status: EStatus;
+  statusString: string;
+  pendency: string;
+  dateRegistration?: Date;
+  motiveReject: string;
   constructor() { }
 }

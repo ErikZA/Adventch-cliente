@@ -8,8 +8,8 @@
 </mat-sidenav>
 <div [formGroup]="formDashboard">
     <mat-form-field>
-        <mat-select placeholder="Escola" formControlName="school" required [(ngModel)]="school">
-            <mat-option *ngIf="authService.getCurrentUser().idSchool == 0" value="-1">[Todas]</mat-option>
+        <mat-select placeholder="Escola" formControlName="school" required [(ngModel)]="scholarshipService.schoolSelected" [compareWith]="compareIds">
+            <mat-option *ngIf="authService.getCurrentUser().idSchool == 0" [value]="-1">[Todas]</mat-option>
             <mat-option *ngFor="let s of schools" [value]="s.id">
                 ({{ s.id }}) {{ s.name }}
             </mat-option>
@@ -18,46 +18,73 @@
 
     <mat-grid-list cols="{{ columns }}" rowHeight="2:1" (window:resize)="onResize($event)">
         <mat-grid-tile>
-            <mat-card class="process process-total">
+            <mat-card class="process process-1" style="color: #0f0f0f">
                 <br/>
-                <p class="process-count process-total">10</p>
+                <p class="process-count">10</p>
                 <p class="process-description">Processos</p>
                 <br/>
             </mat-card>
         </mat-grid-tile>
 
         <mat-grid-tile>
-            <mat-card class="process process-analyse">
+            <mat-card class="process process-2">
                 <br/>
-                <p class="process-count process-analyse">2</p>
-                <p class="process-description">Em Análise (20%)</p>
-                <br/>
-            </mat-card>
-        </mat-grid-tile>
-
-        <mat-grid-tile>
-            <mat-card class="process process-pendency">
-                <br/>
-                <p class="process-count process-pendency">3</p>
-                <p class="process-description">Pendência (30%)</p>
+                <p class="process-count process-2">1</p>
+                <p class="process-description">Aguardando Início (10%)</p>
                 <br/>
             </mat-card>
         </mat-grid-tile>
 
         <mat-grid-tile>
-            <mat-card class="process process-waiting">
+            <mat-card class="process process-3">
                 <br/>
-                <p class="process-count process-waiting">3</p>
-                <p class="process-description">Aguardando vaga (30%)</p>
+                <p class="process-count process-3">1</p>
+                <p class="process-description">Em Análise (10%)</p>
                 <br/>
             </mat-card>
         </mat-grid-tile>
 
         <mat-grid-tile>
-            <mat-card class="process process-rejected">
+            <mat-card class="process process-4">
                 <br/>
-                <p class="process-count process-rejected">2</p>
-                <p class="process-description">Indeferido (20%)</p>
+                <p class="process-count process-4">1</p>
+                <p class="process-description">Pendência (10%)</p>
+                <br/>
+            </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <mat-card class="process process-5">
+                <br/>
+                <p class="process-count process-5">1</p>
+                <p class="process-description">Aguardando vaga (10%)</p>
+                <br/>
+            </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <mat-card class="process process-6">
+                <br/>
+                <p class="process-count process-6">1</p>
+                <p class="process-description">Vaga Liberada - 50% (10%)</p>
+                <br/>
+            </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <mat-card class="process process-7">
+                <br/>
+                <p class="process-count process-7">1</p>
+                <p class="process-description">Vaga Liberada - 100% (10%)</p>
+                <br/>
+            </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <mat-card class="process process-8">
+                <br/>
+                <p class="process-count process-8">4</p>
+                <p class="process-description">Indeferido (40%)</p>
                 <br/>
             </mat-card>
         </mat-grid-tile>

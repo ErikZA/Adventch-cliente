@@ -1,0 +1,143 @@
+<div class="mat-elevation-z2" fxLayoutAlign="center">
+    <div fxFlex="95%">
+        <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
+            <h2 class="title" *ngIf="!searchButton">Lista de Processos</h2>
+            <mat-form-field *ngIf="searchButton" fxFlex>
+                <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
+            </mat-form-field>
+            <div class="buttons" fxLayoutAlign="start center">
+                <button mat-icon-button (click)="searchButton = !searchButton">
+                    <mat-icon aria-label="Pesquisar Processo">search</mat-icon>
+                </button>
+                <button mat-icon-button (click)="expandPanel(matExpansionPanel)">
+                    <mat-icon aria-label="Filtrar lista de tesoureiro">filter_list</mat-icon>
+                </button> 
+            </div>
+        </div>
+
+        <mat-accordion class="example-headers-align" #matExpansionPanel>
+            <mat-expansion-panel #matExpansionPanel hideToggle="true">
+                <div fxLayout="{{ layout }}"  (window:resize)="onResize($event)">
+                    <mat-list flex="auto" class="margin-search" *ngIf="authService.getCurrentUser().idSchool == 0">
+                        <h3 mat-subheader style="color: #000">ESCOLAS</h3>
+                        <mat-divider></mat-divider>
+                        <mat-list-item *ngFor="let s of schools">
+                            <button mat-button (click)="filterBySchool(s.id)">({{ s.id }}) {{ s.name }}</button>
+                        </mat-list-item>
+                    </mat-list>
+                    <mat-list flex="auto" class="margin-search">
+                        <h3 mat-subheader style="color: #000">STATUS</h3>
+                        <mat-divider></mat-divider>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(1)">Aguardando Início</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(2)">Em Análise</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(3)">Pendência</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(4)">Aguardando Vaga</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(5)">Bolsa Concedida (50%)</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(6)">Bolsa Concedida (100%)</button>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <button mat-button (click)="filterByStatus(7)">Indeferida</button>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+            </mat-expansion-panel>             
+        </mat-accordion>
+
+        <mat-divider></mat-divider>
+        <div fxFlex>
+            <div class="header">
+                <mat-list>
+                    <mat-list-item>
+                        <h3 matLine fxLayout="row">
+                            <div fxLayout="row" fxFlex>
+                                <span *ngIf="showSchool" fxFlex="40%">Escola</span>
+                                <span fxFlex="50%">Aluno</span>
+                                <span fxFlex="150px" fxFlexAlign="center">Protocolo</span>
+                                <span fxFlex="180px" fxFlexAlign="center">Status</span>
+                            </div>
+                        </h3>
+                    </mat-list-item>
+                </mat-list>
+                <mat-divider></mat-divider>
+            </div>
+            <div layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
+                <mat-accordion>
+                    <div *ngFor="let process of (processes$ | async ); index as i">
+                        <mat-expansion-panel hideToggle *ngIf="i <= showList">
+                            <mat-expansion-panel-header>
+                                <!-- <mat-panel-title *ngIf="showSchool" fxFlex="38%">
+                                    {{ process.student.school.name }}
+                                </mat-panel-title> -->
+                                <mat-panel-description fxLayout="row" fxFlex>
+                                    <span *ngIf="showSchool" fxFlex="38%" style="white-space: nowrap;">
+                                        {{ process.student.school.name }}
+                                    </span>
+                                    <span fxFlex="50%" style="white-space: nowrap;">
+                                      {{ process.student.name }}
+                                    </span>
+                                    <span fxFlex="150px" fxFlexAlign="center">
+                                      {{ process.protocol }}
+                                    </span>
+                                    <span fxFlex="180px" fxFlexAlign="center">
+                                      {{ process.statusString }}
+                                    </span>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-list>
+                                <h2 matSubheader>Informações do Processo</h2>
+                                <mat-list-item fxLayout="row" style="height: auto">
+                                    <div fxLayout="column" fxFlex matLine>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Documentos pessoais:</b> {{ process.isPersonalDocuments ? "Enviado" : "Não Enviado" }}</span>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Declaração do imposto de renda:</b> {{ process.isIR ? "Enviado" : "Não Enviado" }}</span>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Carteira de trabalho:</b> {{ process.isCTPS ? "Enviado" : "Não Enviado" }}</span>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Comprovante de rendimentos:</b> {{ process.isIncome ? "Enviado" : "Não Enviado" }}</span>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Comprovante de despesas:</b> {{ process.isExpenses ? "Enviado" : "Não Enviado" }}</span>
+                                        <span style="white-space: normal;" class="text-bold" class="details-title"><b>Comprovante acadêmico:</b> {{ process.isAcademic ? "Enviado" : "Não Enviado" }}</span>
+                                        <!-- <br/>
+                                        <span class="text-bold" class="details-title"><b>RC estudante: </b>{{ process.student.rc }}</span>
+                                        <br/>
+                                        <span class="text-bold" class="details-title"><b>Responsável: </b>{{ process.student.responsible.name }}</span>
+                                        <span class="text-bold" class="details-title"><b>CPF: </b>{{ process.student.responsible.cpf }}</span>
+                                        <span class="text-bold" class="details-title"><b>E-mail: </b>{{ process.student.responsible.email }}</span>
+                                        <span class="text-bold" class="details-title"><b>Telefone: </b>{{ process.student.responsible.phone }}</span>
+                                        <br/> -->
+                                        <span style="white-space: normal;" *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }}</span>
+                                        <span style="white-space: normal;" *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title"><b>Matrícula: </b> até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</span>
+                                        <span style="white-space: normal;" *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title"><b>{{ process.motiveReject }}: </b>{{ getMotiveToReject(process.motiveReject) }}</span>
+                                    </div>
+                                </mat-list-item>
+                            </mat-list>
+                            <mat-action-row>
+                                <button *ngIf="process.status == 1" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="toWaiting([process])">INICIAR</button>
+                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3)" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency([process])">PENDÊNCIA</button>
+                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3 || process.status == 4)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu"><mat-icon>list</mat-icon> INDEFERIR</button>
+                                <mat-menu #menu="matMenu">
+                                    <button (click)="toReject([process], 1)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.">Acadêmico</button>
+                                    <button (click)="toReject([process], 2)" mat-menu-item matTooltip="Indeferido em virtude de pendências junto ao setor financeiro.">Financeiro</button>
+                                    <button (click)="toReject([process], 3)" mat-menu-item matTooltip="Indeferido em virtude da renda familiar não se enquadrar no perfil de carência apropriado à avaliação correspondente.">Renda</button>
+                                    <button (click)="toReject([process], 4)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos disciplinares levados em conta para o indeferimento.">Disciplinar</button>
+                                    <button (click)="toReject([process], 5)" mat-menu-item matTooltip="Indeferido pela apresentação da documentação inconsistente à análise correspondente.">Documentação</button>
+                                  </mat-menu>
+                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3 || process.status == 4)" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove([process])">APROVAR</button>
+                                <button *ngIf="process.status == 1" mat-button color="primary" matTooltip="Editar" (click)="toWaiting([process])">EDITAR</button>
+                            </mat-action-row>
+                        </mat-expansion-panel>
+                    </div>
+                </mat-accordion>
+            </div>
+            <br/>
+        </div>
+    </div>
+</div>
+<br/>

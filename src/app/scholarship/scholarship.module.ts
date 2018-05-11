@@ -7,6 +7,9 @@ import { ScholarshipRoutingModule } from './scholarship-routing.module';
 import { MatCardModule, MatGridListModule } from '@angular/material';
 import { ScholarshipService } from './scholarship.service';
 import { ProcessFormComponent } from './components/process-form/process-form.component';
+import { ProcessDataComponent } from './components/process-data/process-data.component';
+import { PendencyComponent } from './components/pendency/pendency.component';
+import { VacancyComponent } from './components/vacancy/vacancy.component';
 
 @NgModule({
   imports: [
@@ -16,8 +19,18 @@ import { ProcessFormComponent } from './components/process-form/process-form.com
     ScholarshipRoutingModule
   ],
   providers:[
-    ScholarshipService    
+    ScholarshipService
   ],
-  declarations: [ScholarshipComponent, ProcessFormComponent]
+  declarations: [
+    ScholarshipComponent,
+    ProcessFormComponent,
+    ProcessDataComponent,
+    PendencyComponent,
+    VacancyComponent
+  ],
+  entryComponents: [
+    PendencyComponent,
+    VacancyComponent
+  ]
 })
 export class ScholarshipModule { }
