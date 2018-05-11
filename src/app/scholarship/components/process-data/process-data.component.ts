@@ -122,8 +122,20 @@ export class ProcessDataComponent implements OnInit {
 
   filterBySchool(id, index){
     this.schoolsSelecteds[index].selected = !this.schoolsSelecteds[index].selected;
+    this.showSchool = this.isManySchoolsSelecteds();
     this.searchProcess(this.searchString, false, true);
   }
+
+  isManySchoolsSelecteds(){
+    let totalSelected = 0;
+    this.schoolsSelecteds.forEach(item => {
+      if(item.selected)
+        totalSelected++;
+    });
+    debugger;
+    return totalSelected > 1;
+  }
+
   filterByStatus(i){
     this.statusSelecteds[i-1].selected = !this.statusSelecteds[i-1].selected;
     this.searchProcess(this.searchString, true, false);
