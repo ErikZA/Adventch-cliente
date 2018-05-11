@@ -70,7 +70,7 @@ export class ScholarshipService {
 
   savePendency(pendency): Observable<Process> {
     let url = '/scholarship/Process/savePendency/';
-    let processPendency = {
+    let processPendency: any = {
       id: this.processSelected.id,
       pendency: pendency,
       user: this.auth.getCurrentUser().identifier,

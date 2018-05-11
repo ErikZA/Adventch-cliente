@@ -9,6 +9,8 @@ import { map } from 'rxjs/operator/map';
 import { SidenavService } from '../../../core/services/sidenav.service';
 import { Router } from '@angular/router';
 import { Process } from '../../models/process';
+import { AuthService } from '../../../shared/auth.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-process-form',
@@ -67,7 +69,7 @@ export class ProcessFormComponent implements OnInit {
     label: 'Rendimento Acadêmico',
     options:  ['Boletim do último bimestre cursado', 'Histórico escolar']
   };
-  checkBoxList: any = [this.personal, this.ir, this.ctps, this.income, this.expenses];
+  checkBoxList: any = [this.personal, this.ir, this.ctps, this.income, this.expenses, this.academic];
 
 
 
@@ -76,17 +78,20 @@ export class ProcessFormComponent implements OnInit {
     private scholarshipService: ScholarshipService,
     private sidenavService: SidenavService,
     private router: Router,
+    private authService: AuthService,
+    public snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
     this.initForm();
     this.formProcess.get('cpf').valueChanges.subscribe(cpf => {
       this.responsible = new Responsible();
+      this.student = new Student();
       if (!this.formProcess.get('cpf').hasError('pattern')) {
-        this.scholarshipService.getResponsible(205, cpf).subscribe(responsible => {
+        this.scholarshipService.getResponsible(Number(this.scholarshipService.schoolSelected), cpf).subscribe(responsible => {
           this.responsible = Object.assign(this.responsible, responsible as Responsible);
           this.setpatchValuesResponsible();
-          if (!responsible) {
+          if (responsible) {
             this.filterStudentsChildren$ = this.scholarshipService.getChildrenStudents(responsible.id);
           }
         });
@@ -146,18 +151,27 @@ export class ProcessFormComponent implements OnInit {
   }
 
   saveProcess() {
-    let data = {
-      responsibleId: 0 || this.responsible.id,
-      studentId: 0 || this.student.id,
-      schoolId: 205,
-      ...this.formProcess.value,
-      ...this.formCheckDocuments.value
-    };
-    this.scholarshipService.postProcess(data).subscribe(x =>{
-      console.log('foiiiiiiii');
+    this.formSave = true;
+    if (this.formProcess.valid && this.formCheckDocuments.errors === null) {
+      let data = {
+        responsibleId: this.responsible.id === undefined ? 0 : this.responsible.id,
+        studentId: this.student.id === undefined ? 0 : this.student.id,
+        schoolId: Number(this.scholarshipService.schoolSelected),
+        status: 1,
+        userId: this.authService.getCurrentUser().identifier,
+        ...this.formProcess.value,
+        ...this.formCheckDocuments.value,
 
-    }, () => {
-      console.log('nao foiiii');
-    });
+      };
+      console.log(data);
+
+      this.scholarshipService.postProcess(data).subscribe(x =>{
+        this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });
+        this.sidenavService.close();
+      }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
+      });
+    }
   }
 }
