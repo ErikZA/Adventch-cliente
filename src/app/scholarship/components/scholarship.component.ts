@@ -40,6 +40,7 @@ export class ScholarshipComponent implements OnInit {
     });
     this.getSchools();
     this.sidenavService.setSidenav(this.sidenavRight);    
+    this.getData();
     this.scholarshipService.refresh$.subscribe((refresh: boolean) => { 
       this.getData();
     });
