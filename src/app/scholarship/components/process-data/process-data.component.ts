@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Treasurer } from '../../../treasury/models/treasurer';
 import { Observable } from 'rxjs/Observable';
@@ -9,11 +9,12 @@ import { Responsible } from '../../models/responsible';
 import { ScholarshipService } from '../../scholarship.service';
 import { ScholarshipComponent } from '../scholarship.component';
 import { AuthService } from '../../../shared/auth.service';
-import { MatDialogRef, MatDialog, MatSnackBar, MatExpansionPanel, matExpansionAnimations } from '@angular/material';
+import { MatDialogRef, MatDialog, MatSnackBar, MatExpansionPanel, matExpansionAnimations, MatSidenav } from '@angular/material';
 import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
 import { School } from '../../models/school';
 import { forEach } from '@angular/router/src/utils/collection';
+import { SidenavService } from '../../../core/services/sidenav.service';
 
 @Component({
   selector: 'app-process-data',
@@ -21,6 +22,8 @@ import { forEach } from '@angular/router/src/utils/collection';
   styleUrls: ['./process-data.component.scss']
 })
 export class ProcessDataComponent implements OnInit {
+  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
+  
   searchButton: boolean = false;
   search$ = new Subject<string>();
   searchString: string = '';
@@ -44,7 +47,8 @@ export class ProcessDataComponent implements OnInit {
     public scholarshipService: ScholarshipService,
     public authService: AuthService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private sidenavService: SidenavService,
   ) { }
 
   ngOnInit() {
@@ -54,6 +58,8 @@ export class ProcessDataComponent implements OnInit {
     this.search$.subscribe(search => {
       this.searchProcess(search, false, false);
     });
+    debugger;
+    this.sidenavService.setSidenav(this.sidenavRight);
   }
 
   getData(){

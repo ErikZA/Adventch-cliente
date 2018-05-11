@@ -44,7 +44,6 @@ export class ScholarshipComponent implements OnInit {
 
   closeSidenav() {
     this.sidenavRight.close();
-    this.router.navigate(['bolsas/processos']);
     this.getData();
   }
 

@@ -9,8 +9,10 @@ import { ProcessDataComponent } from './components/process-data/process-data.com
 
 const routes: Routes = [
   { path: 'bolsas', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
-    { path: 'dashboard', component: ScholarshipComponent },
-    { path: 'processos', component: ScholarshipComponent, children: [
+    { path: 'dashboard', component: ScholarshipComponent, children:[
+      { path: 'novo', component: ProcessFormComponent }
+    ]},
+    { path: 'processos', component: ProcessDataComponent, children: [
       { path: 'novo', component: ProcessFormComponent }
     ]}
   ]}

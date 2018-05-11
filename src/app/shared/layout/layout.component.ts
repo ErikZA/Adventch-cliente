@@ -31,6 +31,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   subscribe1: Subscription;
   lstUnits: Unit[] = new Array<Unit>();
   unit: Unit;
+  urlScholarship: String;
 
   constructor(
     private authService: AuthService,
@@ -58,6 +59,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   logoff() {
     this.authService.logoff();
+  }
+
+  getUrlScholarship(){
+    return this.router.url.replace("/novo", "") + '/novo';
   }
 
   updateCurrentNav(nav: string) {

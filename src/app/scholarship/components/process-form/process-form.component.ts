@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { ScholarshipService } from '../../scholarship.service';
@@ -10,7 +10,8 @@ import { SidenavService } from '../../../core/services/sidenav.service';
 import { Router } from '@angular/router';
 import { Process } from '../../models/process';
 import { AuthService } from '../../../shared/auth.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatSidenav } from '@angular/material';
+import { ScholarshipComponent } from '../scholarship.component';
 
 @Component({
   selector: 'app-process-form',
@@ -19,6 +20,8 @@ import { MatSnackBar } from '@angular/material';
 })
 export class ProcessFormComponent implements OnInit {
 
+  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
+  
   formProcess: FormGroup;
   formCheckDocuments: FormGroup;
   responsible: Responsible;
@@ -70,19 +73,19 @@ export class ProcessFormComponent implements OnInit {
     options:  ['Boletim do último bimestre cursado', 'Histórico escolar']
   };
   checkBoxList: any = [this.personal, this.ir, this.ctps, this.income, this.expenses, this.academic];
-
-
-
+  
   constructor(
     private formBuilder: FormBuilder,
     private scholarshipService: ScholarshipService,
     private sidenavService: SidenavService,
     private router: Router,
     private authService: AuthService,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    public dash: ScholarshipComponent
   ) { }
 
   ngOnInit() {
+    console.log('teste');
     this.initForm();
     this.formProcess.get('cpf').valueChanges.subscribe(cpf => {
       this.responsible = new Responsible();
@@ -101,6 +104,7 @@ export class ProcessFormComponent implements OnInit {
         this.setpatchValuesResponsible();
       }
     });
+    this.sidenavService.setSidenav(this.sidenavRight);
   }
 
   filter(val: string): Student[] {
@@ -158,7 +162,7 @@ export class ProcessFormComponent implements OnInit {
         studentId: this.student.id === undefined ? 0 : this.student.id,
         schoolId: Number(this.scholarshipService.schoolSelected),
         status: 1,
-        userId: this.authService.getCurrentUser().id,
+        userId: this.authService.getCurrentUser().identifier,
         ...this.formProcess.value,
         ...this.formCheckDocuments.value,
       };
@@ -167,6 +171,7 @@ export class ProcessFormComponent implements OnInit {
       this.scholarshipService.postProcess(data).subscribe(x =>{
         this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });
         this.sidenavService.close();
+        this.dash.getData();
       }, err => {
         console.log(err);
         this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });

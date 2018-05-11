@@ -23,8 +23,8 @@ import { VacancyComponent } from './components/vacancy/vacancy.component';
   ],
   declarations: [
     ScholarshipComponent,
-    ProcessFormComponent,
     ProcessDataComponent,
+    ProcessFormComponent,
     PendencyComponent,
     VacancyComponent
   ],
