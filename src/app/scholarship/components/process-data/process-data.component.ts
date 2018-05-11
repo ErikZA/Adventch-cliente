@@ -31,6 +31,7 @@ export class ProcessDataComponent implements OnInit {
   schools: School[] = new Array<School>();
   idSchool: string = '-1';
   showSchool: boolean = false;
+  refresh$ = new Observable<boolean>();
   
   schoolsSelecteds: any[] = new Array<any>();
   statusSelecteds: any[] = new Array<any>();
@@ -58,8 +59,15 @@ export class ProcessDataComponent implements OnInit {
     this.search$.subscribe(search => {
       this.searchProcess(search, false, false);
     });
-    debugger;
+    this.scholarshipService.refresh$.subscribe((refresh: boolean) => { 
+      this.searchProcess('', false, false);
+    });
     this.sidenavService.setSidenav(this.sidenavRight);
+  }
+  
+  closeSidenav() {
+    this.sidenavRight.close();
+    this.getData();
   }
 
   getData(){

@@ -6,17 +6,28 @@ import { Responsible } from './models/responsible';
 import { Student } from './models/student';
 import { Process } from './models/process';
 import { AuthService } from '../shared/auth.service';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class ScholarshipService {
   schoolSelected: string = '-1';
   processSelected: Process;
   statusSelected: number = 0;
+  refresh$: Observable<boolean>;
+  public refresh: Subject<boolean>;
+
 
   constructor(
     private http: HttpClient,
     private auth: AuthService
-  ) { }
+  ) {     
+    this.refresh = new Subject<boolean>();
+    this.refresh$ = this.refresh.asObservable();
+  }
+
+  update(t){
+    this.refresh = t;
+  }
 
   updateSchool(id){
     this.schoolSelected = id;

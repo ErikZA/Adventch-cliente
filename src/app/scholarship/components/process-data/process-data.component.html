@@ -1,3 +1,11 @@
+<mat-sidenav fxLayout="column" #sidenavRight mode="side" align="end" class="sidenav-right mat-elevation-z4" (keydown.esc)="closeSidenav()" [class.mat-drawer-opened]="sidenavRight.opened" [class.mat-drawer-closed]="!sidenavRight.opened">
+    <button mat-icon-button type="button" matTooltip="Fechar" (click)="closeSidenav()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div>
+        <router-outlet></router-outlet>
+    </div>
+</mat-sidenav>
 <div class="mat-elevation-z2" fxLayoutAlign="center">
     <div fxFlex="95%">
         <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">

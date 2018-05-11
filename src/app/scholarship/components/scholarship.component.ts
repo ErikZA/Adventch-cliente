@@ -39,7 +39,10 @@ export class ScholarshipComponent implements OnInit {
       school: new FormControl()
     });
     this.getSchools();
-    this.sidenavService.setSidenav(this.sidenavRight);
+    this.sidenavService.setSidenav(this.sidenavRight);    
+    this.scholarshipService.refresh$.subscribe((refresh: boolean) => { 
+      this.getData();
+    });
   }
 
   closeSidenav() {
@@ -103,7 +106,6 @@ export class ScholarshipComponent implements OnInit {
         this.schools.push(lst.find(f => f.id == idSchool));
         this.schools$ = Observable.of(this.schools);
         this.scholarshipService.updateSchool(idSchool.toString());
-        //this.scholarshipService.schoolSelected = ;
       }
     });
   }

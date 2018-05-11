@@ -12,16 +12,14 @@ import { Process } from '../../models/process';
 import { AuthService } from '../../../shared/auth.service';
 import { MatSnackBar, MatSidenav } from '@angular/material';
 import { ScholarshipComponent } from '../scholarship.component';
+import { ProcessDataComponent } from '../process-data/process-data.component';
 
 @Component({
   selector: 'app-process-form',
   templateUrl: './process-form.component.html',
   styleUrls: ['./process-form.component.scss']
 })
-export class ProcessFormComponent implements OnInit {
-
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
-  
+export class ProcessFormComponent implements OnInit {  
   formProcess: FormGroup;
   formCheckDocuments: FormGroup;
   responsible: Responsible;
@@ -80,12 +78,10 @@ export class ProcessFormComponent implements OnInit {
     private sidenavService: SidenavService,
     private router: Router,
     private authService: AuthService,
-    public snackBar: MatSnackBar,
-    public dash: ScholarshipComponent
+    public snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
-    console.log('teste');
     this.initForm();
     this.formProcess.get('cpf').valueChanges.subscribe(cpf => {
       this.responsible = new Responsible();
@@ -104,7 +100,6 @@ export class ProcessFormComponent implements OnInit {
         this.setpatchValuesResponsible();
       }
     });
-    this.sidenavService.setSidenav(this.sidenavRight);
   }
 
   filter(val: string): Student[] {
@@ -151,7 +146,6 @@ export class ProcessFormComponent implements OnInit {
 
   closeSidenav() {
     this.sidenavService.close();
-    this.router.navigate(['bolsas/processos']);
   }
 
   saveProcess() {
@@ -166,12 +160,11 @@ export class ProcessFormComponent implements OnInit {
         ...this.formProcess.value,
         ...this.formCheckDocuments.value,
       };
-      console.log(data);
 
       this.scholarshipService.postProcess(data).subscribe(x =>{
         this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });
-        this.sidenavService.close();
-        this.dash.getData();
+        this.closeSidenav();
+        this.scholarshipService.refresh.next(true);
       }, err => {
         console.log(err);
         this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
