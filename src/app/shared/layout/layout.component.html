@@ -60,14 +60,14 @@
                     </mat-expansion-panel-header>
                     <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/tesoureiros']">Tesoureiros</a>
                 </mat-expansion-panel>
-                
+
                 <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!checkPermissionScholarship()" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermissionScholarship()" matTooltipPosition="after">
                     <!--Novo Módulo-->
                     <mat-expansion-panel-header class="background-side-nav">
                         <mat-panel-title [routerLink]="['/bolsas/dashboard']">Bolsas</mat-panel-title>
                     </mat-expansion-panel-header>
                     <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/bolsas/processos']">Processos</a>
-                    <button style="margin: 5px 0 5px 45px" mat-button type="button" class="new-process">Novo Processo</button>
+                    <button style="margin: 5px 0 5px 45px" mat-button type="button" class="new-process" (click)="openSidenav()" routerLink="/bolsas/processos/novo">Novo Processo</button>
                 </mat-expansion-panel>
             </mat-accordion>
         </mat-nav-list>
