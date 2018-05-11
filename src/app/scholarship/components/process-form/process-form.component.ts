@@ -115,7 +115,7 @@ export class ProcessFormComponent implements OnInit {
 
   setpatchValuesResponsible() {
     this.formProcess.patchValue({
-      nameResponsible: this.responsible.name,
+      name: this.responsible.name,
       email: this.responsible.email,
       phone: this.responsible.phone
     });
@@ -158,10 +158,9 @@ export class ProcessFormComponent implements OnInit {
         studentId: this.student.id === undefined ? 0 : this.student.id,
         schoolId: Number(this.scholarshipService.schoolSelected),
         status: 1,
-        userId: this.authService.getCurrentUser().identifier,
+        userId: this.authService.getCurrentUser().id,
         ...this.formProcess.value,
         ...this.formCheckDocuments.value,
-
       };
       console.log(data);
 
