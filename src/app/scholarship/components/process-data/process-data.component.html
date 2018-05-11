@@ -14,40 +14,39 @@
                 </button> 
             </div>
         </div>
-
         <mat-accordion class="example-headers-align" #matExpansionPanel>
             <mat-expansion-panel #matExpansionPanel hideToggle="true">
                 <div fxLayout="{{ layout }}"  (window:resize)="onResize($event)">
                     <mat-list flex="auto" class="margin-search" *ngIf="authService.getCurrentUser().idSchool == 0">
                         <h3 mat-subheader style="color: #000">ESCOLAS</h3>
                         <mat-divider></mat-divider>
-                        <mat-list-item *ngFor="let s of schools">
-                            <button mat-button (click)="filterBySchool(s.id)">({{ s.id }}) {{ s.name }}</button>
+                        <mat-list-item *ngFor="let s of schools; let i = index">
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="idSchool + '' == '-1' || s.id + '' == idSchool" (click)="filterBySchool(s.id, i)">({{ s.id }}) {{ s.name }}</mat-checkbox>
                         </mat-list-item>
                     </mat-list>
                     <mat-list flex="auto" class="margin-search">
                         <h3 mat-subheader style="color: #000">STATUS</h3>
                         <mat-divider></mat-divider>
                         <mat-list-item>
-                            <button mat-button (click)="filterByStatus(1)">Aguardando Início</button>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[0].selected" (click)="filterByStatus(1)">Aguardando Início</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <button mat-button (click)="filterByStatus(2)">Em Análise</button>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[1].selected" (click)="filterByStatus(2)">Em Análise</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <button mat-button (click)="filterByStatus(3)">Pendência</button>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[2].selected" (click)="filterByStatus(3)">Pendência</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <button mat-button (click)="filterByStatus(4)">Aguardando Vaga</button>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[3].selected" (click)="filterByStatus(4)">Aguardando Vaga</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <button mat-button (click)="filterByStatus(5)">Bolsa Concedida (50%)</button>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[4].selected" (click)="filterByStatus(5)">Bolsa Concedida (50%)</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <button mat-button (click)="filterByStatus(6)">Bolsa Concedida (100%)</button>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[5].selected" (click)="filterByStatus(6)">Bolsa Concedida (100%)</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <button mat-button (click)="filterByStatus(7)">Indeferida</button>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" checked="statusSelecteds[6].selected" (click)="filterByStatus(7)">Indeferida</mat-checkbox>
                         </mat-list-item>
                     </mat-list>
                 </div>

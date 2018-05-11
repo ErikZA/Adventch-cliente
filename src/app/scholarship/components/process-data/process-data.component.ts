@@ -13,6 +13,7 @@ import { MatDialogRef, MatDialog, MatSnackBar, MatExpansionPanel, matExpansionAn
 import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
 import { School } from '../../models/school';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-process-data',
@@ -25,7 +26,11 @@ export class ProcessDataComponent implements OnInit {
   searchString: string = '';
   showList: number = 15;
   schools: School[] = new Array<School>();
+  idSchool: string = '-1';
   showSchool: boolean = false;
+  
+  schoolsSelecteds: any[] = new Array<any>();
+  statusSelecteds: any[] = new Array<any>();
 
   processes: Process[] = new Array<Process>();
   processes$: Observable<Process[]>;
@@ -44,36 +49,97 @@ export class ProcessDataComponent implements OnInit {
 
   ngOnInit() {
     this.getData();
+    this.loadSelected();
+    this.setFilters();
     this.search$.subscribe(search => {
-      this.searchProcess(search, 0, 0);
+      this.searchProcess(search, false, false);
     });
   }
 
   getData(){
     this.processes = [];
-    var idSchoolSelected = this.scholarshipService.schoolSelected;
-    this.showSchool = idSchoolSelected == '-1';
-    if(idSchoolSelected == '-1' && this.authService.getCurrentUser().idSchool != 0){
-      idSchoolSelected = this.authService.getCurrentUser().idSchool.toString();
+    this.idSchool = this.scholarshipService.schoolSelected;
+    this.showSchool = this.idSchool == '-1';
+    if(this.idSchool == '-1' && this.authService.getCurrentUser().idSchool != 0){
+      this.idSchool = this.authService.getCurrentUser().idSchool.toString();
       this.showSchool = false;
     }
-
-    this.scholarshipService.getProcess(idSchoolSelected).subscribe((data: Process[]) =>{
+    this.scholarshipService.getProcess(this.idSchool).subscribe((data: Process[]) =>{
       this.processes = Object.assign(this.processes, data as Process[]);
       this.processes.forEach(
         item => {
           item.statusString = this.getStatusToString(item.status);
         }
-      );
-      this.processes$ = Observable.of(this.processes);
+      );      
+      this.processes$ = Observable.of(this.processes);   
+      /*if(this.scholarshipService.statusSelected != 0){
+        this.searchProcess("", this.scholarshipService.statusSelected, this.idSchool);
+        this.scholarshipService.updateStatus(0);
+      }*/
     })
 
+    //get data from schools
     if(this.authService.getCurrentUser().idSchool == 0){
       this.scholarshipService.getSchools().subscribe((data: School[]) => {
         this.schools = Object.assign(this.schools, data as School[]);
+        this.setSchoolsFilters();
       })
     }
+      
   }  
+
+  loadSelected(){
+    this.statusSelecteds.push({id: 1, selected: false});
+    this.statusSelecteds.push({id: 2, selected: false});
+    this.statusSelecteds.push({id: 3, selected: false});
+    this.statusSelecteds.push({id: 4, selected: false});
+    this.statusSelecteds.push({id: 5, selected: false});
+    this.statusSelecteds.push({id: 6, selected: false});
+    this.statusSelecteds.push({id: 7, selected: false});
+  }
+
+  setFilters(){
+    if(this.scholarshipService.statusSelected > 0)
+      this.statusSelecteds[this.scholarshipService.statusSelected-1].selected = true;
+    else{
+      this.statusSelecteds.forEach(item =>{
+        item.selected = true;
+      });
+    }
+  }
+
+  setSchoolsFilters(){
+    this.schoolsSelecteds = this.schools;
+    this.schoolsSelecteds.forEach(item => {
+      if(this.idSchool == '-1')//[Todas]
+        item.selected = true;
+      else if(this.idSchool == item.id)
+        item.selected = true;
+      else
+        item.selected = false;
+    });
+  }
+
+  filterBySchool(id, index){
+    this.schoolsSelecteds[index].selected = !this.schoolsSelecteds[index].selected;
+    this.showSchool = this.isManySchoolsSelecteds();
+    this.searchProcess(this.searchString, false, true);
+  }
+
+  isManySchoolsSelecteds(){
+    let totalSelected = 0;
+    this.schoolsSelecteds.forEach(item => {
+      if(item.selected)
+        totalSelected++;
+    });
+    debugger;
+    return totalSelected > 1;
+  }
+
+  filterByStatus(i){
+    this.statusSelecteds[i-1].selected = !this.statusSelecteds[i-1].selected;
+    this.searchProcess(this.searchString, true, false);
+  }
   
   getStatusToString(status){
     if(status == 1)
@@ -92,21 +158,51 @@ export class ProcessDataComponent implements OnInit {
       return 'Bolsa Indeferida';
   }
 
-  searchProcess(search, idStatus, idSchool) {
-    this.searchString = search;
-    if ((search === '' || search === undefined || search === null) && idStatus != 0 && idSchool != 0) {
-      this.processes$ = Observable.of(this.processes);
-    } else {
+  searchProcess(search, isStatus, isSchool) {
+    this.processes = [];
+    let id = this.authService.getCurrentUser().idSchool.toString();
+    this.scholarshipService.getProcess(id == '0' ? '-1' : id).subscribe((data: Process[]) =>{
+      this.processes = Object.assign(this.processes, data as Process[]);
+      this.processes.forEach(
+        item => {
+          item.statusString = this.getStatusToString(item.status);
+        }
+      );
+      this.searchString = search;
       this.processes$ = Observable.of(this.processes.filter(data => {
-        return (idStatus == 0 ? data.status != idStatus : data.status == idStatus) &&
-          (idSchool == 0 ? data.student.school.id != idSchool : data.student.school.id == idSchool) &&        
+        return (this.searchOnlySchool(data.student.school.id)) &&
+          (this.searchOnlyStatus(data.status)) &&                
           (data.student.name.toLowerCase().indexOf(search) !== -1 || 
           data.student.responsible.name.toLowerCase().indexOf(search) !== -1 || 
           data.student.school.name.toLowerCase().indexOf(search) !== -1 ||
           data.statusString.toLowerCase().indexOf(search) !== -1 ||
           data.protocol.toLowerCase().indexOf(search) !== -1);
       }));
-    }
+    });      
+  }
+
+  searchOnlySchool(idSchoolToFilter){
+    if(idSchoolToFilter == undefined || this.schoolsSelecteds.length == 0)
+      return true;
+    return this.schoolsSelecteds.find(f => f.id == idSchoolToFilter).selected;
+  }
+
+  searchOnlyStatus(idStatusToFilter){
+    if(idStatusToFilter == undefined)
+      return true;
+    return this.statusSelecteds.find(f => f.id == idStatusToFilter).selected;
+  }
+
+
+  searchOnlyText(search, filteredProcess){
+    let filteredProcess2 = filteredProcess.filter(data => {
+      return data.student.name.toLowerCase().indexOf(search) !== -1 || 
+        data.student.responsible.name.toLowerCase().indexOf(search) !== -1 || 
+        data.student.school.name.toLowerCase().indexOf(search) !== -1 ||
+        data.statusString.toLowerCase().indexOf(search) !== -1 ||
+        data.protocol.toLowerCase().indexOf(search) !== -1;
+    });
+    return filteredProcess2;
   }
 
   onScroll() {
@@ -197,13 +293,13 @@ export class ProcessDataComponent implements OnInit {
     this.processes[index] = newProcess;
   }
 
-  filterBySchool(idSchool){
+  /*filterBySchool(idSchool){
     this.searchProcess(this.searchString, 0, idSchool);
-  }
+  }*/
 
-  filterByStatus(idStatus){
+  /*filterByStatus(idStatus){
     this.searchProcess(this.searchString, idStatus, 0);
-  }
+  }*/
 
   expandPanel(matExpansionPanel){
     matExpansionPanel.toggle();

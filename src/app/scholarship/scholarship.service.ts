@@ -9,8 +9,9 @@ import { AuthService } from '../shared/auth.service';
 
 @Injectable()
 export class ScholarshipService {
-  schoolSelected: String = '-1';
+  schoolSelected: string = '-1';
   processSelected: Process;
+  statusSelected: number = 0;
 
   constructor(
     private http: HttpClient,
@@ -23,6 +24,10 @@ export class ScholarshipService {
 
   updateProcess(process){
     this.processSelected = process;
+  }
+
+  updateStatus(status){
+    this.statusSelected = status;
   }
 
   getSchools(): Observable<School[]> {
