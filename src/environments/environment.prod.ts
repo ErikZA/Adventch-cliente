@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:805/api'
+  apiUrl: 'http://api.adven.tech/api'
 };
