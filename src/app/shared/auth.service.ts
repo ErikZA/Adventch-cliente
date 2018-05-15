@@ -29,6 +29,8 @@ export class AuthService {
     if (user) {
       this.currentUser.emit(user);
       this.showApp.emit(true);
+    } else {
+      this.router.navigate(['/login']);
     }
   }
 
@@ -111,7 +113,7 @@ export class AuthService {
 
     for (const permission of unit.permissions) {
       if (permission.module == module)
-        return permission.access;          
+        return permission.access;
     }
     return false;
   }
