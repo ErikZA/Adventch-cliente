@@ -21,7 +21,7 @@ export class ScholarshipComponent implements OnInit {
   columns: any = 4;
   schools$: Observable<School[]>;
   schools: School[] = new Array<School>();
-  idSchool: string = '-1';
+  idSchool = '-1';
   formDashboard: FormGroup;
   processes: Process[] = new Array<Process>();
   processes$: Observable<Process[]>;
@@ -32,79 +32,89 @@ export class ScholarshipComponent implements OnInit {
     public authService: AuthService,
     private router: Router,
     private sidenavService: SidenavService,
-  ) { }
+  ) {
+    if (window.screen.width < 750) {
+      this.columns = 1;
+    }
+  }
 
   ngOnInit() {
     this.formDashboard = new FormGroup({
       school: new FormControl()
     });
     this.getSchools();
-    this.sidenavService.setSidenav(this.sidenavRight);    
+    this.sidenavService.setSidenav(this.sidenavRight);
     this.getData();
-    this.scholarshipService.refresh$.subscribe((refresh: boolean) => { 
+    this.idSchool = this.scholarshipService.schoolSelected;
+    this.scholarshipService.refresh$.subscribe((refresh: boolean) => {
       this.getData();
     });
   }
 
   closeSidenav() {
+    this.scholarshipService.processEdit = new Process();
     this.sidenavRight.close();
     this.getData();
+    this.router.navigate([this.router.url.replace('/novo', '').replace('/editar', '')]);
   }
 
-  getData(){
-    if(this.authService.getCurrentUser().idSchool != 0)
-      this.idSchool = this.authService.getCurrentUser().idSchool.toString();
+  getData() {
+    this.idSchool = this.authService.getCurrentUser().idSchool !== 0 ?
+    this.authService.getCurrentUser().idSchool.toString() : this.scholarshipService.schoolSelected;
     this.processes = [];
-    this.scholarshipService.getProcess(this.idSchool).subscribe((data: Process[]) =>{
+    this.scholarshipService.getProcess(this.idSchool).subscribe((data: Process[]) => {
       this.processes = Object.assign(this.processes, data as Process[]);
       this.processes$ = Observable.of(this.processes);
-    })
+    });
   }
 
-  changeDashboard(){
+  changeDashboard() {
     this.scholarshipService.schoolSelected = this.idSchool;
     this.getData();
   }
 
-  redirectToProcess(idStatus){
+  redirectToProcess(idStatus) {
     this.scholarshipService.updateStatus(idStatus);
     this.router.navigate(['/bolsas/processos']);
   }
 
-  getTotalByStatus(idStatus){
-    if(this.processes.length == 0)
+  getTotalByStatus(idStatus) {
+    if (this.processes.length === 0) {
       return 0;
-    let filteredItens = this.processes.filter(f => {return f.status == idStatus});
+    }
+    const filteredItens = this.processes.filter(f => f.status === idStatus);
     return filteredItens.length;
   }
 
-  getPercentByStatus(idStatus){
-    if(this.processes.length == 0)
+  getPercentByStatus(idStatus) {
+    if (this.processes.length === 0) {
       return 0;
-    let filteredItens = this.processes.filter(f => {return f.status == idStatus});
+    }
+    const filteredItens = this.processes.filter(f => f.status === idStatus);
     return (filteredItens.length / this.processes.length * 100);
   }
 
   onResize(event) {
     const element = event.target.innerWidth;
-    if(element > 750)
-      this.columns = 4
-    else
-      this.columns = 1
+    if (element > 750) {
+      this.columns = 4;
+    } else {
+      this.columns = 1;
+    }
   }
 
-  getSchools(){
+  getSchools() {
     this.schools = [];
-    this.scholarshipService.getSchools().subscribe((data: School[]) =>{
-      var idSchool = this.authService.getCurrentUser().idSchool;
-      if(idSchool == 0){
+    this.scholarshipService.getSchools().subscribe((data: School[]) => {
+      const idSchool = this.authService.getCurrentUser().idSchool;
+      if (idSchool === 0) {
         this.schools = Object.assign(this.schools, data as School[]);
         this.schools$ = Observable.of(this.schools);
-        this.scholarshipService.updateSchool('-1');
-      }else{
-        var lst = Object.assign(this.schools, data as School[]);
+        // this.scholarshipService.updateSchool('-1');
+      } else {
+        const lst = Object.assign(this.schools, data as School[]);
         this.schools = [];
-        this.schools.push(lst.find(f => f.id == idSchool));
+        this.schools.push(lst.find(f => f.id === idSchool));
         this.schools$ = Observable.of(this.schools);
         this.scholarshipService.updateSchool(idSchool.toString());
       }
@@ -113,6 +123,6 @@ export class ScholarshipComponent implements OnInit {
   compareIds(id1: any, id2: any): boolean {
     const a1 = id1;
     const a2 = id2;
-    return a1 == a2;
+    return a1 === a2;
   }
 }

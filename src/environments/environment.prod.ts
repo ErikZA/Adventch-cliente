@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://api.adven.tech/api'
+  apiUrl: 'http://adventech-api.azurewebsites.net/api'
 };

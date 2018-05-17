@@ -22,11 +22,12 @@ import { ScholarshipService } from '../../scholarship/scholarship.service';
 })
 export class LayoutComponent implements OnInit, OnDestroy {
 
+  @ViewChild('sidenav') navMenu: MatDrawer;
   @ViewChild('drawerR') nav: MatDrawer;
   subscribe: Subscription;
-  isMobile: boolean = false;
-  isOpen: boolean = true;
-  get year(): number { return new Date().getFullYear() };
+  isMobile = false;
+  isOpen = true;
+  get year(): number { return new Date().getFullYear(); }
   dialogRef: MatDialogRef<ChangePasswordComponent>;
   subscribe1: Subscription;
   lstUnits: Unit[] = new Array<Unit>();
@@ -34,7 +35,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   urlScholarship: String;
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private media: ObservableMedia,
     private dialog: MatDialog,
     private router: Router,
@@ -45,11 +46,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private sidenavService: SidenavService
   ) { }
 
+  redirectToDashboard() {
+    this.router.navigate(['/bolsas/dashboard']);
+  }
+
+
   ngOnInit() {
     this.getUnits();
     this.subscribe = this.media.subscribe((change: MediaChange) => {
-      this.isMobile = (change.mqAlias == 'xs');
-      this.isOpen = !(this.isMobile || (change.mqAlias == 'sm') || (change.mqAlias == 'md'));
+      this.isMobile = (change.mqAlias === 'xs');
+      this.isOpen = !(this.isMobile || (change.mqAlias === 'sm') || (change.mqAlias === 'md'));
     });
   }
 
@@ -61,8 +67,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.authService.logoff();
   }
 
-  getUrlScholarship(){
-    return this.router.url.replace("/novo", "") + '/novo';
+  getUrlScholarship() {
+    return this.router.url.replace('/novo', '') + '/novo';
   }
 
   updateCurrentNav(nav: string) {
@@ -75,32 +81,34 @@ export class LayoutComponent implements OnInit, OnDestroy {
       height: '500px'
     });
     this.dialogRef.afterClosed().subscribe(result => {
-      if (!result) return;
+      if (!result) { return; }
     });
   }
 
-  getUnits(){
-    var user = JSON.parse(localStorage.getItem('currentUser'));
+  getUnits() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
     this.unit = this.authService.getCurrentUnit();
-    this.subscribe1 = this.sharedService.getUnits(user.identifier).subscribe((data: Unit[]) =>{
+    this.subscribe1 = this.sharedService.getUnits(user.identifier).subscribe((data: Unit[]) => {
       this.lstUnits = Object.assign(this.lstUnits, data as Unit[]);
-      if(this.unit == null)
+      if (this.unit == null) {
         this.unit = this.lstUnits[0];
+      }
       this.authService.setCurrentUnit(this.unit);
     });
 
   }
 
-  updateUnit(unit){
+  updateUnit(unit) {
     this.unit = unit;
     this.authService.setCurrentUnit(unit);
     this.cd.detectChanges();
-    if(!this.authService.checkAccess(this.router.url, unit))
+    if (!this.authService.checkAccess(this.router.url, unit)) {
       this.router.navigate(['/']);
+    }
   }
 
   public isRouteActive(route) {
-    return this.router.url.indexOf(route) != -1;
+    return this.router.url.indexOf(route) !== -1;
   }
 
   public checkPermission(module: Modules) {
@@ -111,21 +119,25 @@ export class LayoutComponent implements OnInit, OnDestroy {
       else
         return false
     */
-    if(this.unit == undefined)
+    if (this.unit === undefined) {
       return false;
+    }
     for (const permission of this.unit.permissions) {
-      if (permission.module == module) {
+      if (permission.module === module) {
         return permission.access;
       }
       return false;
     }
   }
 
-  public checkPermissionScholarship(){
+  public checkPermissionScholarship() {
     return this.authService.getCurrentUser().isScholarship;
   }
 
   openSidenav() {
+    if (!this.isOpen) {
+      this.navMenu.close();
+    }
     this.sidenavService.open();
   }
 }

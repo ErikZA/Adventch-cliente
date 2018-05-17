@@ -19,4 +19,11 @@ export class SharedService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+
+  generateReport(data){    
+    let url = '/shared/generateReport';
+    return this.http
+      .post(url, data)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 }

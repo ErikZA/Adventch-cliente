@@ -14,15 +14,22 @@
     </mat-menu>
     <span class="fill-space"></span>
     <div fxLayout="row" fxLayoutAlign="end">
-        <button mat-button [matMenuTriggerFor]="appMenuSoftware" *ngIf="lstUnits.length > 1">
-            <span fxShow fxHide.xs>{{ unit.name }}</span><mat-icon class="margin-left-10">business</mat-icon>
+        <button mat-button [matMenuTriggerFor]="appMenuSoftware" *ngIf="lstUnits.length > 1" fxShow fxHide.xs>
+            <span>{{ unit.name }}</span><mat-icon class="margin-left-10">business</mat-icon>
         </button>
-        <button mat-button *ngIf="lstUnits.length == 1" disabled style="color:rgb(255, 255, 255);">
-            <span fxShow fxHide.xs>{{ unit.name }}</span><mat-icon class="margin-left-10">business</mat-icon>
+        <button mat-button *ngIf="lstUnits.length == 1" disabled style="color:rgb(255, 255, 255);" fxShow fxHide.xs>
+          <span>{{ unit.name }}</span><mat-icon class="margin-left-10">business</mat-icon>
         </button>
+        <button mat-icon-button [matMenuTriggerFor]="appMenuSoftware" *ngIf="lstUnits.length > 1" fxHide fxShow.xs>
+            <mat-icon>business</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="lstUnits.length == 1" disabled style="color:rgb(255, 255, 255);" fxHide fxShow.xs>
+            <mat-icon>business</mat-icon>
+        </button>
+
         <button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
-          <!--<mat-icon class="mat-36" *ngIf="app.currentUser.photoDate === ''">account_circle</mat-icon>
-              <img class="material-icons mat-36 circle-18" src="{{app.currentUser.photoUrl}}?size=36" *ngIf="app.currentUser.photoDate !== ''">-->
+          <mat-icon>account_circle</mat-icon>
+              <!-- <img class="material-icons mat-36 circle-18" src="{{app.currentUser.photoUrl}}?size=36" *ngIf="app.currentUser.photoDate !== ''">-->
         </button>
         <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
           <table style="line-height: normal; text-align: right;">
@@ -62,19 +69,21 @@
                         <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/tesoureiros']">Tesoureiros</a>
                     </mat-expansion-panel>
                 </div>
-                <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!checkPermissionScholarship()" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermissionScholarship()" matTooltipPosition="after">
-                    <!--Novo Módulo-->
-                    <mat-expansion-panel-header class="background-side-nav">
-                        <mat-panel-title [routerLink]="['/bolsas/dashboard']">Bolsas de Estudo</mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/bolsas/processos']">Processos</a>
-                    <button mat-button type="button" class="new-process" [disabled]="scholarshipService.schoolSelected == '-1'" (click)="openSidenav()" [routerLink]="[getUrlScholarship()]" [class.new-process-disabled]="scholarshipService.schoolSelected == '-1'">Novo Processo</button>
-                </mat-expansion-panel>
+                <div *ngIf="checkPermissionScholarship()">
+                    <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!checkPermissionScholarship()" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermissionScholarship()" matTooltipPosition="after">
+                        <!--Novo Módulo-->
+                        <mat-expansion-panel-header class="background-side-nav">
+                            <mat-panel-title (click)="redirectToDashboard()">Bolsas de Estudo</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/bolsas/processos']">Processos</a>
+                        <button mat-button type="button" class="new-process" [disabled]="scholarshipService.schoolSelected == '-1' && authService.getCurrentUser().idSchool == 0" (click)="openSidenav()" [routerLink]="[getUrlScholarship()]" [class.new-process-disabled]="scholarshipService.schoolSelected == '-1' && authService.getCurrentUser().idSchool == 0">Novo Processo</button>
+                    </mat-expansion-panel>
+                </div>
             </mat-accordion>
         </mat-nav-list>
     </mat-drawer>
 
-    <div class="page-container mat-elevation-z4" fxFlex="94%">
+    <div class="page-container mat-elevation-z4" fxFlex.gt-md="94%" fxFlex="100%">
         <router-outlet></router-outlet>
         <div [ngStyle]="{'position': 'relative'}">
             <footer fxLayout="row">
@@ -86,17 +95,4 @@
             </footer>
         </div>
     </div>
-
-    <mat-drawer #drawerR class="sidenav-right mat-elevation-z2" [mode]="isOpen ? 'side' : 'over'" opened="false" align="end">
-        <div class="track-close" fxLayout="row">
-            <button mat-icon-button (click)="drawerR.toggle()">
-                  <mat-icon aria-label="Fechar Sidenav" matTooltip="Fechar">close</mat-icon>
-            </button>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="center">
-            <div fxFlex="95%">
-                <router-outlet name="sidenav"></router-outlet>
-            </div>
-        </div>
-    </mat-drawer>
 </mat-drawer-container>

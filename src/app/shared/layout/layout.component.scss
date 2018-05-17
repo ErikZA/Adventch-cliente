@@ -1,4 +1,5 @@
 @import '../../../theme';
+
 /* main */
 
 .page-container {
@@ -6,7 +7,8 @@
     margin: auto;
     max-height: 200px;
     min-height: calc(100vh - 55px);
-    padding: 16px 16px 0 16px !important;
+    padding: 1% 1% 0 1% !important;
+    overflow-y: auto;
 }
 
 .mat-expansion-panel:not([class*=mat-elevation-z]) {
@@ -141,13 +143,13 @@ footer {
     margin-left: 10px;
 }
 
-.new-process{
-    background-color: #007ac1!important;    
+.new-process {
+    background-color: #007ac1!important;
     margin: 5px 0 5px 45px;
     color: #fff;
 }
 
-.new-process-disabled{
-    background-color: #e0e0e0!important;    
+.new-process-disabled {
+    background-color: #e0e0e0!important;
     color: #8d8d8d;
 }

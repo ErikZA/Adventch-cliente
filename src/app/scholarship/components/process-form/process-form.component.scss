@@ -1,11 +1,167 @@
 .conteiner {
-    margin: 20px 60px;
+    margin: 0px 40px;
+}
+
+.margin-bottom-30 {
+    margin-bottom: 30px;
 }
 
 .margin-bottom-50 {
     margin-bottom: 50px;
 }
 
-.margin-top-80 {
-    margin-top: 80px;
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.title {
+    color: gray;
+}
+
+.mat-error-select {
+    margin-top: -18px !important;
+    margin-bottom: 10px !important;
+}
+
+.mat-error-font {
+    font-size: 13px !important;
+}
+
+.section-form {
+    color: lightslategrey;
+    font-size: 14px;
+}
+
+.padding-form {
+    padding: 1% 4% 0;
+}
+
+.form-responsible {
+    margin-top: 30px;
+}
+
+.card:focus-within {
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: 1px;
+    border-left-width: 4px;
+}
+
+.button-form {
+    padding: 0 4%;
+}
+
+.margin-buttons {
+    margin-left: 1%;
+    margin-right: 4%;
+}
+
+
+/* Tooltip container */
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 0 dotted black;
+}
+
+
+/* Tooltip text */
+
+.tooltip .tooltiptext {
+    display: none;
+    visibility: hidden;
+    background-color: white;
+    color: black;
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: 1px;
+    padding: 5px;
+    border-radius: 6px;
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    right: 125%;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltiptext {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.tooltipTop {
+    bottom: 0;
+}
+
+.tooltipBottom {
+    top: 20%;
+}
+
+.more-information-title {
+    color: lightslategrey;
+    font-size: 13px;
+}
+
+.more-information-content li {
+    min-width: 190px;
+    width: auto;
+    max-width: 700px;
+    font-size: 13px;
+    text-align: justify;
+    line-height: 100%;
+    padding-bottom: 15px;
+}
+
+.more-information-content {
+    padding: 0 15px;
+}
+
+li {
+    white-space: normal;
+    /* CSS3 */
+    white-space: -moz-pre-wrap;
+    /* Firefox */
+    white-space: -pre-wrap;
+    /* Opera <7 */
+    white-space: -o-pre-wrap;
+    /* Opera 7 */
+    word-wrap: break-word;
+}
+
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+
+@media only screen and (min-width: 600px) {
+    .more-information-content li {
+        min-width: 400px;
+    }
+}
+
+
+/* Medium devices (landscape tablets, 768px and up) */
+
+@media only screen and (min-width: 768px) {
+    .more-information-content li {
+        min-width: 500px;
+    }
+}
+
+
+/* Large devices (laptops/desktops, 992px and up) */
+
+@media only screen and (min-width: 992px) {
+    .more-information-content li {
+        min-width: 550px;
+    }
+}
+
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+
+@media only screen and (min-width: 1200px) {
+    .more-information-content li {
+        min-width: 600px;
+    }
 }

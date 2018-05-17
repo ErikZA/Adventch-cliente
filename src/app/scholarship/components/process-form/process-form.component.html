@@ -1,59 +1,85 @@
-<form [formGroup]="formProcess" class="conteiner">
-    <div fxLayout="row" fxLayoutAlign="center" class="margin-bottom-50">
-        <h2>Processo</h2>
-    </div>
-    <div fxLayout="row" fxLayout.lt-md="column" fxFlex fxLayoutGap="70px" fxLayoutGap.gt-sm="100px">
-        <div fxLayout="column" fxFlex>
-            <mat-form-field fxFlex>
-                <input matInput type="text" formControlName="cpf" placeholder="CPF" required mixlength="14" maxlength="14" pattern="[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}">
-                <mat-error *ngIf="formProcess.get('cpf').hasError('required')">Este campo é obrigatório</mat-error>
-                <mat-error *ngIf="formProcess.get('cpf').hasError('pattern')">
-                    Digite um CPF válido
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field fxFlex>
-                <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
-                <mat-error *ngIf="formProcess.get('name').hasError('required')">Este campo é obrigatório</mat-error>
-                <mat-error *ngIf="formProcess.get('name').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
-                <mat-error *ngIf="formProcess.get('name').hasError('maxlenght')">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
-            </mat-form-field>
-            <mat-form-field fxFlex>
-                <input matInput placeholder="Email" formControlName="email" maxlength="200" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
-                <mat-error *ngIf="formProcess.get('email').hasError('pattern')">
-                    Digite um email válido
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field fxFlex>
-                <input type="tel" matInput placeholder="Telefone" formControlName="phone" maxlength="18" InputMask="(99)9 9999-9999" pattern="\([0-9]{2}\)[0-9]{1} [0-9]{4,6}-[0-9]{3,4}$">
-                <mat-error *ngIf="formProcess.get('phone').hasError('pattern')">
-                    Digite um telefone válido
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field class="margin-top-80" fxFlex>
-                <input type="text" placeholder="Aluno" aria-label="Nome do Estudante" required matInput formControlName="nameStudent" [matAutocomplete]="auto">
-                <mat-autocomplete #auto="matAutocomplete">
-                    <mat-option *ngFor="let student of filterStudentsChildren$ | async" [value]="student.name">
-                        ({{ student.rc }}) {{ student.name }}
-                    </mat-option>
-                </mat-autocomplete>
-                <mat-error *ngIf="formProcess.get('nameStudent').hasError('required')">Este campo é obrigatório</mat-error>
-            </mat-form-field>
+<form [formGroup]="formProcess" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px">
+    <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
+        <div fxFlex>
+            <h2 class="title"> {{ labelTitleProcess() }} Processo</h2>
+            <mat-divider></mat-divider>
         </div>
-        <div fxLayout="column" [formGroup]="formCheckDocuments" fxFlex>
-            <div fxLayout="column" fxLayoutAlign="space-between" *ngFor="let check of checkBoxList">
-                <div fxLayout="row">
-                    <mat-checkbox fxFlex required [formControlName]="check.formName" required>{{ check.label }}*</mat-checkbox>
-                    <mat-error align="end" *ngIf="!formCheckDocuments.get(check.formName).value && formSave">Este campo é obrigatório</mat-error>
+    </div>
+    <div fxLayout="row" fxLayout.lt-md="column" fxFlex fxLayoutGap="60px" fxLayoutGap.gt-sm="80px" class="margin-bottom-30">
+        <div fxLayout="column" fxLayoutGap="20px" fxFlex>
+            <div class="padding-form card">
+                <p class="section-form">Responsável</p>
+                <mat-divider></mat-divider>
+                <div class="form-responsible" fxLayout="column" fxLayoutGap="20px" fxLayoutGap.gt-sm="20px" fxFlex>
+                    <mat-form-field fxFlex>
+                        <input matInput type="text" formControlName="cpf" placeholder="CPF" required mixlength="11" maxlength="11" pattern="[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}">
+                        <mat-error *ngIf="formProcess.get('cpf').hasError('required')">Este campo é obrigatório</mat-error>
+                        <mat-error *ngIf="formProcess.get('cpf').hasError('pattern')">Digite um CPF válido</mat-error>
+                        <mat-error *ngIf="formProcess.get('cpf').hasError('validcpfCnpj')">CPF Inválido</mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
+                        <mat-error *ngIf="formProcess.get('name').hasError('required')">Este campo é obrigatório</mat-error>
+                        <mat-error *ngIf="formProcess.get('name').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
+                        <mat-error *ngIf="formProcess.get('name').hasError('maxlenght')">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <input matInput placeholder="Email" formControlName="email" maxlength="200" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+                        <mat-error *ngIf="formProcess.get('email').hasError('pattern')">
+                            Digite um email válido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <input type="tel" matInput placeholder="Telefone" formControlName="phone" maxlength="18" #phone [InputMask]="maskPhone(phone)" pattern="\([0-9]{2}\)[0-9]{1} [0-9]{4,6}-[0-9]{3,4}$">
+                        <mat-error *ngIf="formProcess.get('phone').hasError('pattern')">
+                            Digite um telefone válido
+                        </mat-error>
+                    </mat-form-field>
                 </div>
+            </div>
+            <div class="padding-form card">
+                <p class="section-form">Estudante</p>
+                <mat-divider></mat-divider>
+                <div class="form-responsible" fxLayout="column" fxFlex>
+                    <mat-form-field fxFlex>
+                        <input type="text" placeholder="Aluno" aria-label="Nome do Estudante" required matInput formControlName="nameStudent" [matAutocomplete]="auto" minlength="3">
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let student of filterStudentsChildren$ | async" [value]="student.name">
+                                ({{ student.rc }}) {{ student.name }}
+                            </mat-option>
+                        </mat-autocomplete>
+                        <mat-error *ngIf="formProcess.get('nameStudent').hasError('required')">Este campo é obrigatório</mat-error>
+                        <mat-error *ngIf="formProcess.get('nameStudent').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div fxLayout="column" [formGroup]="formCheckDocuments" class="padding-form margin-top-20" fxFlex>
+            <div fxLayout="column" fxLayoutAlign="space-between" *ngFor="let check of checkBoxList">
+                <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <mat-checkbox required color="primary" [formControlName]="check.formName" required>{{ check.label }}*</mat-checkbox>
+                    <button mat-icon-button class="tooltip" (click)="check.moreAbout = !check.moreAbout" (mouseleave)="check.moreAbout = false" type="button" color="primary">
+                        <mat-icon aria-label="Mais informações">info</mat-icon>
+                        <div fxLayout="column" class="tooltiptext" [ngClass]="{'tooltipTop': check.value === 4 || check.value === 5, 'tooltipBottom': check.value !== 4 && check.value !== 5}"  *ngIf="check.moreAbout" >
+                          <div fxFlex class="more-information-title">Mais informações</div>
+                          <mat-divider></mat-divider>
+                          <ul fxLayout="column" fxFlex="50%" class="more-information-content">
+                            <li fxFlex *ngFor="let item of check.more">{{ item }}</li>
+                          </ul>
+                        </div>
+                    </button>
+                </div>
+                <mat-error class="mat-error-font" align="start" *ngIf="!formCheckDocuments.get(check.formName).value && formSave">Este campo é obrigatório</mat-error>
                 <mat-form-field fxFlex>
                     <mat-select placeholder="Documentos" [formControlName]="check.formOptionsName" multiple>
-                        <mat-option *ngFor="let item of check.options" [value]="item">{{ item }}</mat-option>
+                        <mat-option *ngFor="let item of check.options" [matTooltip]="item" [value]="item">{{ item }}</mat-option>
                     </mat-select>
                 </mat-form-field>
+                <mat-error class="mat-error-select mat-error-font" *ngIf="formCheckDocuments.get(check.formOptionsName).hasError('required') && formSave || formCheckDocuments.get(check.formOptionsName).hasError('required') && formCheckDocuments.get(check.formOptionsName).touched">Este campo é obrigatório</mat-error>
             </div>
         </div>
     </div>
-    <div fxLayout="row" fxLayoutAlign="space-between" class="margin-bottom-50">
+    <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
         <button mat-raised-button type="button" (click)="closeSidenav()">CANCELAR</button>
         <button mat-raised-button type="submit" (click)="saveProcess()">SALVAR</button>
     </div>

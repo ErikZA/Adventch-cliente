@@ -13,6 +13,8 @@ export class ScholarshipService {
   schoolSelected: string = '-1';
   processSelected: Process;
   statusSelected: number = 0;
+  processEdit: Process;
+  scholarshipReport: any;
   refresh$: Observable<boolean>;
   public refresh: Subject<boolean>;
 
@@ -39,6 +41,14 @@ export class ScholarshipService {
 
   updateStatus(status){
     this.statusSelected = status;
+  }
+
+  setReport(any){
+    this.scholarshipReport = any;
+  }
+
+  getReport(){
+    return this.scholarshipReport;
   }
 
   getSchools(): Observable<School[]> {
@@ -78,6 +88,14 @@ export class ScholarshipService {
 
   getProcess(schoolId): Observable<Process[]> {
     let url = '/scholarship/Process/getAllProcesses/' + schoolId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  getProcessById(processId): Observable<Process> {
+    let url = '/scholarship/Process/getProcess/' + processId;
     return this.http
       .get(url)
       .map((res: Response) => res)

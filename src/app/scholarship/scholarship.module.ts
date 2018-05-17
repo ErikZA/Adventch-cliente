@@ -10,6 +10,7 @@ import { ProcessFormComponent } from './components/process-form/process-form.com
 import { ProcessDataComponent } from './components/process-data/process-data.component';
 import { PendencyComponent } from './components/pendency/pendency.component';
 import { VacancyComponent } from './components/vacancy/vacancy.component';
+import { ReportNewProcessComponent } from './components/reports/report-new-process/report-new-process.component';
 
 @NgModule({
   imports: [
@@ -26,11 +27,13 @@ import { VacancyComponent } from './components/vacancy/vacancy.component';
     ProcessDataComponent,
     ProcessFormComponent,
     PendencyComponent,
-    VacancyComponent
+    VacancyComponent,
+    ReportNewProcessComponent
   ],
   entryComponents: [
     PendencyComponent,
-    VacancyComponent
+    VacancyComponent,
+    ReportNewProcessComponent
   ]
 })
 export class ScholarshipModule { }
