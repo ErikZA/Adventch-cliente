@@ -161,25 +161,21 @@ export class ProcessDataComponent implements OnInit {
 
   getStatusToString(status) {
     if (status === 1) {
-      return 'Aguardando início';
-    }
-    if (status === 2) {
+      return 'Aguardando Análise';
+    } else if (status === 2) {
       return 'Em análise';
-    }
-    if (status === 3) {
+    } else if (status === 3) {
       return 'Pendente';
-    }
-    if (status === 4) {
-      return 'Aguardando vaga';
-    }
-    if (status === 5) {
+    } else if (status === 4) {
+      return 'Aguardando Vaga da Bolsa';
+    } else if (status === 5) {
       return 'Vaga liberada (50%)';
-    }
-    if (status === 6) {
+    } else if (status === 6) {
       return 'Vaga liberada (100%)';
-    }
-    if (status === 7) {
+    } else if (status === 7) {
       return 'Bolsa Indeferida';
+    } else if (status === 8) {
+      return 'Não Matriculou';
     }
   }
 
@@ -348,5 +344,14 @@ export class ProcessDataComponent implements OnInit {
     } else {
       this.layout = 'column';
     }
+  }
+
+  toNotEnroll(process): void {
+    this.scholarshipService.updateToStatus(process.id, 8, 'Não Matriculou').subscribe(() => {
+      process.status = 8;
+      this.updateProcess(process);
+    }, err => {
+      this.snackBar.open('Erro ao atualizar o processo, tente novamente.', 'OK', { duration: 5000 });
+    });
   }
 }

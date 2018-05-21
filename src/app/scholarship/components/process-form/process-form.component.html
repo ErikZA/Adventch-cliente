@@ -41,16 +41,27 @@
                 <p class="section-form">Estudante</p>
                 <mat-divider></mat-divider>
                 <div class="form-responsible" fxLayout="column" fxFlex>
+                    <mat-form-field type="number" fxFlex>
+                        <input matInput placeholder="RC" formControlName="rc">
+                    </mat-form-field>
                     <mat-form-field fxFlex>
                         <input type="text" placeholder="Aluno" aria-label="Nome do Estudante" required matInput formControlName="nameStudent" [matAutocomplete]="auto" minlength="3">
                         <mat-autocomplete #auto="matAutocomplete">
-                            <mat-option *ngFor="let student of filterStudentsChildren$ | async" [value]="student.name">
+                            <mat-option *ngFor="let student of filterStudentsChildren$ | async" (onSelectionChange)="setRC(student.rc)" [value]="student.name">
                                 ({{ student.rc }}) {{ student.name }}
                             </mat-option>
                         </mat-autocomplete>
                         <mat-error *ngIf="formProcess.get('nameStudent').hasError('required')">Este campo é obrigatório</mat-error>
                         <mat-error *ngIf="formProcess.get('nameStudent').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
                     </mat-form-field>
+                    <div fxLayout="row" fxLayoutGap="20px">
+                        <label>Porcentagem da Bolsa: </label>
+                        <mat-radio-group formControlName="bagPorcentage">
+                            <mat-radio-button color="primary" value="50">50%</mat-radio-button>
+                            <mat-radio-button color="primary" value="100">100%</mat-radio-button>
+                            <mat-error class="mat-error-font" *ngIf="formProcess.get('bagPorcentage').hasError('required') && formSave">Este campo é obrigatório</mat-error>
+                        </mat-radio-group>
+                    </div>
                 </div>
             </div>
         </div>
