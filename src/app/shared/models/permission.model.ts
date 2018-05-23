@@ -1,7 +1,7 @@
-import { Modules } from './modules.enum';
+import { EModules } from './modules.enum';
 
 export class Permission {
-  public module: Modules;
+  public module: EModules;
   public value: number;
   public access: boolean;
 }

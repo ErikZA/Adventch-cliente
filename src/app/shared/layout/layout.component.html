@@ -61,7 +61,7 @@
         <mat-nav-list id="nav-list-menu" [ngClass]="{'nav-list-mobile': isMobile, 'nav-list-web': !isMobile}">
             <mat-accordion>
                 <div *ngIf="!checkPermissionScholarship()">
-                    <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!checkPermission(1)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermission(1)" matTooltipPosition="after">
+                    <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!checkPermission(6)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermission(1)" matTooltipPosition="after">
                         <!--Novo Módulo-->
                         <mat-expansion-panel-header class="background-side-nav">
                             <mat-panel-title>Tesouraria</mat-panel-title>

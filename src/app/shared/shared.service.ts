@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Rx';
 
 import { User } from './models/user.model';
 import { Unit } from './models/unit.model';
+import { Permission } from './models/permission.model';
 
 @Injectable()
 export class SharedService {
@@ -25,5 +26,14 @@ export class SharedService {
     return this.http
       .post(url, data)
       .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  getPermissions(id, idUser): Observable<Permission[]>{
+    let url = '/shared/getPermissions/' + id + '/' + idUser;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+
   }
 }

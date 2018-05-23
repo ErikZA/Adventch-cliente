@@ -9,7 +9,7 @@ import 'rxjs/add/operator/retry';
 import { User } from './models/user.model';
 import { environment } from './../../environments/environment';
 import { Unit } from './models/unit.model';
-import { Modules } from './models/modules.enum';
+import { EModules } from './models/modules.enum';
 
 @Injectable()
 export class AuthService {
@@ -63,7 +63,7 @@ export class AuthService {
   }
 
   public visibleModule() {
-    let { permissions } = this.getCurrentUnit();
+    /*let { permissions } = this.getCurrentUnit();
     for (const permission of permissions) {
       switch (permission.module) {
         case Modules.Treasury:
@@ -72,7 +72,8 @@ export class AuthService {
           this.router.navigate(['']);
           return false;
       }
-    }
+    }*/
+    console.log('teste');
   }
 
   logoff() {
@@ -101,30 +102,39 @@ export class AuthService {
     return user;
   }
 
-  checkPermission(module: Modules, unit: Unit) {
+  updatePermissions(permissions){
+    let user = this.getCurrentUser();
+    user.permissions = permissions;
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    this.currentUser.emit(user);
+  }
+
+  checkPermission(module: EModules, unit: Unit) {
+  /*
     if(module == Modules.Dashboard)
         return true;
 
     if(module == Modules.Scholarship)
       return this.getCurrentUser().isScholarship;
-
-    if(unit == undefined || module == undefined)
+*/
+return true;
+    /*if(unit == undefined || module == undefined)
       return false;
 
     for (const permission of unit.permissions) {
       if (permission.module == module)
         return permission.access;
     }
-    return false;
+    return false;*/
   }
 
   getModule(url: String){
     if(url.toLowerCase().match("tesouraria"))
-        return Modules.Treasury;
+        return EModules.Treasury;
     if(url.toLowerCase().match("bolsas"))
-      return Modules.Scholarship;
+      return EModules.Scholarship;
     if(url == "/")
-        return Modules.Dashboard;
+        return EModules.General;
     return undefined;
   }
 

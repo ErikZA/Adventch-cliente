@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, ViewChild, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ViewChild, Output } from '@angular/core';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { Router } from '@angular/router';
 
@@ -12,8 +12,9 @@ import { ChangePasswordComponent } from '../../core/components/password/change-p
 import { SharedService } from '../shared.service';
 import { Unit } from '../models/unit.model';
 import { EventEmitter } from 'events';
-import { Modules } from '../models/modules.enum';
+import { EModules } from '../models/modules.enum';
 import { ScholarshipService } from '../../scholarship/scholarship.service';
+import { Permission } from '../models/permission.model';
 
 @Component({
   selector: 'app-layout',
@@ -30,6 +31,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   get year(): number { return new Date().getFullYear(); }
   dialogRef: MatDialogRef<ChangePasswordComponent>;
   subscribe1: Subscription;
+  subscribe2: Subscription;
   lstUnits: Unit[] = new Array<Unit>();
   unit: Unit;
   urlScholarship: String;
@@ -42,7 +44,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     public scholarshipService: ScholarshipService,
     public app: AppComponent,
     public sharedService: SharedService,
-    public cd: ChangeDetectorRef,
     private sidenavService: SidenavService
   ) { }
 
@@ -101,17 +102,25 @@ export class LayoutComponent implements OnInit, OnDestroy {
   updateUnit(unit) {
     this.unit = unit;
     this.authService.setCurrentUnit(unit);
-    this.cd.detectChanges();
     if (!this.authService.checkAccess(this.router.url, unit)) {
       this.router.navigate(['/']);
     }
+
+    debugger;
+    let user = this.authService.getCurrentUser();
+    this.subscribe2 = this.sharedService.getPermissions(user.id, unit.id).subscribe((data: Permission[]) => {
+      user.permissions = Object.assign(user.permissions, data as Permission[]);
+      this.authService.updatePermissions(user.permissions);
+      debugger;
+    })
   }
+
 
   public isRouteActive(route) {
     return this.router.url.indexOf(route) !== -1;
   }
 
-  public checkPermission(module: Modules) {
+  public checkPermission(module: EModules) {
     /*
       Verificar se a unidade atual possui permissão para acessar o modulo
       -unit- pode accesar o -module-
@@ -119,15 +128,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
       else
         return false
     */
+    console.log('teste');
     if (this.unit === undefined) {
       return false;
     }
-    for (const permission of this.unit.permissions) {
+    /*for (const permission of this.unit.permissions) {
       if (permission.module === module) {
         return permission.access;
       }
       return false;
-    }
+    }*/
   }
 
   public checkPermissionScholarship() {

@@ -4,7 +4,7 @@ import { CanActivate, CanLoad, ActivatedRouteSnapshot, RouterStateSnapshot, Rout
 import { Observable } from 'rxjs/Rx';
 import { AuthService } from './auth.service';
 import { User } from './models/user.model';
-import { Modules } from './models/modules.enum';
+import { EModules } from './models/modules.enum';
 import { Unit } from './models/unit.model';
 
 @Injectable()

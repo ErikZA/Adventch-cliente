@@ -1,3 +1,5 @@
+import { Permission } from "./permission.model";
+
 export class User {
   id: number;
   identifier: string;
@@ -7,6 +9,7 @@ export class User {
   isSysAdmin: number;
   isScholarship: boolean;
   idSchool: number;
+  permissions: Permission[]
 
   constructor() { }
 }
