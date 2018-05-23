@@ -66,6 +66,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   logoff() {
     this.authService.logoff();
+    this.subscribe1.unsubscribe();
+    this.subscribe2.unsubscribe();
   }
 
   getUrlScholarship() {
@@ -93,6 +95,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.lstUnits = Object.assign(this.lstUnits, data as Unit[]);
       if (this.unit == null) {
         this.unit = this.lstUnits[0];
+        this.updateUnit(this.unit);
       }
       this.authService.setCurrentUnit(this.unit);
     });
@@ -102,16 +105,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   updateUnit(unit) {
     this.unit = unit;
     this.authService.setCurrentUnit(unit);
-    if (!this.authService.checkAccess(this.router.url, unit)) {
-      this.router.navigate(['/']);
-    }
-
-    debugger;
     let user = this.authService.getCurrentUser();
     this.subscribe2 = this.sharedService.getPermissions(user.id, unit.id).subscribe((data: Permission[]) => {
-      user.permissions = Object.assign(user.permissions, data as Permission[]);
-      this.authService.updatePermissions(user.permissions);
-      debugger;
+      this.authService.updatePermissions(data);
+      if (!this.authService.checkAccess(this.router.url, unit)) {
+        this.router.navigate(['/']);
+      }
     })
   }
 
@@ -120,24 +119,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     return this.router.url.indexOf(route) !== -1;
   }
 
-  public checkPermission(module: EModules) {
-    /*
-      Verificar se a unidade atual possui permissão para acessar o modulo
-      -unit- pode accesar o -module-
-        return true
-      else
-        return false
-    */
-    console.log('teste');
-    if (this.unit === undefined) {
-      return false;
-    }
-    /*for (const permission of this.unit.permissions) {
-      if (permission.module === module) {
-        return permission.access;
-      }
-      return false;
-    }*/
+  public checkPermission(module) {
+    return this.authService.checkPermission(module);
   }
 
   public checkPermissionScholarship() {

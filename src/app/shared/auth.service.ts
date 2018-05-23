@@ -10,6 +10,7 @@ import { User } from './models/user.model';
 import { environment } from './../../environments/environment';
 import { Unit } from './models/unit.model';
 import { EModules } from './models/modules.enum';
+import { Permission } from './models/permission.model';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,7 @@ export class AuthService {
   showApp = new EventEmitter<boolean>();
   showMenu = new EventEmitter<boolean>();
   currentUnit = new EventEmitter<Unit>();
+  permissions: Permission[];
 
   constructor(
     private http: HttpClient,
@@ -103,29 +105,19 @@ export class AuthService {
   }
 
   updatePermissions(permissions){
-    let user = this.getCurrentUser();
-    user.permissions = permissions;
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    this.currentUser.emit(user);
+    this.permissions = permissions;
   }
 
-  checkPermission(module: EModules, unit: Unit) {
-  /*
-    if(module == Modules.Dashboard)
-        return true;
-
-    if(module == Modules.Scholarship)
-      return this.getCurrentUser().isScholarship;
-*/
-return true;
-    /*if(unit == undefined || module == undefined)
+  checkPermission(module) {
+    if(module == 0 || module == 1) //Permissão liberada para "Geral" e "Aplicativos"
+      return true;
+    if(this.permissions == undefined) //Permissão não carregada
       return false;
-
-    for (const permission of unit.permissions) {
-      if (permission.module == module)
-        return permission.access;
+    for (let permission of this.permissions) {
+      if(permission.module == module)
+        return true;
     }
-    return false;*/
+    return false;
   }
 
   getModule(url: String){
@@ -139,6 +131,7 @@ return true;
   }
 
   checkAccess(url: String, unit: Unit){
-    return this.checkPermission(this.getModule(url), unit);
+    debugger;
+    return this.checkPermission(this.getModule(url));
   }
 }

@@ -60,25 +60,21 @@
     <mat-drawer #sidenav class="sidenav-left mat-elevation-z5" [mode]="isOpen ? 'side' : 'over'" [opened]="isOpen">
         <mat-nav-list id="nav-list-menu" [ngClass]="{'nav-list-mobile': isMobile, 'nav-list-web': !isMobile}">
             <mat-accordion>
-                <div *ngIf="!checkPermissionScholarship()">
-                    <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!checkPermission(6)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermission(1)" matTooltipPosition="after">
-                        <!--Novo Módulo-->
-                        <mat-expansion-panel-header class="background-side-nav">
-                            <mat-panel-title>Tesouraria</mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/tesoureiros']">Tesoureiros</a>
-                    </mat-expansion-panel>
-                </div>
-                <div *ngIf="checkPermissionScholarship()">
-                    <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!checkPermissionScholarship()" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="checkPermissionScholarship()" matTooltipPosition="after">
-                        <!--Novo Módulo-->
-                        <mat-expansion-panel-header class="background-side-nav">
-                            <mat-panel-title (click)="redirectToDashboard()">Bolsas de Estudo</mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/bolsas/processos']">Processos</a>
-                        <button mat-button type="button" class="new-process" [disabled]="scholarshipService.schoolSelected == '-1' && authService.getCurrentUser().idSchool == 0" (click)="openSidenav()" [routerLink]="[getUrlScholarship()]" [class.new-process-disabled]="scholarshipService.schoolSelected == '-1' && authService.getCurrentUser().idSchool == 0">Novo Processo</button>
-                    </mat-expansion-panel>
-                </div>
+                <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!this.checkPermission(6)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="this.checkPermission(6)" matTooltipPosition="after">
+                    <!--Novo Módulo-->
+                    <mat-expansion-panel-header class="background-side-nav">
+                        <mat-panel-title>Tesouraria</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/tesoureiros']">Tesoureiros</a>
+                </mat-expansion-panel>
+                <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!this.checkPermission(7)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="this.checkPermission(7)" matTooltipPosition="after">
+                    <!--Novo Módulo-->
+                    <mat-expansion-panel-header class="background-side-nav">
+                        <mat-panel-title (click)="redirectToDashboard()">Bolsas de Estudo</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/bolsas/processos']">Processos</a>
+                    <button mat-button type="button" class="new-process" [disabled]="scholarshipService.schoolSelected == '-1' && authService.getCurrentUser().idSchool == 0" (click)="openSidenav()" [routerLink]="[getUrlScholarship()]" [class.new-process-disabled]="scholarshipService.schoolSelected == '-1' && authService.getCurrentUser().idSchool == 0">Novo Processo</button>
+                </mat-expansion-panel>
             </mat-accordion>
         </mat-nav-list>
     </mat-drawer>

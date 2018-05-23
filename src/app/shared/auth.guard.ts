@@ -25,10 +25,9 @@ export class AuthGuard implements CanActivate, CanLoad {
 
     private checkAccess(route, state?) {
         let user: User = JSON.parse(localStorage.getItem('currentUser'));
-        let unit = this.authService.getCurrentUnit();
         let module = this.authService.getModule(route._routerState.url);
 
-        if(this.authService.checkPermission(module, unit))
+        if(this.authService.checkPermission(module))
             return true;
         if(user == null || user == undefined)
             this.router.navigate(['/login']);
