@@ -93,11 +93,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.unit = this.authService.getCurrentUnit();
     this.subscribe1 = this.sharedService.getUnits(user.identifier).subscribe((data: Unit[]) => {
       this.lstUnits = Object.assign(this.lstUnits, data as Unit[]);
-      if (this.unit == null) {
+      if (this.unit == null) 
         this.unit = this.lstUnits[0];
-        this.updateUnit(this.unit);
-      }
-      this.authService.setCurrentUnit(this.unit);
+      this.updateUnit(this.unit);
     });
 
   }

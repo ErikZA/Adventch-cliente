@@ -75,7 +75,6 @@ export class AuthService {
           return false;
       }
     }*/
-    console.log('teste');
   }
 
   logoff() {
@@ -105,14 +104,18 @@ export class AuthService {
   }
 
   updatePermissions(permissions){
+    let user = this.getCurrentUser();
+    user.permissions = permissions;
+    localStorage.setItem('currentUser', JSON.stringify(user));
     this.permissions = permissions;
   }
 
   checkPermission(module) {
     if(module == 0 || module == 1) //Permissão liberada para "Geral" e "Aplicativos"
       return true;
-    if(this.permissions == undefined) //Permissão não carregada
-      return false;
+    if(this.permissions == undefined) {//Permissão não carregada
+      this.permissions = this.getCurrentUser().permissions;
+    }
     for (let permission of this.permissions) {
       if(permission.module == module)
         return true;
@@ -131,7 +134,6 @@ export class AuthService {
   }
 
   checkAccess(url: String, unit: Unit){
-    debugger;
     return this.checkPermission(this.getModule(url));
   }
 }

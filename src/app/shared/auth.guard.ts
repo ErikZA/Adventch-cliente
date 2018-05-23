@@ -24,6 +24,7 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
 
     private checkAccess(route, state?) {
+        debugger;
         let user: User = JSON.parse(localStorage.getItem('currentUser'));
         let module = this.authService.getModule(route._routerState.url);
 
