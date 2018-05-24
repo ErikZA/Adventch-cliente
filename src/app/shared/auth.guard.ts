@@ -7,10 +7,11 @@ import { User } from './models/user.model';
 import { EModules } from './models/modules.enum';
 import { Unit } from './models/unit.model';
 import { Permission } from './models/permission.model';
-
+import { tokenNotExpired } from 'angular2-jwt';
 @Injectable()
 export class AuthGuard implements CanActivate, CanLoad {
 
+    public permissions: any;
     constructor(
         private authService: AuthService,
         private router: Router
@@ -20,18 +21,26 @@ export class AuthGuard implements CanActivate, CanLoad {
         return this.checkAccess(route, state);
     }
 
-    canLoad(route: Route): boolean | Observable<boolean> | Promise<boolean> {
+    canLoad(route: Route): boolean | Observable<boolean> | Promise<boolean> {        
         return this.checkAccess(route);
     }
 
     private checkAccess(route, state?) {
-        let user: User = JSON.parse(localStorage.getItem('currentUser'));
-        let module = this.authService.getModule(route._routerState.url);
+        if (tokenNotExpired('token')) {
+            let user: User = JSON.parse(localStorage.getItem('currentUser'));          
+            if (user == null || user == undefined){
+                this.router.navigate(['/login']);
+                return false;
+            }
 
-        if(this.authService.checkPermission(module))
+            let module = this.authService.getModule(route._routerState.url);    
+            if (this.authService.checkPermission(module))
+                return true;
+            this.router.navigate(['/']);
             return true;
-        if(user == null || user == undefined)
-            this.router.navigate(['/login']);
-        this.router.navigate(['/']);        
-    }
+        }
+    
+        this.router.navigate(['/login']);
+        return false;
+      }
 }

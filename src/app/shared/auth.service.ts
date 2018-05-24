@@ -105,13 +105,19 @@ export class AuthService {
 
   updatePermissions(permissions){
     this.permissions = permissions;
+    let user = this.getCurrentUser();
+    user.permissions = permissions;
+    localStorage.setItem('currentUser', JSON.stringify(user));
   }
 
   checkPermission(module) {
     if(module == 0 || module == 1) //Permissão liberada para "Geral" e "Aplicativos"
       return true;
-    if(this.permissions == undefined)
-      return false;
+    if(this.permissions == undefined){
+      if(this.getCurrentUser().permissions == undefined)
+        return false;
+      this.permissions = this.getCurrentUser().permissions;
+    }
     for (let permission of this.permissions) {
       if(permission.module == module)
         return true;
@@ -133,8 +139,16 @@ export class AuthService {
     return this.checkPermission(this.getModule(url));
   }
 
-  checkPermissionModule(idUser, idUnit, idModule): Observable<Permission[]>{
-    let url = '/shared/checkPermissionModule/' + idUser + '/' + idUnit + '/' + idModule;
+  getPermissions(): Observable<Permission[]>{
+    let url = '/shared/getPermissions/' + this.getCurrentUser().id + '/' + this.getCurrentUnit().id;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  checkPermissionModule(idModule){
+    let url = '/shared/checkPermissionModule/' + this.getCurrentUser().id + '/' + this.getCurrentUnit().id + '/' + idModule;
     return this.http
       .get(url)
       .map((res: Response) => res)
