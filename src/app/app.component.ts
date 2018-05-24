@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 
 import { User } from './shared/models/user.model';
 import { AuthService } from './shared/auth.service';
+import { MatIconRegistry } from '@angular/material';
 
 @Component({
   selector: 'app-root',
@@ -24,8 +25,10 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private router: Router,
+    private matIconRegistry: MatIconRegistry
     // private translate: TranslateService
   ) {
+    matIconRegistry.registerFontClassAlias('fa');
     // this.translate.addLangs(['en', 'es', 'pt']);
     // translate.setDefaultLang('pt');
     // let browserLang = translate.getBrowserLang();
