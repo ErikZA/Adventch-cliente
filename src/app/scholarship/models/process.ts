@@ -1,7 +1,6 @@
 import { Student } from './student';
 import { EStatus } from './enums';
 import { ProcessDocument } from './processDocument';
-
 export class Process {
   id: number;
   identity: string;
@@ -18,6 +17,6 @@ export class Process {
   pendency: string;
   dateRegistration?: Date;
   motiveReject: string;
-  processDocuments: Array<ProcessDocument>
+  processDocuments: Array<ProcessDocument>;
   constructor() { }
 }

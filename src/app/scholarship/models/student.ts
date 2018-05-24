@@ -1,5 +1,6 @@
 import { Responsible } from "./responsible";
 import { School } from "./school";
+import { StudentSerie } from "./studentSerie";
 
 export class Student {
   id: number;
@@ -7,5 +8,6 @@ export class Student {
   name: string;
   responsible: Responsible;
   school: School;
+  studentSerie: StudentSerie;
   constructor() { }
 }

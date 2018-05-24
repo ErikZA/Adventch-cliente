@@ -7,6 +7,7 @@ import { Student } from './models/student';
 import { Process } from './models/process';
 import { AuthService } from '../shared/auth.service';
 import { Subject } from 'rxjs';
+import { StudentSerie } from './models/studentSerie';
 
 @Injectable()
 export class ScholarshipService {
@@ -160,6 +161,12 @@ export class ScholarshipService {
     return this.http
       .post(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 
+  getStudentSeries(): Observable<StudentSerie[]> {
+    let url = '/scholarship/process/getAllStudentsSeries';
+    return this.http
+      .get(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }

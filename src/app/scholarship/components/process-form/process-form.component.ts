@@ -16,6 +16,7 @@ import { ProcessDataComponent } from '../process-data/process-data.component';
 import { ProcessDocument } from '../../models/processDocument';
 import { ReportNewProcessComponent } from '../reports/report-new-process/report-new-process.component';
 import { CustomValidators } from '../../../core/custom-validators';
+import { StudentSerie } from '../../models/studentSerie';
 
 @Component({
   selector: 'app-process-form',
@@ -32,6 +33,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   formSave: boolean = false;
   dialogRef: MatDialogRef<ReportNewProcessComponent>;
   informations = false;
+  studentsSeries: StudentSerie[] = new Array<StudentSerie>();
 
   personal: any = {
     value: 1,
@@ -101,29 +103,40 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initForm();
+    this.scholarshipService.getStudentSeries().subscribe((data: StudentSerie[]) => {
+      this.studentsSeries = Object.assign(this.studentsSeries, data as StudentSerie[]);
+    });
     this.formProcess.get('cpf').valueChanges.subscribe(cpf => {
       if(cpf == null || cpf == undefined)
         return;
       this.responsible = new Responsible();
-      if (!this.formProcess.get('cpf').hasError('pattern')) {
-        let idSchool = this.scholarshipService.schoolSelected;
-        if(idSchool == '-1' && this.scholarshipService.processEdit != undefined)
-          idSchool = this.scholarshipService.processEdit.student.school.id.toString();
-        this.scholarshipService.getResponsible(Number(idSchool), cpf).subscribe(responsible => {
-          this.responsible = Object.assign(this.responsible, responsible as Responsible);
-          this.setpatchValuesResponsible();
-          if (responsible) {
-            this.scholarshipService.getChildrenStudents(responsible.id).subscribe((data: Student[]) =>{
-              this.studentsChildren = Object.assign(this.studentsChildren, data as Student[]);
-              this.filterStudentsChildren$ = Observable.of(this.studentsChildren);
-            })
-          }
-        });
-      } else {
-        this.setpatchValuesResponsible();
-      }
+      if (!this.formProcess.get('cpf').hasError('pattern')) 
+        this.loadResponsibles(cpf);
+      else 
+        this.setpatchValuesResponsible();      
     });
     this.editProcess();
+  }
+
+  loadResponsibles(cpf){
+    let idSchool = this.scholarshipService.schoolSelected;
+    if(idSchool == '-1' && this.scholarshipService.processEdit != undefined)
+      idSchool = this.scholarshipService.processEdit.student.school.id.toString();
+
+    this.scholarshipService.getResponsible(Number(idSchool), cpf).subscribe(responsible => {
+      this.responsible = Object.assign(this.responsible, responsible as Responsible);
+      this.setpatchValuesResponsible();
+      if (responsible) 
+        this.loadStudentChildres(responsible);
+    });
+  }
+
+  loadStudentChildres(responsible){
+    this.scholarshipService.getChildrenStudents(responsible.id).subscribe((data: Student[]) =>{
+      this.studentsChildren = Object.assign(this.studentsChildren, data as Student[]);
+      this.filterStudentsChildren$ = Observable.of(this.studentsChildren);
+    })
+
   }
 
   ngOnDestroy(){
@@ -155,6 +168,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       email: [null],
       phone: [null],
       nameStudent: [null, Validators.required],
+      studentSerieId: [null, Validators.required]
     });
     this.formCheckDocuments = this.formBuilder.group({
       isPersonalDocuments: [null, Validators.required],
@@ -185,6 +199,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         email: new FormControl({value: process.student.responsible.email, disabled: false}),
         phone: new FormControl({value: process.student.responsible.phone, disabled: false}),
         nameStudent: new FormControl({value: process.student.name, disabled: false}, Validators.required),
+        studentSerieId: new FormControl({value: process.student.studentSerie.id, disabled: false}, Validators.required)
       });
       this.formCheckDocuments = new FormGroup({
         isPersonalDocuments: new FormControl({value: 'true', disabled: true}, Validators.required),
@@ -201,6 +216,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         academicOptions: new FormControl()
       });
       this.setDocumentsSelectes(process.processDocuments);
+      this.loadStudentChildres(process.student.responsible);
     }
   }
 
@@ -228,13 +244,16 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   saveProcess() {
     let isEdit = this.scholarshipService.processEdit != undefined && this.scholarshipService.processEdit.id != undefined;
     this.formSave = true;
+    
     let idScholSelected = this.scholarshipService.schoolSelected;
     if(idScholSelected == '-1' || isEdit)
       idScholSelected = this.scholarshipService.processEdit.student.school.id.toString();
+    
     let studentSelected = this.studentsChildren.filter(item => { return item.name == this.formProcess.value.nameStudent });
     if(isEdit)
       this.responsible = this.scholarshipService.processEdit.student.responsible;
-    if (this.formProcess.valid && this.formCheckDocuments.valid) {
+    
+      if (this.formProcess.valid && this.formCheckDocuments.valid) {
       let data = {
         responsibleId: this.responsible === undefined || this.responsible.id == undefined ? 0 : this.responsible.id,
         studentId: studentSelected == undefined || studentSelected.length == 0 ? 0 : studentSelected[0].id,

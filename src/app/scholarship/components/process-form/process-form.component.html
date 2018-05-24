@@ -49,7 +49,16 @@
                             </mat-option>
                         </mat-autocomplete>
                         <mat-error *ngIf="formProcess.get('nameStudent').hasError('required')">Este campo é obrigatório</mat-error>
-                        <mat-error *ngIf="formProcess.get('nameStudent').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
+                        <mat-error *ngIf="formProcess.get('nameStudent').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>                        
+                    </mat-form-field>
+                    
+                    <mat-form-field>
+                        <mat-select placeholder="Série" formControlName="studentSerieId" required>
+                            <mat-option *ngFor="let serie of studentsSeries" [value]="serie.id">
+                                {{ serie.name }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formProcess.get('studentSerieId').hasError('required')">Este campo é obrigatório</mat-error>
                     </mat-form-field>
                 </div>
             </div>
