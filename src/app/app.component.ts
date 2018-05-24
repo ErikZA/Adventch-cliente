@@ -19,7 +19,7 @@ export class AppComponent implements OnInit, OnDestroy {
   currentUser: User;
   showApp: boolean = false;
 
-  title: string = 'Belagricola';
+  title: string = 'Adven.tech';
 
   constructor(
     private authService: AuthService,

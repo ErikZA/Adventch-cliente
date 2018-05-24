@@ -28,12 +28,11 @@ export class SharedService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getPermissions(id, idUser): Observable<Permission[]>{
-    let url = '/shared/getPermissions/' + id + '/' + idUser;
+  getPermissions(idUser, idUnit): Observable<Permission[]>{
+    let url = '/shared/getPermissions/' + idUser + '/' + idUnit;
     return this.http
       .get(url)
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
-
   }
 }

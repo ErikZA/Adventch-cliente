@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { User } from './models/user.model';
 import { EModules } from './models/modules.enum';
 import { Unit } from './models/unit.model';
+import { Permission } from './models/permission.model';
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanLoad {
@@ -24,7 +25,6 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
 
     private checkAccess(route, state?) {
-        debugger;
         let user: User = JSON.parse(localStorage.getItem('currentUser'));
         let module = this.authService.getModule(route._routerState.url);
 
@@ -32,6 +32,6 @@ export class AuthGuard implements CanActivate, CanLoad {
             return true;
         if(user == null || user == undefined)
             this.router.navigate(['/login']);
-        this.router.navigate(['/']);
+        this.router.navigate(['/']);        
     }
 }

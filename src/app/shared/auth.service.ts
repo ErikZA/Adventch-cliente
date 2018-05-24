@@ -104,18 +104,14 @@ export class AuthService {
   }
 
   updatePermissions(permissions){
-    let user = this.getCurrentUser();
-    user.permissions = permissions;
-    localStorage.setItem('currentUser', JSON.stringify(user));
     this.permissions = permissions;
   }
 
   checkPermission(module) {
     if(module == 0 || module == 1) //Permissão liberada para "Geral" e "Aplicativos"
       return true;
-    if(this.permissions == undefined) {//Permissão não carregada
-      this.permissions = this.getCurrentUser().permissions;
-    }
+    if(this.permissions == undefined)
+      return false;
     for (let permission of this.permissions) {
       if(permission.module == module)
         return true;
@@ -135,5 +131,13 @@ export class AuthService {
 
   checkAccess(url: String, unit: Unit){
     return this.checkPermission(this.getModule(url));
+  }
+
+  checkPermissionModule(idUser, idUnit, idModule): Observable<Permission[]>{
+    let url = '/shared/checkPermissionModule/' + idUser + '/' + idUnit + '/' + idModule;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }
