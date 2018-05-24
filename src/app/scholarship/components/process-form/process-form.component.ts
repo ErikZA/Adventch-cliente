@@ -103,9 +103,12 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initForm();
-    this.scholarshipService.getStudentSeries().subscribe((data: StudentSerie[]) => {
-      this.studentsSeries = Object.assign(this.studentsSeries, data as StudentSerie[]);
-    });
+    this.loadStudentSeries();
+    this.checkCpf();
+    this.editProcess();
+  }
+
+  checkCpf(){
     this.formProcess.get('cpf').valueChanges.subscribe(cpf => {
       if(cpf == null || cpf == undefined)
         return;
@@ -115,7 +118,12 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       else 
         this.setpatchValuesResponsible();      
     });
-    this.editProcess();
+  }
+
+  loadStudentSeries(){
+    this.scholarshipService.getStudentSeries().subscribe((data: StudentSerie[]) => {
+      this.studentsSeries = Object.assign(this.studentsSeries, data as StudentSerie[]);
+    });
   }
 
   loadResponsibles(cpf){
