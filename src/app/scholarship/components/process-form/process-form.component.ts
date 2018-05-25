@@ -17,6 +17,7 @@ import { ProcessDocument } from '../../models/processDocument';
 import { ReportNewProcessComponent } from '../reports/report-new-process/report-new-process.component';
 import { CustomValidators } from '../../../core/custom-validators';
 import { StudentSerie } from '../../models/studentSerie';
+import { ReportService } from '../../../shared/report.service';
 
 @Component({
   selector: 'app-process-form',
@@ -98,7 +99,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService,
     public snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private reportService: ReportService
   ) { }
 
   ngOnInit() {
@@ -288,20 +290,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   }
 
   generateReport(id){
-    this.scholarshipService.getProcessById(id).subscribe(process => {
-      let processReport = new Process();
-      processReport = Object.assign(processReport, process as Process);
-      this.scholarshipService.setReport(processReport);
-      this.dialogRef = this.dialog.open(ReportNewProcessComponent, {
-        width: '70%',
-        height: '70%'
-      });
-      this.dialogRef.afterClosed().subscribe(result => {
-        this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });
-        if (!result)
-          return;
-      });
-    });
+    this.reportService.reportProcess(id);
+    this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });        
   }
 
   maskPhone(phone) {

@@ -8,6 +8,8 @@ import { Process } from './models/process';
 import { AuthService } from '../shared/auth.service';
 import { Subject } from 'rxjs';
 import { StudentSerie } from './models/studentSerie';
+import { environment } from '../../environments/environment';
+import { Http, Response, Headers, ResponseContentType } from '@angular/http';
 
 @Injectable()
 export class ScholarshipService {
@@ -169,4 +171,6 @@ export class ScholarshipService {
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+
+
 }

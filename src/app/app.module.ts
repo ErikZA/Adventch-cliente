@@ -36,6 +36,7 @@ import { TokenInterceptor } from './shared/token.interceptor';
 import { registerLocaleData } from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
 import { ScholarshipModule } from './scholarship/scholarship.module';
+import { ReportService } from './shared/report.service';
 registerLocaleData(ptBr)
 
 
@@ -80,6 +81,7 @@ registerLocaleData(ptBr)
       provide: LOCALE_ID,
       useValue: 'pt-PT'
     },
+    ReportService,
     SharedService
   ],
   bootstrap: [AppComponent]

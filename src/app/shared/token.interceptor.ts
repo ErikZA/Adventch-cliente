@@ -28,7 +28,7 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   updateUrl(url: string) {
-    if (_.startsWith(url, './assets') || _.startsWith(url, environment.apiUrl))
+    if (_.startsWith(url, './assets') || _.startsWith(url, environment.apiUrl) || _.startsWith(url, environment.apiUrlReport))
       return url;
     return environment.apiUrl + url;
   }
