@@ -159,7 +159,7 @@
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span style="white-space: normal;" *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }}</span>
+                                        <span style="white-space: normal;" *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }} <mat-slide-toggle class="padding-left-medium" (change)="sendDocuments($event, process)" color="primary">Documento(s) Enviado(s)</mat-slide-toggle></span>
                                         <span style="white-space: normal;" *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title"><b>Matrícula: </b> até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</span>
                                         <span style="white-space: normal;" *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title"><b>{{ process.motiveReject }}: </b>{{ getMotiveToReject(process.motiveReject) }}</span>
                                     </div>

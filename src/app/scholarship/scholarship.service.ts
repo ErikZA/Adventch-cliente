@@ -23,7 +23,7 @@ export class ScholarshipService {
   constructor(
     private http: HttpClient,
     private auth: AuthService
-  ) {     
+  ) {
     this.refresh = new Subject<boolean>();
     this.refresh$ = this.refresh.asObservable();
   }
@@ -110,6 +110,7 @@ export class ScholarshipService {
       pendency: pendency,
       user: this.auth.getCurrentUser().identifier,
       status: 3,
+      isSendDocument: false,
       description: 'Adicionando pendência'
     };
     this.processSelected.pendency = pendency;
@@ -130,7 +131,6 @@ export class ScholarshipService {
     return this.http
       .post(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
-
   }
 
   saveVacancy(dateRegistration, idStatus, description){
@@ -167,6 +167,19 @@ export class ScholarshipService {
     let url = '/scholarship/process/getAllStudentsSeries';
     return this.http
       .get(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  sendDocument(process: Process): Observable<Process> {
+    let url = '/scholarship/process/sendDocument/';
+    let submittedDocuments: any = {
+      id: process.id,
+      user: this.auth.getCurrentUser().identifier,
+      isSendDocument: process.isSendDocument,
+      description: process.isSendDocument ? 'Documentos Pendentes Enviados' : 'Documentos Pendentes Não Enviados'
+    };
+    return this.http
+      .post(url, submittedDocuments)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }
