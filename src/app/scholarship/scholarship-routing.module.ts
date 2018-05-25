@@ -6,10 +6,8 @@ import { AuthGuard } from '../shared/auth.guard';
 import { LayoutComponent } from '../shared/layout/layout.component';
 import { ProcessFormComponent } from './components/process-form/process-form.component';
 import { ProcessDataComponent } from './components/process-data/process-data.component';
-import { ReportNewProcessComponent } from './components/reports/report-new-process/report-new-process.component';
 
 const routes: Routes = [
-  {path: 'relatorios', component: ReportNewProcessComponent},
   { path: 'bolsas', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
     { path: 'dashboard', component: ScholarshipComponent, children:[
       { path: 'novo', component: ProcessFormComponent }

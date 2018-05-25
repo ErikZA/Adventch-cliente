@@ -14,7 +14,6 @@ import { MatSnackBar, MatSidenav, MatDialogRef, MatDialog } from '@angular/mater
 import { ScholarshipComponent } from '../scholarship.component';
 import { ProcessDataComponent } from '../process-data/process-data.component';
 import { ProcessDocument } from '../../models/processDocument';
-import { ReportNewProcessComponent } from '../reports/report-new-process/report-new-process.component';
 import { CustomValidators } from '../../../core/custom-validators';
 import { StudentSerie } from '../../models/studentSerie';
 import { ReportService } from '../../../shared/report.service';
@@ -32,7 +31,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   studentsChildren: Student[] = new Array<Student>();
   filterStudentsChildren$: Observable<Student[]>;
   formSave: boolean = false;
-  dialogRef: MatDialogRef<ReportNewProcessComponent>;
   informations = false;
   studentsSeries: StudentSerie[] = new Array<StudentSerie>();
 
