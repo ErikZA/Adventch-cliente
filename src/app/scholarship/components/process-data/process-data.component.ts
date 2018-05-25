@@ -9,7 +9,7 @@ import { Responsible } from '../../models/responsible';
 import { ScholarshipService } from '../../scholarship.service';
 import { ScholarshipComponent } from '../scholarship.component';
 import { AuthService } from '../../../shared/auth.service';
-import { MatDialogRef, MatDialog, MatSnackBar, MatExpansionPanel, matExpansionAnimations, MatSidenav } from '@angular/material';
+import { MatDialogRef, MatDialog, MatSnackBar, MatExpansionPanel, matExpansionAnimations, MatSidenav, MatSlideToggleChange } from '@angular/material';
 import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
 import { School } from '../../models/school';
@@ -318,7 +318,13 @@ export class ProcessDataComponent implements OnInit {
         }
       });
     }
+  }
 
+  sendDocuments(event: MatSlideToggleChange, process: Process) {
+    if (process.status === 3) {
+      process.isSendDocument = event.checked;
+      this.scholarshipService.sendDocument(process).subscribe();
+    }
   }
 
   updateProcess(newProcess) {
