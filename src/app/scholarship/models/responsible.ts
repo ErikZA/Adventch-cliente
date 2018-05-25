@@ -4,5 +4,7 @@ export class Responsible {
   cpf?: string;
   email?: string;
   phone?: string;
+  password?: string;
+  token?: string;
   constructor() { }
 }
