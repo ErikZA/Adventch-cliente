@@ -1,0 +1,28 @@
+<div fxLayoutAlign="center center" class="container-login">
+  <mat-card>
+    <mat-card-header layout="column">
+      <img src="../assets/img/logo_IASD-preto.png" width="50" height="50"/>
+      <h2 style="padding-left: 30px;">Bolsas Educação</h2>
+    </mat-card-header>
+    <br/>
+    <br/>
+    <mat-card-content fxLayout="column" fxLayoutAlign="space-between stretch">
+      <div class="form-login" fxLayout="column" fxLayoutAlign="start stretch">
+        <div>
+          <mat-form-field fxFlex="auto" style="width: 100%">
+            <input matInput name="userCPF" placeholder="CPF" #userCPF />
+            <mat-icon matSuffix>person</mat-icon>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field fxFlex="auto" style="width: 100%"> 
+            <input matInput name="userPassword" type="password" placeholder="Senha" #userPassword (keyup.enter)="login()"/>
+            <mat-icon matSuffix>lock</mat-icon>
+          </mat-form-field>
+        </div>
+        <br/>
+      </div>
+      <button mat-raised-button color="primary" (click)="login()">Entrar</button>
+    </mat-card-content>
+  </mat-card>
+</div>

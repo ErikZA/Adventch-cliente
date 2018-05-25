@@ -6,8 +6,10 @@ import { AuthGuard } from '../shared/auth.guard';
 import { LayoutComponent } from '../shared/layout/layout.component';
 import { ProcessFormComponent } from './components/process-form/process-form.component';
 import { ProcessDataComponent } from './components/process-data/process-data.component';
+import { ConsultLoginComponent } from './components/consult-login/consult-login.component';
 
 const routes: Routes = [
+  { path: 'consultar-bolsas-login', component: ConsultLoginComponent, canActivate: [AuthGuard], canLoad: [AuthGuard]},
   { path: 'bolsas', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
     { path: 'dashboard', component: ScholarshipComponent, children:[
       { path: 'novo', component: ProcessFormComponent }

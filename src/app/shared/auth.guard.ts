@@ -8,6 +8,7 @@ import { EModules } from './models/modules.enum';
 import { Unit } from './models/unit.model';
 import { Permission } from './models/permission.model';
 import { tokenNotExpired } from 'angular2-jwt';
+import { Responsible } from '../scholarship/models/responsible';
 @Injectable()
 export class AuthGuard implements CanActivate, CanLoad {
 
@@ -26,6 +27,12 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
 
     private checkAccess(route, state?) {
+        if(route._routerState.url.startsWith('/consultar-bolsas'))
+            return this.checkAccessResponsible();
+        return this.checkAccessUser(route, state);
+    }
+
+    private checkAccessUser(route, state?){
         if (tokenNotExpired('token')) {
             let user: User = JSON.parse(localStorage.getItem('currentUser'));          
             if (user == null || user == undefined){
@@ -42,5 +49,15 @@ export class AuthGuard implements CanActivate, CanLoad {
     
         this.router.navigate(['/login']);
         return false;
-      }
+    }
+
+    private checkAccessResponsible(){        
+        if (tokenNotExpired('tokenResponsible')) {
+            let responsible: Responsible = JSON.parse(localStorage.getItem('currentResponsible'));   
+            if(responsible != null && responsible != undefined)
+                return true;
+        }
+        this.router.navigate(['/consultar-bolsas-login']);
+        return false;
+    }
 }

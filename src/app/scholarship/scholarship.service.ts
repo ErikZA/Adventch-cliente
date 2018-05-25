@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { School } from './models/school';
@@ -20,6 +20,8 @@ export class ScholarshipService {
   scholarshipReport: any;
   refresh$: Observable<boolean>;
   public refresh: Subject<boolean>;
+  currentResponsible = new EventEmitter<Responsible>();
+  showApp = new EventEmitter<boolean>();
 
 
   constructor(
@@ -183,5 +185,36 @@ export class ScholarshipService {
     return this.http
       .post(url, submittedDocuments)
       .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  /*
+  Consult
+   */
+
+  login(cpf: string, password: string) {
+    let body = JSON.stringify({ cpf: cpf, password: password });
+    return this.http
+      .post<any>('/scholarship/responsible/login', body)
+      .retry(3)
+      .toPromise()
+      .then(data => {
+        debugger;
+        let responsible = data.responsible as Responsible;
+        if (responsible) {
+          //user.photoUrl = `${environment.apiUrl}/users/photo/${user.identifier}/${user.photoDate}`;
+          localStorage.setItem('currentResponsible', JSON.stringify(responsible));
+          localStorage.setItem('tokenResponsible', data.token);
+          this.currentResponsible.emit(responsible);
+          this.showApp.emit(true);
+        }
+        else {
+          responsible = new Responsible();
+          this.currentResponsible.emit(responsible);
+          this.showApp.emit(false);
+        }
+        return responsible;
+      }).catch((error: any) => {
+        Promise.reject(error);
+      });
   }
 }

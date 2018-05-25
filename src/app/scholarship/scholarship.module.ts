@@ -10,6 +10,7 @@ import { ProcessFormComponent } from './components/process-form/process-form.com
 import { ProcessDataComponent } from './components/process-data/process-data.component';
 import { PendencyComponent } from './components/pendency/pendency.component';
 import { VacancyComponent } from './components/vacancy/vacancy.component';
+import { ConsultLoginComponent } from './components/consult-login/consult-login.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { VacancyComponent } from './components/vacancy/vacancy.component';
     ProcessDataComponent,
     ProcessFormComponent,
     PendencyComponent,
-    VacancyComponent
+    VacancyComponent,
+    ConsultLoginComponent
   ],
   entryComponents: [
     PendencyComponent,
