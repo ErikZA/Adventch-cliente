@@ -66,8 +66,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   logoff() {
     this.authService.logoff();
-    this.subscribe1.unsubscribe();
-    this.subscribe2.unsubscribe();
+    if(this.subscribe1 != undefined)
+      this.subscribe1.unsubscribe();
+    if(this.subscribe2 != undefined)
+      this.subscribe2.unsubscribe();
   }
 
   getUrlScholarship() {
