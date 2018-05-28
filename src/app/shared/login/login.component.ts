@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     let user: User = JSON.parse(localStorage.getItem('currentUser'));
     if (user && user.identifier)
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['']);
     let email: string = localStorage.getItem('lastLogin');
     if (email)
       this.userEmail.nativeElement.value = email;
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
         if (!user || !user.identifier)
           this.invalidLogin();
         else
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['']);
       }).catch((err) => {
         if (err.status === 401) {
           this.invalidLogin();
