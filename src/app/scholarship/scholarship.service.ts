@@ -217,4 +217,12 @@ export class ScholarshipService {
         Promise.reject(error);
       });
   }
+
+  getPasswordResponsible(processId): Observable<string> {
+    let url = '/scholarship/responsible/getPasswordByProcess/' + processId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 }

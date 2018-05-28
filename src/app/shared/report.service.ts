@@ -16,16 +16,17 @@ export class ReportService {
     private authService: AuthService
   ) { }
 
-  reportProcess(processId): Observable<any> {
+  reportProcess(processId, password): Observable<any> {
     let urlConsult = document.location.origin + '/consultar-bolsas';
-    let params = JSON.stringify({ processId: processId, url: urlConsult });
+    console.log(password);
+    let params = JSON.stringify({ processId: processId, url: urlConsult, password: password });
     return this.viewReport('process', EModules.Scholarship, params);
   }
 
   private viewReport(reportName: string, moduleId: number, params: any): Observable<any> {
     let currentUserId = this.authService.getCurrentUser().id;
     let url = `${environment.apiUrlReport}/reports/view/${reportName}?userId=${currentUserId}&module=${moduleId}&values=${params}`;
-    //window.open(url);
+    window.open(url);
     return this.http
       .get(url, { responseType: 'blob' })
       .map( res => ({content: res, fileName: 'application/pdf'}))
