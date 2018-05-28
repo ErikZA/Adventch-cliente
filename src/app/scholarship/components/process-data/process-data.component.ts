@@ -346,12 +346,14 @@ export class ProcessDataComponent implements OnInit {
     }
   }
 
-  toNotEnroll(process): void {
-    this.scholarshipService.updateToStatus(process.id, 8, 'Não Matriculou').subscribe(() => {
-      process.status = 8;
-      this.updateProcess(process);
-    }, err => {
-      this.snackBar.open('Erro ao atualizar o processo, tente novamente.', 'OK', { duration: 5000 });
-    });
+  toNotEnroll(process: Process): void {
+    if(process.status === 5 || process.status === 6) {
+      this.scholarshipService.updateToStatus(process.id, 8, 'Não Matriculou').subscribe(() => {
+        process.status = 8;
+        this.updateProcess(process);
+      }, err => {
+        this.snackBar.open('Erro ao atualizar o processo, tente novamente.', 'OK', { duration: 5000 });
+      });
+    }
   }
 }

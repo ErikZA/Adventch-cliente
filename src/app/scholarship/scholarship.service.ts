@@ -22,7 +22,7 @@ export class ScholarshipService {
   constructor(
     private http: HttpClient,
     private auth: AuthService
-  ) {     
+  ) {
     this.refresh = new Subject<boolean>();
     this.refresh$ = this.refresh.asObservable();
   }
@@ -81,7 +81,7 @@ export class ScholarshipService {
   }
 
   postProcess(data): Observable<any>{
-    let url = `/scholarship/process/newProcess`;
+    let url = `/scholarship/process/saveProcess`;
     return this.http.post(url, data)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
@@ -129,7 +129,6 @@ export class ScholarshipService {
     return this.http
       .post(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
-
   }
 
   saveVacancy(dateRegistration, idStatus, description){

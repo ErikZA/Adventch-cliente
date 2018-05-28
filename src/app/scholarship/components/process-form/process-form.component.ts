@@ -181,7 +181,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   }
 
   setRC(rc: number): void {
-    if (rc) {
+    if (Number.isInteger(rc)) {
       this.formProcess.patchValue({rc: rc});
     }
   }
@@ -241,21 +241,24 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     const isEdit = this.scholarshipService.processEdit !== undefined && this.scholarshipService.processEdit.id !== undefined;
     this.formSave = true;
     let idScholSelected = this.scholarshipService.schoolSelected;
+    let status;
     if (idScholSelected === '-1' || isEdit) {
       idScholSelected = this.scholarshipService.processEdit.student.school.id.toString();
     }
     const studentSelected = this.studentsChildren.filter(item => item.name === this.formProcess.value.nameStudent);
     if (isEdit) {
       this.responsible = this.scholarshipService.processEdit.student.responsible;
+      status = this.scholarshipService.processEdit.status;
     } else {
       this.formProcess.value.rc = studentSelected === undefined || studentSelected.length === 0 ? 0 : studentSelected[0].rc;
+      status = 1;
     }
     if (this.formProcess.valid && this.formCheckDocuments.valid) {
       const data = {
         responsibleId: this.responsible === undefined || this.responsible.id === undefined ? 0 : this.responsible.id,
         studentId: studentSelected === undefined || studentSelected.length === 0 ? 0 : studentSelected[0].id,
         schoolId: Number(idScholSelected),
-        status: 1,
+        status: status,
         id: isEdit ? this.scholarshipService.processEdit.id : 0,
         userId: this.authService.getCurrentUser().identifier,
         ...this.formProcess.value,
