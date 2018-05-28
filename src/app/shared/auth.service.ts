@@ -81,6 +81,8 @@ export class AuthService {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
     localStorage.removeItem('currentUnit');
+    localStorage.removeItem('currentResponsible');
+    localStorage.removeItem('tokenResponsible');
     let user: User = new User();
     user.email = localStorage.getItem('lastLogin');
     this.currentUser.emit(user);
