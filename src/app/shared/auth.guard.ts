@@ -27,12 +27,12 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
 
     private checkAccess(route, state?) {
-        if(route._routerState.url.startsWith('/consultar-bolsas'))
+        if(route._routerState.url.startsWith('/bolsas-educacao'))
             return this.checkAccessResponsible();
         return this.checkAccessUser(route, state);
     }
 
-    private checkAccessUser(route, state?){
+    private checkAccessUser(route, state?){        
         if (tokenNotExpired('token')) {
             let user: User = JSON.parse(localStorage.getItem('currentUser'));          
             if (user == null || user == undefined){
@@ -56,8 +56,9 @@ export class AuthGuard implements CanActivate, CanLoad {
             let responsible: Responsible = JSON.parse(localStorage.getItem('currentResponsible'));   
             if(responsible != null && responsible != undefined)
                 return true;
+            return false;
         }
-        this.router.navigate(['/consultar-bolsas-login']);
+        this.router.navigate(['/bolsas-educacao']);
         return false;
     }
 }

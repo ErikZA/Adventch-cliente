@@ -17,7 +17,7 @@ export class ReportService {
   ) { }
 
   reportProcess(processId, password): Observable<any> {
-    let urlConsult = document.location.origin + '/consultar-bolsas';
+    let urlConsult = document.location.origin + '/bolsas-educacao/consultar';
     let params = JSON.stringify({ processId: processId, url: urlConsult, password: password });
     return this.viewReport('process', EModules.Scholarship, params);
   }

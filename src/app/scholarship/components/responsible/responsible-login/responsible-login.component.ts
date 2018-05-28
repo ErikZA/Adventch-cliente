@@ -1,15 +1,16 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { ScholarshipService } from '../../scholarship.service';
-import { Responsible } from '../../models/responsible';
+
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+import { ScholarshipService } from '../../../scholarship.service';
+import { Responsible } from '../../../models/responsible';
 
 @Component({
-  selector: 'app-consult-login',
-  templateUrl: './consult-login.component.html',
-  styleUrls: ['./consult-login.component.scss']
+  selector: 'app-responsible-login',
+  templateUrl: './responsible-login.component.html',
+  styleUrls: ['./responsible-login.component.scss']
 })
-export class ConsultLoginComponent implements OnInit {
+export class ResponsibleLoginComponent implements OnInit {
 
   @ViewChild('userCPF') userCPF: ElementRef;
   @ViewChild('userPassword') userPassword: ElementRef;
@@ -40,7 +41,7 @@ export class ConsultLoginComponent implements OnInit {
         if (!responsible || !responsible.id)
           this.invalidLogin();
         else
-          this.router.navigate(['/consultar-bolsas-login']);
+          this.router.navigate(['/bolsas-educacao/consultar']);
       }).catch((err) => {
         if (err.status === 401) {
           this.invalidLogin();

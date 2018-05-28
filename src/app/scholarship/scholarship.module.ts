@@ -10,7 +10,8 @@ import { ProcessFormComponent } from './components/process-form/process-form.com
 import { ProcessDataComponent } from './components/process-data/process-data.component';
 import { PendencyComponent } from './components/pendency/pendency.component';
 import { VacancyComponent } from './components/vacancy/vacancy.component';
-import { ConsultLoginComponent } from './components/consult-login/consult-login.component';
+import { ResponsibleDataComponent } from './components/responsible/responsible-data/responsible-data.component';
+import { ResponsibleLoginComponent } from './components/responsible/responsible-login/responsible-login.component';
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import { ConsultLoginComponent } from './components/consult-login/consult-login.
     ProcessFormComponent,
     PendencyComponent,
     VacancyComponent,
-    ConsultLoginComponent
+    ResponsibleLoginComponent,
+    ResponsibleDataComponent
   ],
   entryComponents: [
     PendencyComponent,

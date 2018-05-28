@@ -11,6 +11,7 @@ import { environment } from './../../environments/environment';
 import { Unit } from './models/unit.model';
 import { EModules } from './models/modules.enum';
 import { Permission } from './models/permission.model';
+import { Responsible } from '../scholarship/models/responsible';
 
 @Injectable()
 export class AuthService {
@@ -90,6 +91,12 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
+  logoffResponsible() {
+    localStorage.removeItem('currentResponsible');
+    localStorage.removeItem('tokenResponsible');
+    this.router.navigate(['/bolsas-educacao']);
+  }
+
   setCurrentUnit(unit){
     localStorage.setItem('currentUnit', JSON.stringify(unit));
     this.currentUnit.emit();
@@ -103,6 +110,11 @@ export class AuthService {
   getCurrentUser(){    
     let user: User = JSON.parse(localStorage.getItem('currentUser'));
     return user;
+  }
+
+  getcurrentResponsible(){
+    let responsible: Responsible = JSON.parse(localStorage.getItem('currentResponsible'));
+    return responsible;
   }
 
   updatePermissions(permissions){

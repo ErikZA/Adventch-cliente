@@ -6,10 +6,12 @@ import { AuthGuard } from '../shared/auth.guard';
 import { LayoutComponent } from '../shared/layout/layout.component';
 import { ProcessFormComponent } from './components/process-form/process-form.component';
 import { ProcessDataComponent } from './components/process-data/process-data.component';
-import { ConsultLoginComponent } from './components/consult-login/consult-login.component';
+import { ResponsibleDataComponent } from './components/responsible/responsible-data/responsible-data.component';
+import { ResponsibleLoginComponent } from './components/responsible/responsible-login/responsible-login.component';
 
 const routes: Routes = [
-  { path: 'consultar-bolsas-login', component: ConsultLoginComponent, canActivate: [AuthGuard], canLoad: [AuthGuard]},
+  { path: 'bolsas-educacao', component: ResponsibleLoginComponent },
+  { path: 'bolsas-educacao/consultar', component: ResponsibleDataComponent, canActivate: [AuthGuard], canLoad: [AuthGuard]},
   { path: 'bolsas', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
     { path: 'dashboard', component: ScholarshipComponent, children:[
       { path: 'novo', component: ProcessFormComponent }

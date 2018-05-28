@@ -1,0 +1,129 @@
+<mat-toolbar color="primary" style="background-color: #2094c8" class="mat-elevation-z6">
+  <img src="../../../../favicon.ico" style="width: 30px; height: 30px; margin-left: 20px;" [routerLink]="['/']" class="click" />
+  <div style="margin-left: 10px;" [routerLink]="['/']" class="click">Adven.tech</div>
+  <span class="fill-space"></span>
+  <div fxLayout="row" fxLayoutAlign="end">
+      <button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
+        <mat-icon>account_circle</mat-icon>
+            <!-- <img class="material-icons mat-36 circle-18" src="{{app.currentUser.photoUrl}}?size=36" *ngIf="app.currentUser.photoDate !== ''">-->
+      </button>
+      <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
+        <table style="line-height: normal; text-align: right;">
+          <tr>
+            <td>
+              {{ responsible.name }}
+            </td>
+          </tr>
+        </table>
+      </button>
+  </div>
+  <mat-menu [overlapTrigger]="false" xPosition="before" #appMenu="matMenu">
+      <button mat-menu-item (click)="logoff()">
+    <mat-icon>exit_to_app</mat-icon>
+    <span>Sair</span>
+  </button>
+  </mat-menu>
+</mat-toolbar>
+
+<div fxFlex>
+  <div class="header">
+      <mat-list>
+          <mat-list-item>
+              <h3 matLine fxLayout="row">
+                  <div fxLayout="row" fxFlex>
+                      <span fxFlex="50%">Filho</span>
+                      <span fxFlex="25%" fxHide.lt-sm fxFlexAlign="center">Protocolo</span>
+                      <span fxFlex="25%" fxHide.lt-sm fxFlexAlign="center">Status</span>
+                  </div>
+              </h3>
+          </mat-list-item>
+      </mat-list>
+      <mat-divider></mat-divider>
+  </div>
+  <div style="width: 90%">
+  <div layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
+      <mat-accordion>
+          <div *ngFor="let process of processes; index as i">
+              <mat-expansion-panel hideToggle *ngIf="i <= showList">
+                  <mat-expansion-panel-header>
+                      <mat-panel-description fxLayout="row" fxFlex>
+                          <span fxFlex="50%" style="white-space: nowrap;">
+                            {{ process.student.name }}
+                          </span>
+                          <span fxFlex="25%" fxHide.lt-sm fxFlexAlign="center">
+                            {{ process.protocol }}
+                          </span>
+                          <span fxFlex="25%" fxHide.lt-sm fxFlexAlign="center">
+                            {{ process.statusString }}
+                          </span>
+                      </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <mat-list>
+                      <h2 matSubheader>Informações do Processo</h2>
+                      <mat-list-item fxLayout="row" style="height: auto">
+                          <div fxLayout="column" fxFlex matLine>
+                              <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                  <span class="text-bold" class="details-title"><b>Protocolo:</b> {{ process.protocol }}</span>
+                              </div>
+                              <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                  <span class="text-bold" class="details-title"><b>Status:</b> {{ process.statusString }}</span>
+                              </div>
+                              <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Documentos pessoais:</b> {{ process.isPersonalDocuments ? "Enviado" : "Não Enviado" }}</span>
+                              <div *ngFor="let document of process.processDocuments">
+                                  <mat-panel-description fxLayout="row" fxFlex>
+                                      <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
+                                          {{ (document.typeDocument == 1 ? document.name : '') }}
+                                      </span>
+                                  </mat-panel-description>
+                              </div>
+                              <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Declaração do imposto de renda:</b> {{ process.isIR ? "Enviado" : "Não Enviado" }}</span>
+                              <div *ngFor="let document of process.processDocuments">
+                                  <mat-panel-description fxLayout="row" fxFlex>
+                                      <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
+                                          {{ (document.typeDocument == 2 ? document.name : '') }}
+                                      </span>
+                                  </mat-panel-description>
+                              </div>
+                              <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Carteira de trabalho:</b> {{ process.isCTPS ? "Enviado" : "Não Enviado" }}</span>
+                              <div *ngFor="let document of process.processDocuments">
+                                  <mat-panel-description fxLayout="row" fxFlex>
+                                      <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
+                                          {{ (document.typeDocument == 3 ? document.name : '') }}
+                                      </span>
+                                  </mat-panel-description>
+                              </div>
+                              <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante de rendimentos:</b> {{ process.isIncome ? "Enviado" : "Não Enviado" }}</span>
+                              <div *ngFor="let document of process.processDocuments">
+                                  <mat-panel-description fxLayout="row" fxFlex>
+                                      <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
+                                          {{ (document.typeDocument == 4 ? document.name : '') }}
+                                      </span>
+                                  </mat-panel-description>
+                              </div>
+                              <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante de despesas:</b> {{ process.isExpenses ? "Enviado" : "Não Enviado" }}</span>
+                              <div *ngFor="let document of process.processDocuments">
+                                  <mat-panel-description fxLayout="row" fxFlex>
+                                      <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
+                                          {{ (document.typeDocument == 5 ? document.name : '') }}
+                                      </span>
+                                  </mat-panel-description>
+                              </div>
+                              <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante acadêmico:</b> {{ process.isAcademic ? "Enviado" : "Não Enviado" }}</span>
+                              <div *ngFor="let document of process.processDocuments">
+                                  <mat-panel-description fxLayout="row" fxFlex>
+                                      <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
+                                          {{ (document.typeDocument == 6 ? document.name : '') }}
+                                      </span>
+                                  </mat-panel-description>
+                              </div>
+                              <span style="white-space: normal;" *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }} <mat-slide-toggle class="padding-left-medium" [checked]="process.isSendDocument" (change)="sendDocuments($event, process)" color="primary">Documento(s) Enviado(s)</mat-slide-toggle></span>
+                              <span style="white-space: normal;" *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title"><b>Matrícula: </b> até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</span>
+                              <span style="white-space: normal;" *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title"><b>{{ process.motiveReject }}: </b>{{ getMotiveToReject(process.motiveReject) }}</span>
+                          </div>
+                      </mat-list-item>
+                  </mat-list>
+              </mat-expansion-panel>
+          </div>
+      </mat-accordion>
+  </div>
+</div>
