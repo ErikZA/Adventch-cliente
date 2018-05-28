@@ -292,7 +292,10 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       let password = data;
       this.reportService.reportProcess(id, password).subscribe(data => {
         var fileUrl = URL.createObjectURL(data);
-        window.open(fileUrl);
+        var element = document.createElement("a");
+        element.href = fileUrl;
+        element.download = 'processo.pdf';
+        element.click();
       }, err => console.log(err));
       this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });        
     });

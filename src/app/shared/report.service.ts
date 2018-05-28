@@ -18,7 +18,6 @@ export class ReportService {
 
   reportProcess(processId, password): Observable<any> {
     let urlConsult = document.location.origin + '/consultar-bolsas';
-    console.log(password);
     let params = JSON.stringify({ processId: processId, url: urlConsult, password: password });
     return this.viewReport('process', EModules.Scholarship, params);
   }
@@ -26,10 +25,10 @@ export class ReportService {
   private viewReport(reportName: string, moduleId: number, params: any): Observable<any> {
     let currentUserId = this.authService.getCurrentUser().id;
     let url = `${environment.apiUrlReport}/reports/view/${reportName}?userId=${currentUserId}&module=${moduleId}&values=${params}`;
-    window.open(url);
     return this.http
       .get(url, { responseType: 'blob' })
-      .map( res => ({content: res, fileName: 'application/pdf'}))
+      .map(res => { return new Blob([res], { type: 'application/pdf' }); })
+      .catch(err => Observable.throw(new Error(err)));
   }
 
 }
