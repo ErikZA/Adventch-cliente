@@ -261,7 +261,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     if(isEdit)
       this.responsible = this.scholarshipService.processEdit.student.responsible;
 
-      if (this.formProcess.valid && this.formCheckDocuments.valid) {
+    if (this.formProcess.valid && this.formCheckDocuments.valid) {
       let data = {
         responsibleId: this.responsible === undefined || this.responsible.id == undefined ? 0 : this.responsible.id,
         studentId: studentSelected == undefined || studentSelected.length == 0 ? 0 : studentSelected[0].id,
