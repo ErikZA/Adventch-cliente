@@ -55,6 +55,7 @@ export class ResponsibleDataComponent implements OnInit {
   }
 
   getProcesses(): void {
+    this.processes = [];
     this.scholarshipService.getProcessesResponsible(this.responsible.id).subscribe((data: Process[]) => {
       this.processes = Object.assign(this.processes, data as Process[]);
       this.processes.forEach(
