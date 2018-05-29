@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ScholarshipService } from '../../scholarship.service';
+import { ScholarshipService } from '../../../scholarship.service';
 
 @Component({
   selector: 'app-vacancy',
@@ -11,9 +11,9 @@ import { ScholarshipService } from '../../scholarship.service';
 export class VacancyComponent implements OnInit {
 
   formVacancy: FormGroup;
-  
+
   constructor(
-    private fb: FormBuilder,  
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<VacancyComponent>,
     private snackBar: MatSnackBar,
     public scholarshipService: ScholarshipService
@@ -39,7 +39,7 @@ export class VacancyComponent implements OnInit {
   }
 
   saveType(){
-    if (this.formVacancy.invalid) 
+    if (this.formVacancy.invalid)
       return;
     var isHalf = this.formVacancy.value.type == "1";
     this.scholarshipService.saveVacancy(this.formVacancy.value.dateRegistration, (isHalf ? 5 : 6), 'Bolsa concedida (' + (isHalf ? '50%' : '100%') + ')').subscribe(() =>{

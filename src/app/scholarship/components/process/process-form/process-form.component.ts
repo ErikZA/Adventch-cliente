@@ -1,22 +1,22 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
-import { ScholarshipService } from '../../scholarship.service';
-import { Responsible } from '../../models/responsible';
-import { Student } from './../../models/student';
+import { ScholarshipService } from '../../../scholarship.service';
+import { Responsible } from '../../../models/responsible';
+import { Student } from './../../../models/student';
 import { startWith } from 'rxjs/operators';
 import { map } from 'rxjs/operator/map';
-import { SidenavService } from '../../../core/services/sidenav.service';
+import { SidenavService } from '../../../../core/services/sidenav.service';
 import { Router } from '@angular/router';
-import { Process } from '../../models/process';
-import { AuthService } from '../../../shared/auth.service';
+import { Process } from '../../../models/process';
+import { AuthService } from '../../../../shared/auth.service';
 import { MatSnackBar, MatSidenav, MatDialogRef, MatDialog } from '@angular/material';
-import { ScholarshipComponent } from '../scholarship.component';
+import { ScholarshipComponent } from '../../scholarship.component';
 import { ProcessDataComponent } from '../process-data/process-data.component';
-import { ProcessDocument } from '../../models/processDocument';
-import { CustomValidators } from '../../../core/custom-validators';
-import { StudentSerie } from '../../models/studentSerie';
-import { ReportService } from '../../../shared/report.service';
+import { ProcessDocument } from '../../../models/processDocument';
+import { CustomValidators } from '../../../../core/custom-validators';
+import { StudentSerie } from '../../../models/studentSerie';
+import { ReportService } from '../../../../shared/report.service';
 
 @Component({
   selector: 'app-process-form',
@@ -113,10 +113,10 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       if(cpf == null || cpf == undefined)
         return;
       this.responsible = new Responsible();
-      if (!this.formProcess.get('cpf').hasError('pattern')) 
+      if (!this.formProcess.get('cpf').hasError('pattern'))
         this.loadResponsibles(cpf);
-      else 
-        this.setpatchValuesResponsible();      
+      else
+        this.setpatchValuesResponsible();
     });
   }
 
@@ -134,7 +134,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     this.scholarshipService.getResponsible(Number(idSchool), cpf).subscribe(responsible => {
       this.responsible = Object.assign(this.responsible, responsible as Responsible);
       this.setpatchValuesResponsible();
-      if (responsible) 
+      if (responsible)
         this.loadStudentChildres(responsible);
     });
   }
@@ -252,15 +252,15 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   saveProcess() {
     let isEdit = this.scholarshipService.processEdit != undefined && this.scholarshipService.processEdit.id != undefined;
     this.formSave = true;
-    
+
     let idScholSelected = this.scholarshipService.schoolSelected;
     if(idScholSelected == '-1' || isEdit)
       idScholSelected = this.scholarshipService.processEdit.student.school.id.toString();
-    
+
     let studentSelected = this.studentsChildren.filter(item => { return item.name == this.formProcess.value.nameStudent });
     if(isEdit)
       this.responsible = this.scholarshipService.processEdit.student.responsible;
-    
+
       if (this.formProcess.valid && this.formCheckDocuments.valid) {
       let data = {
         responsibleId: this.responsible === undefined || this.responsible.id == undefined ? 0 : this.responsible.id,
@@ -297,7 +297,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         element.download = 'processo.pdf';
         element.click();
       }, err => console.log(err));
-      this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });        
+      this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });
     });
   }
 
