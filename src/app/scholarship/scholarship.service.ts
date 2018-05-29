@@ -1,6 +1,7 @@
+import { Http, Response, Headers, ResponseContentType } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
 import { School } from './models/school';
 import { Responsible } from './models/responsible';
 import { Student } from './models/student';
@@ -9,7 +10,6 @@ import { AuthService } from '../shared/auth.service';
 import { Subject } from 'rxjs';
 import { StudentSerie } from './models/studentSerie';
 import { environment } from '../../environments/environment';
-import { Http, Response, Headers, ResponseContentType } from '@angular/http';
 
 @Injectable()
 export class ScholarshipService {
@@ -86,7 +86,7 @@ export class ScholarshipService {
   }
 
   postProcess(data): Observable<any>{
-    let url = `/scholarship/process/newProcess`;
+    let url = `/scholarship/process/saveProcess`;
     return this.http.post(url, data)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }

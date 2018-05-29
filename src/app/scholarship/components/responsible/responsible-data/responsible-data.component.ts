@@ -12,6 +12,7 @@ import { ScholarshipService } from '../../../scholarship.service';
 export class ResponsibleDataComponent implements OnInit {
   responsible: Responsible;
   processes: Process[] = new Array<Process>();
+
   showList = 15;
 
   constructor(
@@ -22,6 +23,7 @@ export class ResponsibleDataComponent implements OnInit {
   ngOnInit() {
     this.loadCurrentResponsible();
     this.loadProcesses();
+    this.getResponsible();
   }
 
   loadCurrentResponsible(){
@@ -88,5 +90,12 @@ export class ResponsibleDataComponent implements OnInit {
    */
   onScroll() {
     this.showList += 15;
+  }
+
+  getResponsible(): void {
+    this.scholarshipService.currentResponsible.subscribe(data => {
+      console.log(data);
+      this.responsible = data;
+    });
   }
 }
