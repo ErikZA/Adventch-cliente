@@ -168,7 +168,7 @@
                             <mat-action-row>
                                 <button *ngIf="process.status == 1 && authService.getCurrentUser().idSchool == 0" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="toWaiting([process])">INICIAR</button>
                                 <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3)" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency([process])">PENDÊNCIA</button>
-                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3 || process.status == 4)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu"><mat-icon>list</mat-icon> INDEFERIR</button>
+                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status > 1 && process.status < 7)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu"><mat-icon>list</mat-icon> INDEFERIR</button>
                                 <mat-menu #menu="matMenu">
                                     <button (click)="toReject([process], 1)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.">Acadêmico</button>
                                     <button (click)="toReject([process], 2)" mat-menu-item matTooltip="Indeferido em virtude de pendências junto ao setor financeiro.">Financeiro</button>

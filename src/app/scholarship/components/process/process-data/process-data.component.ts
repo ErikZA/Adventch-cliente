@@ -305,7 +305,7 @@ export class ProcessDataComponent implements OnInit {
   }
 
   toApprove(p) {
-    if (p[0].status === 2 || p[0].status === 3) {
+    if (p[0].status === 2 || p[0].status === 3 || p[0].status == 7) {
       this.scholarshipService.updateToStatus(p[0].id, 4, 'Aguardando vaga').subscribe(() => {
         p[0].status = 4;
         this.updateProcess(p[0]);
