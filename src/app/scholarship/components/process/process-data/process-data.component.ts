@@ -1,21 +1,27 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Treasurer } from '../../../treasury/models/treasurer';
+import { Treasurer } from '../../../../treasury/models/treasurer';
 import { Observable } from 'rxjs/Observable';
-import { TreasuryService } from '../../../treasury/treasury.service';
-import { Process } from '../../models/process';
-import { Student } from '../../models/student';
-import { Responsible } from '../../models/responsible';
-import { ScholarshipService } from '../../scholarship.service';
-import { ScholarshipComponent } from '../scholarship.component';
-import { AuthService } from '../../../shared/auth.service';
-import { MatDialogRef, MatDialog, MatSnackBar, MatExpansionPanel, matExpansionAnimations, MatSidenav, MatSlideToggleChange } from '@angular/material';
+import { TreasuryService } from '../../../../treasury/treasury.service';
+import { Process } from '../../../models/process';
+import { Student } from '../../../models/student';
+import { Responsible } from '../../../models/responsible';
+import { ScholarshipService } from '../../../scholarship.service';
+import { ScholarshipComponent } from '../../scholarship.component';
+import { AuthService } from '../../../../shared/auth.service';
 import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
-import { School } from '../../models/school';
+import { School } from '../../../models/school';
 import { forEach } from '@angular/router/src/utils/collection';
-import { SidenavService } from '../../../core/services/sidenav.service';
+import { SidenavService } from '../../../../core/services/sidenav.service';
 import { Router } from '@angular/router';
+import { MatDialogRef,
+        MatDialog,
+        MatSnackBar,
+        MatExpansionPanel,
+        matExpansionAnimations,
+        MatSidenav,
+        MatSlideToggleChange } from '@angular/material';
 
 @Component({
   selector: 'app-process-data',

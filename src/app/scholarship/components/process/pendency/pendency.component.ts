@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
-import { ScholarshipService } from '../../scholarship.service';
+import { ScholarshipService } from '../../../scholarship.service';
 import { isEmpty } from 'rxjs/operator/isEmpty';
 
 @Component({
@@ -13,9 +13,9 @@ export class PendencyComponent implements OnInit {
 
   formPendency: FormGroup;
   isEmpty: true;
-  
+
   constructor(
-    private fb: FormBuilder,    
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<PendencyComponent>,
     private snackBar: MatSnackBar,
     public scholarshipService: ScholarshipService
@@ -34,12 +34,12 @@ export class PendencyComponent implements OnInit {
 
   checkPendencies(){
     this.formPendency.setValue({
-      pendency: this.scholarshipService.processSelected.pendency      
+      pendency: this.scholarshipService.processSelected.pendency
     });
   }
 
   savePendency() {
-    if (this.formPendency.invalid) 
+    if (this.formPendency.invalid)
       return;
     if (this.formPendency.valid) {
       this.scholarshipService.savePendency(this.formPendency.value.pendency).subscribe(() =>{
