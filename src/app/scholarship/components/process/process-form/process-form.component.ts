@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { Process } from '../../../models/process';
 import { AuthService } from '../../../../shared/auth.service';
 import { MatSnackBar, MatSidenav, MatDialogRef, MatDialog } from '@angular/material';
-import { ScholarshipComponent } from '../../scholarship.component';
+import { ScholarshipComponent } from '../scholarship.component';
 import { ProcessDataComponent } from '../process-data/process-data.component';
 import { ProcessDocument } from '../../../models/processDocument';
 import { CustomValidators } from '../../../../core/custom-validators';

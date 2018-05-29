@@ -7,7 +7,7 @@ import { Process } from '../../../models/process';
 import { Student } from '../../../models/student';
 import { Responsible } from '../../../models/responsible';
 import { ScholarshipService } from '../../../scholarship.service';
-import { ScholarshipComponent } from '../../scholarship.component';
+import { ScholarshipComponent } from '../scholarship.component';
 import { AuthService } from '../../../../shared/auth.service';
 import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';

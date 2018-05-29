@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { ScholarshipComponent } from './components/scholarship.component';
+import { ScholarshipComponent } from './components/process/scholarship.component';
 import { AuthGuard } from '../shared/auth.guard';
 import { LayoutComponent } from '../shared/layout/layout.component';
 import { ProcessFormComponent } from './components/process/process-form/process-form.component';

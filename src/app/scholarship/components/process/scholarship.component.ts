@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { equalSegments } from '@angular/router/src/url_tree';
-import { ScholarshipService } from '../scholarship.service';
-import { School } from '../models/school';
+import { ScholarshipService } from '../../scholarship.service';
+import { School } from '../../models/school';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup, FormControl } from '@angular/forms';
-import { AuthService } from '../../shared/auth.service';
+import { AuthService } from '../../../shared/auth.service';
 import { MatSidenav } from '@angular/material';
 import { Router } from '@angular/router';
-import { SidenavService } from '../../core/services/sidenav.service';
-import { Process } from '../models/process';
+import { SidenavService } from '../../../core/services/sidenav.service';
+import { Process } from '../../models/process';
 
 @Component({
   selector: 'app-scholarship',
