@@ -62,7 +62,7 @@ export class ScholarshipComponent implements OnInit {
     this.idSchool = this.authService.getCurrentUser().idSchool !== 0 ?
     this.authService.getCurrentUser().idSchool.toString() : this.scholarshipService.schoolSelected;
     this.processes = [];
-    this.scholarshipService.getProcess(this.idSchool).subscribe((data: Process[]) => {
+    this.scholarshipService.getProcesses(this.idSchool).subscribe((data: Process[]) => {
       this.processes = Object.assign(this.processes, data as Process[]);
       this.processes$ = Observable.of(this.processes);
     });

@@ -99,7 +99,7 @@ export class ProcessDataComponent implements OnInit {
     if (this.scholarshipService.statusSelected > 0) {
       return;
     }
-    this.scholarshipService.getProcess(this.idSchool).subscribe((data: Process[]) => {
+    this.scholarshipService.getProcesses(this.idSchool).subscribe((data: Process[]) => {
       this.processes = Object.assign(this.processes, data as Process[]);
       this.processes.forEach(
         item => {
@@ -192,7 +192,7 @@ export class ProcessDataComponent implements OnInit {
   searchProcess(search, isStatus, isSchool) {
     this.processes = [];
     const id = this.authService.getCurrentUser().idSchool.toString();
-    this.scholarshipService.getProcess(id === '0' ? '-1' : id).subscribe((data: Process[]) => {
+    this.scholarshipService.getProcesses(id === '0' ? '-1' : id).subscribe((data: Process[]) => {
       this.processes = Object.assign(this.processes, data as Process[]);
       this.processes.forEach(
         item => {

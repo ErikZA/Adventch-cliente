@@ -91,7 +91,7 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getProcess(schoolId): Observable<Process[]> {
+  getProcesses(schoolId): Observable<Process[]> {
     let url = '/scholarship/Process/getAllProcesses/' + schoolId;
     return this.http
       .get(url)
