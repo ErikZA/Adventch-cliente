@@ -224,4 +224,12 @@ export class ScholarshipService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+
+  getProcessesResponsible(responsibleId): Observable<Process[]> {
+    let url = '/scholarship/responsible/getAllProcesses/' + responsibleId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 }

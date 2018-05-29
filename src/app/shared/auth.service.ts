@@ -38,8 +38,13 @@ export class AuthService {
   }
 
   redirectAccess(){
-    if(window.location.pathname.startsWith("/educacao"))
-      this.router.navigate(['/educacao']);
+    if(window.location.pathname.startsWith("/educacao")){
+      let responsible: Responsible = this.getcurrentResponsible();
+      if(responsible)
+        this.router.navigate(['/educacao/consultar']);
+      else
+        this.router.navigate(['/educacao']);
+    }
     else
       this.router.navigate(['/login']);
   }
@@ -101,7 +106,7 @@ export class AuthService {
   logoffResponsible() {
     localStorage.removeItem('currentResponsible');
     localStorage.removeItem('tokenResponsible');
-    this.router.navigate(['/bolsas-educacao']);
+    this.router.navigate(['/educacao']);
   }
 
   setCurrentUnit(unit){

@@ -27,6 +27,7 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
 
     private checkAccess(route, state?) {
+        debugger;
         if(window.location.pathname.startsWith('/educacao'))
             return this.checkAccessResponsible();
         return this.checkAccessUser(route, state);
@@ -58,7 +59,7 @@ export class AuthGuard implements CanActivate, CanLoad {
                 return true;
             return false;
         }
-        this.router.navigate(['/bolsas-educacao']);
+        this.router.navigate(['/educacao']);
         return false;
     }
 }
