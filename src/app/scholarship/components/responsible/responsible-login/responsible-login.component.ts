@@ -41,7 +41,7 @@ export class ResponsibleLoginComponent implements OnInit {
         if (!responsible || !responsible.id)
           this.invalidLogin();
         else
-          this.router.navigate(['/bolsas-educacao/consultar']);
+          this.router.navigate(['/educacao/consultar']);
       }).catch((err) => {
         if (err.status === 401) {
           this.invalidLogin();

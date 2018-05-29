@@ -28,13 +28,20 @@ export class AuthService {
   ) { }
 
   loggedIn() {
-    let user: User = JSON.parse(localStorage.getItem('currentUser'));
+    let user: User = this.getCurrentUser();
     if (user) {
       this.currentUser.emit(user);
       this.showApp.emit(true);
     } else {
-      this.router.navigate(['/login']);
+      this.redirectAccess();
     }
+  }
+
+  redirectAccess(){
+    if(window.location.pathname.startsWith("/educacao"))
+      this.router.navigate(['/educacao']);
+    else
+      this.router.navigate(['/login']);
   }
 
   login(email: string, password: string) {

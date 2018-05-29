@@ -10,8 +10,8 @@ import { ResponsibleDataComponent } from './components/responsible/responsible-d
 import { ResponsibleLoginComponent } from './components/responsible/responsible-login/responsible-login.component';
 
 const routes: Routes = [
-  { path: 'bolsas-educacao', component: ResponsibleLoginComponent },
-  { path: 'bolsas-educacao/consultar', component: ResponsibleDataComponent, canActivate: [AuthGuard], canLoad: [AuthGuard]},
+  { path: 'educacao', component: ResponsibleLoginComponent },
+  { path: 'educacao/consultar', component: ResponsibleDataComponent, canActivate: [AuthGuard], canLoad: [AuthGuard] },
   { path: 'bolsas', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
     { path: 'dashboard', component: ScholarshipComponent, children:[
       { path: 'novo', component: ProcessFormComponent }

@@ -27,7 +27,7 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
 
     private checkAccess(route, state?) {
-        if(route._routerState.url.startsWith('/bolsas-educacao'))
+        if(window.location.pathname.startsWith('/educacao'))
             return this.checkAccessResponsible();
         return this.checkAccessUser(route, state);
     }

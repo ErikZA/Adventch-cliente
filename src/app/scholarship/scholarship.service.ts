@@ -198,7 +198,6 @@ export class ScholarshipService {
       .retry(3)
       .toPromise()
       .then(data => {
-        debugger;
         let responsible = data.responsible as Responsible;
         if (responsible) {
           //user.photoUrl = `${environment.apiUrl}/users/photo/${user.identifier}/${user.photoDate}`;
