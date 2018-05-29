@@ -13,6 +13,7 @@ export class ResponsibleDataComponent implements OnInit {
   responsible: Responsible;
   processes: Process[] = new Array<Process>();
 
+  get year(): number { return new Date().getFullYear(); }
   showList = 15;
 
   constructor(
