@@ -92,7 +92,7 @@ export class ScholarshipService {
   }
 
   getProcesses(schoolId): Observable<Process[]> {
-    let url = '/scholarship/Process/getAllProcesses/' + schoolId;
+    let url = '/scholarship/process/getProcesses/' + schoolId;
     return this.http
       .get(url)
       .map((res: Response) => res)
