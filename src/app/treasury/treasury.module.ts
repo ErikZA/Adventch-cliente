@@ -18,7 +18,7 @@ import { DataTableComponent } from '../core/components/data-table/data-table.com
   declarations: [
     TreasurersComponent,
     TreasurersDataComponent,
-    TreasurersFormComponent
+    TreasurersFormComponent,
   ],
   providers:[
     TreasuryService,

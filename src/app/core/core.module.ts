@@ -86,7 +86,7 @@ import { InputMaskDirective } from './components/input-mask.directive';
     StrengthMeterComponent,
     PasswordFeedbackComponent,
     StrongPasswordDirective,
-    InputMaskDirective
+    InputMaskDirective,
   ],
   providers: [
     LockScreenService,

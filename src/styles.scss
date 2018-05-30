@@ -1,16 +1,20 @@
+@import 'variables';
+@import '../node_modules/font-awesome/scss/font-awesome';
+
 /* You can add global styles to this file, and also import other style files */
+
 html,
 body {
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 .fill-space {
-  -webkit-box-flex: 1;
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 
 
@@ -18,82 +22,84 @@ body {
 
 .mat-toolbar,
 .mat-toolbar-row {
-  height: 50px !important;
-  min-height: 50px !important;
+    height: 50px !important;
+    min-height: 50px !important;
 }
 
 mat-toolbar {
-  z-index: 6;
-  position: relative;
+    z-index: 6;
+    position: relative;
 }
 
 
 /* sidenav */
 
 .secondary-sidenav {
-  z-index: 4;
+    z-index: 4;
 }
 
 .active-link {
-  background-color: rgba(0, 0, 0, .05);
-  color: #212121;
-  font-weight: bold;
+    background-color: rgba(0, 0, 0, .05);
+    color: #212121;
+    font-weight: bold;
 }
 
 .mat-sidenav-content {
-  margin-left: 0px !important;
-  transform: none !important;
+    margin-left: 0px !important;
+    transform: none !important;
 }
 
 
 /* lock sreen */
 
 .lock-screen-container {
-  opacity: 1 !important;
-  background-image: url('assets/img/bg-img/5.jpg');
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
+    opacity: 1 !important;
+    background-image: url('assets/img/bg-img/5.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
 }
 
+.mat-drawer-opened {}
 
-.mat-drawer-opened {
-  
-}
 .mat-drawer-closed {
-  width: 0px !important;
-  min-width: 0px !important;
-  max-width: 0px !important;
-  height: 0px !important;
-  min-height: 0px !important;
-  max-height: 0px !important;
+    width: 0px !important;
+    min-width: 0px !important;
+    max-width: 0px !important;
+    height: 0px !important;
+    min-height: 0px !important;
+    max-height: 0px !important;
 }
 
 .secondary-sidenav {
-  z-index: 4;
+    z-index: 4;
 }
 
 $size-scroll: 0.70em;
+.beautiful-scroll-x::-webkit-scrollbar {
+    height: $size-scroll;
+}
 
-.beautiful-scroll-x::-webkit-scrollbar { height: $size-scroll; }
-.beautiful-scroll-y::-webkit-scrollbar { width: $size-scroll; }
+.beautiful-scroll-y::-webkit-scrollbar {
+    width: $size-scroll;
+}
 
 .beautiful-scroll-x::-webkit-scrollbar-track,
 .beautiful-scroll-y::-webkit-scrollbar-track {
-  background: #dedede;
-  -webkit-border-radius: $size-scroll;
-  border-radius: $size-scroll;
+    background: #dedede;
+    -webkit-border-radius: $size-scroll;
+    border-radius: $size-scroll;
 }
 
 .beautiful-scroll-x::-webkit-scrollbar-thumb,
 .beautiful-scroll-y::-webkit-scrollbar-thumb {
-  background: #cdcdcd;
-  -webkit-border-radius: $size-scroll;
-  border-radius: $size-scroll;
+    background: #cdcdcd;
+    -webkit-border-radius: $size-scroll;
+    border-radius: $size-scroll;
 }
 
 .beautiful-scroll-x::-webkit-scrollbar-thumb:window-inactive,
 .beautiful-scroll-y::-webkit-scrollbar-thumb:window-inactive {
-  background: #ddd;
+    background: #ddd;
 }

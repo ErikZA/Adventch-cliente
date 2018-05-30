@@ -19,5 +19,6 @@ export class Process {
   isSendDocument: boolean = false;
   motiveReject: string;
   processDocuments: Array<ProcessDocument>;
+  bagPorcentage: Number;
   constructor() { }
 }
