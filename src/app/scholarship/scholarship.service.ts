@@ -81,7 +81,7 @@ export class ScholarshipService {
   }
 
   postProcess(data): Observable<any>{
-    let url = `/scholarship/process/saveProcess`;
+    let url = `/scholarship/process/newProcess`;
     return this.http.post(url, data)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }

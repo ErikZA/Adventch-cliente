@@ -41,8 +41,8 @@
                 <p class="section-form">Estudante</p>
                 <mat-divider></mat-divider>
                 <div class="form-responsible" fxLayout="column" fxFlex>
-                    <mat-form-field type="number" fxFlex>
-                        <input matInput placeholder="RC" formControlName="rc">
+                    <mat-form-field fxFlex>
+                        <input type="number" matInput placeholder="RC" formControlName="rc">
                     </mat-form-field>
                     <mat-form-field fxFlex>
                         <input type="text" placeholder="Aluno" aria-label="Nome do Estudante" required matInput formControlName="nameStudent" [matAutocomplete]="auto" minlength="3">

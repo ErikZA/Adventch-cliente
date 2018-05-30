@@ -196,7 +196,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         phone: new FormControl({value: process.student.responsible.phone, disabled: false}),
         rc: new FormControl({value: process.student.rc || null, disabled: process.student.rc ? true : false}),
         nameStudent: new FormControl({value: process.student.name, disabled: false}, Validators.required),
-        bagPorcentage: new FormControl({value: process.student.bagPorcentage || null}),
+        bagPorcentage: new FormControl({value: process.bagPorcentage || null}),
       });
       this.formCheckDocuments = new FormGroup({
         isPersonalDocuments: new FormControl({value: 'true', disabled: true}, Validators.required),
@@ -250,7 +250,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       this.responsible = this.scholarshipService.processEdit.student.responsible;
       status = this.scholarshipService.processEdit.status;
     } else {
-      this.formProcess.value.rc = studentSelected === undefined || studentSelected.length === 0 ? 0 : studentSelected[0].rc;
       status = 1;
     }
     if (this.formProcess.valid && this.formCheckDocuments.valid) {

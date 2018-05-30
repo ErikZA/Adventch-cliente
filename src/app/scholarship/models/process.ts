@@ -18,6 +18,7 @@ export class Process {
   pendency: string;
   dateRegistration?: Date;
   motiveReject: string;
-  processDocuments: Array<ProcessDocument>
+  processDocuments: Array<ProcessDocument>;
+  bagPorcentage: Number;
   constructor() { }
 }

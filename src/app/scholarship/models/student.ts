@@ -5,7 +5,6 @@ export class Student {
   id: number;
   rc?: string;
   name: string;
-  bagPorcentage: string;
   responsible: Responsible;
   school: School;
   constructor() { }
