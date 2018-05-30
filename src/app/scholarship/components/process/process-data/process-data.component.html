@@ -68,7 +68,7 @@
                     <mat-list-item>
                         <h3 matLine fxLayout="row">
                             <div fxLayout="row" fxFlex>
-                                <span *ngIf="showSchool" fxFlex="40%" hide-xs>Escola</span>
+                                <span *ngIf="showSchool"  fxFlex="40%" fxHide.lt-sm>Escola</span>
                                 <span fxFlex="50%">Aluno</span>
                                 <span fxFlex="150px" fxHide.lt-sm fxFlexAlign="center">Protocolo</span>
                                 <span fxFlex="180px" fxHide.lt-sm fxFlexAlign="center">Status</span>
@@ -87,7 +87,7 @@
                                     {{ process.student.school.name }}
                                 </mat-panel-title> -->
                                 <mat-panel-description fxLayout="row" fxFlex>
-                                    <span *ngIf="showSchool" fxFlex="38%" style="white-space: nowrap;" hide-xs>
+                                    <span *ngIf="showSchool" fxFlex="38%" style="white-space: nowrap;" fxHide.lt-sm>
                                         {{ process.student.school.name }}
                                     </span>
                                     <span fxFlex="50%" style="white-space: nowrap;">
@@ -105,6 +105,9 @@
                                 <h2 matSubheader>Informações do Processo</h2>
                                 <mat-list-item fxLayout="row" style="height: auto">
                                     <div fxLayout="column" fxFlex matLine>
+                                        <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                            <span class="text-bold" class="details-title"><b>Escola:</b> {{ process.student.school.name }}</span>
+                                        </div>
                                         <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
                                             <span class="text-bold" class="details-title"><b>Protocolo:</b> {{ process.protocol }}</span>
                                         </div>

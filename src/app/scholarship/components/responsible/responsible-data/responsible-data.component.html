@@ -61,6 +61,12 @@
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-list>
+                                <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                    <span class="text-bold" class="details-title"><b>Protocolo:</b> {{ process.protocol }}</span>
+                                </div>
+                                <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                    <span class="text-bold" class="details-title"><b>Status:</b> {{ process.statusString }}</span>
+                                </div>
                                 <span style="white-space: normal;" *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }} (Documento(s) <span *ngIf="!process.isSendDocument">Não</span> Enviado(s))</span>
                                 <span style="white-space: normal;" *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title"><b>Matrícula: </b> até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</span>
                                 <span style="white-space: normal;" *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title"><b>{{ process.motiveReject }}: </b>{{ getMotiveToReject(process.motiveReject) }}</span>   

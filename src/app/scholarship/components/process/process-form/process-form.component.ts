@@ -30,8 +30,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   student: Student = new Student();
   studentsChildren: Student[] = new Array<Student>();
   filterStudentsChildren$: Observable<Student[]>;
-  formSave: boolean = false;
-  dialogRef: MatDialogRef<ReportNewProcessComponent>;
+  formSave: boolean = false;  
   informations = false;
   studentsSeries: StudentSerie[] = new Array<StudentSerie>();
 
@@ -283,6 +282,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         studentId: studentSelected === undefined || studentSelected.length === 0 ? 0 : studentSelected[0].id,
         schoolId: Number(idScholSelected),
         status: status,
+        rc: this.scholarshipService.processEdit.student.rc,
         id: isEdit ? this.scholarshipService.processEdit.id : 0,
         userId: this.authService.getCurrentUser().identifier,
         ...this.formProcess.value,
