@@ -31,7 +31,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   studentsChildren: Student[] = new Array<Student>();
   filterStudentsChildren$: Observable<Student[]>;
   formSave: boolean = false;
-  dialogRef: MatDialogRef<ReportNewProcessComponent>;
   informations = false;
   studentsSeries: StudentSerie[] = new Array<StudentSerie>();
 
