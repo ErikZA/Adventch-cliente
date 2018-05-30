@@ -31,6 +31,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   studentsChildren: Student[] = new Array<Student>();
   filterStudentsChildren$: Observable<Student[]>;
   formSave: boolean = false;
+  dialogRef: MatDialogRef<ReportNewProcessComponent>;
   informations = false;
   studentsSeries: StudentSerie[] = new Array<StudentSerie>();
 
@@ -58,7 +59,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     formOptionsName: 'ctpsOptions',
     label: 'Carteira de Trabalho',
     moreAbout: false,
-    more: ['Cópia da CTPS de todos os integrantes do grupo familiar a partir de 18 anos ou emancipados, mesmo os que estiverem dentro das seguintes condições: desempregados, estagiários, funcionários públicos, estudantes, estatuatário/celetista, militáres, aposentados, autônomos, proficionais liberais e proprietários/sócios de empresa. Páginas: nº de série (pag da foto), Qualificação Civil (Pag verso da foto), Contrato de Trabalho (penúltima e última pags com registro de trabalho e a próxima página em branco imediatamente subsequentes a estas).','Caso tenha duas CTPS, tirar cópia da antiga e da atual das mesmas páginas acima citadas', 'No caso de não possuir CTPS, apresentar declaração informando que não possui, com firma reconhecida em cartório'],
+    more: ['Cópia da CTPS de todos os integrantes do grupo familiar a partir de 18 anos ou emancipados, mesmo os que estiverem dentro das seguintes condições: desempregados, estagiários, funcionários públicos, estudantes, estatuatário/celetista, militáres, aposentados, autônomos, proficionais liberais e proprietários/sócios de empresa. Páginas: nº de série (pag da foto), Qualificação Civil (Pag verso da foto), Contrato de Trabalho (penúltima e última pags com registro de trabalho e a próxima página em branco imediatamente subsequentes a estas).', 'Caso tenha duas CTPS, tirar cópia da antiga e da atual das mesmas páginas acima citadas', 'No caso de não possuir CTPS, apresentar declaração informando que não possui, com firma reconhecida em cartório'],
     options:  ['Carteira de trabalho de todos os integrantes da familia', 'Possui duas carteiras de trabalho', 'Declaração de que não possui certeira de trabalho']
   };
   income: any = {
@@ -110,8 +111,9 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
   checkCpf(){
     this.formProcess.get('cpf').valueChanges.subscribe(cpf => {
-      if(cpf == null || cpf == undefined)
+      if (cpf == null || cpf === undefined) {
         return;
+      }
       this.responsible = new Responsible();
       if (!this.formProcess.get('cpf').hasError('pattern'))
         this.loadResponsibles(cpf);
@@ -147,7 +149,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.closeSidenav();
   }
 
@@ -175,8 +177,10 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       name: [null, Validators.required],
       email: [null],
       phone: [null],
+      rc: [null],
       nameStudent: [null, Validators.required],
-      studentSerieId: [null, Validators.required]
+      studentSerieId: [null, Validators.required],
+      bagPorcentage: [null]
     });
     this.formCheckDocuments = this.formBuilder.group({
       isPersonalDocuments: [null, Validators.required],
@@ -191,23 +195,31 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       expensesOptions: [null, Validators.required],
       isAcademic: [null, Validators.required],
       academicOptions: [null, Validators.required],
-    })
+    });
   }
 
   labelTitleProcess() {
-    return this.scholarshipService.processEdit != undefined && this.scholarshipService.processEdit.id != undefined ? 'Editar' : 'Novo';
+    return this.scholarshipService.processEdit !== undefined && this.scholarshipService.processEdit.id !== undefined ? 'Editar' : 'Novo';
   }
 
-  editProcess(){
-    let process = this.scholarshipService.processEdit;
-    if(process != undefined && process.id != undefined){
+  setRC(rc: number): void {
+    if (Number.isInteger(rc)) {
+      this.formProcess.patchValue({rc: rc});
+    }
+  }
+
+  editProcess() {
+    const process = this.scholarshipService.processEdit;
+    if (process !== undefined && process.id !== undefined) {
       this.formProcess = new FormGroup({
         cpf: new FormControl({value: process.student.responsible.cpf, disabled: true}, Validators.required),
         name: new FormControl({value: process.student.responsible.name, disabled: false}, Validators.required),
         email: new FormControl({value: process.student.responsible.email, disabled: false}),
         phone: new FormControl({value: process.student.responsible.phone, disabled: false}),
+        rc: new FormControl({value: process.student.rc || null, disabled: process.student.rc ? true : false}),
         nameStudent: new FormControl({value: process.student.name, disabled: false}, Validators.required),
-        studentSerieId: new FormControl({value: process.student.studentSerie.id, disabled: false}, Validators.required)
+        studentSerieId: new FormControl({value: process.student.studentSerie.id, disabled: false}, Validators.required),
+        bagPorcentage: new FormControl({value: process.bagPorcentage || null}),
       });
       this.formCheckDocuments = new FormGroup({
         isPersonalDocuments: new FormControl({value: 'true', disabled: true}, Validators.required),
@@ -228,53 +240,56 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  setDocumentsSelectes(documents){
-    let docs1 = documents.filter(doc => { return doc.typeDocument == 1 });
+  setDocumentsSelectes(documents) {
+    const docs1 = documents.filter(doc => doc.typeDocument === 1);
     this.formCheckDocuments.controls['personalOptions'].setValue(docs1.map(s => s.name));
-    let docs2 = documents.filter(doc => { return doc.typeDocument == 2 });
+    const docs2 = documents.filter(doc => doc.typeDocument === 2);
     this.formCheckDocuments.controls['irOptions'].setValue(docs2.map(s => s.name));
-    let docs3 = documents.filter(doc => { return doc.typeDocument == 3 });
+    const docs3 = documents.filter(doc => doc.typeDocument === 3);
     this.formCheckDocuments.controls['ctpsOptions'].setValue(docs3.map(s => s.name));
-    let docs4 = documents.filter(doc => { return doc.typeDocument == 4 });
+    const docs4 = documents.filter(doc => doc.typeDocument === 4);
     this.formCheckDocuments.controls['incomeOptions'].setValue(docs4.map(s => s.name));
-    let docs5 = documents.filter(doc => { return doc.typeDocument == 5 });
+    const docs5 = documents.filter(doc => doc.typeDocument === 5);
     this.formCheckDocuments.controls['academicOptions'].setValue(docs5.map(s => s.name));
-    let docs6 = documents.filter(doc => { return doc.typeDocument == 6 });
+    const docs6 = documents.filter(doc => doc.typeDocument === 6);
     this.formCheckDocuments.controls['academicOptions'].setValue(docs6.map(s => s.name));
   }
 
   closeSidenav() {
     this.scholarshipService.processEdit = new Process();
     this.sidenavService.close();
-    this.router.navigate([this.router.url.replace("/novo", "").replace("/editar", "")]);
+    this.router.navigate([this.router.url.replace('/novo', '').replace('/editar', '')]);
   }
 
   saveProcess() {
-    let isEdit = this.scholarshipService.processEdit != undefined && this.scholarshipService.processEdit.id != undefined;
+    const isEdit = this.scholarshipService.processEdit !== undefined && this.scholarshipService.processEdit.id !== undefined;
     this.formSave = true;
 
     let idScholSelected = this.scholarshipService.schoolSelected;
-    if(idScholSelected == '-1' || isEdit)
+    let status;
+    if (idScholSelected === '-1' || isEdit) {
       idScholSelected = this.scholarshipService.processEdit.student.school.id.toString();
-
-    let studentSelected = this.studentsChildren.filter(item => { return item.name == this.formProcess.value.nameStudent });
-    if(isEdit)
+    }
+    const studentSelected = this.studentsChildren.filter(item => item.name === this.formProcess.value.nameStudent);
+    if (isEdit) {
       this.responsible = this.scholarshipService.processEdit.student.responsible;
-
+      status = this.scholarshipService.processEdit.status;
+    } else {
+      status = 1;
+    }
     if (this.formProcess.valid && this.formCheckDocuments.valid) {
-      let data = {
-        responsibleId: this.responsible === undefined || this.responsible.id == undefined ? 0 : this.responsible.id,
-        studentId: studentSelected == undefined || studentSelected.length == 0 ? 0 : studentSelected[0].id,
+      const data = {
+        responsibleId: this.responsible === undefined || this.responsible.id === undefined ? 0 : this.responsible.id,
+        studentId: studentSelected === undefined || studentSelected.length === 0 ? 0 : studentSelected[0].id,
         schoolId: Number(idScholSelected),
-        status: 1,
+        status: status,
         id: isEdit ? this.scholarshipService.processEdit.id : 0,
         userId: this.authService.getCurrentUser().identifier,
-        rc: studentSelected == undefined || studentSelected.length == 0 ? 0 : studentSelected[0].rc,
         ...this.formProcess.value,
         ...this.formCheckDocuments.value,
       };
 
-      this.scholarshipService.postProcess(data).subscribe(x =>{
+      this.scholarshipService.postProcess(data).subscribe(x => {
         this.closeSidenav();
         this.formProcess.reset();
         this.formCheckDocuments.reset();

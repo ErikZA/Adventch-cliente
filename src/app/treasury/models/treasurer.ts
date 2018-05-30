@@ -1,6 +1,7 @@
 import { EGender, EFunction } from "./Enums";
 import { Unit } from "../../shared/models/unit.model";
 import { Church } from "./church";
+import { Phone } from "./phone";
 
 export class Treasurer {
   id: number;
@@ -17,7 +18,7 @@ export class Treasurer {
   address?: string;
   addressComplement?: string;
   cep?: string;
-  phone?: string;
+  phones?: Array<Phone>;
   email?: string;
   dateBirth?: Date;
   cpf?: string;
