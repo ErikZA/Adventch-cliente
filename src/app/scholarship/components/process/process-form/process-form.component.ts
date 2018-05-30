@@ -30,11 +30,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   student: Student = new Student();
   studentsChildren: Student[] = new Array<Student>();
   filterStudentsChildren$: Observable<Student[]>;
-<<<<<<< HEAD
-  formSave: boolean = false;  
-=======
   formSave: boolean = false;
->>>>>>> 661ffec9b868adac6425dd153f7520aaada49dbb
   informations = false;
   studentsSeries: StudentSerie[] = new Array<StudentSerie>();
 
