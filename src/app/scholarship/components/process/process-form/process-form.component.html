@@ -66,7 +66,7 @@
                     <div fxLayout="row" fxLayoutGap="20px">
                         <label>Porcentagem da Bolsa: </label>
                         <mat-radio-group formControlName="bagPorcentage">
-                            <mat-radio-button color="primary" value="50">50%</mat-radio-button>
+                            <mat-radio-button color="primary" value="50" [checked]="getChecked()">50%</mat-radio-button>
                             <mat-radio-button color="primary" value="100">100%</mat-radio-button>
                             <mat-error class="mat-error-font" *ngIf="formProcess.get('bagPorcentage').hasError('required') && formSave">Este campo é obrigatório</mat-error>
                         </mat-radio-group>

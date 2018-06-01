@@ -218,8 +218,9 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         rc: new FormControl({value: process.student.rc || null, disabled: process.student.rc ? true : false}),
         nameStudent: new FormControl({value: process.student.name, disabled: false}, Validators.required),
         studentSerieId: new FormControl({value: process.student.studentSerie.id, disabled: false}, Validators.required),
-        bagPorcentage: new FormControl({value: process.bagPorcentage || null}),
+        bagPorcentage: new FormControl()
       });
+      this.formProcess.controls['bagPorcentage'].setValue(process.bagPorcentage.toString());
       this.formCheckDocuments = new FormGroup({
         isPersonalDocuments: new FormControl({value: 'true', disabled: true}, Validators.required),
         personalOptions: new FormControl(),
@@ -261,7 +262,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   }
 
   saveProcess() {
-    const isEdit = this.scholarshipService.processEdit !== undefined && this.scholarshipService.processEdit.id !== undefined;
+    const isEdit = this.checkIsEdit();
     this.formSave = true;
 
     let idScholSelected = this.scholarshipService.schoolSelected;
@@ -287,7 +288,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         ...this.formProcess.value,
         ...this.formCheckDocuments.value,
       };
-
       this.scholarshipService.postProcess(data).subscribe(x => {
         this.closeSidenav();
         this.formProcess.reset();
@@ -299,6 +299,20 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
       });
     }
+  }
+
+  checkIsEdit(){
+    let isEdit = this.scholarshipService.processEdit !== undefined && this.scholarshipService.processEdit.id !== undefined;
+    return isEdit;
+  }
+
+  getChecked(){
+    if(this.checkIsEdit()){
+      if(this.scholarshipService.processEdit.bagPorcentage == 50)
+        return true;
+      return false;
+    }
+    return true;
   }
 
   generateReport(id){
