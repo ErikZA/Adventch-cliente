@@ -179,7 +179,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       rc: [null],
       nameStudent: [null, Validators.required],
       studentSerieId: [null, Validators.required],
-      bagPorcentage: [null]
+      bagPorcentage: [50]
     });
     this.formCheckDocuments = this.formBuilder.group({
       isPersonalDocuments: [null, Validators.required],
