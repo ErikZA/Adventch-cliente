@@ -22,6 +22,7 @@ import { MatDialogRef,
         matExpansionAnimations,
         MatSidenav,
         MatSlideToggleChange } from '@angular/material';
+import { ReportService } from '../../../../shared/report.service';
 
 @Component({
   selector: 'app-process-data',
@@ -58,6 +59,7 @@ export class ProcessDataComponent implements OnInit {
     private snackBar: MatSnackBar,
     private sidenavService: SidenavService,
     private router: Router,
+    private reportService: ReportService
   ) { }
 
   ngOnInit() {
@@ -367,5 +369,16 @@ export class ProcessDataComponent implements OnInit {
         this.snackBar.open('Erro ao atualizar o processo, tente novamente.', 'OK', { duration: 5000 });
       });
     }
+  }
+
+  generateReport(p){
+    this.scholarshipService.getPasswordResponsible(p[0].id).subscribe(data => {
+      let password = data;
+      this.reportService.reportProcess(p[0].id, password).subscribe(data => {
+        var fileUrl = URL.createObjectURL(data);
+        window.open(fileUrl);
+      }, err => console.log(err));
+      this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+    });
   }
 }

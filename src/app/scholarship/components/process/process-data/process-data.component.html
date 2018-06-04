@@ -168,7 +168,7 @@
                                     </div>
                                 </mat-list-item>
                             </mat-list>
-                            <mat-action-row>
+                            <mat-action-row>                                
                                 <button *ngIf="process.status == 1 && authService.getCurrentUser().idSchool == 0" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="toWaiting([process])">INICIAR</button>
                                 <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3)" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency([process])">PENDÊNCIA</button>
                                 <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status > 1 && process.status < 7)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu"><mat-icon>list</mat-icon> INDEFERIR</button>
@@ -182,6 +182,7 @@
                                 </mat-menu>
                                 <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status > 1)" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove([process])">APROVAR</button>
                                 <button *ngIf="process.status == 1" mat-button color="primary" matTooltip="Editar" (click)="editProcess([process])">EDITAR</button>
+                                <button style="color: #2094c8" mat-button color="primary" matTooltip="Imprimir protocolo" (click)="generateReport([process])">IMPRIMIR</button>
                             </mat-action-row>
                         </mat-expansion-panel>
                     </div>
