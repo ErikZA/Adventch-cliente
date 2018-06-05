@@ -2,6 +2,7 @@ import { Directive, Input, ElementRef, HostListener } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 
 @Directive({
+  // tslint:disable-next-line:directive-selector
   selector: '[InputMask]'
 })
 export class InputMaskDirective implements ControlValueAccessor {
@@ -29,7 +30,7 @@ export class InputMaskDirective implements ControlValueAccessor {
 
   @HostListener('keyup', ['$event'])
   onKeyup($event: any) {
-    let valor = $event.target.value.replace(/\D/g, '');
+    const valor = $event.target.value.replace(/\D/g, '');
 
     // retorna caso pressionado backspace
     if ($event.keyCode === 8) {
@@ -37,7 +38,7 @@ export class InputMaskDirective implements ControlValueAccessor {
       return;
     }
 
-    let pad = this.textMask.replace(/\D/g, '').replace(/9/g, '_');
+    const pad = this.textMask.replace(/\D/g, '').replace(/9/g, '_');
     $event.target.value = this.aplicarMascara(valor);
     if (valor.length <= pad.length) {
       this.registerOnChange(valor);
@@ -55,8 +56,8 @@ export class InputMaskDirective implements ControlValueAccessor {
 
   aplicarMascara(valor: string): string {
     valor = valor.replace(/\D/g, '');
-    let pad = this.textMask.replace(/\D/g, '').replace(/9/g, '_');
-    let valorMask = valor + pad.substring(0, pad.length - valor.length);
+    const pad = this.textMask.replace(/\D/g, '').replace(/9/g, '_');
+    const valorMask = valor + pad.substring(0, pad.length - valor.length);
     let valorMaskPos = 0;
 
     valor = '';

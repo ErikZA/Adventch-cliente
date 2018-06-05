@@ -2,7 +2,8 @@ import {
   Directive,
   Input,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  OnInit
 } from '@angular/core';
 import {
   AbstractControl,
@@ -38,7 +39,7 @@ export function StrongPasswordValidator(level: string = '2', user_inputs: string
 @Directive({
   selector: '[appStrongPassword]'
 })
-export class StrongPasswordDirective {
+export class StrongPasswordDirective implements OnInit, OnChanges {
 
   constructor() { }
 

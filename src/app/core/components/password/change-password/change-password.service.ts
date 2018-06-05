@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
@@ -13,7 +13,7 @@ export class ChangePasswordService {
   ) { }
 
   changePasswordCooperated(currentPassword: string, newPassword: string): Promise<any> {
-    let body = JSON.stringify({ currentPassword: currentPassword, newPassword: newPassword });
+    const body = JSON.stringify({ currentPassword: currentPassword, newPassword: newPassword });
     return this.http
       .put('/cooperated/changePassword/', body)
       .toPromise()
@@ -22,7 +22,7 @@ export class ChangePasswordService {
   }
 
   changePasswordAdmin(currentPassword: string, newPassword: string): Promise<any> {
-    let body = JSON.stringify({ currentPassword: currentPassword, newPassword: newPassword });
+    const body = JSON.stringify({ currentPassword: currentPassword, newPassword: newPassword });
     return this.http
       .put('/admin/changePassword/', body)
       .toPromise()
@@ -31,7 +31,7 @@ export class ChangePasswordService {
   }
 
   managerChangePassword(userId: string, newPassword: string): Promise<any> {
-    let body = JSON.stringify({ userId: userId, newPassword: newPassword });
+    const body = JSON.stringify({ userId: userId, newPassword: newPassword });
     return this.http
       .put('/admin/managerChangePassword/', body)
       .toPromise()

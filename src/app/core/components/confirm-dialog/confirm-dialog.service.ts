@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 
 import { ConfirmDialogComponent } from './confirm-dialog.component';
 
@@ -19,10 +19,11 @@ export class ConfirmDialogService {
     dialogRef = this.dialog.open(ConfirmDialogComponent);
     dialogRef.componentInstance.title = title;
     dialogRef.componentInstance.message = message;
-    if (confirmButtonText)
+    if (confirmButtonText) {
       dialogRef.componentInstance.buttonOk = confirmButtonText;
-    if (cancelButtonText)
+    } if (cancelButtonText) {
       dialogRef.componentInstance.buttonCancel = cancelButtonText;
+    }
 
     return dialogRef.afterClosed();
   }

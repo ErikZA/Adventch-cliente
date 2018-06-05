@@ -1,12 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'color-picker',
+  selector: 'app-color-picker',
   templateUrl: './color-picker.component.html',
   styleUrls: ['./color-picker.component.scss']
 })
 export class ColorPickerComponent implements OnInit {
 
+  // tslint:disable-next-line:no-input-rename
   @Input('color') public selectedColor = '#000';
   @Output() public change: EventEmitter<any> = new EventEmitter();
 

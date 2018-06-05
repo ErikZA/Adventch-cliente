@@ -25,7 +25,7 @@ export class ResponsibleLoginComponent implements OnInit {
   }
 
   login() {
-    let cpf = this.userCPF.nativeElement;
+    const cpf = this.userCPF.nativeElement;
     let password = this.userPassword.nativeElement;
     if (!cpf.value) {
       cpf.focus();

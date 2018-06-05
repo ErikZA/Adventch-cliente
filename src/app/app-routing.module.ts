@@ -21,7 +21,7 @@ const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'tesouraria', redirectTo: 'treasury', pathMatch: 'full' },
   { path: 'bolsas', redirectTo: 'scholarship', pathMatch: 'full' },
-  { path: '', component: LayoutComponent, pathMatch: 'full', canActivate: [AuthGuard], canLoad: [AuthGuard], children:[
+  { path: '', component: LayoutComponent, pathMatch: 'full', canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
     {path: '', component: DashboardComponent }
   ]},
   { path: '**', component: PageNotFoundComponent }

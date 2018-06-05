@@ -69,7 +69,7 @@ export class ChangePasswordComponent implements OnInit {
       if (password.value !== confirmPassword.value) {
         return { mismatchedPasswords: true };
       }
-    }
+    };
   }
 
   onStrength({strength}) {
@@ -91,7 +91,7 @@ export class ChangePasswordComponent implements OnInit {
       case 3:
         return 'Senha forte.';
       case 4:
-        return 'Senha estremamente forte.'
+        return 'Senha estremamente forte.';
     }
   }
 

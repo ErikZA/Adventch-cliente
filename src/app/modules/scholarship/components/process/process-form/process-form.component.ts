@@ -134,8 +134,33 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     formOptionsName: 'expensesOptions',
     label: 'Comprovantes de Despesas',
     moreAbout: false,
-    more: ['ALUGUEL DE IMÓVEL RESIDENCIAL: Contrato de locação vigente com firma reconhecida e comprovante de pagamento do último mês (recibo) e Declaração do Proprietário do imóvel com firma reconhecida, com dados do Locador, do Proprietário, Endereço e valor aluguel', 'FINANCIAMENTO DE IMÓVEL: Cópia da última prestação paga do imóvel, se for descontado em folha fazer declaração reconhecida em cartório', 'MORADIA/CASA CEDIDA: Declaração do Proprietário do imóvel com firma reconhecida, com dados do MORADOR, do Proprietário e Endereço', 'DESPESAS COM SAUDE: •	Laudo médico e/ou parecer com CID (código da doença) e CRM (código registro médico), receituário médico e as notas fiscais utilizadas. Não entra valor de plano de saúde.', 'DESPESAS COM EDUCAÇÃO: Ultimo comprovante mensal com a entidade educacional (Escola e/ou Faculdade)', 'DESPESAS AGUA, LUZ E TELEFONE FIXO: Cópia do ultimo comprovante de energia (caso seja compartilhada com outras residencias no mesmo terreno, fazer declaração), água (se a água estiver inclusa no condomínio, apresentar comprovante e especificar) e telefone fixo (conta de celular e internet não entram no cálculo da solicitação de gratuidade) e no caso de não usar água da Sanepar, fazer declaração especificando se é de poço', 'DESPESAS COM TRANSPORTE ESCOLAR: Comprovante de pagamento mensal ou contrato de transporte escolar', 'FINANCIAMENTO DE VEÍCULO: Cópia da última prestação paga do veículo, se for descontado em folha fazer declaração reconhecida em cartório'],
-    options:  ['Contrato de locação de aluguel de imóvel', 'Declaração do Proprietário do imóvel alugado com firma reconhecida', 'Última prestação paga do financiamento do imóvel', 'Declaração do Proprietário do imóvel cedido com firma reconhecida', 'Laudo médico e/ou parecer com CID e CRM, receituário médico e as notas fiscais utilizadas para despesas com saúde', 'Ultimo comprovante mensal com a entidade educacional (Escola e/ou Faculdade)', 'Ultimo comprovante de energia e água', 'Ultimo comprovante de Telefone Fixo', 'Declaração de não utilização de água encanada', 'Comprovante de pagamento mensal ou contrato de transporte escolar', 'Cópia da última prestação paga do veículo']
+    more: [`ALUGUEL DE IMÓVEL RESIDENCIAL: Contrato de locação vigente com firma reconhecida e comprovante de
+     pagamento do último mês (recibo) e Declaração do Proprietário do imóvel com firma reconhecida, com dados
+      do Locador, do Proprietário, Endereço e valor aluguel`,
+    `FINANCIAMENTO DE IMÓVEL: Cópia da última prestação paga do imóvel, se for descontado em folha fazer
+     declaração reconhecida em cartório`,
+    'MORADIA/CASA CEDIDA: Declaração do Proprietário do imóvel com firma reconhecida, com dados do MORADOR, do Proprietário e Endereço',
+    `DESPESAS COM SAUDE: •	Laudo médico e/ou parecer com CID (código da doença) e CRM (código registro médico),
+     receituário médico e as notas fiscais utilizadas. Não entra valor de plano de saúde.`,
+    'DESPESAS COM EDUCAÇÃO: Ultimo comprovante mensal com a entidade educacional (Escola e/ou Faculdade)',
+    `DESPESAS AGUA, LUZ E TELEFONE FIXO: Cópia do ultimo comprovante de energia (caso seja compartilhada com
+     outras residencias no mesmo terreno, fazer declaração), água (se a água estiver inclusa no condomínio,
+     apresentar comprovante e especificar) e telefone fixo (conta de celular e internet não entram no cálculo
+     da solicitação de gratuidade) e no caso de não usar água da Sanepar, fazer declaração especificando se é de poço`,
+    'DESPESAS COM TRANSPORTE ESCOLAR: Comprovante de pagamento mensal ou contrato de transporte escolar',
+    `FINANCIAMENTO DE VEÍCULO: Cópia da última prestação paga do veículo, se for descontado em folha fazer declaração
+     reconhecida em cartório`],
+    options:  ['Contrato de locação de aluguel de imóvel',
+    'Declaração do Proprietário do imóvel alugado com firma reconhecida',
+    'Última prestação paga do financiamento do imóvel',
+    'Declaração do Proprietário do imóvel cedido com firma reconhecida',
+    'Laudo médico e/ou parecer com CID e CRM, receituário médico e as notas fiscais utilizadas para despesas com saúde',
+    'Ultimo comprovante mensal com a entidade educacional (Escola e/ou Faculdade)',
+    'Ultimo comprovante de energia e água',
+    'Ultimo comprovante de Telefone Fixo',
+    'Declaração de não utilização de água encanada',
+    'Comprovante de pagamento mensal ou contrato de transporte escolar',
+    'Cópia da última prestação paga do veículo']
   };
   academic: any = {
     value: 6,
@@ -380,8 +405,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   generateReport(id) {
     this.scholarshipService.getPasswordResponsible(id).subscribe(data => {
       const password = data;
-      this.reportService.reportProcess(id, password).subscribe(data => {
-        const fileUrl = URL.createObjectURL(data);
+      this.reportService.reportProcess(id, password).subscribe(dataURL => {
+        const fileUrl = URL.createObjectURL(dataURL);
         // nova aba
         window.open(fileUrl);
         // download automatico

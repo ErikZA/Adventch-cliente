@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import { Treasurer } from '../../../../treasury/models/treasurer';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import { TreasuryService } from '../../../../treasury/treasury.service';
 import { Process } from '../../../models/process';
 import { Student } from '../../../models/student';
