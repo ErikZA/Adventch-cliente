@@ -396,6 +396,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   }
 
   maskPhone(phone) {
-    return phone.value.length <= 14 ? '(99) 9999-9999' : '(99)9 9999-9999';
+    return phone.value.length <= 14 ? '(99) 9999-9999' : '(99) 99999-9999';
   }
 }
