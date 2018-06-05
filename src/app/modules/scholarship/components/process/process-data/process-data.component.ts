@@ -46,7 +46,7 @@ export class ProcessDataComponent implements OnInit {
   statusSelecteds: any[] = new Array<any>();
 
   processes: Process[] = new Array<Process>();
-  allProcesses: Process[] = new Array<Process>();
+  // allProcesses: Process[] = new Array<Process>();
   processes$: Observable<Process[]>;
 
   dialogRef: MatDialogRef<PendencyComponent>;
@@ -104,8 +104,9 @@ export class ProcessDataComponent implements OnInit {
       return;
     }
     this.scholarshipService.getProcesses(this.idSchool).subscribe((data: Process[]) => {
+      console.log(data);
       this.processes = Object.assign(this.processes, data as Process[]);
-      this.allProcesses = this.processes;
+      // this.allProcesses = this.processes;
       this.processes.forEach(
         item => {
           item.statusString = this.getStatusToString(item.status);
@@ -193,24 +194,24 @@ export class ProcessDataComponent implements OnInit {
   searchProcess(search, isStatus, isSchool) {
     this.processes = [];
     const id = this.authService.getCurrentUser().idSchool.toString();
-    this.processes = this.allProcesses;
-    this.processes.forEach(
-      item => {
-        item.statusString = this.getStatusToString(item.status);
-      }
-    );
-    search = search.toLowerCase();
-    this.searchString = search;
-    this.processes$ = Observable.of(this.processes.filter(data => {
-      return (this.searchOnlySchool(data.student.school.id)) &&
-        (this.searchOnlyStatus(data.status)) &&
-        (data.student.name.toLowerCase().indexOf(search) !== -1 ||
-        data.student.responsible.name.toLowerCase().indexOf(search) !== -1 ||
-        data.student.school.name.toLowerCase().indexOf(search) !== -1 ||
-        data.statusString.toLowerCase().indexOf(search) !== -1 ||
-        data.protocol.toLowerCase().indexOf(search) !== -1);
-    }));
-    /*this.scholarshipService.getProcesses(id === '0' ? '-1' : id).subscribe((data: Process[]) => {
+    // this.processes = this.allProcesses;
+    // this.processes.forEach(
+    //   item => {
+    //     item.statusString = this.getStatusToString(item.status);
+    //   }
+    // );
+    // search = search.toLowerCase();
+    // this.searchString = search;
+    // this.processes$ = Observable.of(this.processes.filter(data => {
+    //   return (this.searchOnlySchool(data.student.school.id)) &&
+    //     (this.searchOnlyStatus(data.status)) &&
+    //     (data.student.name.toLowerCase().indexOf(search) !== -1 ||
+    //     data.student.responsible.name.toLowerCase().indexOf(search) !== -1 ||
+    //     data.student.school.name.toLowerCase().indexOf(search) !== -1 ||
+    //     data.statusString.toLowerCase().indexOf(search) !== -1 ||
+    //     data.protocol.toLowerCase().indexOf(search) !== -1);
+    // }));
+    this.scholarshipService.getProcesses(id === '0' ? '-1' : id).subscribe((data: Process[]) => {
       this.processes = Object.assign(this.processes, data as Process[]);
       this.processes.forEach(
         item => {
@@ -228,7 +229,7 @@ export class ProcessDataComponent implements OnInit {
           data.statusString.toLowerCase().indexOf(search) !== -1 ||
           data.protocol.toLowerCase().indexOf(search) !== -1);
       }));
-    });*/
+    });
   }
 
   searchOnlySchool(idSchoolToFilter) {
