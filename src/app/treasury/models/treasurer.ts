@@ -1,7 +1,7 @@
-import { EGender, EFunction } from "./Enums";
-import { Unit } from "../../shared/models/unit.model";
-import { Church } from "./church";
-import { Phone } from "./phone";
+import { EGender, EFunction } from './Enums';
+import { Unit } from '../../shared/models/unit.model';
+import { Church } from './church';
+import { Phone } from './phone';
 
 export class Treasurer {
   id: number;
@@ -10,10 +10,10 @@ export class Treasurer {
   church: Church;
   name: string;
   function: EFunction;
-  functionName: string; //não mapeado
+  functionName: string; // não mapeado
   gender?: EGender;
   dateRegister?: Date;
-  dateRegisterFormatted: string; //não mapeado
+  dateRegisterFormatted: string; // não mapeado
   contact?: string;
   address?: string;
   addressComplement?: string;
@@ -25,12 +25,14 @@ export class Treasurer {
   constructor(
   ) { }
 
-  getFunction(){
-    if(this.function == 1)
-      return "Tesoureiro (a)";
-    if(this.function == 2)
-      return "Tesoureiro (a) Associado (a)";
-    return "Tesoureiro (a) Assistente";
+  getFunction() {
+    if (this.function === 1) {
+      return 'Tesoureiro (a)';
+    }
+    if (this.function === 2) {
+      return 'Tesoureiro (a) Associado (a)';
+    }
+    return 'Tesoureiro (a) Assistente';
   }
 }
 

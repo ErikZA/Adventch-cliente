@@ -30,7 +30,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   student: Student = new Student();
   studentsChildren: Student[] = new Array<Student>();
   filterStudentsChildren$: Observable<Student[]>;
-  formSave: boolean = false;
+  formSave = false;
   informations = false;
   studentsSeries: StudentSerie[] = new Array<StudentSerie>();
 
@@ -108,43 +108,46 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     this.editProcess();
   }
 
-  checkCpf(){
+  checkCpf() {
     this.formProcess.get('cpf').valueChanges.subscribe(cpf => {
       if (cpf == null || cpf === undefined) {
         return;
       }
       this.responsible = new Responsible();
-      if (!this.formProcess.get('cpf').hasError('pattern'))
+      if (!this.formProcess.get('cpf').hasError('pattern')) {
         this.loadResponsibles(cpf);
-      else
+      } else {
         this.setpatchValuesResponsible();
+      }
     });
   }
 
-  loadStudentSeries(){
+  loadStudentSeries() {
     this.scholarshipService.getStudentSeries().subscribe((data: StudentSerie[]) => {
       this.studentsSeries = Object.assign(this.studentsSeries, data as StudentSerie[]);
     });
   }
 
-  loadResponsibles(cpf){
+  loadResponsibles(cpf) {
     let idSchool = this.scholarshipService.schoolSelected;
-    if(idSchool == '-1' && this.scholarshipService.processEdit != undefined)
+    if (idSchool === '-1' && this.scholarshipService.processEdit !== undefined) {
       idSchool = this.scholarshipService.processEdit.student.school.id.toString();
+    }
 
     this.scholarshipService.getResponsible(Number(idSchool), cpf).subscribe(responsible => {
       this.responsible = Object.assign(this.responsible, responsible as Responsible);
       this.setpatchValuesResponsible();
-      if (responsible)
+      if (responsible) {
         this.loadStudentChildres(responsible);
+      }
     });
   }
 
-  loadStudentChildres(responsible){
-    this.scholarshipService.getChildrenStudents(responsible.id).subscribe((data: Student[]) =>{
+  loadStudentChildres(responsible) {
+    this.scholarshipService.getChildrenStudents(responsible.id).subscribe((data: Student[]) => {
       this.studentsChildren = Object.assign(this.studentsChildren, data as Student[]);
       this.filterStudentsChildren$ = Observable.of(this.studentsChildren);
-    })
+    });
 
   }
 
@@ -301,28 +304,29 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkIsEdit(){
-    let isEdit = this.scholarshipService.processEdit !== undefined && this.scholarshipService.processEdit.id !== undefined;
+  checkIsEdit() {
+    const isEdit = this.scholarshipService.processEdit !== undefined && this.scholarshipService.processEdit.id !== undefined;
     return isEdit;
   }
 
-  getChecked(){
-    if(this.checkIsEdit()){
-      if(this.scholarshipService.processEdit.bagPorcentage == 50)
+  getChecked() {
+    if (this.checkIsEdit()) {
+      if (this.scholarshipService.processEdit.bagPorcentage === 50) {
         return true;
+      }
       return false;
     }
     return true;
   }
 
-  generateReport(id){
+  generateReport(id) {
     this.scholarshipService.getPasswordResponsible(id).subscribe(data => {
-      let password = data;
+      const password = data;
       this.reportService.reportProcess(id, password).subscribe(data => {
-        var fileUrl = URL.createObjectURL(data);
-        //nova aba
+        const fileUrl = URL.createObjectURL(data);
+        // nova aba
         window.open(fileUrl);
-        //download automatico
+        // download automatico
         /*var element = document.createElement("a");
         element.href = fileUrl;
         element.download = 'processo.pdf';
