@@ -3,15 +3,15 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/retry';
 
 import { User } from './models/user.model';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../environments/environment';
 import { Unit } from './models/unit.model';
 import { EModules } from './models/modules.enum';
 import { Permission } from './models/permission.model';
-import { Responsible } from '../scholarship/models/responsible';
+import { Responsible } from '../modules/scholarship/models/responsible';
 
 @Injectable()
 export class AuthService {
@@ -175,7 +175,6 @@ export class AuthService {
     const url = '/shared/getPermissions/' + this.getCurrentUser().id + '/' + this.getCurrentUnit().id;
     return this.http
       .get(url)
-      .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
@@ -183,7 +182,6 @@ export class AuthService {
     const url = '/shared/checkPermissionModule/' + this.getCurrentUser().id + '/' + this.getCurrentUnit().id + '/' + idModule;
     return this.http
       .get(url)
-      .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }

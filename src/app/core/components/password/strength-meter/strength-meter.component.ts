@@ -14,15 +14,15 @@ import * as zxcvbn from 'zxcvbn';
   templateUrl: './strength-meter.component.html',
   styleUrls: ['./strength-meter.component.scss']
 })
-export class StrengthMeterComponent implements OnInit {
+export class StrengthMeterComponent implements OnInit, OnChanges {
 
   @Input()
-  password: string = '';
+  password = '';
 
   @Output('strength')
   passwordStrength = new EventEmitter();
 
-  strength: number = 0;
+  strength = 0;
 
   constructor() { }
 

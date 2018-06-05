@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs/Subscription';
 
 // import { TranslateService } from '@ngx-translate/core';
 import * as _ from 'lodash';
 
-import { User } from './modules/shared/models/user.model';
-import { AuthService } from './modules/shared/auth.service';
+import { User } from './shared/models/user.model';
+import { AuthService } from './shared/auth.service';
 import { MatIconRegistry } from '@angular/material';
 
 @Component({

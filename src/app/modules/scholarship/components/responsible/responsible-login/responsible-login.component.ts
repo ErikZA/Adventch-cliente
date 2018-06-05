@@ -37,11 +37,12 @@ export class ResponsibleLoginComponent implements OnInit {
     }
     this.scholarschipService.login(cpf.value, password.value)
       .then(res => {
-        let responsible = res as Responsible;
-        if (!responsible || !responsible.id)
+        const responsible = res as Responsible;
+        if (!responsible || !responsible.id) {
           this.invalidLogin();
-        else
+        } else {
           this.router.navigate(['/educacao/consultar']);
+        }
       }).catch((err) => {
         if (err.status === 401) {
           this.invalidLogin();
@@ -52,7 +53,10 @@ export class ResponsibleLoginComponent implements OnInit {
   }
 
   invalidLogin() {
-    let snackBarRef = this.snackBar.open('CPF/senha inválido!', 'OK', { duration: 3000 }).afterDismissed().subscribe(() => this.userPassword.nativeElement.focus());
+    const snackBarRef = this.snackBar
+      .open('CPF/senha inválido!', 'OK', { duration: 3000 })
+      .afterDismissed()
+      .subscribe(() => this.userPassword.nativeElement.focus());
   }
 
 }

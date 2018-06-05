@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CoreModule } from '../core/core.module';
+import { CoreModule } from '../../core/core.module';
 
 import { ScholarshipComponent } from './components/process/scholarship.component';
 import { ScholarshipRoutingModule } from './scholarship-routing.module';
@@ -20,7 +20,7 @@ import { ResponsibleLoginComponent } from './components/responsible/responsible-
     MatGridListModule,
     ScholarshipRoutingModule
   ],
-  providers:[
+  providers: [
     ScholarshipService
   ],
   declarations: [

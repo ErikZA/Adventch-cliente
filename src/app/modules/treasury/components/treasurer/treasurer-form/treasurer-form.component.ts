@@ -1,10 +1,10 @@
 import { Phone } from './../../../models/phone';
 import { Component, OnInit, EventEmitter, OnDestroy, ViewChild, Input, ChangeDetectorRef, DoCheck } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormGroupDirective, FormArray } from '@angular/forms';
-import { AuthService } from '../../../../shared/auth.service';
+import { AuthService } from '../../../../../shared/auth.service';
 import { Church } from '../../../models/church';
 import { TreasuryService } from '../../../treasury.service';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import { Treasurer } from '../../../models/treasurer';
 import { MatSnackBar, MatTableDataSource } from '@angular/material';
 import { TreasurerComponent } from '../treasurer.component';

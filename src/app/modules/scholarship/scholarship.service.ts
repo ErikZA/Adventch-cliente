@@ -1,13 +1,13 @@
 import { Http, Response, Headers, ResponseContentType } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { School } from './models/school';
 import { Responsible } from './models/responsible';
 import { Student } from './models/student';
 import { Process } from './models/process';
-import { AuthService } from '../shared/auth.service';
-import { Subject } from 'rxjs';
+import { AuthService } from '../../shared/auth.service';
+import { Subject } from 'rxjs/Subject';
 import { StudentSerie } from './models/studentSerie';
 import { environment } from '../../../environments/environment';
 
@@ -60,7 +60,6 @@ export class ScholarshipService {
     const url = '/scholarship/Process/getAllSchools/';
     return this.http
       .get(url)
-      .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
@@ -96,7 +95,6 @@ export class ScholarshipService {
     const url = '/scholarship/process/getProcesses/' + schoolId;
     return this.http
       .get(url)
-      .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
@@ -104,7 +102,6 @@ export class ScholarshipService {
     const url = '/scholarship/Process/getProcess/' + processId;
     return this.http
       .get(url)
-      .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
@@ -221,7 +218,6 @@ export class ScholarshipService {
     const url = '/scholarship/responsible/getPasswordByProcess/' + processId;
     return this.http
       .get(url)
-      .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
@@ -229,7 +225,6 @@ export class ScholarshipService {
     const url = '/scholarship/responsible/getAllProcesses/' + responsibleId;
     return this.http
       .get(url)
-      .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }

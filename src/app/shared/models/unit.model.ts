@@ -1,6 +1,6 @@
 export class Unit {
   id: number;
-  name: string
+  name: string;
 
   constructor() { }
 }

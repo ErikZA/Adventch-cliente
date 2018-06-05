@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
 
-import { environment } from '../../../environments/environment';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {

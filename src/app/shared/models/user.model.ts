@@ -1,4 +1,4 @@
-import { Permission } from "./permission.model";
+import { Permission } from './permission.model';
 
 export class User {
   id: number;
@@ -9,7 +9,7 @@ export class User {
   isSysAdmin: number;
   isScholarship: boolean;
   idSchool: number;
-  permissions: Permission[]
+  permissions: Permission[];
 
   constructor() { }
 }

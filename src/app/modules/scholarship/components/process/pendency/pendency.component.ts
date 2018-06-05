@@ -32,24 +32,25 @@ export class PendencyComponent implements OnInit {
     });
   }
 
-  checkPendencies(){
+  checkPendencies() {
     this.formPendency.setValue({
       pendency: this.scholarshipService.processSelected.pendency
     });
   }
 
   savePendency() {
-    if (this.formPendency.invalid)
+    if (this.formPendency.invalid) {
       return;
+    }
     if (this.formPendency.valid) {
-      this.scholarshipService.savePendency(this.formPendency.value.pendency).subscribe(() =>{
-        this.cancel()
+      this.scholarshipService.savePendency(this.formPendency.value.pendency).subscribe(() => {
+        this.cancel();
       }, err => {
         console.log(err);
         this.snackBar.open('Erro ao salvar pendência, tente novamente.', 'OK', { duration: 5000 });
         this.cancel();
       });
-    }else{
+    } else {
       return;
     }
   }
@@ -58,9 +59,10 @@ export class PendencyComponent implements OnInit {
      this.dialogRef.close(false);
   }
 
-  isValid(){
-    if(this.formPendency.value.pendency.trim() == '')
+  isValid() {
+    if (this.formPendency.value.pendency.trim() === '') {
       this.formPendency.controls['pendency'].setErrors({'invalid': true});
-    return this.formPendency.value.pendency.trim() == '';
+    }
+    return this.formPendency.value.pendency.trim() === '';
   }
 }

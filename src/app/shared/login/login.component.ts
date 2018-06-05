@@ -68,7 +68,11 @@ export class LoginComponent implements OnInit {
   }
 
   invalidLogin() {
-    const snackBarRef = this.snackBar.open('Usuário/senha inválido!', 'OK', { duration: 3000 }).afterDismissed().subscribe(() => this.userPassword.nativeElement.focus());
+    const snackBarRef = this.snackBar.open('Usuário/senha inválido!', 'OK', { duration: 3000 })
+      .afterDismissed()
+      .subscribe(() => {
+        this.userPassword.nativeElement.focus();
+      });
   }
 
 }

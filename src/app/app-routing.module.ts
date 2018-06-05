@@ -2,19 +2,20 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 // core
-import { LayoutComponent } from './modules/shared/layout/layout.component';
+import { LayoutComponent } from './shared/layout/layout.component';
 
-import { AuthGuard } from './modules/shared/auth.guard';
+import { AuthGuard } from './shared/auth.guard';
 
 // shared
-import { DashboardComponent } from './modules/shared/dashboard/dashboard.component';
-import { EmptyPageComponent } from './modules/shared/empty-page/empty-page.component';
-import { LoginComponent } from './modules/shared/login/login.component';
-import { PageNotFoundComponent } from './modules/shared/page-not-found/page-not-found.component';
+import { DashboardComponent } from './shared/dashboard/dashboard.component';
+import { EmptyPageComponent } from './shared/empty-page/empty-page.component';
+import { LoginComponent } from './shared/login/login.component';
+import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 
 // components
 // import { BonificationTypesComponent } from 'app/bonification/bonification-types/bonification-types/bonification-types.component';
-// import { BonificationTypesDataComponent } from 'app/bonification/bonification-types/bonification-types-data/bonification-types-data.component';
+// import { BonificationTypesDataComponent }
+// from 'app/bonification/bonification-types/bonification-types-data/bonification-types-data.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },

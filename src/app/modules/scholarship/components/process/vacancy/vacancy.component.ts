@@ -31,23 +31,26 @@ export class VacancyComponent implements OnInit {
     });
   }
 
-  setDefaultValue(){
+  setDefaultValue() {
     this.formVacancy.setValue({
       dateRegistration: new Date(),
-      type: "1"
+      type: '1'
     });
   }
 
-  saveType(){
-    if (this.formVacancy.invalid)
+  saveType() {
+    if (this.formVacancy.invalid) {
       return;
-    var isHalf = this.formVacancy.value.type == "1";
-    this.scholarshipService.saveVacancy(this.formVacancy.value.dateRegistration, (isHalf ? 5 : 6), 'Bolsa concedida (' + (isHalf ? '50%' : '100%') + ')').subscribe(() =>{
-      this.cancel()
-    }, err => {
-      this.snackBar.open('Erro ao salvar os dados do processo, tente novamente.', 'OK', { duration: 5000 });
-      this.cancel();
-    });
+    }
+    const isHalf = this.formVacancy.value.type === '1';
+    this.scholarshipService
+      .saveVacancy(this.formVacancy.value.dateRegistration, (isHalf ? 5 : 6), 'Bolsa concedida (' + (isHalf ? '50%' : '100%') + ')')
+      .subscribe(() => {
+        this.cancel();
+      }, err => {
+        this.snackBar.open('Erro ao salvar os dados do processo, tente novamente.', 'OK', { duration: 5000 });
+        this.cancel();
+      });
   }
 
   cancel() {

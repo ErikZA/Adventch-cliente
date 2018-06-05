@@ -8,34 +8,34 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { AppRouting } from './app-routing.module';
-import { AuthGuard } from './modules/shared/auth.guard';
-import { AuthService } from './modules/shared/auth.service';
+import { AuthGuard } from './shared/auth.guard';
+import { AuthService } from './shared/auth.service';
 
 // core
-import { CoreModule } from './modules/core/core.module';
+import { CoreModule } from './core/core.module';
 
 // shared components
-import { LayoutComponent } from './modules/shared/layout/layout.component';
-import { DashboardComponent } from './modules/shared/dashboard/dashboard.component';
-import { LoginComponent } from './modules/shared/login/login.component';
-import { PageNotFoundComponent } from './modules/shared/page-not-found/page-not-found.component';
-import { EmptyPageComponent } from './modules/shared/empty-page/empty-page.component';
+import { LayoutComponent } from './shared/layout/layout.component';
+import { DashboardComponent } from './shared/dashboard/dashboard.component';
+import { LoginComponent } from './shared/login/login.component';
+import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
+import { EmptyPageComponent } from './shared/empty-page/empty-page.component';
 
 // components
 
 // services
-import { SharedService } from './modules/shared/shared.service';
+import { SharedService } from './shared/shared.service';
 
 // modules
 import { TreasuryModule } from './modules/treasury/treasury.module';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { TokenInterceptor } from './modules/shared/token.interceptor';
+import { TokenInterceptor } from './shared/token.interceptor';
 
 import { registerLocaleData } from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
 import { ScholarshipModule } from './modules/scholarship/scholarship.module';
-import { ReportService } from './modules/shared/report.service';
+import { ReportService } from './shared/report.service';
 registerLocaleData(ptBr);
 
 

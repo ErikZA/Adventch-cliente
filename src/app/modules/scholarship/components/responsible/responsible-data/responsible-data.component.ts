@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Responsible } from '../../../models/responsible';
-import { AuthService } from '../../../../shared/auth.service';
+import { AuthService } from '../../../../../shared/auth.service';
 import { Process } from '../../../models/process';
 import { ScholarshipService } from '../../../scholarship.service';
 
@@ -27,11 +27,11 @@ export class ResponsibleDataComponent implements OnInit {
     this.getResponsible();
   }
 
-  loadCurrentResponsible(){
+  loadCurrentResponsible() {
     this.responsible = this.authService.getcurrentResponsible();
   }
 
-  loadProcesses(){
+  loadProcesses() {
     this.scholarshipService.getProcessesResponsible(this.responsible.id).subscribe((data: Process[]) => {
       this.processes = Object.assign(this.processes, data as Process[]);
       this.processes.forEach(
@@ -82,7 +82,7 @@ export class ResponsibleDataComponent implements OnInit {
     return 'Indeferido pela apresentação da documentação inconsistente à análise correspondente.';
   }
 
-  logoff(){
+  logoff() {
     this.authService.logoffResponsible();
   }
 

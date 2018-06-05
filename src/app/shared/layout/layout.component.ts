@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs/Subscription';
 
-import { AppComponent } from '../../../../app/app.component';
+import { AppComponent } from '../../../app/app.component';
 import { AuthService } from '../auth.service';
 import { SidenavService } from '../../core/services/sidenav.service';
 import { MatDrawer, MatDialog, MatDialogRef } from '@angular/material';
@@ -13,7 +13,7 @@ import { SharedService } from '../shared.service';
 import { Unit } from '../models/unit.model';
 import { EventEmitter } from 'events';
 import { EModules } from '../models/modules.enum';
-import { ScholarshipService } from '../../scholarship/scholarship.service';
+import { ScholarshipService } from '../../modules/scholarship/scholarship.service';
 import { Permission } from '../models/permission.model';
 
 @Component({

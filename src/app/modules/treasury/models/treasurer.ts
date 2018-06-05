@@ -1,5 +1,5 @@
 import { EGender, EFunction } from './Enums';
-import { Unit } from '../../shared/models/unit.model';
+import { Unit } from '../../../shared/models/unit.model';
 import { Church } from './church';
 import { Phone } from './phone';
 

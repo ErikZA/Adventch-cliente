@@ -1,7 +1,7 @@
 export class StudentSerie {
   id: number;
-  name: string;  
-  
+  name: string;
+
   constructor() { }
 }
 

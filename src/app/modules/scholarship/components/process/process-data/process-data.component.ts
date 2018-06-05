@@ -8,12 +8,12 @@ import { Student } from '../../../models/student';
 import { Responsible } from '../../../models/responsible';
 import { ScholarshipService } from '../../../scholarship.service';
 import { ScholarshipComponent } from '../scholarship.component';
-import { AuthService } from '../../../../shared/auth.service';
+import { AuthService } from '../../../../../shared/auth.service';
 import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
 import { School } from '../../../models/school';
 import { forEach } from '@angular/router/src/utils/collection';
-import { SidenavService } from '../../../../core/services/sidenav.service';
+import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { Router } from '@angular/router';
 import { MatDialogRef,
         MatDialog,
@@ -22,7 +22,7 @@ import { MatDialogRef,
         matExpansionAnimations,
         MatSidenav,
         MatSlideToggleChange } from '@angular/material';
-import { ReportService } from '../../../../shared/report.service';
+import { ReportService } from '../../../../../shared/report.service';
 
 @Component({
   selector: 'app-process-data',
@@ -44,7 +44,7 @@ export class ProcessDataComponent implements OnInit {
   schoolsSelecteds: any[] = new Array<any>();
   statusSelecteds: any[] = new Array<any>();
 
-  processes: Process[] = new Array<Process>();  
+  processes: Process[] = new Array<Process>();
   allProcesses: Process[] = new Array<Process>();
   processes$: Observable<Process[]>;
 
@@ -322,7 +322,7 @@ export class ProcessDataComponent implements OnInit {
   }
 
   toApprove(p) {
-    if (p[0].status === 2 || p[0].status === 3 || p[0].status == 7) {
+    if (p[0].status === 2 || p[0].status === 3 || p[0].status === 7) {
       this.scholarshipService.updateToStatus(p[0].id, 4, 'Aguardando vaga').subscribe(() => {
         p[0].status = 4;
         this.updateProcess(p[0]);
@@ -380,7 +380,7 @@ export class ProcessDataComponent implements OnInit {
   }
 
   toNotEnroll(process: Process): void {
-    if(process.status === 5 || process.status === 6) {
+    if (process.status === 5 || process.status === 6) {
       this.scholarshipService.updateToStatus(process.id, 8, 'Não Matriculou').subscribe(() => {
         process.status = 8;
         this.updateProcess(process);
@@ -390,11 +390,11 @@ export class ProcessDataComponent implements OnInit {
     }
   }
 
-  generateReport(p){
+  generateReport(p) {
     this.scholarshipService.getPasswordResponsible(p[0].id).subscribe(data => {
-      let password = data;
-      this.reportService.reportProcess(p[0].id, password).subscribe(data => {
-        var fileUrl = URL.createObjectURL(data);
+      const password = data;
+      this.reportService.reportProcess(p[0].id, password).subscribe(urlData => {
+        const fileUrl = URL.createObjectURL(urlData);
         window.open(fileUrl);
       }, err => console.log(err));
       this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });

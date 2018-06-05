@@ -1,7 +1,7 @@
 export class School {
   id: number;
-  name: string;  
-  
+  name: string;
+
   constructor() { }
 }
 

@@ -1,22 +1,22 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { ScholarshipService } from '../../../scholarship.service';
 import { Responsible } from '../../../models/responsible';
 import { Student } from './../../../models/student';
 import { startWith } from 'rxjs/operators';
 import { map } from 'rxjs/operator/map';
-import { SidenavService } from '../../../../core/services/sidenav.service';
+import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { Router } from '@angular/router';
 import { Process } from '../../../models/process';
-import { AuthService } from '../../../../shared/auth.service';
+import { AuthService } from '../../../../../shared/auth.service';
 import { MatSnackBar, MatSidenav, MatDialogRef, MatDialog } from '@angular/material';
 import { ScholarshipComponent } from '../scholarship.component';
 import { ProcessDataComponent } from '../process-data/process-data.component';
 import { ProcessDocument } from '../../../models/processDocument';
-import { CustomValidators } from '../../../../core/custom-validators';
+import { CustomValidators } from '../../../../../core/custom-validators';
 import { StudentSerie } from '../../../models/studentSerie';
-import { ReportService } from '../../../../shared/report.service';
+import { ReportService } from '../../../../../shared/report.service';
 
 @Component({
   selector: 'app-process-form',
@@ -40,8 +40,19 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     formOptionsName: 'personalOptions',
     label: 'Documentos Pessoais',
     moreAbout: false,
-    more: ['Cópia da certidão de nascimento ou cédula de identidade de todas as pessoas do grupo familiar menores de 18 anos de idade', 'Cópias do CPF e RG de todas as pessoas do grupo familiar a partir de 18 anos de idade', 'Para Estrangeiros: Cópia do Registro Nacional de Estrangeiros (RNE)', 'Cópia da Certidão de Casamento dos Pais e outros membros do grupo familiar que sejam casados', 'Em caso de União Estável, apresentar declaração a próprio punho ou digitada reconhecida em cartório', 'Cópia da certidão de óbito do cônjuge, caso alguém do grupo familiar seja viúvo (a)', 'Caso os pais do candidato ou membro do grupo familiar sejam separados ou divorciados, apresentar cópia da Certidão de casamento com a averbação'],
-    options:  ['Certidão de Nascimento ou cédula de identidade', 'CPF e RG', 'Registro Nacional de Estrangeiros (RNE)', 'Certidão de Casamento', 'Declaração de União Estável', 'Certidão de óbito do cônjuge', 'Certidão de casamento com a averbação', 'Termo de guarda judicial ou protocolo de ingresso do pedido']
+    more: ['Cópia da certidão de nascimento ou cédula de identidade de todas as pessoas do grupo familiar menores de 18 anos de idade',
+    'Cópias do CPF e RG de todas as pessoas do grupo familiar a partir de 18 anos de idade',
+    'Para Estrangeiros: Cópia do Registro Nacional de Estrangeiros (RNE)',
+    'Cópia da Certidão de Casamento dos Pais e outros membros do grupo familiar que sejam casados',
+    'Em caso de União Estável, apresentar declaração a próprio punho ou digitada reconhecida em cartório',
+    'Cópia da certidão de óbito do cônjuge, caso alguém do grupo familiar seja viúvo (a)',
+    `Caso os pais do candidato ou membro do grupo familiar sejam separados ou divorciados, apresentar cópia
+     da Certidão de casamento com a averbação`],
+    options:  ['Certidão de Nascimento ou cédula de identidade',
+    'CPF e RG', 'Registro Nacional de Estrangeiros (RNE)',
+    'Certidão de Casamento', 'Declaração de União Estável',
+    'Certidão de óbito do cônjuge', 'Certidão de casamento com a averbação',
+    'Termo de guarda judicial ou protocolo de ingresso do pedido']
   };
   ir: any = {
     value: 2,
@@ -49,8 +60,16 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     formOptionsName: 'irOptions',
     label: 'Imposto de Renda',
     moreAbout: false,
-    more: ['Todas as páginas completas e o Recibo de Entrega da última declaração do Imposto de Renda de Pessoa Física (IRPF). Obrigatório para todos os membros do grupo familiar a partir de 18 anos ou emancipados', 'Para quem não declara Imposto de Renda de Pessoa Física, consultar o site da Receita Federal, informar CPF, data de nascimento e digitar o código de verificação do site, e imprimir a página seguinte. Não necessita reconhecer em cartório.', 'Para sPara sócios ou proprietários de empresas e microempresas (MEI) que componham o grupo familiar, apresentar recibo de entrega e todas as páginas completas da Declaração de Imposto de Renda de Pessoa Jurídica (IRPJ), Simples Nacional, MEI, ou em caso de empresa inativa entregar o documento de baixa da empresa ou declaração de inatividade informadas pela receita federal'],
-    options:  ['Recibo e Declaração do Imposto de Renda de Pessoa Física (IRPF)', 'Declaração de IRPF', 'Declaração de Imposto de Renda de Pessoa Jurídica (IRPJ)', 'Simples Nacional', 'MEI', 'Documento de baixa da empresa', 'Declaração de inatividade informadas pela receita federal']
+    more: [`Todas as páginas completas e o Recibo de Entrega da última declaração do Imposto de Renda de Pessoa Física (IRPF).
+     Obrigatório para todos os membros do grupo familiar a partir de 18 anos ou emancipados`,
+     `Para quem não declara Imposto de Renda de Pessoa Física, consultar o site da Receita Federal, informar CPF, data de
+      nascimento e digitar o código de verificação do site, e imprimir a página seguinte. Não necessita reconhecer em cartório.`,
+     `Para sócios ou proprietários de empresas e microempresas (MEI) que componham o grupo familiar, apresentar recibo de entrega
+      e todas as páginas completas da Declaração de Imposto de Renda de Pessoa Jurídica (IRPJ), Simples Nacional, MEI, ou em caso
+      de empresa inativa entregar o documento de baixa da empresa ou declaração de inatividade informadas pela receita federal`],
+    options:  ['Recibo e Declaração do Imposto de Renda de Pessoa Física (IRPF)',
+    'Declaração de IRPF', 'Declaração de Imposto de Renda de Pessoa Jurídica (IRPJ)',
+    'Simples Nacional', 'MEI', 'Documento de baixa da empresa', 'Declaração de inatividade informadas pela receita federal']
   };
   ctps: any = {
     value: 3,
@@ -58,8 +77,16 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     formOptionsName: 'ctpsOptions',
     label: 'Carteira de Trabalho',
     moreAbout: false,
-    more: ['Cópia da CTPS de todos os integrantes do grupo familiar a partir de 18 anos ou emancipados, mesmo os que estiverem dentro das seguintes condições: desempregados, estagiários, funcionários públicos, estudantes, estatuatário/celetista, militáres, aposentados, autônomos, proficionais liberais e proprietários/sócios de empresa. Páginas: nº de série (pag da foto), Qualificação Civil (Pag verso da foto), Contrato de Trabalho (penúltima e última pags com registro de trabalho e a próxima página em branco imediatamente subsequentes a estas).', 'Caso tenha duas CTPS, tirar cópia da antiga e da atual das mesmas páginas acima citadas', 'No caso de não possuir CTPS, apresentar declaração informando que não possui, com firma reconhecida em cartório'],
-    options:  ['Carteira de trabalho de todos os integrantes da familia', 'Possui duas carteiras de trabalho', 'Declaração de que não possui certeira de trabalho']
+    more: [`Cópia da CTPS de todos os integrantes do grupo familiar a partir de 18 anos ou emancipados,
+     mesmo os que estiverem dentro das seguintes condições: desempregados, estagiários, funcionários públicos,
+      estudantes, estatuatário/celetista, militáres, aposentados, autônomos, proficionais liberais e proprietários/sócios
+       de empresa. Páginas: nº de série (pag da foto), Qualificação Civil (Pag verso da foto), Contrato de Trabalho
+       (penúltima e última pags com registro de trabalho e a próxima página em branco imediatamente subsequentes a estas).`,
+      'Caso tenha duas CTPS, tirar cópia da antiga e da atual das mesmas páginas acima citadas',
+      'No caso de não possuir CTPS, apresentar declaração informando que não possui, com firma reconhecida em cartório'],
+    options:  ['Carteira de trabalho de todos os integrantes da familia',
+    'Possui duas carteiras de trabalho',
+    'Declaração de que não possui certeira de trabalho']
   };
   income: any = {
     value: 4,
@@ -67,8 +94,39 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     formOptionsName: 'incomeOptions',
     label: 'Comprovantes de Rendimentos',
     moreAbout: false,
-    more: ['ASSALARIADO: No caso de não possuir CTPS, apresentar declaração informando que não possui, com firma reconhecida em cartório', 'AUTONOMO:	Declaração de rendimentos digitada ou a próprio punho, onde deverá constar o valor real bruto recebido, ocupação profissional e ser reconhecida em cartório', 'PROPRIETARIO OU SÓCIO DE EMPRESA: DECORE ref. ao Pró-labore e aos Lucros Distribuídos recebidos pela empresa.', 'DESEMPREGADO OU DO LAR: Declaração digitada ou a próprio punho reconhecida em cartório mencionando que está desempregado ou que não exerce atividade remunerada por opção própria, informando suas fontes para subsistência (documento original)', 'ESTAGIÁRIO:	Contrato de estágio, (termo aditivo se houver) e declaração de rendimentos do órgão competente, desde que conste a vigência e o valor da remuneração', 'PAIS SEPARADOS, JUDICIALMENTE OU NÃO:	Apresentar o comprovante atualizado de recebimento de pensão alimentícia ou declaração de ajuda financeira constando o valor recebido. Caso não haja nenhum tipo de ajuda, também deverá ser apresentada declaração de tal fato. Ambas as declarações devem ser reconhecidas em cartório', 'APOSENTADOS, VIÚVOS PENSIONISTAS, AUXILIO DOENÇA OU QUALQUER TIPO DE AUXILIO RECEBIDO PELA PREVIDÊNCIA SOCIAL: Apresentar o comprovante de recebimento de proventos emitido pelo INSS (detalhamento de rendimentos previdenciários), ou extrato do benefício retirado no site do DATAPREV, juntamente com o comprovante bancário referente ao último mês recebido (se não conseguir acesso online, deverá procurar o INSS)', 'BENEFICIÁRIO DE PROGRAMA SOCIAL: Bolsa Família e/ou Benefício de Prestação Continuada (BCP), apresentar cópia do cartão e comprovante de recebimento', 'PESSOAS QUE RECEBEM PREVIDÊNCIA PRIVADA: Apresentar o comprovante atualizado do benefício', 'RECEITAS DE ALUGUEIS, ARRENDAMENTO DE IMÓVEIS E BENS MOVEIS, AJUDA FINANCEIRA REGULAR DE PESSOA QUE NÃO FAÇA PARTE DO GRUPO FAMILIAR: Cópia de contratos e comprovante atual do recebimento ou declaração reconhecida em cartório'],
-    options:  ['Contracheques/Holerites', 'Declaração da firma empregadora dos últimos três meses trabalhados na sequência', 'Declaração de rendimentos digitada ou a próprio punho', 'DECORE ref. ao Pró-labore e aos Lucros Distribuídos recebidos pela empresa.', 'Declaração digitada ou a próprio punho reconhecida em cartório mencionando que está desempregado', 'Contrato de estágio', 'Comprovante atualizado de recebimento de pensão alimentícia ou declaração de ajuda financeira', 'Comprovante de recebimento de proventos emitido pelo INSS', 'Extrato do benefício retirado no site do DATAPREV e comprovante bancário dos ultimos três meses', 'Cartão e comprovante de recebimento de Bolsa Fámilia e ou Benefício de Prestação Continuada (BCP)', 'Comprovante atualizado da previdência privada', 'Contratos e comprovante atual do recebimento ou declaração reconhecida em cartório de alugueis, arrendamentos e ou ajuda financeira']
+    more: [`ASSALARIADO: No caso de não possuir CTPS, apresentar declaração informando que não possui, com firma
+     reconhecida em cartório`,
+    `AUTONOMO: Declaração de rendimentos digitada ou a próprio punho, onde deverá constar o valor real bruto
+     recebido, ocupação profissional e ser reconhecida em cartório`,
+    'PROPRIETARIO OU SÓCIO DE EMPRESA: DECORE ref. ao Pró-labore e aos Lucros Distribuídos recebidos pela empresa.',
+    `DESEMPREGADO OU DO LAR: Declaração digitada ou a próprio punho reconhecida em cartório mencionando que está
+     desempregado ou que não exerce atividade remunerada por opção própria, informando suas fontes para subsistência (documento original)`,
+    `ESTAGIÁRIO:	Contrato de estágio, (termo aditivo se houver) e declaração de rendimentos do órgão competente,
+     desde que conste a vigência e o valor da remuneração`,
+    `PAIS SEPARADOS, JUDICIALMENTE OU NÃO:	Apresentar o comprovante atualizado de recebimento de pensão alimentícia
+     ou declaração de ajuda financeira constando o valor recebido. Caso não haja nenhum tipo de ajuda, também deverá
+     ser apresentada declaração de tal fato. Ambas as declarações devem ser reconhecidas em cartório`,
+    `APOSENTADOS, VIÚVOS PENSIONISTAS, AUXILIO DOENÇA OU QUALQUER TIPO DE AUXILIO RECEBIDO PELA PREVIDÊNCIA SOCIAL:
+     Apresentar o comprovante de recebimento de proventos emitido pelo INSS (detalhamento de rendimentos previdenciários),
+     ou extrato do benefício retirado no site do DATAPREV, juntamente com o comprovante bancário referente ao último mês
+     recebido (se não conseguir acesso online, deverá procurar o INSS)`,
+    `BENEFICIÁRIO DE PROGRAMA SOCIAL: Bolsa Família e/ou Benefício de Prestação Continuada (BCP), apresentar cópia do
+     cartão e comprovante de recebimento`,
+    'PESSOAS QUE RECEBEM PREVIDÊNCIA PRIVADA: Apresentar o comprovante atualizado do benefício',
+    `RECEITAS DE ALUGUEIS, ARRENDAMENTO DE IMÓVEIS E BENS MOVEIS, AJUDA FINANCEIRA REGULAR DE PESSOA QUE NÃO FAÇA
+     PARTE DO GRUPO FAMILIAR: Cópia de contratos e comprovante atual do recebimento ou declaração reconhecida em cartório`],
+    options:  ['Contracheques/Holerites',
+    'Declaração da firma empregadora dos últimos três meses trabalhados na sequência',
+    'Declaração de rendimentos digitada ou a próprio punho',
+    'DECORE ref. ao Pró-labore e aos Lucros Distribuídos recebidos pela empresa.',
+    'Declaração digitada ou a próprio punho reconhecida em cartório mencionando que está desempregado',
+    'Contrato de estágio', 'Comprovante atualizado de recebimento de pensão alimentícia ou declaração de ajuda financeira',
+    'Comprovante de recebimento de proventos emitido pelo INSS',
+    'Extrato do benefício retirado no site do DATAPREV e comprovante bancário dos ultimos três meses',
+    'Cartão e comprovante de recebimento de Bolsa Fámilia e ou Benefício de Prestação Continuada (BCP)',
+    'Comprovante atualizado da previdência privada',
+    `Contratos e comprovante atual do recebimento ou declaração reconhecida em cartório de alugueis,
+     arrendamentos e ou ajuda financeira`]
   };
   expenses: any = {
     value: 5,

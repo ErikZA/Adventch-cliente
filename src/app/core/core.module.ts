@@ -11,19 +11,11 @@ import { ColorPickerComponent } from './components/color-picker/color-picker.com
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { IconPickerComponent } from './components/icon-picker/icon-picker.component';
 import { LockScreenComponent } from './components/lock-screen/lock-screen.component';
-import { LockScreenService } from "./components/lock-screen/lock-screen.service";
-import { ConfirmDialogService } from "./components/confirm-dialog/confirm-dialog.service";
-import { FocusDirective } from "./components/focus.directive";
-import { MyDT } from "./components/my-dt/my-dt.component";
-import { MyDTHeader } from "./components/my-dt/my-dt-header.directive";
-import { MyDTHeaderOptions } from "./components/my-dt/my-dt-header-options.directive";
-import { MyDTFooter } from "./components/my-dt/my-dt-footer.directive";
-import { MyDTRow } from "./components/my-dt/my-dt-row.directive";
-import { MyDTColumn } from "./components/my-dt/my-dt-column.directive";
-import { MyDtPaginationComponent } from './components/my-dt/my-dt-pagination/my-dt-pagination.component';
+import { LockScreenService } from './components/lock-screen/lock-screen.service';
+import { ConfirmDialogService } from './components/confirm-dialog/confirm-dialog.service';
+import { FocusDirective } from './components/focus.directive';
 
 import { MaterialModule } from './material/material.module';
-import { DataTableComponent } from './components/data-table/data-table.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import { SidenavService } from './services/sidenav.service';
 import { ChangePasswordComponent } from './components/password/change-password/change-password.component';
@@ -57,10 +49,9 @@ import { InputMaskDirective } from './components/input-mask.directive';
     ConfirmDialogComponent,
     IconPickerComponent,
     LockScreenComponent,
-    MyDT, MyDTHeader, MyDTHeaderOptions, MyDTFooter, MyDTRow, MyDTColumn, FocusDirective, MyDtPaginationComponent,
+    FocusDirective,
 
     // new Components
-    DataTableComponent,
     ChangePasswordComponent,
     InputMaskDirective,
 
@@ -77,10 +68,9 @@ import { InputMaskDirective } from './components/input-mask.directive';
     ConfirmDialogComponent,
     IconPickerComponent,
     LockScreenComponent,
-    MyDT, MyDTHeader, MyDTHeaderOptions, MyDTFooter, MyDTRow, MyDTColumn, FocusDirective, MyDtPaginationComponent,
+    FocusDirective,
 
     // new Declarations
-    DataTableComponent,
     ProgressSpinnerComponent,
     ChangePasswordComponent,
     StrengthMeterComponent,
