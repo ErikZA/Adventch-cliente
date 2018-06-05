@@ -12,7 +12,7 @@ export class TreasuryService {
   ) { }
 
   getTreasurers(unitId): Observable<Treasurer[]> {
-    let url = '/treasury/treasurers/getAllTreasurers/' + unitId;
+    const url = '/treasury/treasurers/getAllTreasurers/' + unitId;
     return this.http
       .get(url)
       .map((res: Response) => res)
@@ -20,7 +20,7 @@ export class TreasuryService {
   }
 
   getChurches(unitId): Observable<Church[]> {
-    let url = '/treasury/treasurers/getAllChurches/' + unitId;
+    const url = '/treasury/treasurers/getAllChurches/' + unitId;
     return this.http
       .get(url)
       .map((res: Response) => res)
@@ -28,7 +28,7 @@ export class TreasuryService {
   }
 
   saveTreasurer(treasure): Observable<any> {
-    let url = (treasure.id == null ? '/treasury/treasurers/newTreasurer' : '/treasury/treasurers/updateTreasurer');
+    const url = (treasure.id == null ? '/treasury/treasurers/newTreasurer' : '/treasury/treasurers/updateTreasurer');
     return this.http
       .post(url, treasure)
       .catch((error: any) => Observable.throw(error || 'Server error'));
@@ -41,7 +41,7 @@ export class TreasuryService {
   }
 
   deleteTreasurers(ids): Observable<Church[]> {
-    let url = '/treasury/treasurers/deleteTreasurers/\'' + ids + '\'';
+    const url = '/treasury/treasurers/deleteTreasurers/\'' + ids + '\'';
     return this.http
       .delete(url)
       .map((res: Response) => res)

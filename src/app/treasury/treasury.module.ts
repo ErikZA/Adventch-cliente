@@ -20,7 +20,7 @@ import { DataTableComponent } from '../core/components/data-table/data-table.com
     TreasurersDataComponent,
     TreasurersFormComponent,
   ],
-  providers:[
+  providers: [
     TreasuryService,
     DataTableComponent
   ]

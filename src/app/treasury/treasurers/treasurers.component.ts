@@ -25,8 +25,8 @@ export class TreasurersComponent implements OnInit {
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
   @Input() currentUnit: any;
 
-  searchButton: boolean = false;
-  showList: number = 15;
+  searchButton = false;
+  showList = 15;
   search$ = new Subject<string>();
   treasurers$: Observable<Treasurer[]>;
 
@@ -45,7 +45,7 @@ export class TreasurersComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    moment.locale("pt");
+    moment.locale('pt');
     this.getData();
     this.currentUnit = this.authService.getCurrentUnit();
     this.search$.subscribe(search => {
@@ -75,32 +75,35 @@ export class TreasurersComponent implements OnInit {
       this.treasurers$ = Observable.of(this.treasurers);
     } else {
       this.treasurers$ = Observable.of(this.treasurers.filter(data => {
-        return data.name.toLowerCase().indexOf(search) !== -1 || data.church.name.toLowerCase().indexOf(search) !== -1 || data.functionName.toLowerCase().indexOf(search) !== -1;
+        return data.name.toLowerCase().indexOf(search) !== -1
+        || data.church.name.toLowerCase().indexOf(search) !== -1
+        || data.functionName.toLowerCase().indexOf(search) !== -1;
       }));
     }
   }
 
-  getData(){
-    var unit = this.authService.getCurrentUnit();
+  getData() {
+    const unit = this.authService.getCurrentUnit();
     this.treasurers = [];
-    this.treasureService.getTreasurers(unit.id).subscribe((data: Treasurer[]) =>{
+    this.treasureService.getTreasurers(unit.id).subscribe((data: Treasurer[]) => {
       this.treasurers = Object.assign(this.treasurers, data as Treasurer[]);
       this.treasurers.forEach(
         item => {
-          item.functionName = (item.function == 1 ? "Tesoureiro (a)" : item.function == 2 ? "Associado (a)" : "Assistente");
-          if(item.dateRegister != null){
+          item.functionName = (item.function === 1 ? 'Tesoureiro (a)' : item.function === 2 ? 'Associado (a)' : 'Assistente');
+          if (item.dateRegister != null) {
             item.dateRegister = new Date(item.dateRegister);
-            item.dateRegisterFormatted = moment(item.dateRegister).fromNow();          
+            item.dateRegisterFormatted = moment(item.dateRegister).fromNow();
           }
         }
       );
       this.treasurers$ = Observable.of(this.treasurers);
-    })
+    });
   }
 
-  editTreasurer(treasurer): void{
-    if(treasurer.id == undefined)
+  editTreasurer(treasurer): void {
+    if (treasurer.id === undefined) {
       return;
+    }
     this.treasurer = treasurer;
     this.router.navigate([treasurer.identity + '/editar'], { relativeTo: this.route });
     this.sidenavRight.open();
@@ -109,15 +112,16 @@ export class TreasurersComponent implements OnInit {
   remove(treasurers) {
     let response;
     this.confirmDialogService
-      .confirm("Remover registro(s)", "Você deseja realmente remover este(s) tesoureiro(s)?", "REMOVER")
+      .confirm('Remover registro(s)', 'Você deseja realmente remover este(s) tesoureiro(s)?', 'REMOVER')
       .subscribe(res => {
-        if (res == true) {
+        if (res === true) {
           let status = false;
           let ids = [];
-          for (const treasurer of treasurers)
+          for (const treasurer of treasurers) {
             ids.push(treasurer.id);
+          }
 
-          this.treasureService.deleteTreasurers(ids).subscribe(() =>{
+          this.treasureService.deleteTreasurers(ids).subscribe(() => {
             this.getData();
             this.snackBar.open('Tesoureiro(s) removido(s)!', 'OK', { duration: 5000 });
           }, err => {
@@ -134,7 +138,7 @@ export class TreasurersComponent implements OnInit {
     }
     let status = false;
     for (const treasurer of treasurers) {
-      this.treasureService.deleteTreasurer(treasurer.id).subscribe(success => status = true, err =>{
+      this.treasureService.deleteTreasurer(treasurer.id).subscribe(success => status = true, err => {
         console.log(err);
         status = false;
       });

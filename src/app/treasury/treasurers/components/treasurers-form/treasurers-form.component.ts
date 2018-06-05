@@ -1,3 +1,4 @@
+import { Phone } from './../../../models/phone';
 import { Component, OnInit, EventEmitter, OnDestroy, ViewChild, Input, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormGroupDirective, FormArray } from '@angular/forms';
 import { AuthService } from '../../../../shared/auth.service';
@@ -28,7 +29,11 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
   subscribe1: Subscription;
   subscribe2: Subscription;
   treasurer: Treasurer = new Treasurer();
-  dates: any;
+  dates = {
+    now: new Date(new Date().setFullYear(new Date().getFullYear())),
+    min: new Date(new Date().setFullYear(new Date().getFullYear() - 95)),
+    max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+  };
 
   constructor(
     private authService: AuthService,
@@ -38,7 +43,8 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private router: Router,
     public treasureComponent: TreasurersComponent,
-    public cd: ChangeDetectorRef) { }
+    public cd: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     moment.locale('pt');
@@ -50,11 +56,6 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
       this.treasurer.gender = this.treasureComponent.treasurer.gender;
       this.editTreasurer(this.treasureComponent.treasurer);
     });
-    this.dates = {
-      now: new Date(new Date().setFullYear(new Date().getFullYear())),
-      min: new Date(new Date().setFullYear(new Date().getFullYear() - 95)),
-      max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
-    };
   }
 
   ngDoCheck() {
@@ -71,14 +72,14 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
     if (this.subscribe2) { this.subscribe2.unsubscribe(); }
   }
 
-
-
-  editTreasurer(treasurer) {
+  editTreasurer(treasurer: Treasurer) {
     if (treasurer.id === undefined) {
       this.formPersonal.reset();
       this.formContact.reset();
+      this.formPhones.reset();
       return;
     }
+    this.setPhonesValue(treasurer);
     this.formPersonal.setValue({
         name: treasurer.name,
         churchId: treasurer.church.id,
@@ -88,15 +89,30 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
         dateBirth: treasurer.dateBirth,
         genderId: treasurer.gender
     });
-
     this.formContact.setValue({
       email: treasurer.email,
-      phones: [treasurer.phone],
+      phones: this.formPhones,
       contact: treasurer.contact,
       address: treasurer.address,
       addressComplement: treasurer.addressComplement,
       cep: treasurer.cep
     });
+  }
+
+  setPhonesValue(treasurer) {
+    for (let i = 0; i < treasurer.phones.length; i++) {
+      const phone: Phone = treasurer.phones[i];
+      if (i !== 0) {
+        this.addPhone();
+      }
+      this.formPhones.controls[i].setValue({
+        id: phone.id,
+        number: phone.number,
+        type: phone.type,
+        isWhatsapp: phone.isWhatsapp,
+        isTelegram: phone.isTelegram
+      });
+    }
   }
 
   initForm(): void {
@@ -126,6 +142,7 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
 
   returnPhone() {
     return this.formBuilder.group({
+      id: 0,
       number: [null],
       type: [null],
       isWhatsapp: [null],
@@ -134,12 +151,13 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
   }
 
   addPhone() {
-    const lastPhone = this.formPhones.value[this.formPhones.length - 1].number;
-    if(lastPhone !== null || lastPhone !== "")
+    const lastPhone = this.formPhones.value[this.formPhones.length - 1];
+    if (lastPhone.number !== null && lastPhone.number !== '') {
       this.formPhones.push(this.returnPhone());
+    }
   }
 
-  removeAddress(i: number) {
+  removePhone(i: number) {
     const control = <FormArray>this.formPhones;
     control.removeAt(i);
   }
@@ -159,15 +177,17 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
   }
 
   saveTreasurer() {
-    const treasurer = {
+    let treasurer = {
       ...this.formPersonal.value,
       ...this.formContact.value,
       unitId: this.authService.getCurrentUnit().id,
       id: this.treasureComponent.treasurer.id,
       identity: this.treasureComponent.treasurer.identity
     };
+    if (treasurer.phones[0].id == null) {
+      treasurer.phones[0].id = 0;
+    }
     if (this.formTreasurer.valid) {
-      debugger
       this.treasuryService.saveTreasurer(treasurer).subscribe(() => {
         this.treasureComponent.getData();
         this.snackBar.open('Tesoureiro salvo!', 'OK', { duration: 5000 });
@@ -177,7 +197,6 @@ export class TreasurersFormComponent implements OnInit, OnDestroy {
       }, err => {
         console.log(err);
         this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
-        this.close();
       });
     } else {
       return;
