@@ -1,0 +1,25 @@
+.mat-radio-button {
+    margin: 5px 16px;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+#whatsapp {
+    visibility: hidden;
+}
+
+input#whatsapp::after {
+    visibility: visible;
+    background: url('../../../../../../assets/img/icons/whatsapp_off.svg') no-repeat;
+    color: red;
+    background: green;
+    padding: 8px;
+}
+
+input#whatsapp:checked::after {
+    content: " T ";
+    color: green;
+    background: red;
+}

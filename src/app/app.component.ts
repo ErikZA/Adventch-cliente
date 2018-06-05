@@ -5,8 +5,8 @@ import { Subscription } from 'rxjs/Rx';
 // import { TranslateService } from '@ngx-translate/core';
 import * as _ from 'lodash';
 
-import { User } from './shared/models/user.model';
-import { AuthService } from './shared/auth.service';
+import { User } from './modules/shared/models/user.model';
+import { AuthService } from './modules/shared/auth.service';
 import { MatIconRegistry } from '@angular/material';
 
 @Component({
@@ -18,9 +18,9 @@ export class AppComponent implements OnInit, OnDestroy {
   subscribe1: Subscription;
   subscribe2: Subscription;
   currentUser: User;
-  showApp: boolean = false;
+  showApp = false;
 
-  title: string = 'Adven.tech';
+  title = 'Adven.tech';
 
   constructor(
     private authService: AuthService,
@@ -38,8 +38,9 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscribe1 = this.authService.currentUser.subscribe(currentUser => this.currentUser = currentUser, err => { console.log(err); });
     this.subscribe2 = this.authService.showApp.subscribe(showApp => this.showApp = showApp, err => { console.log(err); });
-    if (!this.showApp)
+    if (!this.showApp) {
       this.authService.loggedIn();
+    }
   }
 
   ngOnDestroy() {
