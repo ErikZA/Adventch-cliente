@@ -29,11 +29,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
   subscribe1: Subscription;
   subscribe2: Subscription;
   treasurer: Treasurer = new Treasurer();
-  dates = {
-    now: new Date(new Date().setFullYear(new Date().getFullYear())),
-    min: new Date(new Date().setFullYear(new Date().getFullYear() - 95)),
-    max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
-  };
+  dates: any;
 
   constructor(
     private authService: AuthService,
@@ -47,6 +43,11 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
   ) { }
 
   ngOnInit() {
+    this.dates = {
+      now: new Date(new Date().setFullYear(new Date().getFullYear())),
+      min: new Date(new Date().setFullYear(new Date().getFullYear() - 95)),
+      max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+    };
     moment.locale('pt');
     this.currentUnit = this.authService.getCurrentUnit();
     this.treasurer.gender = 1;
@@ -116,6 +117,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   initForm(): void {
+    this.formPhones = this.formBuilder.array([this.returnPhone()]);
     this.formPersonal = this.formBuilder.group({
       name: [null, Validators.required],
       churchId: [null, Validators.required],
@@ -125,7 +127,6 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
       dateBirth: [null],
       genderId: [null]
     });
-    this.formPhones = this.formBuilder.array([this.returnPhone()]);
     this.formContact = this.formBuilder.group({
       email: [null],
       contact: [null],

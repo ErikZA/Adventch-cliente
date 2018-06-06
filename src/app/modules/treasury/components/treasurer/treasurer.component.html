@@ -76,7 +76,10 @@
                                     <div fxLayout="column" fxFlex matLine>
                                         <span class="text-bold">Telefone: </span>
                                         <p>
-                                            <span fxLayout="row" *ngFor="let phone of treasurer.phones">{{ phone.type }}: {{ phone.number }} <span *ngIf="phone.type === 'Celular'"> - Serviço(s) Utilizado(s): {{ phone.isWhatsapp ? 'Whatsapp, ' : ''}} {{ phone.isTelegram ? 'Telegram': ''}}</span></span>
+                                            <span fxLayout="row" *ngFor="let phone of treasurer.phones">{{ phone.type }}: {{ phone.number }}
+                                                <span style="margin-left: 20px" *ngIf="phone.type === 'Celular'"> - Serviço(s) Utilizado(s): {{ phone.isWhatsapp ? 'Whatsapp' : ''}} {{ phone.isWhatsapp && phone.isTelegram ? ', ' : ''}} {{ phone.isTelegram ? 'Telegram': ''}}</span>
+                                            </span>
+                                            <span *ngIf="treasurer.phones.length === 0">Não Informado</span>
                                         </p>
                                     </div>
                                     <div fxLayout="column" fxFlex matLine>
@@ -95,7 +98,7 @@
                                 </mat-list-item>
                             </mat-list>
                             <mat-action-row>
-                                <button mat-button color="warn" matTooltip="Excluir Tesoureiro" (click)="remove([treasurer])">REMOVER</button>
+                                <button mat-button color="warn" matTooltip="Excluir Tesoureiro" (click)="removeTreasurer(treasurer)">REMOVER</button>
                                 <button mat-button color="primary" matTooltip="Editar Tesoureiro" (click)="editTreasurer(treasurer)">EDITAR</button>
                             </mat-action-row>
                         </mat-expansion-panel>

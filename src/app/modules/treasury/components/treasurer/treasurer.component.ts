@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { TreasuryService } from '../../treasury.service';
@@ -110,7 +111,23 @@ export class TreasurerComponent implements OnInit, OnDestroy {
     this.sidenavRight.open();
   }
 
-  remove(treasurers) {
+  removeTreasurer(treasurer: Treasurer) {
+    this.confirmDialogService
+      .confirm('Remover registro', 'Você deseja realmente remover este tesoureiro?', 'REMOVER')
+      .subscribe(res => {
+        if (res === true) {
+          this.treasureService.deleteTreasurer(treasurer.id).subscribe(() => {
+            this.getData();
+            this.snackBar.open('Tesoureiro removido!', 'OK', { duration: 5000 });
+          }, err => {
+            console.log(err);
+            this.snackBar.open('Erro ao remover tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+          });
+        }
+      });
+  }
+
+  removeAllTreasurers(treasurers) {
     this.confirmDialogService
       .confirm('Remover registro(s)', 'Você deseja realmente remover este(s) tesoureiro(s)?', 'REMOVER')
       .subscribe(res => {
