@@ -397,7 +397,14 @@ export class ProcessDataComponent implements OnInit {
       const password = data;
       this.reportService.reportProcess(p[0].id, password).subscribe(urlData => {
         const fileUrl = URL.createObjectURL(urlData);
-        window.open(fileUrl);
+        // nova aba
+        //window.open(fileUrl);
+        // download automatico
+        var element = document.createElement("a");
+        element.href = fileUrl;
+        element.download = 'processo.pdf';
+        element.target = '_blank';
+        element.click();
       }, err => console.log(err));
       this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
     });
