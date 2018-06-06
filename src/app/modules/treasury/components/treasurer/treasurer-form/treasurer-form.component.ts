@@ -29,11 +29,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
   subscribe1: Subscription;
   subscribe2: Subscription;
   treasurer: Treasurer = new Treasurer();
-  dates = {
-    now: new Date(new Date().setFullYear(new Date().getFullYear())),
-    min: new Date(new Date().setFullYear(new Date().getFullYear() - 95)),
-    max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
-  };
+  dates: any;
 
   constructor(
     private authService: AuthService,
@@ -47,6 +43,11 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
   ) { }
 
   ngOnInit() {
+    this.dates = {
+      now: new Date(new Date().setFullYear(new Date().getFullYear())),
+      min: new Date(new Date().setFullYear(new Date().getFullYear() - 95)),
+      max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+    };
     moment.locale('pt');
     this.currentUnit = this.authService.getCurrentUnit();
     this.treasurer.gender = 1;
@@ -100,6 +101,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   setPhonesValue(treasurer) {
+    debugger
     for (let i = 0; i < treasurer.phones.length; i++) {
       const phone: Phone = treasurer.phones[i];
       if (i !== 0) {

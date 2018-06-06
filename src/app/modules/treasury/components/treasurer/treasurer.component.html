@@ -77,6 +77,7 @@
                                         <span class="text-bold">Telefone: </span>
                                         <p>
                                             <span fxLayout="row" *ngFor="let phone of treasurer.phones">{{ phone.type }}: {{ phone.number }} <span *ngIf="phone.type === 'Celular'"> - Serviço(s) Utilizado(s): {{ phone.isWhatsapp ? 'Whatsapp, ' : ''}} {{ phone.isTelegram ? 'Telegram': ''}}</span></span>
+                                            <span *ngIf="treasurer.phones.length === 0">Não Informado</span>
                                         </p>
                                     </div>
                                     <div fxLayout="column" fxFlex matLine>
