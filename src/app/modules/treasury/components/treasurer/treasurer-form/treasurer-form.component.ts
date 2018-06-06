@@ -101,7 +101,6 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   setPhonesValue(treasurer) {
-    debugger
     for (let i = 0; i < treasurer.phones.length; i++) {
       const phone: Phone = treasurer.phones[i];
       if (i !== 0) {
@@ -118,6 +117,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   initForm(): void {
+    this.formPhones = this.formBuilder.array([this.returnPhone()]);
     this.formPersonal = this.formBuilder.group({
       name: [null, Validators.required],
       churchId: [null, Validators.required],
@@ -127,7 +127,6 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
       dateBirth: [null],
       genderId: [null]
     });
-    this.formPhones = this.formBuilder.array([this.returnPhone()]);
     this.formContact = this.formBuilder.group({
       email: [null],
       contact: [null],
