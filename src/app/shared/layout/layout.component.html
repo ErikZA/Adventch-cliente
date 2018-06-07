@@ -2,9 +2,10 @@
     <button mat-icon-button (click)="sidenav.toggle()">
     <mat-icon>menu</mat-icon>
   </button>
-
-    <img src="../../../../favicon.ico" style="width: 30px; height: 30px; margin-left: 20px;" [routerLink]="['/']" class="click" />
-    <div style="margin-left: 10px;" [routerLink]="['/']" class="click">Adven.tech</div>
+    <a fxLayout="row" class="logo-adven" [routerLink]="['/']">
+      <img src="../../../../favicon.ico" style="width: 30px; height: 30px;" class="click" />
+      <div style="margin-left: 10px;" class="click">Adven.tech</div>
+    </a>
     <mat-menu [overlapTrigger]="false" #appMenuSoftware="matMenu">
         <div *ngFor="let item of (lstUnits)">
             <button mat-menu-item (click)="updateUnit(item);" [class.selected]="unit?.id === item.id" [disabled]="unit?.id === item.id">
@@ -60,14 +61,14 @@
     <mat-drawer #sidenav class="sidenav-left mat-elevation-z5" [mode]="isOpen ? 'side' : 'over'" [opened]="isOpen">
         <mat-nav-list id="nav-list-menu" [ngClass]="{'nav-list-mobile': isMobile, 'nav-list-web': !isMobile}">
             <mat-accordion>
-                <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!this.checkPermission(6)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="this.checkPermission(6)" matTooltipPosition="after">
+                <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!this.checkPermission(6)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="this.checkPermission(6)" matTooltipPosition="below">
                     <!--Novo Módulo-->
                     <mat-expansion-panel-header class="background-side-nav">
                         <mat-panel-title>Tesouraria</mat-panel-title>
                     </mat-expansion-panel-header>
                     <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/tesoureiros']">Tesoureiros</a>
                 </mat-expansion-panel>
-                <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!this.checkPermission(7)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="this.checkPermission(7)" matTooltipPosition="after">
+                <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!this.checkPermission(7)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="this.checkPermission(7)" matTooltipPosition="below">
                     <!--Novo Módulo-->
                     <mat-expansion-panel-header class="background-side-nav">
                         <mat-panel-title (click)="redirectToDashboard()">Bolsas de Estudo</mat-panel-title>

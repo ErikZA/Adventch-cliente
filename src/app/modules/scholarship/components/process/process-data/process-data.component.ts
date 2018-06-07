@@ -104,7 +104,6 @@ export class ProcessDataComponent implements OnInit {
       return;
     }
     this.scholarshipService.getProcesses(this.idSchool).subscribe((data: Process[]) => {
-      console.log(data);
       this.processes = Object.assign(this.processes, data as Process[]);
       // this.allProcesses = this.processes;
       this.processes.forEach(

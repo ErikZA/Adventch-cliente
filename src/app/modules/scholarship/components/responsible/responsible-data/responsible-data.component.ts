@@ -95,7 +95,6 @@ export class ResponsibleDataComponent implements OnInit {
 
   getResponsible(): void {
     this.scholarshipService.currentResponsible.subscribe(data => {
-      console.log(data);
       this.responsible = data;
     });
   }
