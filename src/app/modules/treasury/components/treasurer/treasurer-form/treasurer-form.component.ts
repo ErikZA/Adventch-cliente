@@ -53,6 +53,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
     this.treasurer.gender = 1;
     this.initForm();
     this.getChurches();
+    this.close();
     this.subscribe2 = this.activatedRoute.params.subscribe((data) => {
       this.treasurer.gender = this.treasureComponent.treasurer.gender;
       this.editTreasurer(this.treasureComponent.treasurer);
@@ -174,20 +175,20 @@ export class TreasurerFormComponent implements OnInit, OnDestroy, DoCheck {
   close() {
     this.treasurer = new Treasurer();
     this.treasureComponent.sidenavRight.close();
-    this.router.navigate(['tesouraria/tesoureiros']);
+    this.router.navigate([this.router.url.replace('/novo', '').replace('/\w*(\W)/editar', '')]);
   }
 
   saveTreasurer() {
-    let treasurer = {
+    if (this.formContact.value.phones[0].id == null) {
+      this.formContact.value.phones[0].id = 0;
+    }
+    const treasurer = {
       ...this.formPersonal.value,
       ...this.formContact.value,
       unitId: this.authService.getCurrentUnit().id,
       id: this.treasureComponent.treasurer.id,
       identity: this.treasureComponent.treasurer.identity
     };
-    if (treasurer.phones[0].id == null) {
-      treasurer.phones[0].id = 0;
-    }
     if (this.formTreasurer.valid) {
       this.treasuryService.saveTreasurer(treasurer).subscribe(() => {
         this.treasureComponent.getData();
