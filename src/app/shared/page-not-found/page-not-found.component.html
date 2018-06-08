@@ -1,3 +1,75 @@
-<h1>
-  404 - Page not found!
-</h1>
+<mat-toolbar color="primary" style="background-color: #2094c8" class="mat-elevation-z6">
+    <a fxLayout="row" class="logo-adven" routerLink="/">
+      <img src="../../../../favicon.ico" style="width: 30px; height: 30px;" class="click" />
+      <div style="margin-left: 10px;" class="click">Adven.tech</div>
+    </a>
+    <!-- <mat-menu [overlapTrigger]="false" #appMenuSoftware="matMenu">
+        <div *ngFor="let item of (lstUnits)">
+            <button mat-menu-item (click)="updateUnit(item);" [class.selected]="unit?.id === item.id" [disabled]="unit?.id === item.id">
+                <mat-icon>fiber_manual_record</mat-icon><span>{{ item.name }}</span>
+            </button>
+        </div>
+    </mat-menu> -->
+    <!-- <span class="fill-space"></span>
+    <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-button [matMenuTriggerFor]="appMenuSoftware" *ngIf="lstUnits.length > 1" fxShow fxHide.xs>
+            <span>{{ unit.name }}</span><mat-icon class="margin-left-10">business</mat-icon>
+        </button>
+        <button mat-button *ngIf="lstUnits.length == 1" disabled style="color:rgb(255, 255, 255);" fxShow fxHide.xs>
+          <span>{{ unit.name }}</span><mat-icon class="margin-left-10">business</mat-icon>
+        </button>
+        <button mat-icon-button [matMenuTriggerFor]="appMenuSoftware" *ngIf="lstUnits.length > 1" fxHide fxShow.xs>
+            <mat-icon>business</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="lstUnits.length == 1" disabled style="color:rgb(255, 255, 255);" fxHide fxShow.xs>
+            <mat-icon>business</mat-icon>
+        </button>
+
+        <button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
+          <table style="line-height: normal; text-align: right;">
+            <tr>
+              <td>
+                {{ app.currentUser.name }}
+              </td>
+            </tr>
+          </table>
+        </button>
+    </div> -->
+    <!-- <mat-menu [overlapTrigger]="false" xPosition="before" #appMenu="matMenu">
+        <button mat-menu-item (click)="changePassword()">
+            <mat-icon>lock_outline</mat-icon>
+            <span>Altera senha</span>
+        </button>
+        <button mat-menu-item (click)="logoff()">
+      <mat-icon>exit_to_app</mat-icon>
+      <span>Sair</span>
+    </button>
+    </mat-menu> -->
+</mat-toolbar>
+<mat-drawer-container autosize>
+  <div fxLayout="row" fxLayoutAlign="center center" class="container fullpage">
+    <div fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="100px">
+      <div class="description">
+        <h2>Opsss..</h2>
+        <p>
+          Página não encontrada
+        </p>
+      </div>
+      <img class="image" src="../../../assets/img/404-img.png" alt="">
+    </div>
+  </div>
+  <div class="footer mat-elevation-z4">
+    <div [ngStyle]="{'position': 'relative'}">
+        <footer fxLayout="row">
+            <div fxFlex="155px" class="footer-unit font-footer">©FORLOGIC 2004 - {{ year }}</div>
+            <div fxFlex="145px" class="footer-software font-footer">
+                <div style="width: 90px; float: left">Adven.tech</div>
+                <div style="width: 30px; float: right; text-align: right">v1.0</div>
+            </div>
+        </footer>
+    </div>
+  </div>
+</mat-drawer-container>

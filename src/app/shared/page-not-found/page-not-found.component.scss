@@ -1,0 +1,33 @@
+.fullpage {
+  background-color: rgb(255, 255, 255);
+  margin: auto;
+  min-height: calc(100vh - 50px);
+  overflow-y: auto;
+  background-color: #23495F;
+}
+
+
+.image {
+  // background-image: url('../../../assets/img/404-error.png');
+  // background-attachment: fixed;
+  // background-position: center center;
+  background: url('../../../assets/img/404-img.png') no-repeat center;
+  display: block;
+  position: relative;
+  width: 100%;
+  height: auto;
+  // padding-bottom: 40%;
+  background-size: 100%;
+}
+
+.footer {
+  position: fixed;
+  bottom: 3%;
+  width: 100%;
+  border-bottom: 1px solid aqua;
+}
+
+.font-footer {
+  color: black !important;
+  font-weight: bold;
+}
