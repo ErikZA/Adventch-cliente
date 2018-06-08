@@ -63,13 +63,18 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     more: [`Todas as páginas completas e o Recibo de Entrega da última declaração do Imposto de Renda de Pessoa Física (IRPF).
      Obrigatório para todos os membros do grupo familiar a partir de 18 anos ou emancipados`,
      `Para quem não declara Imposto de Renda de Pessoa Física, consultar o site da Receita Federal, informar CPF, data de
-      nascimento e digitar o código de verificação do site, e imprimir a página seguinte. Não necessita reconhecer em cartório.`,
+      nascimento e digitar o código de verificação do site, e imprimir a página seguinte. Não necessita reconhecer em cartório. Acessar: https://www.receita.fazenda.gov.br/Aplicacoes/Atrjo/ConsRest/Atual.app/paginas/index.asp`,
      `Para sócios ou proprietários de empresas e microempresas (MEI) que componham o grupo familiar, apresentar recibo de entrega
       e todas as páginas completas da Declaração de Imposto de Renda de Pessoa Jurídica (IRPJ), Simples Nacional, MEI, ou em caso
-      de empresa inativa entregar o documento de baixa da empresa ou declaração de inatividade informadas pela receita federal`],
+      de empresa inativa entregar o documento de baixa da empresa ou declaração de inatividade informadas pela receita federal.`],
     options:  ['Recibo e Declaração do Imposto de Renda de Pessoa Física (IRPF)',
-    'Declaração de IRPF', 'Declaração de Imposto de Renda de Pessoa Jurídica (IRPJ)',
-    'Simples Nacional', 'MEI', 'Documento de baixa da empresa', 'Declaração de inatividade informadas pela receita federal']
+      'Declaração de IRPF', 
+      'Declaração de Isenção de IRPF',
+      'Declaração de Imposto de Renda de Pessoa Jurídica (IRPJ)',
+      'Simples Nacional', 
+      'MEI', 
+      'Documento de baixa da empresa', 
+      'Declaração de inatividade informadas pela receita federal']
   };
   ctps: any = {
     value: 3,
