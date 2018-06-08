@@ -68,7 +68,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       e todas as páginas completas da Declaração de Imposto de Renda de Pessoa Jurídica (IRPJ), Simples Nacional, MEI, ou em caso
       de empresa inativa entregar o documento de baixa da empresa ou declaração de inatividade informadas pela receita federal.`],
     options:  ['Recibo e Declaração do Imposto de Renda de Pessoa Física (IRPF)',
-      'Declaração de IRPF', 
       'Declaração de Isenção de IRPF',
       'Declaração de Imposto de Renda de Pessoa Jurídica (IRPJ)',
       'Simples Nacional', 
