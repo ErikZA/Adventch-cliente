@@ -340,7 +340,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     const docs4 = documents.filter(doc => doc.typeDocument === 4);
     this.formCheckDocuments.controls['incomeOptions'].setValue(docs4.map(s => s.name));
     const docs5 = documents.filter(doc => doc.typeDocument === 5);
-    this.formCheckDocuments.controls['academicOptions'].setValue(docs5.map(s => s.name));
+    this.formCheckDocuments.controls['expensesOptions'].setValue(docs5.map(s => s.name));
     const docs6 = documents.filter(doc => doc.typeDocument === 6);
     this.formCheckDocuments.controls['academicOptions'].setValue(docs6.map(s => s.name));
   }
