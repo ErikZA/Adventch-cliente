@@ -6,8 +6,8 @@
         <router-outlet></router-outlet>
     </div>
 </mat-sidenav>
-<div class="mat-elevation-z2" fxLayoutAlign="center">
-    <div fxFlex.gt-sm="95%" fxFlex="97%">
+<div class="page-container mat-elevation-z2" fxLayoutAlign="center">
+    <div fxFlex="95%">
         <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
             <h2 class="title" *ngIf="!searchButton">Lista de Processos</h2>
             <mat-form-field *ngIf="searchButton" fxFlex>
@@ -78,7 +78,7 @@
                 </mat-list>
                 <mat-divider></mat-divider>
             </div>
-            <div layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
+            <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
                 <mat-accordion>
                     <div *ngFor="let process of (processes$ | async ); index as i">
                         <mat-expansion-panel hideToggle *ngIf="i <= showList">
