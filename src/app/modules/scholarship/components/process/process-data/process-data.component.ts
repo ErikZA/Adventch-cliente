@@ -393,7 +393,7 @@ export class ProcessDataComponent implements OnInit {
 
   generateReport(p) {
     this.scholarshipService.getPasswordResponsible(p[0].id).subscribe(data => {
-      const password = data;
+      const password = data.password;
       this.reportService.reportProcess(p[0].id, password).subscribe(urlData => {
         const fileUrl = URL.createObjectURL(urlData);
         // nova aba

@@ -408,7 +408,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
   generateReport(id) {
     this.scholarshipService.getPasswordResponsible(id).subscribe(data => {
-      const password = data;
+      const password = data.password;
       this.reportService.reportProcess(id, password).subscribe(dataURL => {
         const fileUrl = URL.createObjectURL(dataURL);
         // nova aba

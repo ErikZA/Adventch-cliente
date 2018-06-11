@@ -214,7 +214,7 @@ export class ScholarshipService {
       });
   }
 
-  getPasswordResponsible(processId): Observable<string> {
+  getPasswordResponsible(processId): Observable<Responsible> {
     const url = '/scholarship/responsible/getPasswordByProcess/' + processId;
     return this.http
       .get(url)
