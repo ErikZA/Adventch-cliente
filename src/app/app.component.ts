@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { Subscription } from 'rxjs/Subscription';
 
 // import { TranslateService } from '@ngx-translate/core';

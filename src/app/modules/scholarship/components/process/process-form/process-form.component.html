@@ -101,6 +101,8 @@
     </div>
     <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
         <button mat-raised-button type="button" (click)="closeSidenav()">CANCELAR</button>
-        <button mat-raised-button type="submit" (click)="saveProcess()" color="primary">SALVAR</button>
+        <button mat-raised-button type="submit" (click)="saveProcess()" color="primary" [disabled]="isSending">SALVAR</button>
     </div>
 </form>
+
+<mat-progress-bar mode="indeterminate" *ngIf="isSending"></mat-progress-bar>

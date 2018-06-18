@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 
-import { NativeDateModule, RippleGlobalOptions, MAT_RIPPLE_GLOBAL_OPTIONS } from '@angular/material';
-
 import {
   MatSlideToggleModule,
   MatDividerModule,
@@ -35,9 +33,7 @@ import {
   MatTabsModule,
   MatChipsModule,
   MatToolbarModule,
-  MatTooltipModule,
-  MAT_DATE_LOCALE,
-  MAT_DATE_FORMATS
+  MatTooltipModule
 } from '@angular/material';
 
 

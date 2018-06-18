@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+
 import { ScholarshipService } from '../../../scholarship.service';
-import { isEmpty } from 'rxjs/operator/isEmpty';
+
+import { Process } from '../../../models/process';
 
 @Component({
   selector: 'app-pendency',
@@ -12,54 +15,41 @@ import { isEmpty } from 'rxjs/operator/isEmpty';
 export class PendencyComponent implements OnInit {
 
   formPendency: FormGroup;
-  isEmpty: true;
+  process: Process;
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<PendencyComponent>,
     private snackBar: MatSnackBar,
-    public scholarshipService: ScholarshipService
-  ) { }
+    public scholarshipService: ScholarshipService,
+    @Inject(MAT_DIALOG_DATA) data
+  ) {
+    this.process = data.process;
+  }
 
   ngOnInit() {
     this.initForm();
-    this.checkPendencies();
   }
 
-  initForm() {
+  private initForm(): void {
     this.formPendency = this.fb.group({
-      pendency: [null, Validators.required],
+      pendency: [this.process.pendency, Validators.required],
     });
   }
 
-  checkPendencies() {
-    this.formPendency.setValue({
-      pendency: this.scholarshipService.processSelected.pendency
-    });
-  }
-
-  savePendency() {
-    if (this.formPendency.invalid) {
-      return;
-    }
+  public savePendency() {
     if (this.formPendency.valid) {
-      this.scholarshipService.savePendency(this.formPendency.value.pendency).subscribe(() => {
-        this.cancel();
-      }, err => {
-        console.log(err);
-        this.snackBar.open('Erro ao salvar pendência, tente novamente.', 'OK', { duration: 5000 });
-        this.cancel();
-      });
+      this.dialogRef.close(this.formPendency.value);
     } else {
       return;
     }
   }
 
-  cancel() {
-     this.dialogRef.close(false);
+  public cancel(): void {
+     this.dialogRef.close(null);
   }
 
-  isValid() {
+  public isValid() {
     if (this.formPendency.value.pendency.trim() === '') {
       this.formPendency.controls['pendency'].setErrors({'invalid': true});
     }

@@ -1,19 +1,21 @@
-import { Http, Response, Headers, ResponseContentType } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/catch';
+
+import { AuthService } from '../../shared/auth.service';
+
 import { School } from './models/school';
-import { Responsible } from './models/responsible';
 import { Student } from './models/student';
 import { Process } from './models/process';
-import { AuthService } from '../../shared/auth.service';
-import { Subject } from 'rxjs/Subject';
+import { Responsible } from './models/responsible';
 import { StudentSerie } from './models/studentSerie';
-import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class ScholarshipService {
-  schoolSelected = '-1';
+  schoolSelected = -1;
   processSelected: Process;
   statusSelected = 0;
   processEdit: Process;
@@ -56,98 +58,78 @@ export class ScholarshipService {
     return this.scholarshipReport;
   }
 
-  getSchools(): Observable<School[]> {
+
+
+  // New
+  public getSchools(): Observable<School[]> {
     const url = '/scholarship/Process/getAllSchools/';
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getResponsibles(schoolId): Observable<Responsible[]> {
-    const url = '/scholarship/process/getAllResponsibles/' + schoolId;
+  public getResponsibles(schoolId: number): Observable<Responsible[]> {
+    const url = `/scholarship/process/getAllResponsibles/${schoolId}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getChildrenStudents(responsibleId): Observable<Student[]> {
-    const url = '/scholarship/process/getAllChildrenStudents/' + responsibleId;
+  public getChildrenStudents(responsibleId: number): Observable<Student[]> {
+    const url = `/scholarship/process/getAllChildrenStudents/${responsibleId}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getResponsible(schoolId, responsibleCPF): Observable<Responsible> {
+  public getResponsible(schoolId: number, responsibleCPF: string): Observable<Responsible> {
     const url = `/scholarship/process/getResponsible?schoolId=${schoolId}&responsibleCPF=${responsibleCPF}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  postProcess(data): Observable<any> {
+  public postProcess(process: Process): Observable<any> {
     const url = '/scholarship/process/saveProcess';
     return this.http
-      .post(url, data)
+      .post(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getProcesses(schoolId): Observable<Process[]> {
-    const url = '/scholarship/process/getProcesses/' + schoolId;
+  public getProcesses(schoolId: number): Observable<Process[]> {
+    const url = `/scholarship/process/getProcesses/${schoolId}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getProcessById(processId): Observable<Process> {
-    const url = '/scholarship/Process/getProcess/' + processId;
+  public getProcessById(processId: number): Observable<Process> {
+    const url = `/scholarship/Process/getProcess/${processId}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  savePendency(pendency): Observable<Process> {
+  public savePendency(pendencyDataProcess: any): Observable<Process> {
     const url = '/scholarship/Process/savePendency/';
-    const processPendency: any = {
-      id: this.processSelected.id,
-      pendency: pendency,
-      user: this.auth.getCurrentUser().identifier,
-      status: 3,
-      isSendDocument: false,
-      description: 'Adicionando pendência'
-    };
-    this.processSelected.pendency = pendency;
-    this.processSelected.status = 3;
     return this.http
-      .post(url, processPendency)
+      .post(url, pendencyDataProcess)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  updateToStatus(idProcess, idStatus, description) {
+
+
+  public updateToStatus(processStatusChanged): Observable<any> {
     const url = '/scholarship/Process/changeStatus/';
-    const process = {
-      id: idProcess,
-      status: idStatus,
-      description: description,
-      user: this.auth.getCurrentUser().identifier,
-    };
     return this.http
-      .post(url, process)
+      .post(url, processStatusChanged)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  saveVacancy(dateRegistration, idStatus, description) {
+  saveVacancy(vacancyDataProcess) {
     const url = '/scholarship/Process/saveVacancy/';
-    const process = {
-      id: this.processSelected.id,
-      status: idStatus,
-      description: description,
-      dateRegistration: dateRegistration,
-      user: this.auth.getCurrentUser().identifier
-    };
-    this.processSelected.status = idStatus;
-    this.processSelected.dateRegistration = dateRegistration;
     return this.http
-      .post(url, process)
+      .post(url, vacancyDataProcess)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
@@ -172,14 +154,8 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  sendDocument(process: Process): Observable<Process> {
+  sendDocument(submittedDocuments: any): Observable<Process> {
     const url = '/scholarship/process/sendDocument/';
-    const submittedDocuments: any = {
-      id: process.id,
-      user: this.auth.getCurrentUser().identifier,
-      isSendDocument: process.isSendDocument,
-      description: process.isSendDocument ? 'Documentos Pendentes Enviados' : 'Documentos Pendentes Não Enviados'
-    };
     return this.http
       .post(url, submittedDocuments)
       .catch((error: any) => Observable.throw(error || 'Server error'));
@@ -219,6 +195,17 @@ export class ScholarshipService {
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  generateNewPasswordResponsible(idResponsible): Observable<string> {
+    const url = '/scholarship/responsible/generateNewPassword/';
+    const data = {
+      id: idResponsible,
+      idUser: this.auth.getCurrentUser().id
+    };
+    return this.http
+    .post(url, data)
+    .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
   getProcessesResponsible(responsibleId): Observable<Process[]> {

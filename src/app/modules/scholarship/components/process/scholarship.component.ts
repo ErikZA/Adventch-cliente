@@ -1,14 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { equalSegments } from '@angular/router/src/url_tree';
-import { ScholarshipService } from '../../scholarship.service';
-import { School } from '../../models/school';
-import { Observable } from 'rxjs/Observable';
-import { FormGroup, FormControl } from '@angular/forms';
-import { AuthService } from '../../../../shared/auth.service';
-import { MatSidenav } from '@angular/material';
 import { Router } from '@angular/router';
+import { FormGroup, FormControl } from '@angular/forms';
+
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+
+import { MatSidenav } from '@angular/material';
+
+import { AuthService } from '../../../../shared/auth.service';
 import { SidenavService } from '../../../../core/services/sidenav.service';
+import { ScholarshipService } from '../../scholarship.service';
+
+import { School } from '../../models/school';
 import { Process } from '../../models/process';
+import { ProcessesStore } from './processes.store';
 
 @Component({
   selector: 'app-scholarship',
@@ -18,11 +23,10 @@ import { Process } from '../../models/process';
 export class ScholarshipComponent implements OnInit {
 
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
-  columns: any = 4;
+  columns: any = 3;
   schools$: Observable<School[]>;
   schools: School[] = new Array<School>();
-  idSchool = '-1';
-  formDashboard: FormGroup;
+  idSchool = -1;
   processes: Process[] = new Array<Process>();
   processes$: Observable<Process[]>;
 
@@ -32,23 +36,28 @@ export class ScholarshipComponent implements OnInit {
     public authService: AuthService,
     private router: Router,
     private sidenavService: SidenavService,
+    private store: ProcessesStore
   ) {
-    if (window.screen.width < 750) {
+    if (window.screen.width < 600) {
       this.columns = 1;
     }
   }
 
   ngOnInit() {
-    this.formDashboard = new FormGroup({
-      school: new FormControl()
-    });
+    this.getAllDatas();
+    this.setSchool();
     this.getSchools();
     this.sidenavService.setSidenav(this.sidenavRight);
     this.getData();
-    this.idSchool = this.scholarshipService.schoolSelected;
     this.scholarshipService.refresh$.subscribe((refresh: boolean) => {
       this.getData();
     });
+  }
+
+  private getAllDatas(): void {
+    this.processes$ = this.store.processes$;
+    this.schools$ = this.store.schools$;
+    this.store.loadAll();
   }
 
   closeSidenav() {
@@ -59,17 +68,29 @@ export class ScholarshipComponent implements OnInit {
   }
 
   getData() {
-    this.idSchool = this.authService.getCurrentUser().idSchool !== 0 ?
-    this.authService.getCurrentUser().idSchool.toString() : this.scholarshipService.schoolSelected;
+    this.changeSchool();
     this.processes = [];
+    this.store.loadAll();
     this.scholarshipService.getProcesses(this.idSchool).subscribe((data: Process[]) => {
       this.processes = Object.assign(this.processes, data as Process[]);
-      this.processes$ = Observable.of(this.processes);
+      this.processes$ = this.processes$ = this.store.processes$;
     });
   }
 
-  changeDashboard() {
+  setSchool() {
+    if (this.authService.getCurrentUser().idSchool === 0) {
+      this.idSchool = this.scholarshipService.schoolSelected;
+    } else {
+      this.idSchool = this.authService.getCurrentUser().idSchool;
+      this.scholarshipService.schoolSelected = this.idSchool;
+    }
+  }
+
+  changeSchool() {
     this.scholarshipService.schoolSelected = this.idSchool;
+  }
+
+  changeDashboard() {
     this.getData();
   }
 
@@ -96,8 +117,8 @@ export class ScholarshipComponent implements OnInit {
 
   onResize(event) {
     const element = event.target.innerWidth;
-    if (element > 750) {
-      this.columns = 4;
+    if (element > 600) {
+      this.columns = 3;
     } else {
       this.columns = 1;
     }

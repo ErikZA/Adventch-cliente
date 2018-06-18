@@ -1,29 +1,29 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+
 import { Subject } from 'rxjs/Subject';
-import { Treasurer } from '../../../../treasury/models/treasurer';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-import { TreasuryService } from '../../../../treasury/treasury.service';
-import { Process } from '../../../models/process';
-import { Student } from '../../../models/student';
-import { Responsible } from '../../../models/responsible';
-import { ScholarshipService } from '../../../scholarship.service';
-import { ScholarshipComponent } from '../scholarship.component';
+
 import { AuthService } from '../../../../../shared/auth.service';
+import { ScholarshipService } from '../../../scholarship.service';
+import { SidenavService } from '../../../../../core/services/sidenav.service';
+import { ReportService } from '../../../../../shared/report.service';
+
 import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
+
+import { Process } from '../../../models/process';
 import { School } from '../../../models/school';
-import { forEach } from '@angular/router/src/utils/collection';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { Router } from '@angular/router';
+
 import { MatDialogRef,
         MatDialog,
         MatSnackBar,
-        MatExpansionPanel,
-        matExpansionAnimations,
         MatSidenav,
-        MatSlideToggleChange } from '@angular/material';
-import { ReportService } from '../../../../../shared/report.service';
+        MatSlideToggleChange,
+        MatDialogConfig} from '@angular/material';
+
+import { ProcessesStore } from '../processes.store';
 
 @Component({
   selector: 'app-process-data',
@@ -31,28 +31,29 @@ import { ReportService } from '../../../../../shared/report.service';
   styleUrls: ['./process-data.component.scss']
 })
 export class ProcessDataComponent implements OnInit {
+
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
 
   searchButton = false;
   search$ = new Subject<string>();
-  searchString = '';
   showList = 15;
-  schools: School[] = new Array<School>();
-  idSchool = '-1';
+  idSchool = -1;
   showSchool = false;
   refresh$ = new Observable<boolean>();
-
-  schoolsSelecteds: any[] = new Array<any>();
-  statusSelecteds: any[] = new Array<any>();
-
-  processes: Process[] = new Array<Process>();
-  // allProcesses: Process[] = new Array<Process>();
-  processes$: Observable<Process[]>;
 
   dialogRef: MatDialogRef<PendencyComponent>;
   dialogRef2: MatDialogRef<VacancyComponent>;
 
   layout: String = 'row';
+
+  // New
+  processes: Process[] = new Array<Process>();
+  processes$: Observable<Process[]>;
+  schools$: Observable<School[]>;
+  schoolsFilters: Number[];
+  statusFilters: Number[];
+  valueSearch: string;
+  inSearch: boolean;
 
   constructor(
     public scholarshipService: ScholarshipService,
@@ -61,252 +62,196 @@ export class ProcessDataComponent implements OnInit {
     private snackBar: MatSnackBar,
     private sidenavService: SidenavService,
     private router: Router,
+    private store: ProcessesStore,
     private reportService: ReportService
-  ) { }
+  ) {
+    if (window.screen.width < 450) {
+      this.layout = 'column';
+    }
+  }
 
   ngOnInit() {
-    this.getData();
-    this.loadSelected();
-    this.setFilters();
+    this.schoolIsVisible();
+    this.getAllDatas();
+    this.processes$.subscribe(x => { this.processes = x; });
     this.search$.subscribe(search => {
-      this.searchProcess(search, false, false);
+      this.searchProcess(search);
     });
     this.scholarshipService.refresh$.subscribe((refresh: boolean) => {
-      this.searchProcess('', false, false);
+      this.searchProcess('');
     });
     this.sidenavService.setSidenav(this.sidenavRight);
     this.closeSidenav();
   }
 
-  closeSidenav() {
+  private getAllDatas(): void {
+    this.processes$ = this.store.processes$;
+    this.schools$ = this.store.schools$;
+    this.store.loadAll();
+    this.setAllFilters();
+  }
+
+  private setAllFilters(): void {
+    this.setSchoolsFilters();
+    this.setStatusFilters();
+  }
+
+  private setSchoolsFilters(): void {
+    this.schoolsFilters = new Array<Number>();
+    if (this.showSchool) {
+      this.schools$.subscribe(data => {
+        data.forEach(school => {
+          if (!this.schoolsFilters.some(x => x === school.id)) {
+            this.schoolsFilters.push(school.id);
+          }
+        });
+      });
+    } else {
+      this.schoolsFilters.push(this.authService.getCurrentUser().idSchool);
+    }
+  }
+
+  private setStatusFilters(): void {
+    this.statusFilters = new Array<Number>();
+    if (this.scholarshipService.statusSelected === 0) {
+      for (let i = 1; i <= 8; i++) {
+        this.statusFilters.push(i);
+      }
+    } else {
+      this.statusFilters.push(this.scholarshipService.statusSelected);
+      this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters);
+    }
+  }
+
+  public filterSchools(id: number, checked: boolean): void {
+    if (checked && !this.schoolsFilters.some(x => x === id) && this.showSchool) {
+      this.schoolsFilters.push(id);
+    } else if (!checked && this.schoolsFilters.some(x => x === id) && this.showSchool) {
+      const index = this.schoolsFilters.indexOf(id);
+      this.schoolsFilters.splice(index, 1);
+    }
+    this.callFilters();
+  }
+
+  private callFilters(): void {
+    this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters);
+  }
+
+  public filterStatus(id: number, checked: boolean): void {
+    if (checked && !this.statusFilters.some(x => x === id)) {
+      this.statusFilters.push(id);
+    } else if (!checked && this.statusFilters.some(x => x === id)) {
+      this.statusFilters.splice(this.statusFilters.indexOf(id), 1);
+    }
+    this.callFilters();
+  }
+
+  public searchProcess(search: string): void {
+    this.inSearch = search !== '' ? true : false;
+    if (!this.processes) {
+      return;
+    }
+    this.callFilters();
+    const processes = this.store.filterSearch(search);
+    this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters, processes);
+  }
+
+  public closeSidenav(): void {
     this.sidenavRight.close();
-    this.getData();
+    this.getAllDatas();
     this.scholarshipService.processEdit = new Process();
     this.router.navigate([this.router.url.replace('/novo', '').replace('/editar', '')]);
   }
 
-  getData() {
-    this.processes = [];
-    // get data from schools
-    if (this.authService.getCurrentUser().idSchool === 0) {
-      this.scholarshipService.getSchools().subscribe((data: School[]) => {
-        this.schools = Object.assign(this.schools, data as School[]);
-        this.setSchoolsFilters();
-      });
-    }
-    this.idSchool = this.scholarshipService.schoolSelected;
-    this.showSchool = this.idSchool === '-1';
-    if (this.idSchool === '-1' && this.authService.getCurrentUser().idSchool !== 0) {
-      this.idSchool = this.authService.getCurrentUser().idSchool.toString();
-      this.showSchool = false;
-    }
-    if (this.scholarshipService.statusSelected > 0) {
-      return;
-    }
-    this.scholarshipService.getProcesses(this.idSchool).subscribe((data: Process[]) => {
-      this.processes = Object.assign(this.processes, data as Process[]);
-      // this.allProcesses = this.processes;
-      this.processes.forEach(
-        item => {
-          item.statusString = this.getStatusToString(item.status);
-        }
-      );
-      this.processes$ = Observable.of(this.processes);
-    });
+  public schoolIsVisible(): void {
+    this.showSchool = this.authService.getCurrentUser().idSchool === 0 ? true : false;
   }
 
-  loadSelected() {
-    this.statusSelecteds.push({id: 1, selected: false});
-    this.statusSelecteds.push({id: 2, selected: false});
-    this.statusSelecteds.push({id: 3, selected: false});
-    this.statusSelecteds.push({id: 4, selected: false});
-    this.statusSelecteds.push({id: 5, selected: false});
-    this.statusSelecteds.push({id: 6, selected: false});
-    this.statusSelecteds.push({id: 7, selected: false});
-  }
-
-  setFilters() {
-    if (this.scholarshipService.statusSelected > 0) {
-      this.statusSelecteds[this.scholarshipService.statusSelected - 1].selected = true;
-      this.searchProcess('', true, false);
-    } else {
-      this.statusSelecteds.forEach(item => {
-        item.selected = true;
-      });
+  public toWaiting(process: Process): void {
+    if (this.authService.getCurrentUser().idSchool === 0 && process.status === 1) {
+      this.store.changeStatus(this.setStatusChangeProcess(process, 2, 'Iniciado'));
     }
   }
 
-  setSchoolsFilters() {
-    this.schoolsSelecteds = this.schools;
-    this.schoolsSelecteds.forEach(item => {
-      if (this.idSchool === '-1') {// [Todas]
-        item.selected = true;
-      } else if (this.idSchool === item.id) {
-        item.selected = true;
-      } else {
-        item.selected = false;
-      }
-    });
-  }
-
-  filterBySchool(id, index) {
-    this.schoolsSelecteds[index].selected = !this.schoolsSelecteds[index].selected;
-    this.showSchool = this.isManySchoolsSelecteds();
-    this.searchProcess(this.searchString, false, true);
-  }
-
-  isManySchoolsSelecteds() {
-    let totalSelected = 0;
-    this.schoolsSelecteds.forEach(item => {
-      if (item.selected) {
-        totalSelected++;
-      }
-    });
-    return totalSelected > 1;
-  }
-
-  filterByStatus(i) {
-    this.statusSelecteds[i - 1].selected = !this.statusSelecteds[i - 1].selected;
-    this.searchProcess(this.searchString, true, false);
-  }
-
-  getStatusToString(status) {
-    if (status === 1) {
-      return 'Aguardando Análise';
-    } else if (status === 2) {
-      return 'Em análise';
-    } else if (status === 3) {
-      return 'Pendente';
-    } else if (status === 4) {
-      return 'Aguardando Vaga da Bolsa';
-    } else if (status === 5) {
-      return 'Vaga liberada (50%)';
-    } else if (status === 6) {
-      return 'Vaga liberada (100%)';
-    } else if (status === 7) {
-      return 'Bolsa Indeferida';
-    } else if (status === 8) {
-      return 'Não Matriculou';
+  public toReject(process, idMotive: number): void {
+    if (this.authService.getCurrentUser().idSchool === 0 && (process.status > 1 && process.status < 7)) {
+      this.store.sendRejection(process, idMotive);
     }
   }
 
-  searchProcess(search, isStatus, isSchool) {
-    this.processes = [];
-    const id = this.authService.getCurrentUser().idSchool.toString();
-    // this.processes = this.allProcesses;
-    // this.processes.forEach(
-    //   item => {
-    //     item.statusString = this.getStatusToString(item.status);
-    //   }
-    // );
-    // search = search.toLowerCase();
-    // this.searchString = search;
-    // this.processes$ = Observable.of(this.processes.filter(data => {
-    //   return (this.searchOnlySchool(data.student.school.id)) &&
-    //     (this.searchOnlyStatus(data.status)) &&
-    //     (data.student.name.toLowerCase().indexOf(search) !== -1 ||
-    //     data.student.responsible.name.toLowerCase().indexOf(search) !== -1 ||
-    //     data.student.school.name.toLowerCase().indexOf(search) !== -1 ||
-    //     data.statusString.toLowerCase().indexOf(search) !== -1 ||
-    //     data.protocol.toLowerCase().indexOf(search) !== -1);
-    // }));
-    this.scholarshipService.getProcesses(id === '0' ? '-1' : id).subscribe((data: Process[]) => {
-      this.processes = Object.assign(this.processes, data as Process[]);
-      this.processes.forEach(
-        item => {
-          item.statusString = this.getStatusToString(item.status);
-        }
-      );
-      search = search.toLowerCase();
-      this.searchString = search;
-      this.processes$ = Observable.of(this.processes.filter(data => {
-        return (this.searchOnlySchool(data.student.school.id)) &&
-          (this.searchOnlyStatus(data.status)) &&
-          (data.student.name.toLowerCase().indexOf(search) !== -1 ||
-          data.student.responsible.name.toLowerCase().indexOf(search) !== -1 ||
-          data.student.school.name.toLowerCase().indexOf(search) !== -1 ||
-          data.statusString.toLowerCase().indexOf(search) !== -1 ||
-          data.protocol.toLowerCase().indexOf(search) !== -1);
-      }));
-    });
-  }
-
-  searchOnlySchool(idSchoolToFilter) {
-    if (idSchoolToFilter === undefined || this.schoolsSelecteds.length === 0) {
-      return true;
+  public toNotEnroll(process: Process): void {
+    if (this.authService.getCurrentUser().idSchool === 0 && (process.status === 5 || process.status === 6)) {
+      this.store.changeStatus(this.setStatusChangeProcess(process, 8, 'Não Matriculou'));
     }
-    return this.schoolsSelecteds.find(f => f.id === idSchoolToFilter).selected;
   }
 
-  searchOnlyStatus(idStatusToFilter) {
-    if (idStatusToFilter === undefined) {
-      return true;
+  private setStatusChangeProcess(process: Process, status: number, description: string): any {
+    return {
+      id: process.id,
+      status: status,
+      description: description,
+      user: this.authService.getCurrentUser().identifier,
+      process: process
+    };
+  }
+
+  public sendDocuments(event: MatSlideToggleChange, process: Process): void {
+    if (process.status === 3) {
+      this.store.sendDocuments(this.setProcessSendDocuments(process, event.checked));
     }
-    return this.statusSelecteds.find(f => f.id === idStatusToFilter).selected;
   }
 
-
-  searchOnlyText(search, filteredProcess) {
-    const filteredProcess2 = filteredProcess.filter(data => {
-      return data.student.name.toLowerCase().indexOf(search) !== -1 ||
-        data.student.responsible.name.toLowerCase().indexOf(search) !== -1 ||
-        data.student.school.name.toLowerCase().indexOf(search) !== -1 ||
-        data.statusString.toLowerCase().indexOf(search) !== -1 ||
-        data.protocol.toLowerCase().indexOf(search) !== -1;
-    });
-    return filteredProcess2;
+  private setProcessSendDocuments(process: Process, checked: boolean): any {
+    return {
+      id: process.id,
+      user: this.authService.getCurrentUser().identifier,
+      isSendDocument: checked,
+      description: checked ? 'Documentos Pendentes Enviados' : 'Documentos Pendentes Não Enviados',
+      process: process
+    };
   }
 
-  onScroll() {
+  public onScroll(): void {
     this.showList += 15;
   }
 
-  toWaiting(p) {
-    this.scholarshipService.updateToStatus(p[0].id, 2, 'Iniciado').subscribe(() => {
-      p[0].status = 2;
-      this.updateProcess(p[0]);
-    }, err => {
-      this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
-    });
-  }
+  public toPendency(process: Process): void {
+    const dialogConfig = new MatDialogConfig();
 
-  toPendency(p) {
-    this.scholarshipService.updateProcess(p[0]);
-    this.dialogRef = this.dialog.open(PendencyComponent, {
-      width: '70%'
-    });
-    this.dialogRef.afterClosed().subscribe(result => {
-      this.updateProcess(this.scholarshipService.processSelected);
-      if (!result) {
-        return;
+    this.setDialogPendecy(dialogConfig, process);
+    const dialogRef = this.dialog.open(PendencyComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(pendency => {
+      if (pendency) {
+        const processPendency: any = this.setDataPendency(process, pendency);
+        this.store.savePendecy(processPendency);
       }
     });
   }
 
-  toReject(p, idMotive) {
-    let motive = '';
-    if (idMotive === 1) {
-      motive = 'Acadêmico';
-    } else if (idMotive === 2) {
-      motive = 'Financeiro';
-    } else if (idMotive === 3) {
-      motive = 'Renda';
-    } else if (idMotive === 4) {
-      motive = 'Disciplinar';
-    } else {
-      motive = 'Documentação';
+  private setDialogPendecy(dialogConfig: MatDialogConfig<any>, process: Process) {
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    if (this.layout === 'row') {
+        dialogConfig.width = '60%';
     }
-
-    this.scholarshipService.saveReject(p[0].id, 7, 'Indeferido', motive).subscribe(() => {
-        p[0].status = 7;
-        p[0].motiveReject = motive;
-        this.updateProcess(p[0]);
-      }, err => {
-        this.snackBar.open('Erro ao indeferir, tente novamente.', 'OK', { duration: 5000 });
-      });
+    dialogConfig.data = {
+        process: process
+    };
   }
 
-  getMotiveToReject(motive) {
+  private setDataPendency(process: Process, data: any): any {
+    return {
+        id: process.id,
+        pendency: data.pendency,
+        user: this.authService.getCurrentUser().identifier,
+        status: 3,
+        isSendDocument: false,
+        description: 'Adicionando pendência',
+        process: process
+    };
+  }
+
+  public getMotiveToReject(motive): string {
     if (motive === 'Acadêmico') {
       return 'O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.';
     }
@@ -322,72 +267,61 @@ export class ProcessDataComponent implements OnInit {
     return 'Indeferido pela apresentação da documentação inconsistente à análise correspondente.';
   }
 
-  toApprove(p) {
-    if (p[0].status === 2 || p[0].status === 3 || p[0].status === 7) {
-      this.scholarshipService.updateToStatus(p[0].id, 4, 'Aguardando vaga').subscribe(() => {
-        p[0].status = 4;
-        this.updateProcess(p[0]);
-      }, err => {
-        this.snackBar.open('Erro ao aprovar o processo, tente novamente.', 'OK', { duration: 5000 });
-      });
+  public toApprove(process: Process): void {
+    if (process.status === 2 || process.status === 3 || process.status === 7) {
+      this.store.changeStatus(this.setStatusChangeProcess(process, 4, 'Aguardando Vaga da Bolsa'));
     } else {
-      this.scholarshipService.updateProcess(p[0]);
-      this.dialogRef2 = this.dialog.open(VacancyComponent, {
-        width: '400px'
-      });
-      this.dialogRef2.afterClosed().subscribe(result => {
-        this.updateProcess(this.scholarshipService.processSelected);
-        if (!result) {
-          return;
+      const dialogConfig = new MatDialogConfig();
+
+      this.setDialogAprove(dialogConfig, process);
+      const dialogRef = this.dialog.open(VacancyComponent, dialogConfig);
+      dialogRef.afterClosed().subscribe(vacancy => {
+        if (vacancy) {
+          const processVacancy: any = this.setDataVacancy(process, vacancy);
+          this.store.saveVacancy(processVacancy);
         }
       });
     }
   }
 
-  sendDocuments(event: MatSlideToggleChange, process: Process) {
-    if (process.status === 3) {
-      process.isSendDocument = event.checked;
-      this.scholarshipService.sendDocument(process).subscribe();
+  private setDataVacancy(process: Process, data: any): any {
+    return {
+      id: process.id,
+      status: data.idStatus,
+      description: data.description,
+      dateRegistration: data.dateRegistration,
+      user: this.authService.getCurrentUser().identifier,
+      process: process
+    };
+  }
+
+  private setDialogAprove(dialogConfig: MatDialogConfig<any>, process: Process): void {
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    if (this.layout === 'row') {
+        dialogConfig.width = '400px';
     }
+    dialogConfig.data = {
+        process: process
+    };
   }
 
-  updateProcess(newProcess) {
-    const index = this.processes.findIndex(f => f.id === newProcess.id);
-    // this.processes.splice(index, 1);
-    newProcess.statusString = this.getStatusToString(newProcess.status);
-    this.processes[index] = newProcess;
-  }
-
-  editProcess(p) {
+  public editProcess(process) {
     this.router.navigate(['/bolsas/processos/editar']);
-    this.scholarshipService.processEdit = p[0];
+    this.scholarshipService.processEdit = process;
     this.sidenavService.open();
   }
 
-  expandPanel(matExpansionPanel) {
+  public expandPanel(matExpansionPanel): void {
     matExpansionPanel.toggle();
-    if (!matExpansionPanel._expanded) {
-      this.processes$ = Observable.of(this.processes);
-    }
   }
 
-  onResize(event) {
+  public onResize(event): void {
     const element = event.target.innerWidth;
     if (element > 600) {
       this.layout = 'row';
     } else {
       this.layout = 'column';
-    }
-  }
-
-  toNotEnroll(process: Process): void {
-    if (process.status === 5 || process.status === 6) {
-      this.scholarshipService.updateToStatus(process.id, 8, 'Não Matriculou').subscribe(() => {
-        process.status = 8;
-        this.updateProcess(process);
-      }, err => {
-        this.snackBar.open('Erro ao atualizar o processo, tente novamente.', 'OK', { duration: 5000 });
-      });
     }
   }
 
@@ -397,15 +331,24 @@ export class ProcessDataComponent implements OnInit {
       this.reportService.reportProcess(p[0].id, password).subscribe(urlData => {
         const fileUrl = URL.createObjectURL(urlData);
         // nova aba
-        //window.open(fileUrl);
+        // window.open(fileUrl);
         // download automatico
-        var element = document.createElement("a");
+        let element;
+        element = document.createElement('a');
         element.href = fileUrl;
         element.download = 'processo.pdf';
         element.target = '_blank';
         element.click();
       }, err => console.log(err));
       this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+    });
+  }
+
+  generateNewPasswordResponsible(p) {
+    this.scholarshipService.generateNewPasswordResponsible(p[0].student.responsible.id).subscribe(data => {
+      if (data && data !== undefined && data != null) {
+        this.snackBar.open('Senha alterada!', 'OK', { duration: 5000 });
+      }
     });
   }
 }

@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 // core
@@ -7,9 +7,8 @@ import { LayoutComponent } from './shared/layout/layout.component';
 import { AuthGuard } from './shared/auth.guard';
 
 // shared
-import { DashboardComponent } from './shared/dashboard/dashboard.component';
-import { EmptyPageComponent } from './shared/empty-page/empty-page.component';
 import { LoginComponent } from './shared/login/login.component';
+import { DashboardComponent } from './shared/dashboard/dashboard.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 
 // components

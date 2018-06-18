@@ -44,3 +44,34 @@
 .padding-left-medium {
     padding-left: 30px;
 }
+
+.mat-button{
+    margin: 5px;
+}
+
+.mat-action-row{
+    padding: 16px;
+}
+
+.break-line {
+  white-space: pre-line;
+}
+
+.style-text{
+    white-space: pre-line;
+    padding-left: 30px;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.page-container {
+    height: calc(100vh - 92px);
+}
+
+.auto{
+    height: auto;
+}
+
+.conteiner {
+    overflow: auto;
+    max-height: calc(100vh - 240px);
+}

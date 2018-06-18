@@ -1,42 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Response } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ChangePasswordService {
 
   constructor(
-    private http: Http
+    private http: HttpClient
   ) { }
 
-  changePasswordCooperated(currentPassword: string, newPassword: string): Promise<any> {
-    const body = JSON.stringify({ currentPassword: currentPassword, newPassword: newPassword });
+  changePassword(userId: number, currentPassword: string, newPassword: string): Observable<any> {
+    const body = JSON.stringify({ userId: userId, currentPassword: currentPassword, newPassword: newPassword });
     return this.http
-      .put('/cooperated/changePassword/', body)
-      .toPromise()
-      .then((res: Response) => res.json())
-      .catch(this.handleError);
-  }
-
-  changePasswordAdmin(currentPassword: string, newPassword: string): Promise<any> {
-    const body = JSON.stringify({ currentPassword: currentPassword, newPassword: newPassword });
-    return this.http
-      .put('/admin/changePassword/', body)
-      .toPromise()
-      .then((res: Response) => res.json())
-      .catch(this.handleError);
-  }
-
-  managerChangePassword(userId: string, newPassword: string): Promise<any> {
-    const body = JSON.stringify({ userId: userId, newPassword: newPassword });
-    return this.http
-      .put('/admin/managerChangePassword/', body)
-      .toPromise()
-      .then((res: Response) => res.json())
-      .catch(this.handleError);
+      .put('/shared/updatePassword/', body)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+      // .toPromise()
+      // .then((res: Response) => res.json())
+      // .catch(this.handleError);
   }
 
   private handleError(error: Response | any) {

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Responsible } from '../../../models/responsible';
+
 import { AuthService } from '../../../../../shared/auth.service';
-import { Process } from '../../../models/process';
 import { ScholarshipService } from '../../../scholarship.service';
+
+import { Process } from '../../../models/process';
+import { Responsible } from '../../../models/responsible';
 
 @Component({
   selector: 'app-responsible-data',
@@ -44,7 +46,7 @@ export class ResponsibleDataComponent implements OnInit {
 
   getStatusToString(status) {
     if (status === 1) {
-      return 'Aguardando início';
+      return 'Aguardando Análise';
     }
     if (status === 2) {
       return 'Em análise';
@@ -53,7 +55,7 @@ export class ResponsibleDataComponent implements OnInit {
       return 'Pendente';
     }
     if (status === 4) {
-      return 'Aguardando vaga';
+      return 'Aguardando Vaga da Bolsa';
     }
     if (status === 5) {
       return 'Vaga liberada (50%)';

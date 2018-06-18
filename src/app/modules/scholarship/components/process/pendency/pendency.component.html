@@ -1,17 +1,17 @@
-<mat-card>
-  <form [formGroup]="formPendency" novalidate fxLayout="column" fxLayoutAlign="space-between stretch">
-      <mat-card-title fxFlex fxFlexAlign="center">Pendências</mat-card-title>
-      <div fxLayout="column" fxLayout.gt-md="row">
-        <mat-form-field style="width: 100%">
-            <textarea formControlName="pendency" matInput placeholder="Cadastrar pendência(s)" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10"></textarea>
-            <mat-error *ngIf="formPendency.invalid">
-                Digite uma pendência válida (não utilize somente espaços)
-            </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="buttons" fxLayout="row" fxLayoutAlign="space-between stretch" fxFlex>
-          <button mat-button type="button" class="btn-cancel" (click)="cancel()">CANCELAR</button>
-          <button mat-button type="submit" (click)="savePendency()" color="primary" [disabled]="formPendency.invalid || isValid()">SALVAR</button>
-      </div>
-  </form>
-</mat-card>
+<h2 mat-dialog-title>Pendências</h2>
+
+<mat-dialog-content [formGroup]="formPendency" fxLayout="column" fxLayoutAlign="space-between" fxFlex>
+  <div fxLayout="column" fxLayout.gt-md="row">
+    <mat-form-field style="width: 100%">
+        <textarea formControlName="pendency" matInput placeholder="Cadastrar pendência(s)" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10"></textarea>
+        <mat-error *ngIf="formPendency.invalid">
+            Digite uma pendência válida (não utilize somente espaços)
+        </mat-error>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between stretch" fxFlex>
+    <button mat-button type="button" class="btn-cancel" (click)="cancel()">CANCELAR</button>
+    <button mat-raised-button type="submit" (click)="savePendency()" color="primary" [disabled]="formPendency.invalid || isValid()">SALVAR</button>
+</mat-dialog-actions>

@@ -1,17 +1,17 @@
-import { Http, Response, RequestOptions, Headers } from '@angular/http';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, EventEmitter } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/retry';
+import 'rxjs/add/operator/catch';
 
-import { User } from './models/user.model';
-import { environment } from '../../environments/environment';
 import { Unit } from './models/unit.model';
 import { EModules } from './models/modules.enum';
 import { Permission } from './models/permission.model';
 import { Responsible } from '../modules/scholarship/models/responsible';
+
+import { User } from './models/user.model';
 
 @Injectable()
 export class AuthService {
@@ -77,19 +77,6 @@ export class AuthService {
       });
   }
 
-  public visibleModule() {
-    /*let { permissions } = this.getCurrentUnit();
-    for (const permission of permissions) {
-      switch (permission.module) {
-        case Modules.Treasury:
-          return permission.access;
-        default:
-          this.router.navigate(['']);
-          return false;
-      }
-    }*/
-  }
-
   logoff() {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
@@ -140,8 +127,8 @@ export class AuthService {
     if (module === 0 || module === 1) { // Permissão liberada para "Geral" e "Aplicativos"
       return true;
     }
-    if (this.permissions === undefined) {
-      if (this.getCurrentUser().permissions === undefined) {
+    if (this.permissions === undefined || this.permissions === null) {
+      if (this.getCurrentUser().permissions === undefined || this.getCurrentUser().permissions === null) {
         return false;
       }
       this.permissions = this.getCurrentUser().permissions;

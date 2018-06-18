@@ -4,7 +4,7 @@
           <br/>
           <div style="width: 100%">
             <mat-radio-group formControlName="type" name="type" aria-label="Tipo da bolsa" layout="row">
-              <mat-radio-button value="1" aria-label="50% (Meia)" style="margin: 0 20px 0 0" [checked]="true">50% (Meia)</mat-radio-button>
+              <mat-radio-button value="1" aria-label="50% (Meia)" style="margin: 0 20px 0 0">50% (Meia)</mat-radio-button>
               <mat-radio-button value="2" aria-label="100% (Completa)">100% (Completa)</mat-radio-button>
             </mat-radio-group>
           </div>
@@ -18,7 +18,7 @@
           </div>
         <div class="buttons" fxLayout="row" fxLayoutAlign="space-between stretch" fxFlex>
             <button mat-button type="button" class="btn-cancel" (click)="cancel()">CANCELAR</button>
-            <button mat-button type="submit" (click)="saveType()" color="primary" [disabled]="formVacancy.invalid">SALVAR</button>
+            <button mat-raised-button type="submit" (click)="saveType()" color="primary" [disabled]="formVacancy.invalid">SALVAR</button>
         </div>
     </form>
   </mat-card>

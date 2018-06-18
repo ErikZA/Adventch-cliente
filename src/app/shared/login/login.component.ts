@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
 
   login() {
     const email = this.userEmail.nativeElement;
-    let password = this.userPassword.nativeElement;
+    const password = this.userPassword.nativeElement;
     if (!email.value) {
       email.focus();
       return;

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ChangePasswordService } from './change-password.service';
 import { StrongPasswordValidator } from '../strong-password.directive';
 import { User } from '../../../../shared/models/user.model';
+import { AuthService } from '../../../../shared/auth.service';
 
 @Component({
   selector: 'app-change-password',
@@ -37,7 +38,9 @@ export class ChangePasswordComponent implements OnInit {
     // private changePasswordService: ChangePasswordService,
     private router: Router,
     public snackBar: MatSnackBar,
-    public dialogRef: MatDialogRef<ChangePasswordComponent>
+    public dialogRef: MatDialogRef<ChangePasswordComponent>,
+    private changePasswordService: ChangePasswordService,
+    private authService: AuthService
   ) {
     this.valFn = StrongPasswordValidator(this.level, this.user_inputs);
   }
@@ -95,62 +98,20 @@ export class ChangePasswordComponent implements OnInit {
     }
   }
 
-  onSubmit(e) {
-    if (e) { e.preventDefault(); }
-
-    if (this.form.invalid) { return; }
-
-      // if (this.router.url.indexOf('servicos') !== -1)
-      //   this.changePasswordService.changePasswordCooperated(this.form.get('currentPassword').value, this.form.get('passwords').get('new').value).then((data) => {
-      //     if (data && data.status && data.status === 210)
-      //       this.snackBar.open('Senha atual está errada!', 'OK', { duration: 10000 });
-      //     else
-      //       this.snackBar.open('Senha alterada!', 'OK', { duration: 10000 });
-      //   });
-      // else if (this.router.url.indexOf('atendimento') !== -1)
-      //   this.changePasswordService.changePasswordAdmin(this.form.get('currentPassword').value, this.form.get('passwords').get('new').value).then((data) => {
-      //     if (data && data.status && data.status === 210)
-      //       this.snackBar.open('Senha atual está errada!', 'OK', { duration: 10000 });
-      //     else
-      //       this.snackBar.open('Senha alterada!', 'OK', { duration: 10000 });
-      //   });
-
-      // if (this.dialogRef.componentInstance.adminChangePassword) { // Quando o gestor for alterara senha de algum atendente
-      //   this.changePasswordService.managerChangePassword(this.user.id, this.form.get('passwords').get('new').value).then((data) => {
-      //     this.snackBar.open('Senha alterada!', 'OK', { duration: 10000 });
-      //   });
-      // }
-      // this.dialogRef.close(true);
+  onSubmit() {
+    if (this.form.invalid) {
+      return;
+    }
+    this.changePasswordService.changePassword(this.authService.getCurrentUser().id,
+      this.form.get('currentPassword').value,
+      this.form.get('passwords').value['new']).subscribe((data) => {
+      if (data && data.status && data.status === 105) {
+        this.snackBar.open('Senha atual está errada!', 'OK', { duration: 10000 });
+      } else {
+        this.snackBar.open('Senha alterada! Agora, utilize a nova senha para acessar o sistema', 'OK', { duration: 10000 });
+        this.cancel();
+        this.authService.logoff();
+      }
+    });
   }
-
-  // cancel() {
-  //   this.dialogRef.close(false);
-  // }
-
-  // change() {
-  //   if (this.form.invalid)
-  //     return;
-
-  //   if (this.router.url.indexOf('servicos') !== -1)
-  //     this.changePasswordService.changePasswordCooperated(this.form.get('currentPassword').value, this.form.get('passwords').get('new').value).then((data) => {
-  //       if (data && data.status && data.status === 210)
-  //         this.snackBar.open('Senha atual está errada!', 'OK', { duration: 10000 });
-  //       else
-  //         this.snackBar.open('Senha alterada!', 'OK', { duration: 10000 });
-  //     });
-  //   else if (this.router.url.indexOf('atendimento') !== -1)
-  //     this.changePasswordService.changePasswordAdmin(this.form.get('currentPassword').value, this.form.get('passwords').get('new').value).then((data) => {
-  //       if (data && data.status && data.status === 210)
-  //         this.snackBar.open('Senha atual está errada!', 'OK', { duration: 10000 });
-  //       else
-  //         this.snackBar.open('Senha alterada!', 'OK', { duration: 10000 });
-  //     });
-
-  //   if (this.dialogRef.componentInstance.adminChangePassword) { // Quando o gestor for alterara senha de algum atendente
-  //     this.changePasswordService.managerChangePassword(this.user.identifier, this.form.get('passwords').get('new').value).then((data) => {
-  //       this.snackBar.open('Senha alterada!', 'OK', { duration: 10000 });
-  //     });
-  //   }
-  //   this.dialogRef.close(true);
-  // }
 }

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ScholarshipService } from '../../../scholarship.service';
+import { Process } from '../../../models/process';
 
 @Component({
   selector: 'app-vacancy',
@@ -10,51 +10,42 @@ import { ScholarshipService } from '../../../scholarship.service';
 })
 export class VacancyComponent implements OnInit {
 
-  formVacancy: FormGroup;
+  public formVacancy: FormGroup;
+  private process: Process;
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<VacancyComponent>,
-    private snackBar: MatSnackBar,
-    public scholarshipService: ScholarshipService
-  ) { }
+    @Inject(MAT_DIALOG_DATA) data
+  ) {
+    this.process = data.process;
+  }
 
   ngOnInit() {
     this.initForm();
-    this.setDefaultValue();
   }
 
-  initForm() {
+  private initForm(): void {
+    const valueBagPorcentage = this.process.bagPorcentage === 100 ? '2' : '1';
     this.formVacancy = this.fb.group({
-      type: [null, Validators.required],
-      dateRegistration: [null, Validators.required]
+      type: [valueBagPorcentage, Validators.required],
+      dateRegistration: [this.process.dateRegistration || new Date(), Validators.required]
     });
   }
 
-  setDefaultValue() {
-    this.formVacancy.setValue({
-      dateRegistration: new Date(),
-      type: '1'
-    });
-  }
-
-  saveType() {
-    if (this.formVacancy.invalid) {
+  public saveType(): void {
+    if (this.formVacancy.valid) {
+      const isHalf = this.formVacancy.value.type === '1';
+      this.formVacancy.value.idStatus = (isHalf ? 5 : 6);
+      this.formVacancy.value.description = 'Bolsa concedida (' + (isHalf ? '50%' : '100%') + ')';
+      this.dialogRef.close(this.formVacancy.value);
+    } else {
       return;
     }
-    const isHalf = this.formVacancy.value.type === '1';
-    this.scholarshipService
-      .saveVacancy(this.formVacancy.value.dateRegistration, (isHalf ? 5 : 6), 'Bolsa concedida (' + (isHalf ? '50%' : '100%') + ')')
-      .subscribe(() => {
-        this.cancel();
-      }, err => {
-        this.snackBar.open('Erro ao salvar os dados do processo, tente novamente.', 'OK', { duration: 5000 });
-        this.cancel();
-      });
   }
 
   cancel() {
-    this.dialogRef.close(false);
+    this.dialogRef.close(null);
   }
 
 }

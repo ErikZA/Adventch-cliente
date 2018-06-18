@@ -2,14 +2,24 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
+
 import { Treasurer } from './models/treasurer';
 import { Church } from './models/church';
 
 @Injectable()
 export class TreasuryService {
+  treasurer: Treasurer = new Treasurer();
   constructor(
     private http: HttpClient
   ) { }
+
+  getTreasurer() {
+    return this.treasurer;
+  }
+
+  setTreasurer(treasurer) {
+    this.treasurer = treasurer;
+  }
 
   getTreasurers(unitId): Observable<Treasurer[]> {
     const url = '/treasury/treasurers/getAllTreasurers/' + unitId;

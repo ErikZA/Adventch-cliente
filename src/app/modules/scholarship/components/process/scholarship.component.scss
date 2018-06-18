@@ -3,9 +3,11 @@
     width: calc(((90% - 0.8px) * 1) + 0px);
     padding: 10px 0px;
     text-align: center;
+    height: 120px;
+    margin: 10px;
 }
 
-//mat-grid-tile{    
+//mat-grid-tile{
 //    margin-top: calc(((12.5% - 0.75px) + 10px) * 1)!important;
 //}
 
@@ -46,6 +48,10 @@
     background-color: #607d8b!important;
 }
 
+.process-9 {
+    background-color: #a30000!important;
+}
+
 .process-count {
     font-weight: 500;
     font-size: 45px;
@@ -62,3 +68,22 @@
     width: 99%;
     overflow-x: hidden;
 }
+
+.page-container {
+    height: calc(100vh - 92px);
+}
+
+.conteiner {
+    overflow: auto;
+    max-height: calc(100vh - 100px);
+}
+
+.box-align{
+    padding: 10px 10px 0;
+}
+
+@media screen and (max-width: 600px) {
+    .box-align{
+        padding: 10px 25px 0;
+    }
+  }

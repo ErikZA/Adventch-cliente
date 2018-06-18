@@ -1,22 +1,22 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
-import { ScholarshipService } from '../../../scholarship.service';
-import { Responsible } from '../../../models/responsible';
-import { Student } from './../../../models/student';
-import { startWith } from 'rxjs/operators';
-import { map } from 'rxjs/operator/map';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { Router } from '@angular/router';
-import { Process } from '../../../models/process';
-import { AuthService } from '../../../../../shared/auth.service';
-import { MatSnackBar, MatSidenav, MatDialogRef, MatDialog } from '@angular/material';
-import { ScholarshipComponent } from '../scholarship.component';
-import { ProcessDataComponent } from '../process-data/process-data.component';
-import { ProcessDocument } from '../../../models/processDocument';
-import { CustomValidators } from '../../../../../core/custom-validators';
-import { StudentSerie } from '../../../models/studentSerie';
+
+import { Observable } from 'rxjs/Observable';
+
+import { MatSnackBar, MatDialog } from '@angular/material';
+
+import { SidenavService } from '../../../../../core/services/sidenav.service';
+import { ScholarshipService } from '../../../scholarship.service';
 import { ReportService } from '../../../../../shared/report.service';
+
+import { Student } from './../../../models/student';
+import { Process } from '../../../models/process';
+import { Responsible } from '../../../models/responsible';
+import { AuthService } from '../../../../../shared/auth.service';
+import { StudentSerie } from '../../../models/studentSerie';
+
+import { CustomValidators } from '../../../../../core/custom-validators';
 
 @Component({
   selector: 'app-process-form',
@@ -33,6 +33,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   formSave = false;
   informations = false;
   studentsSeries: StudentSerie[] = new Array<StudentSerie>();
+  isSending = false;
 
   personal: any = {
     value: 1,
@@ -217,11 +218,11 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
   loadResponsibles(cpf) {
     let idSchool = this.scholarshipService.schoolSelected;
-    if (idSchool === '-1' && this.scholarshipService.processEdit !== undefined) {
-      idSchool = this.scholarshipService.processEdit.student.school.id.toString();
+    if (idSchool === -1 && this.scholarshipService.processEdit !== undefined) {
+      idSchool = this.scholarshipService.processEdit.student.school.id;
     }
 
-    this.scholarshipService.getResponsible(Number(idSchool), cpf).subscribe(responsible => {
+    this.scholarshipService.getResponsible(idSchool, cpf).subscribe(responsible => {
       this.responsible = Object.assign(this.responsible, responsible as Responsible);
       this.setpatchValuesResponsible();
       if (responsible) {
@@ -352,13 +353,14 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   }
 
   saveProcess() {
+    this.isSending = true;
     const isEdit = this.checkIsEdit();
     this.formSave = true;
 
     let idScholSelected = this.scholarshipService.schoolSelected;
     let status;
-    if (idScholSelected === '-1' || isEdit) {
-      idScholSelected = this.scholarshipService.processEdit.student.school.id.toString();
+    if (idScholSelected === -1 || isEdit) {
+      idScholSelected = this.scholarshipService.processEdit.student.school.id;
     }
     const studentSelected = this.studentsChildren.filter(item => item.name === this.formProcess.value.nameStudent);
     if (isEdit) {
@@ -368,27 +370,35 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       status = 1;
     }
     if (this.formProcess.valid && this.formCheckDocuments.valid) {
-      const data = {
-        responsibleId: this.responsible === undefined || this.responsible.id === undefined ? 0 : this.responsible.id,
-        studentId: studentSelected === undefined || studentSelected.length === 0 ? 0 : studentSelected[0].id,
-        schoolId: Number(idScholSelected),
-        status: status,
-        id: isEdit ? this.scholarshipService.processEdit.id : 0,
-        userId: this.authService.getCurrentUser().identifier,
-        ...this.formProcess.value,
-        ...this.formCheckDocuments.value,
-      };
+      const data = this.setProcessValues(studentSelected, idScholSelected, status, isEdit);
       this.scholarshipService.postProcess(data).subscribe(x => {
         this.closeSidenav();
         this.formProcess.reset();
         this.formCheckDocuments.reset();
         this.scholarshipService.refresh.next(true);
         this.generateReport(x.obj);
+        this.isSending = false;
       }, err => {
         console.log(err);
         this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
+        this.isSending = false;
       });
+    } else {
+      this.isSending = false;
     }
+  }
+
+  private setProcessValues(studentSelected: Student[], idScholSelected: number, status: any, isEdit: boolean) {
+    return {
+      responsibleId: this.responsible === undefined || this.responsible.id === undefined ? 0 : this.responsible.id,
+      studentId: studentSelected === undefined || studentSelected.length === 0 ? 0 : studentSelected[0].id,
+      schoolId: idScholSelected,
+      status: status,
+      id: isEdit ? this.scholarshipService.processEdit.id : 0,
+      userId: this.authService.getCurrentUser().identifier,
+      ...this.formProcess.value,
+      ...this.formCheckDocuments.value,
+    };
   }
 
   checkIsEdit() {
@@ -412,9 +422,9 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       this.reportService.reportProcess(id, password).subscribe(dataURL => {
         const fileUrl = URL.createObjectURL(dataURL);
         // nova aba
-        //window.open(fileUrl);
+        // window.open(fileUrl);
         // download automatico
-        var element = document.createElement("a");
+        const element = document.createElement('a');
         element.href = fileUrl;
         element.download = 'processo.pdf';
         element.target = '_blank';

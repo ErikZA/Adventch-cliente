@@ -1,8 +1,10 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-
 import { Router } from '@angular/router';
+
 import { MatSnackBar } from '@angular/material';
+
 import { ScholarshipService } from '../../../scholarship.service';
+
 import { Responsible } from '../../../models/responsible';
 
 @Component({
@@ -26,7 +28,7 @@ export class ResponsibleLoginComponent implements OnInit {
 
   login() {
     const cpf = this.userCPF.nativeElement;
-    let password = this.userPassword.nativeElement;
+    const password = this.userPassword.nativeElement;
     if (!cpf.value) {
       cpf.focus();
       return;

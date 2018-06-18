@@ -6,8 +6,8 @@
         <router-outlet></router-outlet>
     </div>
 </mat-sidenav>
-<div class="page-container mat-elevation-z2" fxLayoutAlign="center">
-    <div fxFlex="95%">
+<div class="page-container mat-elevation-z2" fxLayoutAlign="center" [class.auto]="matExpansionPanel.expanded">
+    <div fxFlex.gt-sm="95%" fxFlex="97%">
         <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
             <h2 class="title" *ngIf="!searchButton">Lista de Processos</h2>
             <mat-form-field *ngIf="searchButton" fxFlex>
@@ -28,34 +28,37 @@
                     <mat-list flex="auto" class="margin-search" *ngIf="authService.getCurrentUser().idSchool == 0">
                         <h3 mat-subheader style="color: #000">ESCOLAS</h3>
                         <mat-divider></mat-divider>
-                        <mat-list-item *ngFor="let s of schools; let i = index">
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="idSchool + '' == '-1' || s.id + '' == idSchool" (click)="filterBySchool(s.id, i)">({{ s.id }}) {{ s.name }}</mat-checkbox>
+                        <mat-list-item #checkShcools *ngFor="let s of (schools$ | async ); index as i">
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #check [checked]="idSchool === -1 || s.id === idSchool" (click)="filterSchools(s.id, !check.checked)">({{ s.id }}) {{ s.name }}</mat-checkbox>
                         </mat-list-item>
                     </mat-list>
                     <mat-list flex="auto" class="margin-search">
                         <h3 mat-subheader style="color: #000">STATUS</h3>
                         <mat-divider></mat-divider>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 1" (click)="filterByStatus(1)">Aguardando Início</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkStart [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 1" (click)="filterStatus(1, !checkStart.checked)">Aguardando Início</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 2" (click)="filterByStatus(2)">Em Análise</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkAnalysis [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 2" (click)="filterStatus(2, !checkAnalysis.checked)">Em Análise</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 3" (click)="filterByStatus(3)">Pendência</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkPendency [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 3" (click)="filterStatus(3, !checkPendency.checked)">Pendência</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 4" (click)="filterByStatus(4)">Aguardando Vaga</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkWaiting [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 4" (click)="filterStatus(4, !checkWaiting.checked)">Aguardando Vaga</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 5" (click)="filterByStatus(5)">Bolsa Concedida (50%)</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkFifty [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 5" (click)="filterStatus(5, !checkFifty.checked)">Bolsa Concedida (50%)</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 6" (click)="filterByStatus(6)">Bolsa Concedida (100%)</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkHundred [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 6" (click)="filterStatus(6, !checkHundred.checked)">Bolsa Concedida (100%)</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 7" (click)="filterByStatus(7)">Indeferida</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkRejected [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 7" (click)="filterStatus(7, !checkRejected.checked)">Indeferida</mat-checkbox>
                         </mat-list-item>
+                        <mat-list-item>
+                          <mat-checkbox style="font-size: 14px; font-weight: 500" #checkNotEnroll [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 8" (click)="filterStatus(8, !checkNotEnroll.checked)">Não Matriculou</mat-checkbox>
+                      </mat-list-item>
                     </mat-list>
                 </div>
             </mat-expansion-panel>
@@ -68,7 +71,7 @@
                     <mat-list-item>
                         <h3 matLine fxLayout="row">
                             <div fxLayout="row" fxFlex>
-                                <span *ngIf="showSchool"  fxFlex="40%" fxHide.lt-sm>Escola</span>
+                                <span *ngIf="showSchool" fxFlex="40%" fxHide.lt-sm>Escola</span>
                                 <span fxFlex="50%">Aluno</span>
                                 <span fxFlex="150px" fxHide.lt-sm fxFlexAlign="center">Protocolo</span>
                                 <span fxFlex="180px" fxHide.lt-sm fxFlexAlign="center">Status</span>
@@ -78,7 +81,7 @@
                 </mat-list>
                 <mat-divider></mat-divider>
             </div>
-            <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
+            <div class="conteiner" layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
                 <mat-accordion>
                     <div *ngFor="let process of (processes$ | async ); index as i">
                         <mat-expansion-panel hideToggle *ngIf="i <= showList">
@@ -102,7 +105,16 @@
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-list>
-                                <h2 matSubheader>Informações do Processo</h2>
+                                <h2 matSubheader style="display: inline;">Informações do Processo</h2>
+                                <div style="display: inline;">
+                                    <button mat-icon-button color="basic" (click)="generateReport([process])"  matTooltip="Imprimir processo">
+                                        <mat-icon>print</mat-icon>
+                                    </button>
+                                    <button mat-button color="basic" (click)="generateNewPasswordResponsible([process])"  matTooltip="Gerar nova senha para o responsável">
+                                        Gerar senha
+                                    </button>
+                                </div>
+
                                 <mat-list-item fxLayout="row" style="height: auto">
                                     <div fxLayout="column" fxFlex matLine>
                                         <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
@@ -114,7 +126,13 @@
                                         <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
                                             <span class="text-bold" class="details-title"><b>Status:</b> {{ process.statusString }}</span>
                                         </div>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Documentos pessoais:</b> {{ process.isPersonalDocuments ? "Enviado" : "Não Enviado" }}</span>
+                                        <!--Nome do Pai, RC do aluno, % bolsa pretendida, Série Pretendida-->
+
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Nome do responsável:&ensp;</b> {{ process.student.responsible.name }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>RC do aluno:&ensp;</b> {{ process.student.rc }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Bolsa Pretendida:&ensp;</b> {{ process.bagPorcentage }}%</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Série pretendida:&ensp;</b> {{ process.student.studentSerie.name }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Documentos pessoais:&ensp;</b> {{ process.isPersonalDocuments ? "Enviado" : "Não Enviado" }}</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
@@ -122,7 +140,7 @@
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Declaração do imposto de renda:</b> {{ process.isIR ? "Enviado" : "Não Enviado" }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Declaração do imposto de renda:&ensp;</b> {{ process.isIR ? "Enviado" : "Não Enviado" }}</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
@@ -130,7 +148,7 @@
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Carteira de trabalho:</b> {{ process.isCTPS ? "Enviado" : "Não Enviado" }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Carteira de trabalho:&ensp;</b> {{ process.isCTPS ? "Enviado" : "Não Enviado" }}</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
@@ -138,7 +156,7 @@
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante de rendimentos:</b> {{ process.isIncome ? "Enviado" : "Não Enviado" }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante de rendimentos:&ensp;</b> {{ process.isIncome ? "Enviado" : "Não Enviado" }}</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
@@ -146,7 +164,7 @@
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante de despesas:</b> {{ process.isExpenses ? "Enviado" : "Não Enviado" }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante de despesas:&ensp;</b> {{ process.isExpenses ? "Enviado" : "Não Enviado" }}</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
@@ -154,7 +172,7 @@
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante acadêmico:</b> {{ process.isAcademic ? "Enviado" : "Não Enviado" }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante acadêmico:&ensp;</b> {{ process.isAcademic ? "Enviado" : "Não Enviado" }}</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
@@ -162,34 +180,42 @@
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span style="white-space: normal;" *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title"><b>Pendência: </b>{{ process.pendency }} <mat-slide-toggle class="padding-left-medium" [checked]="process.isSendDocument" (change)="sendDocuments($event, process)" color="primary">Documento(s) Enviado(s)</mat-slide-toggle></span>
-                                        <span style="white-space: normal;" *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title"><b>Matrícula: </b> até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</span>
-                                        <span style="white-space: normal;" *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title"><b>{{ process.motiveReject }}: </b>{{ getMotiveToReject(process.motiveReject) }}</span>
+                                        <div *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title break-line">
+                                            <b>Pendência:
+                                                <mat-slide-toggle class="padding-left-medium" [checked]="process.isSendDocument" (change)="sendDocuments($event, process)" color="primary">Documento(s) Enviado(s)</mat-slide-toggle>
+                                            </b>
+                                            <div class="style-text">{{ process.pendency }}</div>
+                                        </div>
+                                        <div *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title">
+                                            <b>Matrícula: </b>
+                                            <div class="style-text">até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</div>
+                                        </div>
+                                        <div *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title">
+                                            <b>{{ process.motiveReject }}: </b>
+                                            <div class="style-text">{{ getMotiveToReject(process.motiveReject) }}</div>
+                                        </div>
                                     </div>
                                 </mat-list-item>
                             </mat-list>
-                            <mat-action-row>                                
-                                <button *ngIf="process.status == 1 && authService.getCurrentUser().idSchool == 0" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="toWaiting([process])">INICIAR</button>
-                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status == 2 || process.status == 3)" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency([process])">PENDÊNCIA</button>
-                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status > 1 && process.status < 7)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu"><mat-icon>list</mat-icon> INDEFERIR</button>
-                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status === 5 || process.status === 6)" mat-button color="warn" matTooltip="Não Matriculou" (click)="toNotEnroll(process)">NÃO MATRICULOU</button>
+                            <mat-action-row fxLayout="row" fxLayout.xs="column">
+                                <button *ngIf="process.status == 1 && authService.getCurrentUser().idSchool === 0" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="toWaiting(process)">INICIAR</button>
+                                <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status === 2 || process.status === 3)" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency(process)">PENDÊNCIA</button>
+                                <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status > 1 && process.status < 7)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu"><mat-icon>list</mat-icon> INDEFERIR</button>
+                                <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status === 5 || process.status === 6)" mat-button style="background-color: #a30000!important; color: #fff" matTooltip="Não Matriculou" (click)="toNotEnroll(process)">NÃO MATRICULOU</button>
                                 <mat-menu #menu="matMenu">
-                                    <button (click)="toReject([process], 1)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.">Acadêmico</button>
-                                    <button (click)="toReject([process], 2)" mat-menu-item matTooltip="Indeferido em virtude de pendências junto ao setor financeiro.">Financeiro</button>
-                                    <button (click)="toReject([process], 3)" mat-menu-item matTooltip="Indeferido em virtude da renda familiar não se enquadrar no perfil de carência apropriado à avaliação correspondente.">Renda</button>
-                                    <button (click)="toReject([process], 4)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos disciplinares levados em conta para o indeferimento.">Disciplinar</button>
-                                    <button (click)="toReject([process], 5)" mat-menu-item matTooltip="Indeferido pela apresentação da documentação inconsistente à análise correspondente.">Documentação</button>
+                                    <button (click)="toReject(process, 1)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.">Acadêmico</button>
+                                    <button (click)="toReject(process, 2)" mat-menu-item matTooltip="Indeferido em virtude de pendências junto ao setor financeiro.">Financeiro</button>
+                                    <button (click)="toReject(process, 3)" mat-menu-item matTooltip="Indeferido em virtude da renda familiar não se enquadrar no perfil de carência apropriado à avaliação correspondente.">Renda</button>
+                                    <button (click)="toReject(process, 4)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos disciplinares levados em conta para o indeferimento.">Disciplinar</button>
+                                    <button (click)="toReject(process, 5)" mat-menu-item matTooltip="Indeferido pela apresentação da documentação inconsistente à análise correspondente.">Documentação</button>
                                 </mat-menu>
-                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status > 1)" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove([process])">APROVAR</button>
-                                <button *ngIf="process.status == 1" mat-button color="primary" matTooltip="Editar" (click)="editProcess([process])">EDITAR</button>
-                                <button style="color: #2094c8" mat-button color="primary" matTooltip="Imprimir protocolo" (click)="generateReport([process])">IMPRIMIR</button>
+                                <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status > 1)" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove(process)">APROVAR</button>
+                                <button *ngIf="process.status === 1" mat-button color="primary" matTooltip="Editar" (click)="editProcess(process)">EDITAR</button>
                             </mat-action-row>
                         </mat-expansion-panel>
                     </div>
                 </mat-accordion>
             </div>
-            <br/>
         </div>
     </div>
 </div>
-<br/>

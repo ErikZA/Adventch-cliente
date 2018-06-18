@@ -24,3 +24,18 @@ footer {
         border-top: 1px solid #00ae9d;
     }
 }
+
+.page-container {
+    height: calc(100vh - 92px);
+}
+
+.conteiner {
+    overflow: auto;
+    max-height: calc(100vh - 240px);
+}
+
+.style-text{
+  white-space: pre-line;
+  padding-left: 30px;
+  color: rgba(0, 0, 0, 0.54);
+}
