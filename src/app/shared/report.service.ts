@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Http, ResponseContentType } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
 
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
@@ -16,11 +17,19 @@ export class ReportService {
     private authService: AuthService
   ) { }
 
-  reportProcess(processId, password): Observable<any> {
+  public reportProcess(processId, password): Observable<any> {
     const urlConsult = document.location.origin + '/educacao';
     const params = JSON.stringify({ processId: processId, url: urlConsult, password: password });
     return this.viewReport('process', EModules.Scholarship, params);
   }
+
+  public reportProcesses(data: any): Observable<any> {
+    const urlConsult = document.location.origin + '/educacao';
+    data.url = urlConsult;
+    const params = JSON.stringify(data);
+    return this.viewReport('processes', EModules.Scholarship, params);
+  }
+
 
   private viewReport(reportName: string, moduleId: number, params: any): Observable<any> {
     const currentUserId = this.authService.getCurrentUser().id;

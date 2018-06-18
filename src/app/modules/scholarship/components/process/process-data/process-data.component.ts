@@ -325,6 +325,26 @@ export class ProcessDataComponent implements OnInit {
     }
   }
 
+  public generateGeneralProcessReport(): void {
+    const data = {
+      school: this.scholarshipService.schoolSelected,
+      status: 2
+    };
+    this.reportService.reportProcesses(data).subscribe(urlData => {
+      const fileUrl = URL.createObjectURL(urlData);
+        let element;
+        element = document.createElement('a');
+        element.href = fileUrl;
+        element.download = 'processos.pdf';
+        element.target = '_blank';
+        element.click();
+      this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+    }, err => {
+      console.log(err);
+      this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+    });
+  }
+
   generateReport(p) {
     this.scholarshipService.getPasswordResponsible(p[0].id).subscribe(data => {
       const password = data.password;

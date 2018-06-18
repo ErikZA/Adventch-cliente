@@ -117,8 +117,6 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-
-
   public updateToStatus(processStatusChanged): Observable<any> {
     const url = '/scholarship/Process/changeStatus/';
     return this.http
@@ -126,7 +124,7 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  saveVacancy(vacancyDataProcess) {
+  public saveVacancy(vacancyDataProcess): Observable<any> {
     const url = '/scholarship/Process/saveVacancy/';
     return this.http
       .post(url, vacancyDataProcess)
