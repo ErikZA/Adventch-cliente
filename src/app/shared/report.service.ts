@@ -27,7 +27,7 @@ export class ReportService {
     const urlConsult = document.location.origin + '/educacao';
     data.url = urlConsult;
     const params = JSON.stringify(data);
-    return this.viewReport('processes', EModules.Scholarship, params);
+    return this.viewReport('processGeral', EModules.Scholarship, params);
   }
 
 

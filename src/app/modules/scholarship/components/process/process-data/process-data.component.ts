@@ -326,9 +326,10 @@ export class ProcessDataComponent implements OnInit {
   }
 
   public generateGeneralProcessReport(): void {
+    const status = this.scholarshipService.statusSelected;
     const data = {
       school: this.scholarshipService.schoolSelected,
-      status: 2
+      status: status == 0 || status == undefined || status == null ? -1 : status
     };
     this.reportService.reportProcesses(data).subscribe(urlData => {
       const fileUrl = URL.createObjectURL(urlData);
