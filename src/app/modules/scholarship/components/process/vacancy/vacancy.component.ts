@@ -26,7 +26,7 @@ export class VacancyComponent implements OnInit {
   }
 
   private initForm(): void {
-    const valueBagPorcentage = this.process.bagPorcentage === 100 ? '2' : '1';
+    const valueBagPorcentage = this.process.status === 6 ? '2' : '1';
     this.formVacancy = this.fb.group({
       type: [valueBagPorcentage, Validators.required],
       dateRegistration: [this.process.dateRegistration || new Date(), Validators.required]

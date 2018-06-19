@@ -214,7 +214,6 @@ export class ProcessesStore {
     this.service.saveVacancy(vacacyDataProcess).subscribe(() => {
       vacacyDataProcess.process.status = vacacyDataProcess.status;
       vacacyDataProcess.process.dateRegistration = vacacyDataProcess.dateRegistration;
-      vacacyDataProcess.process.bagPorcentage = vacacyDataProcess.status === 6 ? 100 : 50;
       this.updateProcess(vacacyDataProcess.process);
     }, err => {
       console.log(err);
