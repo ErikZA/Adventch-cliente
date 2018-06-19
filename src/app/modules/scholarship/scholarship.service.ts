@@ -117,31 +117,24 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public updateToStatus(processStatusChanged): Observable<any> {
+  public updateToStatus(processStatusChanged: any): Observable<any> {
     const url = '/scholarship/Process/changeStatus/';
     return this.http
       .post(url, processStatusChanged)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public saveVacancy(vacancyDataProcess): Observable<any> {
+  public saveVacancy(vacancyDataProcess: any): Observable<any> {
     const url = '/scholarship/Process/saveVacancy/';
     return this.http
       .post(url, vacancyDataProcess)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  saveReject(idProcess, idStatus, description, motive) {
+  saveReject(rejectDataProcess: any) {
     const url = '/scholarship/Process/saveReject/';
-    const process = {
-      id: idProcess,
-      status: idStatus,
-      description: description,
-      motive: motive,
-      user: this.auth.getCurrentUser().identifier,
-    };
     return this.http
-      .post(url, process)
+      .post(url, rejectDataProcess)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 

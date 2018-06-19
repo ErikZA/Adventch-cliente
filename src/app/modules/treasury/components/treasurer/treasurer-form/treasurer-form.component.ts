@@ -217,6 +217,9 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
     this.formPersonal.reset();
     this.formContact.reset();
     this.formPhones.reset();
+    this.formPhones.controls[0].patchValue({
+      id: 0
+    });
   }
 
   getSelectDateTime() {

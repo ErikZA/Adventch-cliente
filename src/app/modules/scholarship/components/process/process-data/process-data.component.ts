@@ -177,8 +177,18 @@ export class ProcessDataComponent implements OnInit {
 
   public toReject(process, idMotive: number): void {
     if (this.authService.getCurrentUser().idSchool === 0 && (process.status > 1 && process.status < 7)) {
-      this.store.sendRejection(process, idMotive);
+      this.store.sendRejection(this.setDataRejection(process), idMotive);
     }
+  }
+
+  private setDataRejection(process: Process): any {
+    return {
+      id: process.id,
+      status: 7,
+      description: 'Indeferido',
+      user: this.authService.getCurrentUser().identifier,
+      process: process
+    };
   }
 
   public toNotEnroll(process: Process): void {

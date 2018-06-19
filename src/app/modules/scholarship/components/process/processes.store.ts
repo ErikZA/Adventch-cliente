@@ -164,12 +164,12 @@ export class ProcessesStore {
     });
   }
 
-  public sendRejection(process: Process, idMotive: number): void {
-    const motive = this.setReasonForRejection(idMotive);
-    this.service.saveReject(process.id, 7, 'Indeferido', motive).subscribe(() => {
-      process.status = 7;
-      process.motiveReject = motive;
-      this.updateProcess(process);
+  public sendRejection(processRejection: any, idMotive: number): void {
+    processRejection.motive = this.setReasonForRejection(idMotive);
+    this.service.saveReject(processRejection).subscribe(() => {
+      processRejection.process.status = 7;
+      processRejection.process.motiveReject = processRejection.motive;
+      this.updateProcess(processRejection.process);
     }, err => {
       this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 });
     });
