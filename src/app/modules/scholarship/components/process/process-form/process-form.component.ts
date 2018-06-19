@@ -71,9 +71,9 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     options:  ['Recibo e Declaração do Imposto de Renda de Pessoa Física (IRPF)',
       'Declaração de Isenção de IRPF',
       'Declaração de Imposto de Renda de Pessoa Jurídica (IRPJ)',
-      'Simples Nacional', 
-      'MEI', 
-      'Documento de baixa da empresa', 
+      'Simples Nacional',
+      'MEI',
+      'Documento de baixa da empresa',
       'Declaração de inatividade informadas pela receita federal']
   };
   ctps: any = {
@@ -366,6 +366,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     if (isEdit) {
       this.responsible = this.scholarshipService.processEdit.student.responsible;
       status = this.scholarshipService.processEdit.status;
+      this.formProcess.get('rc').enable();
     } else {
       status = 1;
     }

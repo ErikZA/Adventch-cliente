@@ -11,7 +11,7 @@
         <mat-form-field fxLayout="column" fxFlex fxFlex.gt-sm="20%" class="box-align">
             <mat-select placeholder="Escola" required [(ngModel)]="idSchool" [compareWith]="compareIds" (change)="changeDashboard()" [disabled]="authService.getCurrentUser().idSchool !== 0">
                 <mat-option *ngIf="authService.getCurrentUser().idSchool === 0" [value]="-1">Todas Escolas</mat-option>
-                <mat-option *ngFor="let s of schools" [value]="s.id">
+                <mat-option *ngFor="let s of (schools$ | async)" [value]="s.id">
                     ({{ s.id }}) {{ s.name }}
                 </mat-option>
             </mat-select>
