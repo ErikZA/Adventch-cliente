@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';

@@ -377,11 +377,15 @@ export class ProcessDataComponent implements OnInit {
     });
   }
 
-  generateNewPasswordResponsible(p) {
-    this.scholarshipService.generateNewPasswordResponsible(p[0].student.responsible.id).subscribe(data => {
-      if (data && data !== undefined && data != null) {
-        this.snackBar.open('Senha alterada!', 'OK', { duration: 5000 });
-      }
-    });
+  generateNewPasswordResponsible(process: Process) {
+    const dataNewPassword = this.setDataNewPasswordResponsible(process);
+    this.store.generateNewPasswordResponsible(dataNewPassword);
+  }
+
+  private setDataNewPasswordResponsible(process: Process) {
+    return {
+      id: process.student.responsible.id,
+      idUser: this.authService.getCurrentUser().identifier
+    };
   }
 }

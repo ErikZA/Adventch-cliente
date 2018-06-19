@@ -220,4 +220,15 @@ export class ProcessesStore {
       this.snackBar.open('Erro ao salvar a aprovação do processo, tente novamente.', 'OK', { duration: 5000 });
     });
   }
+
+  public generateNewPasswordResponsible(newPasswordDataResponsible: any) {
+    this.service.generateNewPasswordResponsible(newPasswordDataResponsible).subscribe(data => {
+      if (data && data !== undefined && data != null) {
+        this.snackBar.open('Nova Senha do Responsável Gerada com Sucesso!', 'OK', { duration: 5000 });
+      }
+    }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao Gerar Nova Senha do Responsável!', 'OK', { duration: 5000 });
+    });
+  }
 }

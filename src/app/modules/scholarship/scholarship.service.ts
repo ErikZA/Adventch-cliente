@@ -16,7 +16,6 @@ import { StudentSerie } from './models/studentSerie';
 @Injectable()
 export class ScholarshipService {
   schoolSelected = -1;
-  processSelected: Process;
   statusSelected = 0;
   processEdit: Process;
   scholarshipReport: any;
@@ -40,10 +39,6 @@ export class ScholarshipService {
 
   updateSchool(id) {
     this.schoolSelected = id;
-  }
-
-  updateProcess(process) {
-    this.processSelected = process;
   }
 
   updateStatus(status) {
@@ -181,25 +176,21 @@ export class ScholarshipService {
       });
   }
 
-  getPasswordResponsible(processId): Observable<Responsible> {
+  public getPasswordResponsible(processId: number): Observable<Responsible> {
     const url = '/scholarship/responsible/getPasswordByProcess/' + processId;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  generateNewPasswordResponsible(idResponsible): Observable<string> {
+  public generateNewPasswordResponsible(dataNewPassword: any): Observable<string> {
     const url = '/scholarship/responsible/generateNewPassword/';
-    const data = {
-      id: idResponsible,
-      idUser: this.auth.getCurrentUser().id
-    };
     return this.http
-    .post(url, data)
+    .post(url, dataNewPassword)
     .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getProcessesResponsible(responsibleId): Observable<Process[]> {
+  public getProcessesResponsible(responsibleId): Observable<Process[]> {
     const url = '/scholarship/responsible/getAllProcesses/' + responsibleId;
     return this.http
       .get(url)
