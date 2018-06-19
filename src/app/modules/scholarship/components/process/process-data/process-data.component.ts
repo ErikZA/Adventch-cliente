@@ -326,9 +326,9 @@ export class ProcessDataComponent implements OnInit {
   }
 
   public generateGeneralProcessReport(): void {
-    const status = this.scholarshipService.statusSelected;
+    const status = this.statusFilters.length === 1 ? this.statusFilters[0] : this.scholarshipService.statusSelected;
     const data = {
-      school: this.scholarshipService.schoolSelected,
+      school: this.schoolsFilters.length === 1 ? this.schoolsFilters[0] : this.scholarshipService.schoolSelected,
       status: status === 0 || status === undefined || status == null ? -1 : status
     };
     this.reportService.reportProcesses(data).subscribe(urlData => {
