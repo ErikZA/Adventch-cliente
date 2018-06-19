@@ -74,7 +74,7 @@
                         <mat-panel-title (click)="redirectToDashboard()">Bolsas de Estudo</mat-panel-title>
                     </mat-expansion-panel-header>
                     <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/bolsas/processos']">Processos</a>
-                    <button mat-button type="button" class="new-process" [disabled]="scholarshipService.schoolSelected == '-1' && authService.getCurrentUser().idSchool == 0" (click)="openSidenav()" [routerLink]="[getUrlScholarship()]" [class.new-process-disabled]="scholarshipService.schoolSelected == '-1' && authService.getCurrentUser().idSchool == 0">Novo Processo</button>
+                    <button mat-button type="button" class="new-process" [disabled]="scholarshipService.schoolSelected == -1 && authService.getCurrentUser().idSchool == 0" (click)="openSidenav()" [routerLink]="[getUrlScholarship()]" [class.new-process-disabled]="scholarshipService.schoolSelected == -1 && authService.getCurrentUser().idSchool == 0">Novo Processo</button>
                 </mat-expansion-panel>
             </mat-accordion>
         </mat-nav-list>
