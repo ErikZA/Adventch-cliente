@@ -98,7 +98,9 @@ export class ProcessDataComponent implements OnInit {
 
   private setSchoolsFilters(): void {
     this.schoolsFilters = new Array<Number>();
-    if (this.showSchool) {
+    if (this.showSchool && this.scholarshipService.schoolSelected !== -1) {
+      this.schoolsFilters.push(this.scholarshipService.schoolSelected);
+    } else if (this.showSchool && this.scholarshipService.schoolSelected === -1) {
       this.schools$.subscribe(data => {
         data.forEach(school => {
           if (!this.schoolsFilters.some(x => x === school.id)) {
