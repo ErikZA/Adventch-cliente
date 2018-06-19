@@ -27,7 +27,7 @@
             <div class="process process-2" (click)="redirectToProcess(1)">
                 <br/>
                 <p class="process-count process-2">{{ getTotalByStatus(1) }}</p>
-                <p class="process-description">Aguardando Início ({{ getPercentByStatus(1) | number: '1.0-0' }}%)</p>
+                <p class="process-description">Aguardando Análise ({{ getPercentByStatus(1) | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
             <div class="process process-3" (click)="redirectToProcess(2)">
@@ -42,7 +42,7 @@
             <div class="process process-5" (click)="redirectToProcess(4)">
                 <br/>
                 <p class="process-count process-5">{{ getTotalByStatus(4) }}</p>
-                <p class="process-description">Aguardando vaga ({{ getPercentByStatus(4) | number: '1.0-0' }}%)</p>
+                <p class="process-description">Aguardando Vaga da Bolsa ({{ getPercentByStatus(4) | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
             <div class="process process-6" (click)="redirectToProcess(5)">
@@ -69,7 +69,7 @@
             <div class="process process-8" (click)="redirectToProcess(7)">
                 <br/>
                 <p class="process-count process-8">{{ getTotalByStatus(7) }}</p>
-                <p class="process-description">Indeferido ({{ getPercentByStatus(7) | number: '1.0-0' }}%)</p>
+                <p class="process-description">Bolsa Indeferida ({{ getPercentByStatus(7) | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
             <div class="process process-9" (click)="redirectToProcess(8)">

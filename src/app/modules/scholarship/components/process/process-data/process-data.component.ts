@@ -329,7 +329,7 @@ export class ProcessDataComponent implements OnInit {
     const status = this.scholarshipService.statusSelected;
     const data = {
       school: this.scholarshipService.schoolSelected,
-      status: status == 0 || status == undefined || status == null ? -1 : status
+      status: status === 0 || status === undefined || status == null ? -1 : status
     };
     this.reportService.reportProcesses(data).subscribe(urlData => {
       const fileUrl = URL.createObjectURL(urlData);
