@@ -39,7 +39,7 @@
                         <h3 mat-subheader style="color: #000">STATUS</h3>
                         <mat-divider></mat-divider>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkStart [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 1" (click)="filterStatus(1, !checkStart.checked)">Aguardando Início</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkStart [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 1" (click)="filterStatus(1, !checkStart.checked)">Aguardando Análise</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
                             <mat-checkbox style="font-size: 14px; font-weight: 500" #checkAnalysis [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 2" (click)="filterStatus(2, !checkAnalysis.checked)">Em Análise</mat-checkbox>
@@ -48,19 +48,19 @@
                             <mat-checkbox style="font-size: 14px; font-weight: 500" #checkPendency [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 3" (click)="filterStatus(3, !checkPendency.checked)">Pendência</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkWaiting [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 4" (click)="filterStatus(4, !checkWaiting.checked)">Aguardando Vaga</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkWaiting [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 4" (click)="filterStatus(4, !checkWaiting.checked)">Aguardando Vaga da Bolsa</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkFifty [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 5" (click)="filterStatus(5, !checkFifty.checked)">Bolsa Concedida (50%)</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkFifty [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 5" (click)="filterStatus(5, !checkFifty.checked)">Vaga Liberada (50%)</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkHundred [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 6" (click)="filterStatus(6, !checkHundred.checked)">Bolsa Concedida (100%)</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkHundred [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 6" (click)="filterStatus(6, !checkHundred.checked)">Vaga Liberada (100%)</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkRejected [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 7" (click)="filterStatus(7, !checkRejected.checked)">Indeferida</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkRejected [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 7" (click)="filterStatus(7, !checkRejected.checked)">Bolsa Indeferida</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                          <mat-checkbox style="font-size: 14px; font-weight: 500" #checkNotEnroll [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 8" (click)="filterStatus(8, !checkNotEnroll.checked)">Não Matriculou</mat-checkbox>
+                          <mat-checkbox style="font-size: 14px; font-weight: 500" #checkNotEnroll [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 8" (click)="filterStatus(8, !checkNotEnroll.checked)">Não Matriculado</mat-checkbox>
                       </mat-list-item>
                     </mat-list>
                 </div>
@@ -77,7 +77,7 @@
                                 <span *ngIf="showSchool" fxFlex="26%" fxHide.lt-sm>Escola</span>
                                 <span fxFlex>Aluno</span>
                                 <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">Protocolo</span>
-                                <span fxFlex="15%" fxHide.lt-sm fxFlexAlign="center">Status</span>
+                                <span fxFlex="16%" fxHide.lt-sm>Status</span>
                             </div>
                         </h3>
                     </mat-list-item>

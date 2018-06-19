@@ -83,15 +83,15 @@ export class ProcessesStore {
     if (status === 1) {
       return 'Aguardando Análise';
     } else if (status === 2) {
-      return 'Em análise';
+      return 'Em Análise';
     } else if (status === 3) {
       return 'Pendente';
     } else if (status === 4) {
       return 'Aguardando Vaga da Bolsa';
     } else if (status === 5) {
-      return 'Vaga liberada (50%)';
+      return 'Vaga Liberada (50%)';
     } else if (status === 6) {
-      return 'Vaga liberada (100%)';
+      return 'Vaga Liberada (100%)';
     } else if (status === 7) {
       return 'Bolsa Indeferida';
     } else if (status === 8) {
