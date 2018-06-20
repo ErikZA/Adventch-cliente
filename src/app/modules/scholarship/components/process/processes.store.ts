@@ -70,6 +70,25 @@ export class ProcessesStore {
     }, error => console.log('Could not load todos processes.'));
   }
 
+  private loadProcess(id: number) {
+    this.service.getProcessById(id).subscribe(data => {
+      let notFound = true;
+
+      this.dataStore.processes.forEach((item, index) => {
+        if (item.id === data.id) {
+          this.dataStore.processes[index] = data;
+          notFound = false;
+        }
+      });
+
+      if (notFound) {
+        this.dataStore.processes.push(data);
+      }
+
+      this._processes.next(Object.assign({}, this.dataStore).processes);
+    }, error => console.log('Could not load todo.'));
+  }
+
   private setStatus(processes: Process[]): void {
     if (processes) {
       processes.forEach(item => {
