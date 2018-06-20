@@ -126,6 +126,13 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
+  public deleteProcess(processId, userId): Observable<any> {
+    const url = `/scholarship/Process/deleteProcess?idProcess=${processId}&idUser=${userId}`;
+    return this.http
+      .delete(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
   saveReject(rejectDataProcess: any) {
     const url = '/scholarship/Process/saveReject/';
     return this.http
