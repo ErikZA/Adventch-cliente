@@ -117,7 +117,6 @@ export class ProcessesStore {
       this.loadProcess(process.id);
       this.sidenavService.close();
       this.generateReport(process.id);
-      this.location.back();
     }, err => {
       console.log(err);
       this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
