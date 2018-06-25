@@ -309,4 +309,19 @@ export class ProcessesStore {
       this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });
     });
   }
+
+  public removeProcess(id: number, idUser: number) {
+    this.service.deleteProcess(id, idUser).subscribe(() => {
+      this.dataStore.processes.forEach((t, i) => {
+        if (t.id === id) {
+          this.dataStore.processes.splice(i, 1);
+        }
+      });
+      this._processes.next(Object.assign({}, this.dataStore).processes);
+      this.snackBar.open('Processo removido!', 'OK', { duration: 5000 });
+    }, error => {
+      console.log(error);
+      this.snackBar.open('Erro ao remover processo, tente novamente.', 'OK', { duration: 5000 });
+    });
+  }
 }

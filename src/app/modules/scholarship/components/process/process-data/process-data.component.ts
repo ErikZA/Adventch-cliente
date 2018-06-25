@@ -9,6 +9,7 @@ import { AuthService } from '../../../../../shared/auth.service';
 import { ScholarshipService } from '../../../scholarship.service';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { ReportService } from '../../../../../shared/report.service';
+import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 
 import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
@@ -66,7 +67,8 @@ export class ProcessDataComponent implements OnInit {
     private route: ActivatedRoute,
     private store: ProcessesStore,
     private reportService: ReportService,
-    private location: Location
+    private location: Location,
+    private confirmDialogService: ConfirmDialogService
   ) {
     if (window.screen.width < 450) {
       this.layout = 'column';
@@ -357,6 +359,24 @@ export class ProcessDataComponent implements OnInit {
       console.log(err);
       this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
     });
+  }
+
+  removeProcess(process: Process) {
+    this.confirmDialogService
+      .confirm('Remover registro', 'Você deseja realmente remover este processo?', 'REMOVER')
+      .subscribe(res => {
+        if (res === true) {
+          this.store.removeProcess(process.id, this.authService.getCurrentUser().id);
+        }
+      });
+  }
+
+  checkUserRemoved() {
+    const userId = this.authService.getCurrentUser().id;
+    if (userId === 160 || userId === 2702 || userId === 2704) {
+      return true;
+    }
+    return false;
   }
 
   public generateNewPasswordResponsible(process: Process): void {
