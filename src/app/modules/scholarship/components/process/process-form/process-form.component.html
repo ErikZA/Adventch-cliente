@@ -1,4 +1,4 @@
-<form [formGroup]="formProcess" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px">
+<form [formGroup]="formProcess" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="loading">
     <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
         <div fxFlex>
             <h2 class="title"> {{ labelTitleProcess() }} Processo</h2>
@@ -66,7 +66,7 @@
                     <div fxLayout="row" fxLayoutGap="20px">
                         <label>Porcentagem da Bolsa: </label>
                         <mat-radio-group formControlName="bagPorcentage">
-                            <mat-radio-button color="primary" value="50" [checked]="getChecked()">50%</mat-radio-button>
+                            <mat-radio-button color="primary" value="50">50%</mat-radio-button>
                             <mat-radio-button color="primary" value="100">100%</mat-radio-button>
                             <mat-error class="mat-error-font" *ngIf="formProcess.get('bagPorcentage').hasError('required') && formSave">Este campo é obrigatório</mat-error>
                         </mat-radio-group>
@@ -100,7 +100,7 @@
         </div>
     </div>
     <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
-        <button mat-button type="button" (click)="closeSidenav()">CANCELAR</button>
+        <back-button></back-button>
         <button mat-raised-button type="submit" (click)="saveProcess()" color="primary" [disabled]="isSending">SALVAR</button>
     </div>
 </form>

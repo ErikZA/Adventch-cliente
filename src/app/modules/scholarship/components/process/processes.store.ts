@@ -1,15 +1,19 @@
-import { School } from './../../models/school';
 import { Injectable } from '@angular/core';
+import { Location } from '@angular/common';
 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { map } from 'rxjs/operators';
 import 'rxjs/add/observable/of';
 
 import { MatSnackBar } from '@angular/material';
 
 import { Process } from './../../models/process';
-import { ScholarshipService } from '../../scholarship.service';
+import { School } from './../../models/school';
 import { AuthService } from './../../../../shared/auth.service';
+import { ScholarshipService } from '../../scholarship.service';
+import { ReportService } from './../../../../shared/report.service';
+import { SidenavService } from '../../../../core/services/sidenav.service';
 
 @Injectable()
 export class ProcessesStore {
@@ -17,7 +21,7 @@ export class ProcessesStore {
   processes$: Observable<Process[]>;
   schools$: Observable<School[]>;
   private processesFilters: Process[];
-  private inShearch: boolean;
+  private inSearch: boolean;
   private _processes: BehaviorSubject<Process[]>;
   private _schools: BehaviorSubject<School[]>;
   private dataStore: {
@@ -27,8 +31,11 @@ export class ProcessesStore {
 
   constructor(
     private service: ScholarshipService,
+    private reportService: ReportService,
     private authService: AuthService,
     private snackBar: MatSnackBar,
+    private location: Location,
+    private sidenavService: SidenavService
   ) {
     this.dataStore = {
       schools: [],
@@ -38,7 +45,7 @@ export class ProcessesStore {
     this.schools$ = this._schools.asObservable();
     this._processes = <BehaviorSubject<Process[]>>new BehaviorSubject([]);
     this.processes$ = this._processes.asObservable();
-    this.inShearch = false;
+    this.inSearch = false;
   }
 
   public loadAll() {
@@ -47,22 +54,19 @@ export class ProcessesStore {
   }
 
   private loadAllSchools(): void {
-    if (this.authService.getCurrentUser().idSchool === 0) {
-      this.service.getSchools().subscribe((data: School[]) => {
+    this.service.getSchools().subscribe((data: School[]) => {
+      if (this.authService.getCurrentUser().idSchool === 0) {
         this.dataStore.schools = data;
-        this._schools.next(Object.assign({}, this.dataStore).schools);
-      }, error => console.log('Could not load todos processes.'));
-    }
+      } else {
+        this.dataStore.schools = data.filter(x => x.id === this.authService.getCurrentUser().idSchool);
+      }
+      this._schools.next(Object.assign({}, this.dataStore).schools);
+    }, error => console.log('Could not load todos processes.'));
   }
 
   private loadAllProcesses(): void {
     let idSchool;
-    idSchool = this.authService.getCurrentUser().idSchool;
-    if (idSchool === 0) {
-      idSchool = this.service.schoolSelected;
-      if (idSchool === '-1' && this.authService.getCurrentUser().idSchool !== 0) {
-      }
-    }
+    idSchool = this.authService.getCurrentUser().idSchool === 0 ? -1 : this.authService.getCurrentUser().idSchool;
     this.service.getProcesses(idSchool).subscribe(data => {
       this.setStatus(data);
       this.dataStore.processes = data;
@@ -70,10 +74,10 @@ export class ProcessesStore {
     }, error => console.log('Could not load todos processes.'));
   }
 
-  private loadProcess(id: number) {
+  public loadProcess(id: number) {
     this.service.getProcessById(id).subscribe(data => {
       let notFound = true;
-
+      data.statusString = this.getStatusToString(data.status);
       this.dataStore.processes.forEach((item, index) => {
         if (item.id === data.id) {
           this.dataStore.processes[index] = data;
@@ -87,6 +91,37 @@ export class ProcessesStore {
 
       this._processes.next(Object.assign({}, this.dataStore).processes);
     }, error => console.log('Could not load todo.'));
+  }
+
+  public loadProcessByIdentity(identity: string) {
+    this.service.getProcessByIdentity(identity).subscribe((data: Process) => {
+      let notFound = true;
+      data.statusString = this.getStatusToString(data.status);
+      this.dataStore.processes.forEach((item, index) => {
+        if (item.id === data.id) {
+          this.dataStore.processes[index] = data;
+          notFound = false;
+        }
+      });
+
+      if (notFound) {
+        this.dataStore.processes.push(data);
+      }
+
+      this._processes.next(Object.assign({}, this.dataStore).processes);
+    }, error => console.log('Could not load todo.'));
+  }
+
+  public saveProcess(processData: any): void {
+    this.service.postProcess(processData).subscribe((process: Process) => {
+      this.loadProcess(process.id);
+      this.sidenavService.close();
+      this.generateReport(process.id);
+      this.location.back();
+    }, err => {
+      console.log(err);
+      this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
+    });
   }
 
   private setStatus(processes: Process[]): void {
@@ -118,8 +153,18 @@ export class ProcessesStore {
     }
   }
 
+  public filterProcessesSchool(idSchool: number): Observable<Process[]> {
+    if (idSchool === -1) {
+      return this.processes$;
+    } else {
+      return this.processes$.pipe(
+        map((todos: Process[]) => todos.filter((item: Process) => item.student.school.id === idSchool))
+      );
+    }
+  }
+
   public filterProcesses(schoolsId: Array<Number>, statusId: Array<Number>, processes?: Process[]): Observable<Process[]> {
-    if (!this.inShearch && processes === undefined) {
+    if (!this.inSearch && processes === undefined) {
       this.processesFilters = new Array<Process>();
       this.processesFilters = this.dataStore.processes;
     } else {
@@ -151,10 +196,10 @@ export class ProcessesStore {
     search = search.toLowerCase();
     const processes = this.dataStore.processes;
     if (search === '') {
-      this.inShearch = false;
+      this.inSearch = false;
       return processes;
     }
-    this.inShearch = true;
+    this.inSearch = true;
     return processes.filter(data => {
       return data.student.name.toLowerCase().indexOf(search) !== -1 ||
         data.student.responsible.name.toLowerCase().indexOf(search) !== -1 ||
@@ -248,6 +293,21 @@ export class ProcessesStore {
     }, err => {
         console.log(err);
         this.snackBar.open('Erro ao Gerar Nova Senha do Responsável!', 'OK', { duration: 5000 });
+    });
+  }
+
+  private generateReport(id: number): void {
+    this.service.getPasswordResponsible(id).subscribe(data => {
+      const password = data.password;
+      this.reportService.reportProcess(id, password).subscribe(dataURL => {
+        const fileUrl = URL.createObjectURL(dataURL);
+        const element = document.createElement('a');
+        element.href = fileUrl;
+        element.download = 'processo.pdf';
+        element.target = '_blank';
+        element.click();
+      }, err => console.log(err));
+      this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });
     });
   }
 }

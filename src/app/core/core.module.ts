@@ -1,3 +1,4 @@
+import { BackButtonComponent } from './components/back-button/back-button.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -54,6 +55,7 @@ import { InputMaskDirective } from './components/input-mask.directive';
     // new Components
     ChangePasswordComponent,
     InputMaskDirective,
+    BackButtonComponent,
 
     // modules Generics
     FlexLayoutModule,
@@ -77,6 +79,7 @@ import { InputMaskDirective } from './components/input-mask.directive';
     PasswordFeedbackComponent,
     StrongPasswordDirective,
     InputMaskDirective,
+    BackButtonComponent
   ],
   providers: [
     LockScreenService,

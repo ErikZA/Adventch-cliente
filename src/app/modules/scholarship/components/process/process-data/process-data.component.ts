@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
@@ -14,7 +15,7 @@ import { VacancyComponent } from '../vacancy/vacancy.component';
 
 import { Process } from '../../../models/process';
 import { School } from '../../../models/school';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { MatDialogRef,
         MatDialog,
@@ -62,8 +63,10 @@ export class ProcessDataComponent implements OnInit {
     private snackBar: MatSnackBar,
     private sidenavService: SidenavService,
     private router: Router,
+    private route: ActivatedRoute,
     private store: ProcessesStore,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private location: Location
   ) {
     if (window.screen.width < 450) {
       this.layout = 'column';
@@ -81,11 +84,11 @@ export class ProcessDataComponent implements OnInit {
       this.searchProcess('');
     });
     this.sidenavService.setSidenav(this.sidenavRight);
-    this.closeSidenav();
   }
 
+
   private getAllDatas(): void {
-    this.processes$ = this.store.processes$;
+    this.processes$ = this.store.filterProcessesSchool(this.scholarshipService.schoolSelected);
     this.schools$ = this.store.schools$;
     this.store.loadAll();
     this.setAllFilters();
@@ -159,10 +162,9 @@ export class ProcessDataComponent implements OnInit {
   }
 
   public closeSidenav(): void {
+    this.location.back();
     this.sidenavRight.close();
     this.getAllDatas();
-    this.scholarshipService.processEdit = new Process();
-    this.router.navigate([this.router.url.replace('/novo', '').replace('/editar', '')]);
   }
 
   public schoolIsVisible(): void {
@@ -258,7 +260,7 @@ export class ProcessDataComponent implements OnInit {
         user: this.authService.getCurrentUser().identifier,
         status: 3,
         isSendDocument: false,
-        description: 'Adicionando pendência',
+        description: 'Adicionando Pendência',
         process: process
     };
   }
@@ -318,9 +320,8 @@ export class ProcessDataComponent implements OnInit {
     };
   }
 
-  public editProcess(process) {
-    this.router.navigate(['/bolsas/processos/editar']);
-    this.scholarshipService.processEdit = process;
+  public editProcess(process: Process) {
+    this.router.navigate([process.identity.toLocaleUpperCase(), 'editar'], { relativeTo: this.route });
     this.sidenavService.open();
   }
 
