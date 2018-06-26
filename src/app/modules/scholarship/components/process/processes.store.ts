@@ -114,9 +114,10 @@ export class ProcessesStore {
 
   public saveProcess(processData: any): void {
     this.service.postProcess(processData).subscribe((process: Process) => {
+      this.location.back();
       this.loadProcess(process.id);
-      this.sidenavService.close();
       this.generateReport(process.id);
+      this.sidenavService.close();
     }, err => {
       console.log(err);
       this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
@@ -295,7 +296,7 @@ export class ProcessesStore {
     });
   }
 
-  private generateReport(id: number): void {
+  public generateReport(id: number): void {
     this.service.getPasswordResponsible(id).subscribe(data => {
       const password = data.password;
       this.reportService.reportProcess(id, password).subscribe(dataURL => {

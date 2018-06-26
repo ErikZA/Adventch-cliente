@@ -373,7 +373,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
   public closeSidenav(): void {
     this.sidenavService.close();
-    this.location.back();
+
   }
 
   public saveProcess(): void {

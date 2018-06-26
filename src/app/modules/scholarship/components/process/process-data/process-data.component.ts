@@ -166,7 +166,6 @@ export class ProcessDataComponent implements OnInit {
   public closeSidenav(): void {
     this.location.back();
     this.sidenavRight.close();
-    this.getAllDatas();
   }
 
   public schoolIsVisible(): void {
@@ -338,6 +337,10 @@ export class ProcessDataComponent implements OnInit {
     } else {
       this.layout = 'column';
     }
+  }
+
+  public generateReportToProcess(process: Process): void {
+    this.store.generateReport(process.id);
   }
 
   public generateGeneralProcessReport(): void {
