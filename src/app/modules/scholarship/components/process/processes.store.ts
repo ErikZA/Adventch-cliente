@@ -114,10 +114,12 @@ export class ProcessesStore {
 
   public saveProcess(processData: any): void {
     this.service.postProcess(processData).subscribe((process: Process) => {
-      this.location.back();
-      this.loadProcess(process.id);
-      this.generateReport(process.id);
-      this.sidenavService.close();
+      setTimeout(() => {
+        this.loadProcess(process.id);
+        this.generateReport(process.id);
+        this.location.back();
+        this.sidenavService.close();
+      }, 2000);
     }, err => {
       console.log(err);
       this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });

@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
+import { map, delay } from 'rxjs/operators';
 
 import { MatSnackBar } from '@angular/material';
 
@@ -396,10 +396,12 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     if (this.formProcess.valid && this.formCheckDocuments.valid) {
       const data = this.setProcessValues(studentSelected, idScholSelected, status, this.checkIsEdit());
       this.store.saveProcess(data);
-      this.formProcess.reset();
-      this.closeSidenav();
-      this.formCheckDocuments.reset();
-      this.isSending = false;
+      setTimeout(() => {
+        this.formProcess.reset();
+        this.formCheckDocuments.reset();
+        this.isSending = false;
+      }, 5000);
+      // this.closeSidenav();
     } else {
       this.isSending = false;
     }
