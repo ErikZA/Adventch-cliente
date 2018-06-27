@@ -76,6 +76,7 @@ export class ProcessDataComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.router.navigate([this.router.url.replace(/.*/, 'bolsas/processos')]);
     this.schoolIsVisible();
     this.getAllDatas();
     this.processes$.subscribe(x => { this.processes = x; });

@@ -186,7 +186,7 @@ export class ProcessesStore {
   }
 
   private setStudentSerieName(process: Process): Process {
-    if (this.dataStore.studentSeries) {
+    if (this.dataStore.studentSeries.length !== 0) {
       const serie = this.dataStore.studentSeries.find(x => x.id === process.student.studentSerie.id);
       process.student.studentSerie.name = serie.name;
     }
