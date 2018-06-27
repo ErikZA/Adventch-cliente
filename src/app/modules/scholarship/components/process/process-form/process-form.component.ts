@@ -35,7 +35,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   filterStudentsChildren$: Observable<Student[]>;
   formSave = false;
   informations = false;
-  studentsSeries: StudentSerie[] = new Array<StudentSerie>();
   isSending = false;
 
   personal: any = {
@@ -186,6 +185,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   // New
   process: Process;
   loading: boolean;
+  studentsSeries$: Observable<StudentSerie[]>;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -203,8 +203,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading = false;
     this.initForm();
-    this.loadStudentSeries();
     this.checkCpf();
+    this.studentsSeries$ = this.store.studentSeries$;
     this.route.params.subscribe(params => {
       this.store.processes$.pipe(
         map((todos: Process[]) => todos.find((item: Process) => item.identity.toLocaleUpperCase() === params['identifyProcess']))
@@ -233,12 +233,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       } else {
         this.setpatchValuesResponsible();
       }
-    });
-  }
-
-  private loadStudentSeries(): void {
-    this.scholarshipService.getStudentSeries().subscribe((data: StudentSerie[]) => {
-      this.studentsSeries = Object.assign(this.studentsSeries, data as StudentSerie[]);
     });
   }
 
@@ -401,7 +395,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         this.formCheckDocuments.reset();
         this.isSending = false;
       }, 5000);
-      // this.closeSidenav();
     } else {
       this.isSending = false;
     }
