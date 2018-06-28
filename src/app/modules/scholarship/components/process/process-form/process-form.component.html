@@ -47,7 +47,7 @@
                     <mat-form-field fxFlex>
                         <input type="text" placeholder="Aluno" aria-label="Nome do Estudante" required matInput formControlName="nameStudent" [matAutocomplete]="auto" minlength="3">
                         <mat-autocomplete #auto="matAutocomplete">
-                            <mat-option *ngFor="let student of filterStudentsChildren$ | async" (onSelectionChange)="setRC(student.rc)" [value]="student.name">
+                            <mat-option *ngFor="let student of (filterStudentsChildren$ | async)" (onSelectionChange)="setRC(student.rc)" [value]="student.name">
                                 ({{ student.rc }}) {{ student.name }}
                             </mat-option>
                         </mat-autocomplete>
@@ -57,7 +57,7 @@
 
                     <mat-form-field>
                         <mat-select placeholder="Série" formControlName="studentSerieId" required>
-                            <mat-option *ngFor="let serie of studentsSeries" [value]="serie.id">
+                            <mat-option *ngFor="let serie of (studentsSeries$ | async)" [value]="serie.id">
                                 {{ serie.name }}
                             </mat-option>
                         </mat-select>
