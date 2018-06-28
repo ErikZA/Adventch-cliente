@@ -17,7 +17,6 @@ import { StudentSerie } from './models/studentSerie';
 export class ScholarshipService {
   schoolSelected = -1;
   statusSelected = 0;
-  processEdit: Process;
   scholarshipReport: any;
   refresh$: Observable<boolean>;
   public refresh: Subject<boolean>;
@@ -98,8 +97,15 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcessById(processId: number): Observable<Process> {
-    const url = `/scholarship/Process/getProcess/${processId}`;
+  public getProcessById(id: number): Observable<Process> {
+    const url = `/scholarship/process/getProcess/${id}`;
+    return this.http
+      .get(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public getProcessByIdentity(identity: string): Observable<Process> {
+    const url = `/scholarship/process/getProcessByIdentity/${identity}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
@@ -184,7 +190,7 @@ export class ScholarshipService {
   }
 
   public getPasswordResponsible(processId: number): Observable<Responsible> {
-    const url = '/scholarship/responsible/getPasswordByProcess/' + processId;
+    const url = `/scholarship/responsible/getPasswordByProcess/${processId}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
@@ -198,7 +204,7 @@ export class ScholarshipService {
   }
 
   public getProcessesResponsible(responsibleId): Observable<Process[]> {
-    const url = '/scholarship/responsible/getAllProcesses/' + responsibleId;
+    const url = `/scholarship/responsible/getAllProcesses/${responsibleId}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));

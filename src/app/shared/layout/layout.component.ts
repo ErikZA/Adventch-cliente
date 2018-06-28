@@ -40,7 +40,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private media: ObservableMedia,
     private dialog: MatDialog,
-    private router: Router,
+    public router: Router,
     public scholarshipService: ScholarshipService,
     public app: AppComponent,
     public sharedService: SharedService,

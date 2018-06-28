@@ -19,7 +19,7 @@ const routes: Routes = [
     ]},
     { path: 'processos', component: ProcessDataComponent, children: [
       { path: 'novo', component: ProcessFormComponent },
-      { path: 'editar', component: ProcessFormComponent}
+      { path: ':identifyProcess/editar', component: ProcessFormComponent}
     ]}
   ]}
 ];

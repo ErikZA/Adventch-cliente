@@ -1,11 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 import { Observable } from 'rxjs/Observable';
+import { map, delay } from 'rxjs/operators';
 
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 
+import { ProcessesStore } from './../processes.store';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { ScholarshipService } from '../../../scholarship.service';
 import { ReportService } from '../../../../../shared/report.service';
@@ -32,7 +35,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   filterStudentsChildren$: Observable<Student[]>;
   formSave = false;
   informations = false;
-  studentsSeries: StudentSerie[] = new Array<StudentSerie>();
   isSending = false;
 
   personal: any = {
@@ -64,7 +66,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     more: [`Todas as páginas completas e o Recibo de Entrega da última declaração do Imposto de Renda de Pessoa Física (IRPF).
      Obrigatório para todos os membros do grupo familiar a partir de 18 anos ou emancipados`,
      `Para quem não declara Imposto de Renda de Pessoa Física, consultar o site da Receita Federal, informar CPF, data de
-      nascimento e digitar o código de verificação do site, e imprimir a página seguinte. Não necessita reconhecer em cartório. Acessar: https://www.receita.fazenda.gov.br/Aplicacoes/Atrjo/ConsRest/Atual.app/paginas/index.asp`,
+      nascimento e digitar o código de verificação do site, e imprimir a página seguinte. Não necessita reconhecer em cartório.
+       Acessar: https://www.receita.fazenda.gov.br/Aplicacoes/Atrjo/ConsRest/Atual.app/paginas/index.asp`,
      `Para sócios ou proprietários de empresas e microempresas (MEI) que componham o grupo familiar, apresentar recibo de entrega
       e todas as páginas completas da Declaração de Imposto de Renda de Pessoa Jurídica (IRPJ), Simples Nacional, MEI, ou em caso
       de empresa inativa entregar o documento de baixa da empresa ou declaração de inatividade informadas pela receita federal.`],
@@ -178,25 +181,48 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   };
   checkBoxList: any = [this.personal, this.ir, this.ctps, this.income, this.expenses, this.academic];
 
+
+  // New
+  process: Process;
+  loading: boolean;
+  studentsSeries$: Observable<StudentSerie[]>;
+
   constructor(
     private formBuilder: FormBuilder,
     private scholarshipService: ScholarshipService,
     private sidenavService: SidenavService,
+    private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
     public snackBar: MatSnackBar,
-    private dialog: MatDialog,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private store: ProcessesStore,
+    private location: Location,
   ) { }
 
   ngOnInit() {
+    this.loading = false;
     this.initForm();
-    this.loadStudentSeries();
     this.checkCpf();
-    this.editProcess();
+    this.studentsSeries$ = this.store.studentSeries$;
+    this.route.params.subscribe(params => {
+      this.store.processes$.pipe(
+        map((todos: Process[]) => todos.find((item: Process) => item.identity.toLocaleUpperCase() === params['identifyProcess']))
+      ).subscribe(x => {
+        this.process = x;
+        if (!params['identifyProcess']) {
+          this.loading = true;
+        } else if (this.process) {
+          this.editProcess();
+          this.loading = true;
+      }});
+      if (params['identifyProcess']) {
+        this.store.loadProcessByIdentity(params['identifyProcess']);
+      }
+    });
   }
 
-  checkCpf() {
+  private checkCpf(): void {
     this.formProcess.get('cpf').valueChanges.subscribe(cpf => {
       if (cpf == null || cpf === undefined) {
         return;
@@ -210,16 +236,10 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadStudentSeries() {
-    this.scholarshipService.getStudentSeries().subscribe((data: StudentSerie[]) => {
-      this.studentsSeries = Object.assign(this.studentsSeries, data as StudentSerie[]);
-    });
-  }
-
-  loadResponsibles(cpf) {
+  private loadResponsibles(cpf): void {
     let idSchool = this.scholarshipService.schoolSelected;
-    if (idSchool === -1 && this.scholarshipService.processEdit !== undefined) {
-      idSchool = this.scholarshipService.processEdit.student.school.id;
+    if (idSchool === -1 && this.checkIsEdit()) {
+      idSchool = this.process.student.school.id;
     }
 
     this.scholarshipService.getResponsible(idSchool, cpf).subscribe(responsible => {
@@ -231,7 +251,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadStudentChildres(responsible) {
+  private loadStudentChildres(responsible): void {
     this.scholarshipService.getChildrenStudents(responsible.id).subscribe((data: Student[]) => {
       this.studentsChildren = Object.assign(this.studentsChildren, data as Student[]);
       this.filterStudentsChildren$ = Observable.of(this.studentsChildren);
@@ -243,7 +263,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     this.closeSidenav();
   }
 
-  filter(val: string): Student[] {
+  public filter(val: string): Student[] {
     if (this.studentsChildren) {
       return [];
     }
@@ -253,7 +273,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       });
   }
 
-  setpatchValuesResponsible() {
+  private setpatchValuesResponsible(): void {
     this.formProcess.patchValue({
       name: this.responsible.name,
       email: this.responsible.email,
@@ -261,7 +281,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  initForm() {
+  private initForm(): void {
     this.formProcess = this.formBuilder.group({
       cpf: [null, [Validators.required, CustomValidators.cpfCnpjValidator]],
       name: [null, Validators.required],
@@ -288,30 +308,29 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  labelTitleProcess() {
-    return this.scholarshipService.processEdit !== undefined && this.scholarshipService.processEdit.id !== undefined ? 'Editar' : 'Novo';
+  public labelTitleProcess(): string {
+    return this.process !== undefined && this.process.id !== undefined ? 'Editar' : 'Novo';
   }
 
-  setRC(rc: number): void {
+  public setRC(rc: number): void {
     if (Number.isInteger(rc)) {
       this.formProcess.patchValue({rc: rc});
     }
   }
 
-  editProcess() {
-    const process = this.scholarshipService.processEdit;
-    if (process !== undefined && process.id !== undefined) {
+  private editProcess(): void {
+    if (this.process !== undefined && this.process.id !== undefined) {
       this.formProcess = new FormGroup({
-        cpf: new FormControl({value: process.student.responsible.cpf, disabled: true}, Validators.required),
-        name: new FormControl({value: process.student.responsible.name, disabled: false}, Validators.required),
-        email: new FormControl({value: process.student.responsible.email, disabled: false}),
-        phone: new FormControl({value: process.student.responsible.phone, disabled: false}),
-        rc: new FormControl({value: process.student.rc || null, disabled: process.student.rc ? true : false}),
-        nameStudent: new FormControl({value: process.student.name, disabled: false}, Validators.required),
-        studentSerieId: new FormControl({value: process.student.studentSerie.id, disabled: false}, Validators.required),
+        cpf: new FormControl({value: this.process.student.responsible.cpf, disabled: true}, Validators.required),
+        name: new FormControl({value: this.process.student.responsible.name, disabled: false}, Validators.required),
+        email: new FormControl({value: this.process.student.responsible.email, disabled: false}),
+        phone: new FormControl({value: this.process.student.responsible.phone, disabled: false}),
+        rc: new FormControl({value: this.process.student.rc || null, disabled: this.process.student.rc ? true : false}),
+        nameStudent: new FormControl({value: this.process.student.name, disabled: false}, Validators.required),
+        studentSerieId: new FormControl({value: this.process.student.studentSerie.id, disabled: false}, Validators.required),
         bagPorcentage: new FormControl()
       });
-      this.formProcess.controls['bagPorcentage'].setValue(process.bagPorcentage.toString());
+      this.formProcess.controls['bagPorcentage'].setValue(this.process.bagPorcentage.toString());
       this.formCheckDocuments = new FormGroup({
         isPersonalDocuments: new FormControl({value: 'true', disabled: true}, Validators.required),
         personalOptions: new FormControl(),
@@ -326,12 +345,12 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         isAcademic: new FormControl({value: 'true', disabled: true}, Validators.required),
         academicOptions: new FormControl()
       });
-      this.setDocumentsSelectes(process.processDocuments);
-      this.loadStudentChildres(process.student.responsible);
+      this.setDocumentsSelectes(this.process.processDocuments);
+      this.loadStudentChildres(this.process.student.responsible);
     }
   }
 
-  setDocumentsSelectes(documents) {
+  private setDocumentsSelectes(documents): void {
     const docs1 = documents.filter(doc => doc.typeDocument === 1);
     this.formCheckDocuments.controls['personalOptions'].setValue(docs1.map(s => s.name));
     const docs2 = documents.filter(doc => doc.typeDocument === 2);
@@ -346,70 +365,62 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     this.formCheckDocuments.controls['academicOptions'].setValue(docs6.map(s => s.name));
   }
 
-  closeSidenav() {
-    this.scholarshipService.processEdit = new Process();
+  public closeSidenav(): void {
     this.sidenavService.close();
-    this.router.navigate([this.router.url.replace('/novo', '').replace('/editar', '')]);
+
   }
 
-  saveProcess() {
+  public saveProcess(): void {
     this.isSending = true;
-    const isEdit = this.checkIsEdit();
     this.formSave = true;
 
     let idScholSelected = this.scholarshipService.schoolSelected;
     let status;
-    if (idScholSelected === -1 || isEdit) {
-      idScholSelected = this.scholarshipService.processEdit.student.school.id;
+    if (idScholSelected === -1 || this.checkIsEdit()) {
+      idScholSelected = this.process.student.school.id;
     }
     const studentSelected = this.studentsChildren.filter(item => item.name === this.formProcess.value.nameStudent);
-    if (isEdit) {
-      this.responsible = this.scholarshipService.processEdit.student.responsible;
-      status = this.scholarshipService.processEdit.status;
+    if (this.checkIsEdit()) {
+      this.responsible = this.process.student.responsible;
+      status = this.process.status;
       this.formProcess.get('rc').enable();
     } else {
       status = 1;
     }
     if (this.formProcess.valid && this.formCheckDocuments.valid) {
-      const data = this.setProcessValues(studentSelected, idScholSelected, status, isEdit);
-      this.scholarshipService.postProcess(data).subscribe(x => {
-        this.closeSidenav();
+      const data = this.setProcessValues(studentSelected, idScholSelected, status, this.checkIsEdit());
+      this.store.saveProcess(data);
+      setTimeout(() => {
         this.formProcess.reset();
         this.formCheckDocuments.reset();
-        this.scholarshipService.refresh.next(true);
-        this.generateReport(x.obj);
         this.isSending = false;
-      }, err => {
-        console.log(err);
-        this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
-        this.isSending = false;
-      });
+      }, 5000);
     } else {
       this.isSending = false;
     }
   }
 
-  private setProcessValues(studentSelected: Student[], idScholSelected: number, status: any, isEdit: boolean) {
+  private setProcessValues(studentSelected: Student[], idScholSelected: number, status: any, isEdit: boolean): any {
     return {
       responsibleId: this.responsible === undefined || this.responsible.id === undefined ? 0 : this.responsible.id,
       studentId: studentSelected === undefined || studentSelected.length === 0 ? 0 : studentSelected[0].id,
       schoolId: idScholSelected,
       status: status,
-      id: isEdit ? this.scholarshipService.processEdit.id : 0,
+      id: isEdit ? this.process.id : 0,
       userId: this.authService.getCurrentUser().identifier,
       ...this.formProcess.value,
       ...this.formCheckDocuments.value,
     };
   }
 
-  checkIsEdit() {
-    const isEdit = this.scholarshipService.processEdit !== undefined && this.scholarshipService.processEdit.id !== undefined;
+  public checkIsEdit(): boolean {
+    const isEdit = this.process !== undefined && this.process.id !== undefined;
     return isEdit;
   }
 
-  getChecked() {
+  public getChecked(): boolean {
     if (this.checkIsEdit()) {
-      if (this.scholarshipService.processEdit.bagPorcentage === 50) {
+      if (this.process.bagPorcentage === 50) {
         return true;
       }
       return false;
@@ -417,25 +428,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  generateReport(id) {
-    this.scholarshipService.getPasswordResponsible(id).subscribe(data => {
-      const password = data.password;
-      this.reportService.reportProcess(id, password).subscribe(dataURL => {
-        const fileUrl = URL.createObjectURL(dataURL);
-        // nova aba
-        // window.open(fileUrl);
-        // download automatico
-        const element = document.createElement('a');
-        element.href = fileUrl;
-        element.download = 'processo.pdf';
-        element.target = '_blank';
-        element.click();
-      }, err => console.log(err));
-      this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });
-    });
-  }
-
-  maskPhone(phone) {
+  public maskPhone(phone): string {
     return phone.value.length <= 14 ? '(99) 9999-9999' : '(99) 99999-9999';
   }
 }

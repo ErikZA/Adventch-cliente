@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
@@ -15,7 +16,7 @@ import { VacancyComponent } from '../vacancy/vacancy.component';
 
 import { Process } from '../../../models/process';
 import { School } from '../../../models/school';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { MatDialogRef,
         MatDialog,
@@ -63,8 +64,10 @@ export class ProcessDataComponent implements OnInit {
     private snackBar: MatSnackBar,
     private sidenavService: SidenavService,
     private router: Router,
+    private route: ActivatedRoute,
     private store: ProcessesStore,
     private reportService: ReportService,
+    private location: Location,
     private confirmDialogService: ConfirmDialogService
   ) {
     if (window.screen.width < 450) {
@@ -73,6 +76,7 @@ export class ProcessDataComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.router.navigate([this.router.url.replace(/.*/, 'bolsas/processos')]);
     this.schoolIsVisible();
     this.getAllDatas();
     this.processes$.subscribe(x => { this.processes = x; });
@@ -83,11 +87,11 @@ export class ProcessDataComponent implements OnInit {
       this.searchProcess('');
     });
     this.sidenavService.setSidenav(this.sidenavRight);
-    this.closeSidenav();
   }
 
+
   private getAllDatas(): void {
-    this.processes$ = this.store.processes$;
+    this.processes$ = this.store.filterProcessesSchool(this.scholarshipService.schoolSelected);
     this.schools$ = this.store.schools$;
     this.store.loadAll();
     this.setAllFilters();
@@ -161,10 +165,8 @@ export class ProcessDataComponent implements OnInit {
   }
 
   public closeSidenav(): void {
+    this.location.back();
     this.sidenavRight.close();
-    this.getAllDatas();
-    this.scholarshipService.processEdit = new Process();
-    this.router.navigate([this.router.url.replace('/novo', '').replace('/editar', '')]);
   }
 
   public schoolIsVisible(): void {
@@ -260,7 +262,7 @@ export class ProcessDataComponent implements OnInit {
         user: this.authService.getCurrentUser().identifier,
         status: 3,
         isSendDocument: false,
-        description: 'Adicionando pendência',
+        description: 'Adicionando Pendência',
         process: process
     };
   }
@@ -320,9 +322,8 @@ export class ProcessDataComponent implements OnInit {
     };
   }
 
-  public editProcess(process) {
-    this.router.navigate(['/bolsas/processos/editar']);
-    this.scholarshipService.processEdit = process;
+  public editProcess(process: Process) {
+    this.router.navigate([process.identity.toLocaleUpperCase(), 'editar'], { relativeTo: this.route });
     this.sidenavService.open();
   }
 
@@ -337,6 +338,10 @@ export class ProcessDataComponent implements OnInit {
     } else {
       this.layout = 'column';
     }
+  }
+
+  public generateReportToProcess(process: Process): void {
+    this.store.generateReport(process.id);
   }
 
   public generateGeneralProcessReport(): void {
@@ -358,44 +363,27 @@ export class ProcessDataComponent implements OnInit {
       console.log(err);
       this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
     });
-  }  
+  }
 
   removeProcess(process: Process) {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este processo?', 'REMOVER')
       .subscribe(res => {
-        if (res === true) 
-          this.store.removeProcess(process.id, this.authService.getCurrentUser().id);        
+        if (res === true) {
+          this.store.removeProcess(process.id, this.authService.getCurrentUser().id);
+        }
       });
   }
 
   checkUserRemoved() {
     const userId = this.authService.getCurrentUser().id;
-    if(userId == 160 || userId == 2702 || userId == 2704)
+    if (userId === 160 || userId === 2702 || userId === 2704) {
       return true;
+    }
     return false;
   }
 
-  generateReport(p) {
-    this.scholarshipService.getPasswordResponsible(p[0].id).subscribe(data => {
-      const password = data.password;
-      this.reportService.reportProcess(p[0].id, password).subscribe(urlData => {
-        const fileUrl = URL.createObjectURL(urlData);
-        // nova aba
-        // window.open(fileUrl);
-        // download automatico
-        let element;
-        element = document.createElement('a');
-        element.href = fileUrl;
-        element.download = 'processo.pdf';
-        element.target = '_blank';
-        element.click();
-      }, err => console.log(err));
-      this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
-    });
-  }
-
-  generateNewPasswordResponsible(process: Process) {
+  public generateNewPasswordResponsible(process: Process): void {
     const dataNewPassword = this.setDataNewPasswordResponsible(process);
     this.store.generateNewPasswordResponsible(dataNewPassword);
   }
