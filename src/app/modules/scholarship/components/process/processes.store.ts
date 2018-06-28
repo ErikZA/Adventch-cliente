@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material';
 
 import { Process } from './../../models/process';
 import { School } from './../../models/school';
+import { StudentSerie } from './../../models/studentSerie';
 import { AuthService } from './../../../../shared/auth.service';
 import { ScholarshipService } from '../../scholarship.service';
 import { ReportService } from './../../../../shared/report.service';
