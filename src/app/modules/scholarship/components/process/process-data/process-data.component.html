@@ -60,8 +60,8 @@
                             <mat-checkbox style="font-size: 14px; font-weight: 500" #checkRejected [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 7" (click)="filterStatus(7, !checkRejected.checked)">Bolsa Indeferida</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                          <mat-checkbox style="font-size: 14px; font-weight: 500" #checkNotEnroll [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 8" (click)="filterStatus(8, !checkNotEnroll.checked)">Não Matriculado</mat-checkbox>
-                      </mat-list-item>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkNotEnroll [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 8" (click)="filterStatus(8, !checkNotEnroll.checked)">Não Matriculado</mat-checkbox>
+                        </mat-list-item>
                     </mat-list>
                 </div>
             </mat-expansion-panel>
@@ -113,7 +113,7 @@
                                     <button mat-icon-button color="basic" (click)="generateReportToProcess(process)" matTooltip="Imprimir processo">
                                         <mat-icon>print</mat-icon>
                                     </button>
-                                    <button mat-button color="basic" (click)="generateNewPasswordResponsible(process)"  matTooltip="Gerar nova senha para o responsável">
+                                    <button mat-button color="basic" (click)="generateNewPasswordResponsible(process)" matTooltip="Gerar nova senha para o responsável">
                                         Gerar senha
                                     </button>
                                 </div>

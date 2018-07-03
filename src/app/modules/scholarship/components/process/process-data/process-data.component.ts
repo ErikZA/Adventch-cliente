@@ -376,8 +376,8 @@ export class ProcessDataComponent implements OnInit {
   }
 
   checkUserRemoved() {
-    const userId = this.authService.getCurrentUser().id;
-    if (userId === 160 || userId === 2702 || userId === 2704) {
+    const { id } = this.authService.getCurrentUser();
+    if (id === 160 || id === 2702 || id === 2704) {
       return true;
     }
     return false;
