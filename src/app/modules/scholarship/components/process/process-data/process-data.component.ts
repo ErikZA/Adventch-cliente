@@ -285,7 +285,7 @@ export class ProcessDataComponent implements OnInit {
 
   public toApprove(process: Process): void {
     if (process.status === 2 || process.status === 3 || process.status === 7) {
-      this.store.changeStatus(this.setStatusChangeProcess(process, 4, 'Aguardando Vaga da Bolsa'));
+      this.store.changeStatus(this.setStatusChangeProcess(process, 4, 'Aguardando Vaga de Bolsa'));
     } else {
       const dialogConfig = new MatDialogConfig();
 

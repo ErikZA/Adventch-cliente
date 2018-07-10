@@ -173,7 +173,7 @@ export class ProcessesStore {
     } else if (status === 3) {
       return 'Pendente';
     } else if (status === 4) {
-      return 'Aguardando Vaga da Bolsa';
+      return 'Aguardando Vaga de Bolsa';
     } else if (status === 5) {
       return 'Vaga Liberada (50%)';
     } else if (status === 6) {

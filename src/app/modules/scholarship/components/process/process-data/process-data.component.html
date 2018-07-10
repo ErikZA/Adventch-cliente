@@ -48,7 +48,7 @@
                             <mat-checkbox style="font-size: 14px; font-weight: 500" #checkPendency [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 3" (click)="filterStatus(3, !checkPendency.checked)">Pendência</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
-                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkWaiting [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 4" (click)="filterStatus(4, !checkWaiting.checked)">Aguardando Vaga da Bolsa</mat-checkbox>
+                            <mat-checkbox style="font-size: 14px; font-weight: 500" #checkWaiting [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 4" (click)="filterStatus(4, !checkWaiting.checked)">Aguardando Vaga de Bolsa</mat-checkbox>
                         </mat-list-item>
                         <mat-list-item>
                             <mat-checkbox style="font-size: 14px; font-weight: 500" #checkFifty [checked]="scholarshipService.statusSelected == 0 || scholarshipService.statusSelected == 5" (click)="filterStatus(5, !checkFifty.checked)">Vaga Liberada (50%)</mat-checkbox>

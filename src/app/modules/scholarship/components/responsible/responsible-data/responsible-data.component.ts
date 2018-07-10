@@ -55,7 +55,7 @@ export class ResponsibleDataComponent implements OnInit {
       return 'Pendente';
     }
     if (status === 4) {
-      return 'Aguardando Vaga da Bolsa';
+      return 'Aguardando Vaga de Bolsa';
     }
     if (status === 5) {
       return 'Vaga liberada (50%)';

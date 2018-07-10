@@ -42,7 +42,7 @@
             <div class="process process-5" (click)="redirectToProcess(4)">
                 <br/>
                 <p class="process-count process-5">{{ (getTotalByStatus(4) | async)?.length }}</p>
-                <p class="process-description">Aguardando Vaga da Bolsa ({{ ((getTotalByStatus(4) | async)?.length / (processes$ | async)?.length * 100) || 0 | number: '1.0-0' }}%)</p>
+                <p class="process-description">Aguardando Vaga de Bolsa ({{ ((getTotalByStatus(4) | async)?.length / (processes$ | async)?.length * 100) || 0 | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
             <div class="process process-6" (click)="redirectToProcess(5)">
