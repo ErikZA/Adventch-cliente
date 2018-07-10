@@ -376,11 +376,8 @@ export class ProcessDataComponent implements OnInit {
   }
 
   checkUserRemoved() {
-    const { id } = this.authService.getCurrentUser();
-    if (id === 160 || id === 2702 || id === 2704) {
-      return true;
-    }
-    return false;
+    const { id } = this.authService.getCurrentUser();       
+    return id == 160 || id == 2702 || id == 2704? true :false;
   }
 
   public generateNewPasswordResponsible(process: Process): void {
