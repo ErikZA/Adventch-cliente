@@ -10,6 +10,9 @@ import { TreasurerDataComponent } from './components/treasurer/treasurer-data/tr
 import { TreasurerFormComponent } from './components/treasurer/treasurer-form/treasurer-form.component';
 
 import { TreasuryRoutingModule } from './treasury-routing.module';
+import { ChurchDataComponent } from './components/church/church-data/church-data.component';
+import { ChurchFormComponent } from './components/church/church-form/church-form.component';
+import { ChurchStore } from './components/church/church.store';
 
 @NgModule({
   imports: [
@@ -20,10 +23,13 @@ import { TreasuryRoutingModule } from './treasury-routing.module';
   declarations: [
     TreasurerDataComponent,
     TreasurerFormComponent,
+    ChurchDataComponent,
+    ChurchFormComponent,
   ],
   providers: [
     TreasuryService,
-    TreasurerStore
+    TreasurerStore,
+    ChurchStore
   ]
 })
 export class TreasuryModule { }
