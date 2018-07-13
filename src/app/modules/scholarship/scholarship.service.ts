@@ -55,8 +55,8 @@ export class ScholarshipService {
 
 
   // New
-  public getSchools(): Observable<School[]> {
-    const url = '/scholarship/Process/getAllSchools/';
+  public getSchools(unitId: number): Observable<School[]> {
+    const url = '/scholarship/Process/getAllSchools/' + unitId;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
@@ -90,8 +90,8 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcesses(schoolId: number): Observable<Process[]> {
-    const url = `/scholarship/process/getProcesses/${schoolId}`;
+  public getProcesses(schoolId: number, unitId: number): Observable<Process[]> {
+    const url = `/scholarship/process/getProcesses/${schoolId}/${unitId}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));

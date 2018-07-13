@@ -404,6 +404,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       responsibleId: this.responsible === undefined || this.responsible.id === undefined ? 0 : this.responsible.id,
       studentId: studentSelected === undefined || studentSelected.length === 0 ? 0 : studentSelected[0].id,
       schoolId: idScholSelected,
+      unitId: this.authService.getCurrentUnit().id,
       status: status,
       id: isEdit ? this.process.id : 0,
       userId: this.authService.getCurrentUser().identifier,

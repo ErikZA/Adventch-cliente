@@ -66,7 +66,8 @@ export class ProcessesStore {
   }
 
   private loadAllSchools(): void {
-    this.service.getSchools().subscribe((data: School[]) => {
+    let idUnit = this.authService.getCurrentUnit().id;
+    this.service.getSchools(idUnit).subscribe((data: School[]) => {
       if (this.authService.getCurrentUser().idSchool === 0) {
         this.dataStore.schools = data;
       } else {
@@ -79,7 +80,8 @@ export class ProcessesStore {
   private loadAllProcesses(): void {
     let idSchool;
     idSchool = this.authService.getCurrentUser().idSchool === 0 ? -1 : this.authService.getCurrentUser().idSchool;
-    this.service.getProcesses(idSchool).subscribe(data => {
+    let idUnit = this.authService.getCurrentUnit().id;
+    this.service.getProcesses(idSchool, idUnit).subscribe(data => {
       this.setStatus(data);
       this.setStudentsSerie(data);
       this.dataStore.processes = data;
