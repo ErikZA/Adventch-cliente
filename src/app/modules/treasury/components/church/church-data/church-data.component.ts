@@ -6,6 +6,7 @@ import { Subject, Observable, Subscription } from 'rxjs';
 import { Church } from '../../../models/church';
 import { ChurchStore } from '../church.store';
 import { AuthService } from '../../../../../shared/auth.service';
+import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-church-data',
@@ -24,7 +25,8 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: ChurchStore,
-    private authService: AuthService
+    private authService: AuthService,
+    private confirmDialogService: ConfirmDialogService
   ) { }
 
   ngOnInit() {
@@ -64,6 +66,9 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   }
 
   remove(church: Church) {
+    this.confirmDialogService
+      .confirm('Remover', 'Você deseja realmente remover a igreja?', 'REMOVER')
+      .subscribe(res => { this.store.remove(church.id) });
   }
 
   edit(church: Church) {

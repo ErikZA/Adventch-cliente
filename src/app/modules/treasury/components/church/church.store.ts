@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -20,7 +21,8 @@ export class ChurchStore {
 
   constructor(
     private service: TreasuryService,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackBar: MatSnackBar
   ) {
     this.dataStore = {
       churches: []
@@ -51,21 +53,21 @@ export class ChurchStore {
     } else {
       this.churches$ = Observable.of(this.dataStore.churches.filter(data => {
         return data.name.toLowerCase().indexOf(search) !== -1
-          || data.city.name.toLowerCase().indexOf(search)! == -1
+          || data.city.name.toLowerCase().indexOf(search) !== -1
+          || data.city.state.acronym.toLowerCase().indexOf(search) !== -1
       }));
     }
   }
 
   /* Remoção */
-
   public remove(id) {
     this.service.deleteChurch(id).subscribe(() => {
       const index = this.dataStore.churches.findIndex(x => x.id === id);
       this.dataStore.churches.splice(index, 1);
-      return true;
+      this.snackBar.open('Igreja removida!', 'OK', { duration: 5000 });
     }, err => {
       console.log(err);
-      return false;
+      this.snackBar.open('Erro ao remover igreja, tente novamente.', 'OK', { duration: 5000 });
     });
   }
 }
