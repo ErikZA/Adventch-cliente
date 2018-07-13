@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../../../../shared/auth.service';
 import { ScholarshipService } from '../../../scholarship.service';
@@ -32,7 +33,7 @@ import { ProcessesStore } from '../processes.store';
   templateUrl: './process-data.component.html',
   styleUrls: ['./process-data.component.scss']
 })
-export class ProcessDataComponent implements OnInit {
+export class ProcessDataComponent implements OnInit, OnDestroy {
 
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
 
@@ -56,6 +57,8 @@ export class ProcessDataComponent implements OnInit {
   statusFilters: Number[];
   valueSearch: string;
   inSearch: boolean;
+  
+  subscribeUnit: Subscription;
 
   constructor(
     public scholarshipService: ScholarshipService,
@@ -87,8 +90,16 @@ export class ProcessDataComponent implements OnInit {
       this.searchProcess('');
     });
     this.sidenavService.setSidenav(this.sidenavRight);
+    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+      this.getAllDatas();
+      this.sidenavRight.close();
+      this.scholarshipService.updateSchool(-1);
+    });
   }
 
+  ngOnDestroy() {
+    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
+  }
 
   private getAllDatas(): void {
     this.processes$ = this.store.filterProcessesSchool(this.scholarshipService.schoolSelected);

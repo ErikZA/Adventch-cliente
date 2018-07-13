@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 import { MatSidenav } from '@angular/material';
 
@@ -20,13 +21,14 @@ import { ProcessesStore } from './processes.store';
   templateUrl: './scholarship.component.html',
   styleUrls: ['./scholarship.component.scss']
 })
-export class ScholarshipComponent implements OnInit {
+export class ScholarshipComponent implements OnInit, OnDestroy {
 
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
   idSchool = -1;
   schools$: Observable<School[]>;
   processes$: Observable<Process[]>;
-
+  
+  subscribeUnit: Subscription;
 
   constructor(
     public scholarshipService: ScholarshipService,
@@ -41,9 +43,15 @@ export class ScholarshipComponent implements OnInit {
     this.getAllDatas();
     this.setSchoolInitial();
     this.sidenavService.setSidenav(this.sidenavRight);
-    this.scholarshipService.refresh$.subscribe((refresh: boolean) => {
+        
+    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
       this.getAllDatas();
+      this.setSchoolInitial();
     });
+  }
+
+  ngOnDestroy() {
+    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
 
   private getAllDatas(): void {

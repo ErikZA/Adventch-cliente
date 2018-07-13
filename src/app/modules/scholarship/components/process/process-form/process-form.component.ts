@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 
 import { Observable } from 'rxjs/Observable';
 import { map, delay } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 import { MatSnackBar } from '@angular/material';
 
@@ -181,11 +182,12 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   };
   checkBoxList: any = [this.personal, this.ir, this.ctps, this.income, this.expenses, this.academic];
 
-
   // New
   process: Process;
   loading: boolean;
   studentsSeries$: Observable<StudentSerie[]>;
+  
+  subscribeUnit: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -219,6 +221,9 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       if (params['identifyProcess']) {
         this.store.loadProcessByIdentity(params['identifyProcess']);
       }
+    });
+    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+      this.resetAll();
     });
   }
 
@@ -259,8 +264,15 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy() {
+  private resetAll() {
     this.closeSidenav();
+    this.formProcess.reset();
+    this.formCheckDocuments.reset();
+  }
+
+  ngOnDestroy() {
+    this.resetAll();
+    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
 
   public filter(val: string): Student[] {

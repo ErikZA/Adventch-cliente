@@ -63,6 +63,7 @@ export class ProcessesStore {
 
   public loadAll(): void {
     this.loadAllProcesses();
+    this.loadAllSchools();
   }
 
   private loadAllSchools(): void {
