@@ -102,12 +102,16 @@ export class ProcessesStore {
       let notFound = true;
       data.statusString = this.getStatusToString(data.status);
       data = this.setStudentSerieName(data);
-      this.dataStore.processes.forEach((item, index) => {
-        if (item.id === data.id) {
-          this.dataStore.processes[index] = data;
-          notFound = false;
-        }
-      });
+      if (this.dataStore.processes != null) {
+        this.dataStore.processes.forEach((item, index) => {
+          if (item.id === data.id) {
+            this.dataStore.processes[index] = data;
+            notFound = false;
+          }
+        });
+      } else {
+        this.dataStore.processes = new Array<Process>();
+      }
       if (notFound) {
         this.dataStore.processes.push(data);
       }
