@@ -19,14 +19,13 @@ export class ReportService {
 
   public reportProcess(processId, password): Observable<any> {
     const urlConsult = document.location.origin + '/educacao';
-    const params = JSON.stringify({ processId: processId, url: urlConsult, password: password, unitId: this.authService.getCurrentUnit().id });
+    const params = JSON.stringify({ processId: processId, url: urlConsult, password: password });
     return this.viewReport('process', EModules.Scholarship, params);
   }
 
   public reportProcesses(data: any): Observable<any> {
     const urlConsult = document.location.origin + '/educacao';
     data.url = urlConsult;
-    data.unitId = this.authService.getCurrentUnit().id
     const params = JSON.stringify(data);
     return this.viewReport('processGeral', EModules.Scholarship, params);
   }
@@ -34,7 +33,8 @@ export class ReportService {
 
   private viewReport(reportName: string, moduleId: number, params: any): Observable<any> {
     const currentUserId = this.authService.getCurrentUser().id;
-    const url = `${environment.apiUrlReport}/reports/view/${reportName}?userId=${currentUserId}&module=${moduleId}&values=${params}`;
+    const currentUnit = this.authService.getCurrentUnit();
+    const url = `${environment.apiUrlReport}/reports/view/${reportName}?userId=${currentUserId}&module=${moduleId}&values=${params}&unitId=${currentUnit.id}&unitName=${currentUnit.name}`;
     return this.http
       .get(url, { responseType: 'blob' })
       .map(res => new Blob([res], { type: 'application/pdf' }))
