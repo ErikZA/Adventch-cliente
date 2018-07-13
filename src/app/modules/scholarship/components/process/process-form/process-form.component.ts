@@ -207,7 +207,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     this.studentsSeries$ = this.store.studentSeries$;
     this.route.params.subscribe(params => {
       this.store.processes$.pipe(
-        map((todos: Process[]) => todos.find((item: Process) => item.identity.toLocaleUpperCase() === params['identifyProcess']))
+        map((todos: Process[]) => todos != null ? todos.find((item: Process) => item.identity.toLocaleUpperCase() === params['identifyProcess']) : new Process())
       ).subscribe(x => {
         this.process = x;
         if (!params['identifyProcess']) {

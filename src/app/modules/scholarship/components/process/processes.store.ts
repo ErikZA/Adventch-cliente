@@ -152,8 +152,8 @@ export class ProcessesStore {
   private setStatus(processes: Process[]): void {
     if (processes) {
       processes.forEach(item => {
-          item.statusString = this.getStatusToString(item.status);
-        }
+        item.statusString = this.getStatusToString(item.status);
+      }
       );
     }
   }
@@ -161,8 +161,8 @@ export class ProcessesStore {
   private setStudentsSerie(processes: Process[]): void {
     if (processes) {
       processes.forEach((item: Process) => {
-          item = this.setStudentSerieName(item);
-        }
+        item = this.setStudentSerieName(item);
+      }
       );
     }
   }
@@ -200,7 +200,7 @@ export class ProcessesStore {
       return this.processes$;
     } else {
       return this.processes$.pipe(
-        map((todos: Process[]) => todos.filter((item: Process) => item.student.school.id === idSchool))
+        map((todos: Process[]) => todos != null ? todos.filter((item: Process) => item.student.school.id === idSchool) : [])
       );
     }
   }
@@ -221,7 +221,7 @@ export class ProcessesStore {
   private filterSchools(schoolsId: Array<Number>, processes: Process[]): Process[] {
     if (processes !== undefined && processes != null) {
       return processes.filter(process => {
-          return schoolsId.some(x => x === process.student.school.id);
+        return schoolsId.some(x => x === process.student.school.id);
       });
     }
   }
@@ -229,7 +229,7 @@ export class ProcessesStore {
   private filterStatus(statusId: Array<Number>, processes: Process[]): Process[] {
     if (processes !== undefined || processes != null) {
       return processes.filter(process => {
-          return statusId.some(x => x === process.status);
+        return statusId.some(x => x === process.status);
       });
     }
   }
@@ -253,11 +253,15 @@ export class ProcessesStore {
 
   private updateProcess(process: Process): void {
     process.statusString = this.getStatusToString(process.status);
-    this.dataStore.processes.forEach((p: Process, i: number) => {
-      if (p.id === process.id) {
-        this.dataStore.processes[i] = process;
-      }
-    });
+    if (this.dataStore.processes.length == 0) {
+      this.dataStore.processes.push(process)
+    } else {
+      this.dataStore.processes.forEach((p: Process, i: number) => {
+        if (p.id === process.id) {
+          this.dataStore.processes[i] = process;
+        }
+      });
+    }
     this._processes.next(Object.assign({}, this.dataStore).processes);
   }
 
@@ -333,8 +337,8 @@ export class ProcessesStore {
         this.snackBar.open('Nova Senha do Responsável Gerada com Sucesso!', 'OK', { duration: 5000 });
       }
     }, err => {
-        console.log(err);
-        this.snackBar.open('Erro ao Gerar Nova Senha do Responsável!', 'OK', { duration: 5000 });
+      console.log(err);
+      this.snackBar.open('Erro ao Gerar Nova Senha do Responsável!', 'OK', { duration: 5000 });
     });
   }
 

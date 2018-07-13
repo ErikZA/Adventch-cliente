@@ -138,7 +138,7 @@ export class AuthService {
         return true;
       }
     }
-    return true;
+    return false;
   }
 
   getModule(url: String) {

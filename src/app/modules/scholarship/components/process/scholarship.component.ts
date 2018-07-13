@@ -64,7 +64,8 @@ export class ScholarshipComponent implements OnInit {
 
   public getTotalByStatus(idStatus): Observable<Process[]> {
     return this.processes$.pipe(
-      map((todos: Process[]) => todos.filter(p => p.status === idStatus)
+      map((todos: Process[]) =>
+          todos != null ? todos.filter(p => p.status === idStatus) : []      
     ));
   }
 
