@@ -19,13 +19,14 @@ export class ReportService {
 
   public reportProcess(processId, password): Observable<any> {
     const urlConsult = document.location.origin + '/educacao';
-    const params = JSON.stringify({ processId: processId, url: urlConsult, password: password });
+    const params = JSON.stringify({ processId: processId, url: urlConsult, password: password, unitId: this.authService.getCurrentUnit().id });
     return this.viewReport('process', EModules.Scholarship, params);
   }
 
   public reportProcesses(data: any): Observable<any> {
     const urlConsult = document.location.origin + '/educacao';
     data.url = urlConsult;
+    data.unitId = this.authService.getCurrentUnit().id
     const params = JSON.stringify(data);
     return this.viewReport('processGeral', EModules.Scholarship, params);
   }
