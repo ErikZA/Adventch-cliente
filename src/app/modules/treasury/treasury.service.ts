@@ -29,14 +29,6 @@ export class TreasuryService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getChurches(unitId): Observable<Church[]> {
-    const url = '/treasury/treasurers/getAllChurches/' + unitId;
-    return this.http
-      .get(url)
-      .map((res: Response) => res)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
-  }
-
   saveTreasurer(treasure): Observable<any> {
     const url = (treasure.id == null ? '/treasury/treasurers/newTreasurer' : '/treasury/treasurers/updateTreasurer');
     return this.http
@@ -52,6 +44,32 @@ export class TreasuryService {
 
   deleteTreasurers(ids): Observable<Church[]> {
     const url = '/treasury/treasurers/deleteTreasurers/\'' + ids + '\'';
+    return this.http
+      .delete(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  /*
+    Igrejas
+  */
+  getChurches(unitId): Observable<Church[]> {
+    const url = '/treasury/churches/getAllTreasurers/' + unitId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  saveChurch(data): Observable<any> {
+    const url = '/treasury/churches/saveChurch';
+    return this.http
+      .post(url, data)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  deleteChurch(id): Observable<Church[]> {
+    const url = '/treasury/churches/deleteChurch/' + id;
     return this.http
       .delete(url)
       .map((res: Response) => res)
