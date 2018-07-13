@@ -19,7 +19,7 @@
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
             <div class="process process-1" style="color: #0f0f0f" (click)="redirectToProcess(0)">
                 <br/>
-                <p class="process-count">{{ (processes$ | async)?.length }}</p>
+                <p class="process-count">{{ (processes$ | async)?.length == null ? 0 : (processes$ | async)?.length}}</p>
                 <p class="process-description">Processos</p>
                 <br/>
             </div>
