@@ -54,7 +54,7 @@ export class TreasuryService {
     Igrejas
   */
   getChurches(unitId): Observable<Church[]> {
-    const url = '/treasury/churches/getAllTreasurers/' + unitId;
+    const url = '/treasury/churches/getAllChurches/' + unitId;
     return this.http
       .get(url)
       .map((res: Response) => res)
