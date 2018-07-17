@@ -1,0 +1,41 @@
+.page-container {
+    height: calc(100vh - 92px);
+  }
+  
+  .title {
+    color: gray;
+  }
+  
+  .conteiner {
+    overflow: auto;
+    max-height: calc(100vh - 240px);
+  }
+  
+  .margin-top-small {
+    margin-top: 1%;
+  }
+  
+  .mat-fab-right {
+    position: fixed;
+    bottom: 45px;
+    right: 24px;
+    z-index: 1;
+  }
+  
+  .sidenav-right {
+    width: 99%;
+  }
+  
+  .text-bold {
+    font-weight: bold;
+  }
+  
+  .margin-minus-20 {
+    margin-left: -20px;
+  }
+  
+  .style-text {
+    white-space: pre-line;
+    padding-left: 30px;
+  }
+  

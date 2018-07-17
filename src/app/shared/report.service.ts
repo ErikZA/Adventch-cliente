@@ -30,7 +30,6 @@ export class ReportService {
     return this.viewReport('processGeral', EModules.Scholarship, params);
   }
 
-
   private viewReport(reportName: string, moduleId: number, params: any): Observable<any> {
     const currentUserId = this.authService.getCurrentUser().id;
     const url = `${environment.apiUrlReport}/reports/view/${reportName}?userId=${currentUserId}&module=${moduleId}&values=${params}`;

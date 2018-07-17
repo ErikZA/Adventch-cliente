@@ -1,4 +1,4 @@
-import { State } from '../../core/components/progress-spinner/models/state';
+import { State } from "./state.model";
 
 export class City {
   id: number;
