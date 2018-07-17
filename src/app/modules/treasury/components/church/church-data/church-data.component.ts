@@ -61,8 +61,8 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   /* Usados pelo component */
   closeSidenav() {
     //this.treasureService.setTreasurer(new Treasurer());
-    //this.sidenavService.close();
-    //this.router.navigate(['tesouraria/tesoureiros']);
+    this.sidenavService.close();
+    this.router.navigate(['tesouraria/igrejas']);
   }
 
   onScroll() {

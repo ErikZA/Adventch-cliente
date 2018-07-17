@@ -57,9 +57,10 @@ export class ChurchFormComponent implements OnInit {
     });
   }
 
-  public loadCities(state) {
+  public loadCities() {
     this.cities = [];
-    this.service.getCities(this.form.get('state').value).subscribe((data: City[]) => {
+    const id = this.store.church.city.state.id;
+    this.service.getCities(id == null || undefined ? this.form.get('state').value : id).subscribe((data: City[]) => {
       this.cities = Object.assign(this.cities, data as City[]);
     });
   }
@@ -85,10 +86,7 @@ export class ChurchFormComponent implements OnInit {
 
   public edit(id){
     if (id == this.store.church.id) {
-      if (this.states == null || this.states.length == undefined)
-        this.loadStates();
-      if (this.cities == null || this.cities.length == undefined)
-        this.loadCities(this.store.church.city.state.id);
+      this.loadCities();
       this.setValues();
     }
   }
@@ -122,7 +120,7 @@ export class ChurchFormComponent implements OnInit {
       state: new FormControl({value: church.city.state.id, disabled: false}, Validators.required),
       city: new FormControl({value: church.city.id, disabled: false}, Validators.required),
       address: new FormControl({value: church.address, disabled: false}, Validators.required),
-      cep: new FormControl({value: church.CEP, disabled: false}, Validators.required),
+      cep: new FormControl({value: church.cep, disabled: false}, Validators.required),
     });
   }
 }

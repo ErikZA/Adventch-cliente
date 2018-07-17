@@ -92,6 +92,7 @@ export class ChurchStore {
     } else {
       this.dataStore.churches.push(church);
     }
+    this.dataStore.churches.sort((a, b) =>  a.name.localeCompare(b.name));
     this._churches.next(Object.assign({}, this.dataStore).churches);
   }
 

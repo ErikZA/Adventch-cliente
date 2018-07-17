@@ -8,7 +8,7 @@ export class Church {
   unit: Unit;
   city: City;
   address: string;
-  CEP: string;
+  cep: string;
   name: string;
   code: string;
   district: Districts;
