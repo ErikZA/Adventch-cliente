@@ -47,10 +47,10 @@
                     {{ church.name }}
                   </span>
                   <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
-                    {{ church.district }}
+                    {{ church.district.name }}
                   </span>
                   <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
-                    {{ church.district }}
+                    {{ church.district?.analyst?.name }}
                   </span>
                   <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
                     {{ church.city.name }} - {{ church.city.state.acronym }}
