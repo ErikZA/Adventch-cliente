@@ -8,6 +8,7 @@ import 'rxjs/add/observable/of';
 import { Church } from '../../models/church';
 import { TreasuryService } from '../../treasury.service';
 import { AuthService } from '../../../../shared/auth.service';
+import { SidenavService } from '../../../../core/services/sidenav.service';
 
 @Injectable()
 export class ChurchStore {
@@ -22,7 +23,8 @@ export class ChurchStore {
   constructor(
     private service: TreasuryService,
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private sidenavService: SidenavService
   ) {
     this.dataStore = {
       churches: []
@@ -30,7 +32,7 @@ export class ChurchStore {
     this._churches = <BehaviorSubject<Church[]>>new BehaviorSubject([]);
     this.churches$ = this._churches.asObservable();
 
-    this.church = new Church();
+    this.resetChurch();
   }
 
   /* Listagem */
@@ -69,5 +71,33 @@ export class ChurchStore {
       console.log(err);
       this.snackBar.open('Erro ao remover igreja, tente novamente.', 'OK', { duration: 5000 });
     });
+  }
+
+  /* Adição */
+  public save(data) {
+    this.service.saveChurch(data).subscribe((church: Church) => {
+      this.update(church);
+      this.sidenavService.close();
+      this.resetChurch();
+    }, err => {
+      console.log(err);
+      this.snackBar.open('Erro ao salvar igreja, tente novamente.', 'OK', { duration: 5000 });
+    });
+  }
+
+  private update(church: Church): void {
+    const index = this.dataStore.churches.findIndex(x => x.id === church.id);
+    if (index >= 0) {
+      this.dataStore.churches[index] = church;
+    } else {
+      this.dataStore.churches.push(church);
+    }
+    this.dataStore.churches.sort((a, b) =>  a.name.localeCompare(b.name));
+    this._churches.next(Object.assign({}, this.dataStore).churches);
+  }
+
+  private resetChurch() {
+    this.church = new Church();
+    this.church.id = 0;
   }
 }

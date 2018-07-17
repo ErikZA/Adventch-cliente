@@ -1,3 +1,83 @@
-<p>
-  church-form works!
-</p>
+<div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"
+  [ngStyle.xs]="{'width.vw': 100}">
+  <div fxLayout="column" fxLayoutAlign="start" class="container beautiful-scroll-x">
+
+
+    <form [formGroup]="form" fxLayout="column" fxLayoutGap="60px">
+      <div fxLayout="column">
+        <div fxFlex>
+          <h2 class="title">Igreja</h2>
+          <mat-divider></mat-divider>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-between start">
+          <div fxFlex="70" style="padding-right: 8px;">
+            <mat-form-field fxFlexFill>
+              <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
+              <mat-error *ngIf="form.get('name').hasError('required')">Este campo é obrigatório</mat-error>
+              <mat-error *ngIf="form.get('name').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
+              <mat-error *ngIf="form.get('name').hasError('maxlenght')">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="30">
+            <mat-form-field fxFlexFill>
+              <input matInput type="text" formControlName="code" placeholder="Código" required maxlength="100">
+              <mat-error *ngIf="form.get('code').hasError('required')">Este campo é obrigatório</mat-error>
+              <mat-error *ngIf="form.get('code').hasError('maxlenght')">Digite um código com até 100 dígitos</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-form-field>
+          <mat-select placeholder="Distrito" formControlName="district" required>
+            <mat-option *ngFor="let district of districts" [value]="district.id">
+              {{ district.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('district').hasError('required')">Este campo é obrigatório</mat-error>
+        </mat-form-field>
+
+
+
+        <!--(onSelectionChange)="setRC(student.rc)"-->
+        <div fxLayout="row" fxLayoutAlign="space-between start">
+          <div fxFlex="20" style="padding-right: 8px;">
+            <mat-form-field>
+              <mat-select placeholder="Estado" formControlName="state" required (change)="loadCities()">
+                <mat-option *ngFor="let district of states" [value]="district.id">
+                  {{ district.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.get('state').hasError('required')">Este campo é obrigatório</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="70">
+            <mat-form-field fxLayout="column" class="box-align">
+              <mat-select placeholder="Cidade" formControlName="city" required [disabled]="checkState()">
+                <mat-option *ngFor="let city of cities" [value]="city.id">
+                  {{ city.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.get('city').hasError('required')">Este campo é obrigatório</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-form-field>
+          <input matInput type="text" formControlName="address" placeholder="Endereço" required maxlength="200">
+          <mat-error *ngIf="form.get('address').hasError('required')">Este campo é obrigatório</mat-error>
+          <mat-error *ngIf="form.get('address').hasError('maxlenght')">Digite um endereço com até 200 dígitos</mat-error>
+        </mat-form-field>
+        <mat-form-field fxFlex>
+          <input matInput type="text" formControlName="cep" placeholder="CEP" required maxlength="20">
+          <mat-error *ngIf="form.get('cep').hasError('required')">Este campo é obrigatório</mat-error>
+          <mat-error *ngIf="form.get('cep').hasError('maxlenght')">Digite um CEP com até 20 dígitos</mat-error>
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
+        <back-button></back-button>
+        <button mat-raised-button type="submit" (click)="save()" color="primary">SALVAR</button>
+      </div>
+    </form>
+  </div>
+</div>

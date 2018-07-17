@@ -6,6 +6,8 @@ import { Observable } from 'rxjs/Observable';
 import { Treasurer } from './models/treasurer';
 import { Church } from './models/church';
 import { Districts } from './models/districts';
+import { State } from '../../shared/models/state.model';
+import { City } from '../../shared/models/city.model';
 
 @Injectable()
 export class TreasuryService {
@@ -94,26 +96,43 @@ export class TreasuryService {
     .get(url)
     .map((res: Response) => res)
     .catch((error: any) => Observable.throw(error || 'Server error'));
-}
-saveDistricts(data): Observable<any> {
-  const url = '/treasury/districts/newDistrict';
-  return this.http
-    .post(url, data)
-    .catch((error: any) => Observable.throw(error || 'Server error'));
-}
-removeDistricts(id): Observable<Districts[]> {
-  const url = '/treasury/districts/removeDistrict/' + id;
-  return this.http
-    .delete(url)
-    .map((res: Response) => res)
-    .catch((error: any) => Observable.throw(error || 'Server error'));
-}
+  }
+  saveDistricts(data): Observable<any> {
+    const url = '/treasury/districts/newDistrict';
+    return this.http
+      .post(url, data)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+  removeDistricts(id): Observable<Districts[]> {
+    const url = '/treasury/districts/removeDistrict/' + id;
+    return this.http
+      .delete(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 
-getUsers() {
-  const url = '/treasury/districts/getAllUsers/';
-  return this.http
-    .get(url)
-    .map((res: Response) => res)
-    .catch((error: any) => Observable.throw(error || 'Server error'));
-}
+  getUsers() {
+    const url = '/treasury/districts/getAllUsers/';
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  getStates(): Observable<State[]> {
+    const url = '/treasury/churches/getAllStates/';
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  getCities(stateId): Observable<City[]> {
+    const url = '/treasury/churches/getAllCitiesByState/' + stateId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
 }
