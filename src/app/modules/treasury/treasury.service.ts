@@ -5,10 +5,12 @@ import { Observable } from 'rxjs/Observable';
 
 import { Treasurer } from './models/treasurer';
 import { Church } from './models/church';
+import { Districts } from './models/districts';
 
 @Injectable()
 export class TreasuryService {
   treasurer: Treasurer = new Treasurer();
+  district: Districts = new Districts();
   constructor(
     private http: HttpClient
   ) { }
@@ -19,6 +21,14 @@ export class TreasuryService {
 
   setTreasurer(treasurer) {
     this.treasurer = treasurer;
+  }
+
+  getDistrict() {
+    return this.district;
+  }
+
+  setDistrict(districts) {
+    this.district = districts;
   }
 
   getTreasurers(unitId): Observable<Treasurer[]> {
@@ -75,4 +85,35 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+  /*
+    Distritos
+  */
+ getDistricts(unitId): Observable<Districts[]> {
+  const url = '/treasury/districts/getAllDistricts/' + unitId;
+  return this.http
+    .get(url)
+    .map((res: Response) => res)
+    .catch((error: any) => Observable.throw(error || 'Server error'));
+}
+saveDistricts(data): Observable<any> {
+  const url = '/treasury/districts/newDistrict';
+  return this.http
+    .post(url, data)
+    .catch((error: any) => Observable.throw(error || 'Server error'));
+}
+removeDistricts(id): Observable<Districts[]> {
+  const url = '/treasury/districts/removeDistrict/' + id;
+  return this.http
+    .delete(url)
+    .map((res: Response) => res)
+    .catch((error: any) => Observable.throw(error || 'Server error'));
+}
+
+getUsers() {
+  const url = '/treasury/districts/getAllUsers/';
+  return this.http
+    .get(url)
+    .map((res: Response) => res)
+    .catch((error: any) => Observable.throw(error || 'Server error'));
+}
 }

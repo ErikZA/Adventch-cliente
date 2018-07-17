@@ -9,6 +9,8 @@ import { TreasurerDataComponent } from './components/treasurer/treasurer-data/tr
 import { TreasurerFormComponent } from './components/treasurer/treasurer-form/treasurer-form.component';
 import { ChurchDataComponent } from './components/church/church-data/church-data.component';
 import { ChurchFormComponent } from './components/church/church-form/church-form.component';
+import { DistrictsDataComponent } from './components/districts/districts-data/districts-data.component';
+import { DistrictsFormComponent } from './components/districts/districts-form/districts-form.component';
 
 const routes: Routes = [
   { path: 'tesouraria', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
@@ -19,6 +21,10 @@ const routes: Routes = [
     { path: 'igrejas', component: ChurchDataComponent, children: [
       { path: 'novo', component: ChurchFormComponent },
       { path: ':id/editar', component: ChurchFormComponent }
+    ]},
+    { path: 'distritos', component: DistrictsDataComponent, children: [
+      { path: 'novo', component: DistrictsFormComponent },
+      { path: ':id/editar', component: DistrictsFormComponent }
     ]}
   ]}
 ];
