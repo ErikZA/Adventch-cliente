@@ -6,6 +6,8 @@ export class Church {
   codeId: string;
   unit: Unit;
   city: City;
+  address: string;
+  CEP: string;
   name: string;
   code: string;
   district: string;

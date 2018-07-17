@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
+import { MatSidenav } from '@angular/material';
 
 import { Subject, Observable, Subscription } from 'rxjs';
 
@@ -7,6 +8,7 @@ import { Church } from '../../../models/church';
 import { ChurchStore } from '../church.store';
 import { AuthService } from '../../../../../shared/auth.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
+import { SidenavService } from '../../../../../core/services/sidenav.service';
 
 @Component({
   selector: 'app-church-data',
@@ -14,6 +16,7 @@ import { ConfirmDialogService } from '../../../../../core/components/confirm-dia
   styleUrls: ['./church-data.component.scss']
 })
 export class ChurchDataComponent implements OnInit, OnDestroy {
+  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
 
   searchButton = false;
   showList = 15;
@@ -26,7 +29,8 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   constructor(
     private store: ChurchStore,
     private authService: AuthService,
-    private confirmDialogService: ConfirmDialogService
+    private confirmDialogService: ConfirmDialogService,
+    private sidenavService: SidenavService
   ) { }
 
   ngOnInit() {
@@ -38,6 +42,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
       this.getData();
       this.closeSidenav();
     });
+    this.sidenavService.setSidenav(this.sidenavRight);
   }
 
   ngOnDestroy() {
@@ -61,8 +66,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   }
 
   openSidenav() {
-    //this.treasureService.setTreasurer(new Treasurer());
-    //this.sidenavService.open();
+    this.sidenavService.open();
   }
 
   remove(church: Church) {

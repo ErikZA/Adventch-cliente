@@ -1,3 +1,46 @@
-<p>
-  church-form works!
-</p>
+<div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"
+  [ngStyle.xs]="{'width.vw': 100}">
+  <div fxLayout="column" fxLayoutAlign="start" class="container beautiful-scroll-x">
+
+
+    <form [formGroup]="form" fxLayout="column" fxLayoutGap="60px">
+      <div fxLayout="column">
+        <div fxFlex>
+          <h2 class="title">Igreja</h2>
+          <mat-divider></mat-divider>
+        </div>
+        <div layout="row">
+            <mat-form-field fxFlex="auto">
+              <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
+              <mat-error *ngIf="form.get('name').hasError('required')">Este campo é obrigatório</mat-error>
+              <mat-error *ngIf="form.get('name').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
+              <mat-error *ngIf="form.get('name').hasError('maxlenght')">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
+            </mat-form-field>
+          <mat-form-field fxFlex="20%">
+            <input matInput type="text" formControlName="code" placeholder="Código" required maxlength="100">
+            <mat-error *ngIf="form.get('code').hasError('required')">Este campo é obrigatório</mat-error>
+            <mat-error *ngIf="form.get('code').hasError('maxlenght')">Digite um código com até 100 dígitos</mat-error>
+          </mat-form-field>
+        </div>
+        <!-- <mat-form-field>
+          <mat-select placeholder="Distrito" formControlName="District" required>
+              <mat-option *ngFor="let church of lstChurches" [value]="church.id">
+                  ({{ church.code }}) {{ church.name }}
+              </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formPersonal.get('churchId').hasError('required')">Este campo é obrigatório</mat-error>
+      </mat-form-field> -->
+
+        <mat-form-field>
+          <textarea matInput placeholder="Endereço" formControlName="address" maxlength="200" matTextareaAutosize matAutosizeMinRows="1"
+            matAutosizeMaxRows="4"></textarea>
+        </mat-form-field>
+        <mat-form-field fxFlex>
+          <input matInput type="text" formControlName="cep" placeholder="CEP" required maxlength="20">
+          <mat-error *ngIf="form.get('cep').hasError('required')">Este campo é obrigatório</mat-error>
+          <mat-error *ngIf="form.get('cep').hasError('maxlenght')">Digite um CEP com até 20 dígitos</mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+</div>
