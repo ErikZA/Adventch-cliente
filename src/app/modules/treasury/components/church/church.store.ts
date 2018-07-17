@@ -32,7 +32,7 @@ export class ChurchStore {
     this._churches = <BehaviorSubject<Church[]>>new BehaviorSubject([]);
     this.churches$ = this._churches.asObservable();
 
-    this.church = new Church();
+    this.resetChurch();
   }
 
   /* Listagem */
@@ -78,6 +78,7 @@ export class ChurchStore {
     this.service.saveChurch(data).subscribe((church: Church) => {
       this.update(church);
       this.sidenavService.close();
+      this.resetChurch();
     }, err => {
       console.log(err);
       this.snackBar.open('Erro ao salvar igreja, tente novamente.', 'OK', { duration: 5000 });
@@ -92,5 +93,10 @@ export class ChurchStore {
       this.dataStore.churches.push(church);
     }
     this._churches.next(Object.assign({}, this.dataStore).churches);
+  }
+
+  private resetChurch() {
+    this.church = new Church();
+    this.church.id = 0;
   }
 }

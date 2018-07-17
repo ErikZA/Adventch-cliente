@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { MatSidenav } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
+
+import { map } from 'rxjs/operators';
 
 import { Districts } from '../../../models/districts';
 import { State } from '../../../../../shared/models/state.model';
@@ -9,6 +12,7 @@ import { AuthService } from '../../../../../shared/auth.service';
 import { TreasuryService } from '../../../treasury.service';
 import { ChurchStore } from '../church.store';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
+import { Church } from '../../../models/church';
 
 @Component({
   selector: 'app-church-form',
@@ -28,13 +32,17 @@ export class ChurchFormComponent implements OnInit {
     private authService: AuthService,
     private service: TreasuryService,
     private store: ChurchStore,
-    private sidenavService: SidenavService
+    private sidenavService: SidenavService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
     this.initForm();
     this.loadDistricts();
     this.loadStates();
+    this.route.params.subscribe(params => {
+      this.edit(params['id']);
+    });
   }
 
   initForm(): void {
@@ -49,12 +57,6 @@ export class ChurchFormComponent implements OnInit {
     });
   }
 
-  /*setValues(): void {
-    this.form = new FormGroup({
-      city: new FormControl({value: '', disabled: true}, Validators.required),
-    });
-  }*/
-
   public loadCities(state) {
     this.cities = [];
     this.service.getCities(this.form.get('state').value).subscribe((data: City[]) => {
@@ -66,7 +68,7 @@ export class ChurchFormComponent implements OnInit {
     const unit = this.authService.getCurrentUnit();
     if (this.form.valid) {
       const data = {
-        id: 0,
+        id: this.store.church.id,
         unit: unit.id,
         ...this.form.value
       }
@@ -79,6 +81,16 @@ export class ChurchFormComponent implements OnInit {
 
   public checkState() {
     return this.form.get('state').value === null;
+  }
+
+  public edit(id){
+    if (id == this.store.church.id) {
+      if (this.states == null || this.states.length == undefined)
+        this.loadStates();
+      if (this.cities == null || this.cities.length == undefined)
+        this.loadCities(this.store.church.city.state.id);
+      this.setValues();
+    }
   }
 
   private loadDistricts() {
@@ -101,4 +113,16 @@ export class ChurchFormComponent implements OnInit {
     this.sidenavService.close();
   }
 
+  private setValues(): void {
+    const church = this.store.church;
+    this.form = new FormGroup({
+      name: new FormControl({value: church.name, disabled: false}, Validators.required),
+      code: new FormControl({value: church.code, disabled: false}, Validators.required),
+      district: new FormControl({value: church.district.id, disabled: false}, Validators.required),
+      state: new FormControl({value: church.city.state.id, disabled: false}, Validators.required),
+      city: new FormControl({value: church.city.id, disabled: false}, Validators.required),
+      address: new FormControl({value: church.address, disabled: false}, Validators.required),
+      cep: new FormControl({value: church.CEP, disabled: false}, Validators.required),
+    });
+  }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { MatSidenav } from '@angular/material';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { Subject, Observable, Subscription } from 'rxjs';
 
@@ -30,10 +31,13 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     private store: ChurchStore,
     private authService: AuthService,
     private confirmDialogService: ConfirmDialogService,
-    private sidenavService: SidenavService
+    private sidenavService: SidenavService,
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
+    this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
     this.search$.subscribe(search => {
       this.store.searchProcess(search);
       this.churches$ = this.store.churches$;
@@ -76,5 +80,8 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   }
 
   edit(church: Church) {
+    this.store.church = church;
+    this.router.navigate([church.id, 'editar'], { relativeTo: this.route });
+    this.openSidenav();
   }
 }
