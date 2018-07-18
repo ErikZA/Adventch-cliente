@@ -11,6 +11,8 @@ import { ChurchDataComponent } from './components/church/church-data/church-data
 import { ChurchFormComponent } from './components/church/church-form/church-form.component';
 import { DistrictsDataComponent } from './components/districts/districts-data/districts-data.component';
 import { DistrictsFormComponent } from './components/districts/districts-form/districts-form.component';
+import { ObservationDataComponent } from './components/observation/observation-data/observation-data.component';
+import { ObservationFormComponent } from './components/observation/observation-form/observation-form.component';
 
 const routes: Routes = [
   { path: 'tesouraria', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
@@ -25,6 +27,10 @@ const routes: Routes = [
     { path: 'distritos', component: DistrictsDataComponent, children: [
       { path: 'novo', component: DistrictsFormComponent },
       { path: ':id/editar', component: DistrictsFormComponent }
+    ]},
+    { path: 'observacoes', component: ObservationDataComponent, children: [
+      { path: 'novo', component: ObservationFormComponent },
+      { path: ':id/editar', component: ObservationFormComponent }
     ]}
   ]}
 ];

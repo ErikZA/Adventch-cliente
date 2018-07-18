@@ -16,6 +16,8 @@ import { ChurchStore } from './components/church/church.store';
 import { DistrictsDataComponent } from './components/districts/districts-data/districts-data.component';
 import { DistrictsFormComponent } from './components/districts/districts-form/districts-form.component';
 import { DistrictsStore } from './components/districts/districts.store';
+import { ObservationDataComponent } from './components/observation/observation-data/observation-data.component';
+import { ObservationFormComponent } from './components/observation/observation-form/observation-form.component';
 
 @NgModule({
   imports: [
@@ -30,6 +32,8 @@ import { DistrictsStore } from './components/districts/districts.store';
     ChurchFormComponent,
     DistrictsDataComponent,
     DistrictsFormComponent,
+    ObservationDataComponent,
+    ObservationFormComponent,
   ],
   providers: [
     TreasuryService,
