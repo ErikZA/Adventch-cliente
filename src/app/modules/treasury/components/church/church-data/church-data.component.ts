@@ -54,6 +54,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
     this.search$.subscribe(search => {
       this.filterText = search;
@@ -94,7 +95,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
 
   /* Usados pelo component */
   closeSidenav() {
-    //this.treasureService.setTreasurer(new Treasurer());
+    // this.treasureService.setTreasurer(new Treasurer());
     this.sidenavService.close();
     this.router.navigate(['tesouraria/igrejas']);
   }
@@ -123,14 +124,14 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     matExpansionPanel.toggle();
   }
 
-  public onResize(event): void {
-    const element = event.target.innerWidth;
-    if (element > 600) {
-      this.layout = 'row';
-    } else {
-      this.layout = 'column';
-    }
-  }
+  // public onResize(event): void {
+  //   const element = event.target.innerWidth;
+  //   if (element > 600) {
+  //     this.layout = 'row';
+  //   } else {
+  //     this.layout = 'column';
+  //   }
+  // }
 
   public search() {
     let churchesFilttered = this.store.searchText(this.filterText);

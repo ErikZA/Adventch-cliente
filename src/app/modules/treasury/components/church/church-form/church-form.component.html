@@ -1,4 +1,4 @@
-<div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"
+<div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}" [ngStyle.xs]="{'width.vw': 80}"
   [ngStyle.xs]="{'width.vw': 100}">
   <div fxLayout="column" fxLayoutAlign="start" class="container beautiful-scroll-x">
 
@@ -38,9 +38,9 @@
           <mat-error *ngIf="form.get('district').hasError('required')">Este campo é obrigatório</mat-error>
         </mat-form-field>
 
-        <div fxLayout="row" fxLayoutAlign="space-between start">
-          <div fxFlex="20" style="padding-right: 8px;">
-            <mat-form-field>
+        <div fxLayout="row">
+          <div fxFlex="30" style="padding-right: 8px;">
+            <mat-form-field  fxFlexFill>
               <mat-select placeholder="Estado" formControlName="state" required (change)="loadCities()">
                 <mat-option *ngFor="let district of states" [value]="district.id">
                   {{ district.name }}
@@ -50,7 +50,7 @@
             </mat-form-field>
           </div>
           <div fxFlex="70">
-            <mat-form-field fxLayout="column" class="box-align">
+            <mat-form-field fxFlexFill class="box-align">
               <mat-select placeholder="Cidade" formControlName="city" required [disabled]="checkState()">
                 <mat-option *ngFor="let city of cities" [value]="city.id">
                   {{ city.name }}

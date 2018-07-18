@@ -8,7 +8,7 @@
   </div>
 </mat-sidenav>
 
-<div class="page-container mat-elevation-z2" fxLayoutAlign="center">
+<div class="page-container mat-elevation-z2" fxFlex fxLayoutAlign="center" style="overflow: auto;">
   <div fxFlex="95%">
     <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
       <h2 class="title" *ngIf="!searchButton">Lista de Igrejas</h2>
@@ -26,8 +26,8 @@
     </div>
     <mat-accordion class="example-headers-align" #matExpansionPanel>
       <mat-expansion-panel #matExpansionPanel hideToggle="true">
-        <div fxLayout="{{ layout }}" (window:resize)="onResize($event)">
-          <mat-list flex="30" class="margin-search" style="padding: 0 8px;">
+        <div fxLayout="row wrap" style="flex-wrap: wrap;">
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
               <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
                 <mat-option value="0">TODOS</mat-option>
@@ -37,7 +37,7 @@
               </mat-select>
             </mat-form-field>
           </mat-list>
-          <mat-list flex="30" class="margin-search" style="padding: 0 8px;">
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
               <mat-select placeholder="Cidade" (change)="search()" [(ngModel)]="filterCity">
                 <mat-option value="0">TODOS</mat-option>
@@ -47,7 +47,7 @@
               </mat-select>
             </mat-form-field>
           </mat-list>
-          <mat-list flex="30" class="margin-search" style="padding: 0 8px;">
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
               <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
                 <mat-option value="0">TODOS</mat-option>
@@ -61,15 +61,15 @@
       </mat-expansion-panel>
     </mat-accordion>
     <mat-divider></mat-divider>
-    <div fxFlex>
+    <div>
       <div class="header">
         <mat-list>
           <mat-list-item>
             <h3 matLine fxLayout="row">
-              <span fxFlex fxFlex.gt-sm="25%">Igreja</span>
-              <span fxFlex fxFlex.gt-sm="25%">Distrito</span>
-              <span fxFlex fxFlex.gt-sm="25%">Analista</span>
-              <span fxFlex fxFlex.gt-sm="25%">Cidade</span>
+              <span fxFlex fxFlex.gt-sm="25%" >Igreja</span>
+              <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Distrito</span>
+              <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Analista</span>
+              <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Cidade</span>
             </h3>
           </mat-list-item>
         </mat-list>
@@ -85,13 +85,13 @@
                   <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
                     {{ church.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
+                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
                     {{ church.district.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
+                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
                     {{ church.district?.analyst?.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
+                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
                     {{ church.city.name }} - {{ church.city.state.acronym }}
                   </span>
                 </mat-panel-description>
