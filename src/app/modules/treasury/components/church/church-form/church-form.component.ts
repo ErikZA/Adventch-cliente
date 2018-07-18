@@ -59,7 +59,7 @@ export class ChurchFormComponent implements OnInit {
 
   public loadCities() {
     this.cities = [];
-    const id = this.store.church.city.state.id;
+    const id = this.form.value.state;
     this.service.getCities(id == null || undefined ? this.form.get('state').value : id).subscribe((data: City[]) => {
       this.cities = Object.assign(this.cities, data as City[]);
     });
