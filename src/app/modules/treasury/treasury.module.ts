@@ -13,6 +13,9 @@ import { TreasuryRoutingModule } from './treasury-routing.module';
 import { ChurchDataComponent } from './components/church/church-data/church-data.component';
 import { ChurchFormComponent } from './components/church/church-form/church-form.component';
 import { ChurchStore } from './components/church/church.store';
+import { DistrictsDataComponent } from './components/districts/districts-data/districts-data.component';
+import { DistrictsFormComponent } from './components/districts/districts-form/districts-form.component';
+import { DistrictsStore } from './components/districts/districts.store';
 
 @NgModule({
   imports: [
@@ -25,11 +28,14 @@ import { ChurchStore } from './components/church/church.store';
     TreasurerFormComponent,
     ChurchDataComponent,
     ChurchFormComponent,
+    DistrictsDataComponent,
+    DistrictsFormComponent,
   ],
   providers: [
     TreasuryService,
     TreasurerStore,
-    ChurchStore
+    ChurchStore,
+    DistrictsStore
   ]
 })
 export class TreasuryModule { }

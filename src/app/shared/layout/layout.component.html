@@ -68,6 +68,7 @@
                     </mat-expansion-panel-header>
                     <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/tesoureiros']">Tesoureiros</a>
                     <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/igrejas']">Igrejas</a>
+                    <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/distritos']">Distritos</a>
                 </mat-expansion-panel>
                 <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!this.checkPermission(7)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="this.checkPermission(7)" matTooltipPosition="below">
                     <!--Novo Módulo-->
