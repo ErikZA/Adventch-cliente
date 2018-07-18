@@ -111,7 +111,11 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   remove(church: Church) {
     this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover a igreja?', 'REMOVER')
-      .subscribe(res => { this.store.remove(church.id) });
+      .subscribe(res => {
+        if (res) {
+          this.store.remove(church.id);
+        }
+      });
   }
 
   edit(church: Church) {
