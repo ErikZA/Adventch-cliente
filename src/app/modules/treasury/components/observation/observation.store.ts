@@ -63,9 +63,35 @@ export class ObservationStore {
       this.snackBar.open('Observação removida!', 'OK', { duration: 5000 });
     }, err => {
       console.log(err);
-      this.snackBar.open('Erro ao remover ovservação, tente novamente.', 'OK', { duration: 5000 });
+      this.snackBar.open('Erro ao remover observação, tente novamente.', 'OK', { duration: 5000 });
+    });
+  }
+
+  /* Finalização */
+  public finalize(id) {
+    const data = {
+      id: id
+    }
+    this.service.finalizeObservation(data).subscribe((observation: Observation) => {
+      this.update(observation);
+      this.snackBar.open('Observação finalizada!', 'OK', { duration: 5000 });
+    }, err => {
+      console.log(err);
+      this.snackBar.open('Erro ao finalizar observação, tente novamente.', 'OK', { duration: 5000 });
     });
   }
 
   /* Adição */
+
+  /* Util */
+  private update(observation: Observation): void {
+    const index = this.dataStore.observations.findIndex(x => x.id === observation.id);
+    if (index >= 0) {
+      this.dataStore.observations[index] = observation;
+    } else {
+      this.dataStore.observations.push(observation);
+    }
+    this.dataStore.observations.sort((a, b) => a.church.name.localeCompare(b.church.name));
+    this._observations.next(Object.assign({}, this.dataStore).observations);
+  }
 }

@@ -67,9 +67,9 @@
           <mat-list-item>
             <h3 matLine fxLayout="row">
               <span fxFlex fxFlex.gt-sm="35%">Igreja</span>
-              <span fxFlex fxFlex.gt-sm="35%">Responsável</span>
-              <span fxFlex fxFlex.gt-sm="15%">Data</span>
-              <span fxFlex fxFlex.gt-sm="15%">Status</span>
+              <span fxFlex fxFlex.gt-sm="35%" fxHide.lt-sm>Responsável</span>
+              <span fxFlex fxFlex.gt-sm="15%" fxHide.lt-sm>Data</span>
+              <span fxFlex fxFlex.gt-sm="15%" fxHide.lt-sm>Status</span>
             </h3>
           </mat-list-item>
         </mat-list>
@@ -85,48 +85,49 @@
                   <span fxFlex fxFlex.gt-sm="35%" style="white-space: line-wrap;">
                     {{ observation.church.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="35%" style="white-space: line-wrap;">
+                  <span fxFlex fxFlex.gt-sm="35%" style="white-space: line-wrap;" fxHide.lt-sm>
                     {{ observation.responsible.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="15%" style="white-space: line-wrap;">
+                  <span fxFlex fxFlex.gt-sm="15%" style="white-space: line-wrap;" fxHide.lt-sm>
                     {{ observation.date | date: "dd/MM/yyyy" }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="15%" style="white-space: line-wrap;">
+                  <span fxFlex fxFlex.gt-sm="15%" style="white-space: line-wrap;" fxHide.lt-sm>
                     {{ getStatus(observation.status) }}
                   </span>
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <mat-list>
                 <h3 matSubheader>Informações da observação</h3>
-                <mat-list-item>
-                  <div fxLayout="row">
-                    <div fxFlex>
-                      <h4 style="margin: 0 !important">Descrição:</h4>
-                    </div>
-                    <div fxFlex style="margin: 0 10px;">
-                      <span>{{ observation.description }}</span>
-                    </div>
-                  </div>
-
-                  <div fxLayout="row">
-                    <div fxFlex>
-                      <h4 style="margin: 0 !important">Tesoureiros:</h4>
-                    </div>
-                    <div fxFlex style="margin: 0 10px;" *ngFor="let treasurer of observation.treasurers">
-                      <span>{{ treasurer.name }}</span>
-                    </div>
-                  </div>
-                  <!-- <div fxLayout="row" fxFlex matLine>
-                    <span class="details-title">
-                      <b>Tesoureiros:</b>
+                <mat-list-item fxLayout="row" style="height: auto">
+                  <div fxLayout="column" fxFlex matLine>
+                    <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                      <b>Responsável:&ensp;</b> {{ observation.responsible.name }}
                     </span>
-                    <ul *ngFor="let treasurer of observation.treasurers" fxLayout="column" class="details-title">
-                      <li fxFlex style="white-space: pre-line;">{{ treasurer.name }}</li>
-                    </ul>
-                  </div> -->
+                    <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                      <b>Data:&ensp;</b> {{ observation.date | date: "dd/MM/yyyy" }}
+                    </span>
+                    <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                      <b>Status:&ensp;</b> {{ getStatus(observation.status) }}
+                    </span>
+
+                    <span class="details-title" fxLayout.lt-sm="column">
+                      <b>Descrição:&ensp;</b> {{ observation.description }}
+                    </span>
+                    <span class="details-title" fxLayout.lt-sm="column">
+                      <b>Tesoureiros</b>
+                    </span>
+                    <div *ngFor="let treasurer of observation.treasurers">
+                      <mat-panel-description fxLayout="row" fxFlex>
+                        <span fxFlex="100%" class="details-title" style="white-space: normal; padding: 0 30px 0 30px">
+                          {{ treasurer.name }}
+                        </span>
+                      </mat-panel-description>
+                    </div>
+                  </div>
                 </mat-list-item>
               </mat-list>
               <mat-action-row>
+                <button *ngIf="observation.status === 1" mat-button style="background-color: #E8702A!important; color: #fff" matTooltip="Finalizar observação" (click)="finalize(observation)">FINALIZAR</button>
                 <button mat-button color="warn" matTooltip="Excluir" (click)="remove(observation)">REMOVER</button>
                 <button mat-button color="primary" matTooltip="Editar" (click)="edit(observation)">EDITAR</button>
               </mat-action-row>

@@ -160,4 +160,12 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+
+  finalizeObservation(data): Observable<Observation> {
+    const url = '/treasury/observations/finalizeObservation/';
+    return this.http
+      .post(url, data)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 }

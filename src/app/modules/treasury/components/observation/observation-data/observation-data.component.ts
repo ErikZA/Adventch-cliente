@@ -72,13 +72,27 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   public remove(observation: Observation) {
     this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover a observação?', 'REMOVER')
-      .subscribe(res => { this.store.remove(observation.id) });
+      .subscribe(res => {
+        if (res) {
+          this.store.remove(observation.id)
+        }
+      });
   }
 
   public edit(observation: Observation) {
     //this.store.church = church;
     //this.router.navigate([church.id, 'editar'], { relativeTo: this.route });
     //this.openSidenav();
+  }
+
+  public finalize(observation: Observation) {
+    this.confirmDialogService
+      .confirm('Finalizar', 'Você deseja realmente finalizar a observação?', 'FINALIZAR')
+      .subscribe(res => {
+        if (res) {
+          this.store.finalize(observation.id);
+        }
+      });
   }
 
   public getStatus(status): string {
