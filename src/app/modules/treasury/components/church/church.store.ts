@@ -93,6 +93,7 @@ export class ChurchStore {
     return churches.filter(x => x.district.analyst.id === idAnalyst);
   }
 
+  /* Carregar */
   private loadCities() {
     this.dataStore.cities = new Array<City>();
     if (this.dataStore.churches != null) {
