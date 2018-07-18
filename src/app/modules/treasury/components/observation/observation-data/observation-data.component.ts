@@ -36,8 +36,8 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   filterChurch: number;
   filterAnalyst: number;
   filterResponsible: number;
-  filterPeriodStart: Date;
-  filterPeriodEnd: Date;
+  filterPeriodStart: Date = new Date(new Date().getFullYear(), 0, 1);
+  filterPeriodEnd: Date = new Date(new Date().getFullYear(), 11, 31);
 
   constructor(
     private authService: AuthService,
@@ -122,14 +122,19 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
 
   public search() {
     let observations = this.store.searchText(this.filterText);
-    if (this.filterStatus != undefined && this.filterStatus != null && this.filterStatus != 0)
+    if (this.filterStatus != undefined && this.filterStatus != null && this.filterStatus != 0) {
       observations = this.store.searchStatus(this.filterStatus, observations);
-    if (this.filterChurch != undefined && this.filterChurch != null && this.filterChurch != 0)
+    }
+    if (this.filterChurch != undefined && this.filterChurch != null && this.filterChurch != 0) {
       observations = this.store.searchChurches(this.filterChurch, observations);
-    if (this.filterAnalyst != undefined && this.filterAnalyst != null && this.filterAnalyst != 0)
+    }
+    if (this.filterAnalyst != undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
       observations = this.store.searchAnalysts(this.filterStatus, observations);
-    if (this.filterResponsible != undefined && this.filterResponsible != null && this.filterResponsible != 0)
+    }
+    if (this.filterResponsible != undefined && this.filterResponsible != null && this.filterResponsible != 0) {
       observations = this.store.searchResponsibles(this.filterResponsible, observations);
+    }
+    observations = this.store.searchInDates(this.filterPeriodStart, this.filterPeriodEnd, observations);
     this.observations$ = Observable.of(observations);
   }
 

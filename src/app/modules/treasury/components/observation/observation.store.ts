@@ -83,6 +83,10 @@ export class ObservationStore {
     return observations.filter(f => f.responsible.id === responsible);
   }
 
+  public searchInDates(startDate: Date, endDate: Date, observations: Observation[]) {
+    return observations.filter(f => f.date > startDate && f.date < endDate);
+  }
+
   /* Carregar */
   private load() {
     this.loadChurches();
