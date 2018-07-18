@@ -39,13 +39,6 @@ export class DistrictsStore {
         });
       }
 
-    /*Listar Usuários*/
-    public loadUser(): void {
-        this.service.getUsers().subscribe((data) => {
-          this.users = data;
-        });
-    }
-
     /* Abrir sidenav*/
     openDistrict(district) {
       this.districts = district;

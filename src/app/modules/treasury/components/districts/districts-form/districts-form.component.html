@@ -9,8 +9,8 @@
                 </mat-form-field> -->
 
                 <mat-form-field>
-                  <mat-select placeholder="Analista" formControlName="analyst" required>
-                      <mat-option *ngFor="let analyst of users " [value]="analyst">
+                  <mat-select placeholder="Analista" formControlName="analyst"  [(ngModel)]="teste" required>
+                      <mat-option *ngFor="let analyst of users"  [value]="analyst.name">
                           {{ analyst.name }}
                       </mat-option>
                   </mat-select>

@@ -37,10 +37,6 @@ export class DistrictsDataComponent implements OnInit, OnDestroy {
       this.store.searchProcess(search);
       this.districts$ = this.store.districts$;
     });
-    // this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
-    //   this.getData();
-    //   this.closeSidenav();
-    // });
     this.getData();
     this.sidenavService.setSidenav(this.sidenavRight);
   }
