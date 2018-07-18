@@ -79,6 +79,11 @@ export class ChurchFormComponent implements OnInit {
       }, 5000);
     }
   }
+  
+  public reset() {
+    this.form.reset();
+    this.sidenavService.close();
+  }
 
   public checkState() {
     return this.form.get('state').value === null;
@@ -104,11 +109,6 @@ export class ChurchFormComponent implements OnInit {
     this.service.getStates().subscribe((data: State[]) => {
       this.states = Object.assign(this.states, data as State[]);
     });
-  }
-
-  private reset() {
-    this.form.reset();
-    this.sidenavService.close();
   }
 
   private setValues(): void {

@@ -2,7 +2,6 @@
   [ngStyle.xs]="{'width.vw': 100}">
   <div fxLayout="column" fxLayoutAlign="start" class="container beautiful-scroll-x">
 
-
     <form [formGroup]="form" fxLayout="column" fxLayoutGap="60px">
       <div fxLayout="column">
         <div fxFlex>
@@ -73,7 +72,7 @@
         </mat-form-field>
       </div>
       <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
-        <back-button></back-button>
+        <back-button (click)="reset()"></back-button>
         <button mat-raised-button type="submit" (click)="save()" color="primary">SALVAR</button>
       </div>
     </form>
