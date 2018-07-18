@@ -5,158 +5,65 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/of';
 
-import { Church } from '../../models/church';
 import { TreasuryService } from '../../treasury.service';
 import { AuthService } from '../../../../shared/auth.service';
-import { SidenavService } from '../../../../core/services/sidenav.service';
-import { Districts } from '../../models/districts';
-import { City } from '../../../../shared/models/city.model';
-import { User } from '../../../../shared/models/user.model';
+import { Observation } from '../../models/observation';
 
 @Injectable()
 export class ObservationStore {
 
-  churches$: Observable<Church[]>;
-  private _churches: BehaviorSubject<Church[]>;
-
-  cities$: Observable<City[]>;
-  private _cities: BehaviorSubject<City[]>;
-
-  analysts$: Observable<User[]>;
-  private _analysts: BehaviorSubject<User[]>;
+  observations$: Observable<Observation[]>;
+  private _observations: BehaviorSubject<Observation[]>;
 
   private dataStore: {
-    churches: Church[],
-    cities: City[],
-    analysts: User[]
+    observations: Observation[],
   };
-  public church: Church;
 
   constructor(
     private service: TreasuryService,
     private authService: AuthService,
-    private snackBar: MatSnackBar,
-    private sidenavService: SidenavService
+    private snackBar: MatSnackBar
   ) {
     this.dataStore = {
-      churches: [],
-      cities: [],
-      analysts: []
+      observations: []
     };
-    this._churches = <BehaviorSubject<Church[]>>new BehaviorSubject([]);
-    this.churches$ = this._churches.asObservable();
-
-    this._cities = <BehaviorSubject<City[]>>new BehaviorSubject([]);
-    this.cities$ = this._cities.asObservable();
-
-    this._analysts = <BehaviorSubject<User[]>>new BehaviorSubject([]);
-    this.analysts$ = this._analysts.asObservable();
-
-    this.resetChurch();
+    this._observations = <BehaviorSubject<Observation[]>>new BehaviorSubject([]);
+    this.observations$ = this._observations.asObservable();
   }
 
   /* Listagem */
   public loadAll(): void {
     const unit = this.authService.getCurrentUnit();
-    this.service.getChurches(unit.id).subscribe((data: Church[]) => {
-      this.dataStore.churches = data;
-      this.loadCities();
-      this.loadAnalysts();
-      this._churches.next(Object.assign({}, this.dataStore).churches);
+    this.service.getObservations(unit.id).subscribe((data: Observation[]) => {
+      this.dataStore.observations = data;
+      this._observations.next(Object.assign({}, this.dataStore).observations);
     });
   }
 
   /* Filtro */
-  public searchText(search: string): Church[] {
+  public searchText(search: string): Observation[] {
     if (search === '' || search === undefined || search === null) {
-      return this.dataStore.churches;
+      return this.dataStore.observations;
     } else {
-      return this.dataStore.churches.filter(data => {
-        return data.name.toLowerCase().indexOf(search) !== -1
-          || data.district.name.toLowerCase().indexOf(search) !== -1
-          || data.district.analyst.name.toLowerCase().indexOf(search) !== -1
-          || data.city.name.toLowerCase().indexOf(search) !== -1
-          || data.city.state.acronym.toLowerCase().indexOf(search) !== -1
+      return this.dataStore.observations.filter(data => {
+        return data.description.toLowerCase().indexOf(search) !== -1
       });
     }
-  }
-
-  public searchDistricts(idDistrict: number, churches: Church[]): Church[] {
-    return churches.filter(x => x.district.id === idDistrict);
-  }
-
-  public searchCities(idCity: number, churches: Church[]): Church[] {
-    return churches.filter(x => x.city.id === idCity);
-  }
-
-  public searchAnalysts(idAnalyst: number, churches: Church[]): Church[] {
-    return churches.filter(x => x.district.analyst.id === idAnalyst);
   }
 
   /* Carregar */
-  private loadCities() {
-    this.dataStore.cities = new Array<City>();
-    if (this.dataStore.churches != null) {
-      this.dataStore.churches.forEach(church => {
-        if (this.dataStore.cities.map(x => x.id).indexOf(church.city.id) === -1) {
-          this.dataStore.cities.push(church.city);
-        }
-      });
-      this._cities.next(Object.assign({}, this.dataStore).cities);
-      this.dataStore.cities.sort((a, b) => a.name.localeCompare(b.name));
-    }
-  }
-
-  private loadAnalysts() {
-    this.dataStore.analysts = new Array<User>();
-    if (this.dataStore.churches != null) {
-      this.dataStore.churches.forEach(church => {
-        if (this.dataStore.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
-          this.dataStore.analysts.push(church.district.analyst);
-        }
-      });
-      this._analysts.next(Object.assign({}, this.dataStore).analysts);
-      this.dataStore.analysts.sort((a, b) => a.name.localeCompare(b.name));
-    }
-  }
 
   /* Remoção */
   public remove(id) {
-    this.service.deleteChurch(id).subscribe(() => {
-      const index = this.dataStore.churches.findIndex(x => x.id === id);
-      this.dataStore.churches.splice(index, 1);
-      this.snackBar.open('Igreja removida!', 'OK', { duration: 5000 });
+    this.service.deleteObservation(id).subscribe(() => {
+      const index = this.dataStore.observations.findIndex(x => x.id === id);
+      this.dataStore.observations.splice(index, 1);
+      this.snackBar.open('Observação removida!', 'OK', { duration: 5000 });
     }, err => {
       console.log(err);
-      this.snackBar.open('Erro ao remover igreja, tente novamente.', 'OK', { duration: 5000 });
+      this.snackBar.open('Erro ao remover ovservação, tente novamente.', 'OK', { duration: 5000 });
     });
   }
 
   /* Adição */
-  public save(data) {
-    this.service.saveChurch(data).subscribe((church: Church) => {
-      this.update(church);
-      this.sidenavService.close();
-      this.resetChurch();
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao salvar igreja, tente novamente.', 'OK', { duration: 5000 });
-    });
-  }
-
-  private update(church: Church): void {
-    const index = this.dataStore.churches.findIndex(x => x.id === church.id);
-    if (index >= 0) {
-      this.dataStore.churches[index] = church;
-    } else {
-      this.dataStore.churches.push(church);
-    }
-    this.dataStore.churches.sort((a, b) => a.name.localeCompare(b.name));
-    this._churches.next(Object.assign({}, this.dataStore).churches);
-  }
-
-  private resetChurch() {
-    this.church = new Church();
-    this.church.id = 0;
-  }
 }

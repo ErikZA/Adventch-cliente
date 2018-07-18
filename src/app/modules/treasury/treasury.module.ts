@@ -18,6 +18,7 @@ import { DistrictsFormComponent } from './components/districts/districts-form/di
 import { DistrictsStore } from './components/districts/districts.store';
 import { ObservationDataComponent } from './components/observation/observation-data/observation-data.component';
 import { ObservationFormComponent } from './components/observation/observation-form/observation-form.component';
+import { ObservationStore } from './components/observation/observation.store';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { ObservationFormComponent } from './components/observation/observation-f
     TreasuryService,
     TreasurerStore,
     ChurchStore,
-    DistrictsStore
+    DistrictsStore,
+    ObservationStore
   ]
 })
 export class TreasuryModule { }

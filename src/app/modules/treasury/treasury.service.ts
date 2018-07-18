@@ -8,6 +8,7 @@ import { Church } from './models/church';
 import { Districts } from './models/districts';
 import { State } from '../../shared/models/state.model';
 import { City } from '../../shared/models/city.model';
+import { Observation } from './models/observation';
 
 @Injectable()
 export class TreasuryService {
@@ -134,5 +135,29 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+  /*
+    Observações
+  */
+  getObservations(unitId): Observable<Observation[]> {
+    const url = '/treasury/observations/GetAllObservations/' + unitId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 
+  saveObservation(data): Observable<any> {
+    const url = '/treasury/observations/saveObservation';
+    return this.http
+      .post(url, data)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  deleteObservation(id): Observable<boolean> {
+    const url = '/treasury/observations/deleteObservation/' + id;
+    return this.http
+      .delete(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 }
