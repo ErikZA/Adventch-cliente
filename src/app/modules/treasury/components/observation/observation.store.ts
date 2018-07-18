@@ -8,6 +8,8 @@ import 'rxjs/add/observable/of';
 import { TreasuryService } from '../../treasury.service';
 import { AuthService } from '../../../../shared/auth.service';
 import { Observation } from '../../models/observation';
+import { Church } from '../../models/church';
+import { User } from '../../../../shared/models/user.model';
 
 @Injectable()
 export class ObservationStore {
@@ -16,8 +18,12 @@ export class ObservationStore {
   private _observations: BehaviorSubject<Observation[]>;
 
   private dataStore: {
-    observations: Observation[],
+    observations: Observation[]
   };
+
+  churches: Church[];
+  analysts: User[];
+  responsibles: User[];
 
   constructor(
     private service: TreasuryService,
@@ -27,8 +33,15 @@ export class ObservationStore {
     this.dataStore = {
       observations: []
     };
+    this.init();
+  }
+
+  public init() {    
     this._observations = <BehaviorSubject<Observation[]>>new BehaviorSubject([]);
     this.observations$ = this._observations.asObservable();
+    this.churches = new Array<Church>();
+    this.analysts = new Array<User>();
+    this.responsibles = new Array<User>();
   }
 
   /* Listagem */
@@ -36,6 +49,7 @@ export class ObservationStore {
     const unit = this.authService.getCurrentUnit();
     this.service.getObservations(unit.id).subscribe((data: Observation[]) => {
       this.dataStore.observations = data;
+      this.load();
       this._observations.next(Object.assign({}, this.dataStore).observations);
     });
   }
@@ -47,13 +61,60 @@ export class ObservationStore {
     } else {
       return this.dataStore.observations.filter(data => {
         return data.description.toLowerCase().indexOf(search) !== -1
-        || data.church.name.toLowerCase().indexOf(search) !== -1
-        || data.responsible.name.toLowerCase().indexOf(search) !== -1
+          || data.church.name.toLowerCase().indexOf(search) !== -1
+          || data.responsible.name.toLowerCase().indexOf(search) !== -1
       });
     }
   }
 
+  public searchStatus(status: number, observations: Observation[]): Observation[] {
+    return observations.filter(f => f.status === status);
+  }
+
+  public searchChurches(church: number, observations: Observation[]): Observation[] {
+    return observations.filter(f => f.church.id === church);
+  }
+
+  public searchAnalysts(analyst: number, observations: Observation[]): Observation[] {
+    return observations.filter(f => f.church.district.analyst.id === analyst);
+  }
+
+  public searchResponsibles(responsible: number, observations: Observation[]): Observation[] {
+    return observations.filter(f => f.responsible.id === responsible);
+  }
+
   /* Carregar */
+  private load() {
+    this.loadChurches();
+    this.loadAnalysts();
+    this.loadResponsibles();
+  }
+  private loadChurches() {
+    this.dataStore.observations.forEach(observation => {
+      if (this.churches.map(x => x.id).indexOf(observation.church.id) === -1) {
+        this.churches.push(observation.church);
+      }
+    });
+    this.churches.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  private loadAnalysts() {
+    this.dataStore.observations.forEach(observation => {
+      if (this.analysts.map(x => x.id).indexOf(observation.church.district.analyst.id) === -1) {
+        this.analysts.push(observation.church.district.analyst);
+      }
+    });
+    this.analysts.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  private loadResponsibles() {
+    this.dataStore.observations.forEach(observation => {
+      if (this.responsibles.map(x => x.id).indexOf(observation.responsible.id) === -1) {
+        this.responsibles.push(observation.responsible);
+      }
+    });
+    this.responsibles.sort((a, b) => a.name.localeCompare(b.name));
+  }
 
   /* Remoção */
   public remove(id) {

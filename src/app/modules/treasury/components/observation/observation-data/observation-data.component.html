@@ -19,47 +19,59 @@
         <button mat-icon-button (click)="searchButton = !searchButton">
           <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
         </button>
-        <!-- <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
+        <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
           <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
-        </button> -->
+        </button>
       </div>
     </div>
-    <!-- <mat-accordion class="example-headers-align" #matExpansionPanel>
+    <mat-accordion class="example-headers-align" #matExpansionPanel>
       <mat-expansion-panel #matExpansionPanel hideToggle="true">
-        <div fxLayout="{{ layout }}" (window:resize)="onResize($event)">
-          <mat-list flex="30" class="margin-search" style="padding: 0 8px;">
+        <div fxLayout="row wrap" style="flex-wrap: wrap;">
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
-              <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
+              <mat-select placeholder="Status" (change)="search()" [(ngModel)]="filterStatus">
                 <mat-option value="0">TODOS</mat-option>
-                <mat-option *ngFor="let district of districts" [value]="district.id">
-                  {{ district.name }}
+                <mat-option value="1">Aberta</mat-option>
+                <mat-option value="2">Finalizada</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list>
+
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+            <mat-form-field>
+              <mat-select placeholder="Igreja" (change)="search()" [(ngModel)]="filterStatus">
+                <mat-option value="0">TODAS</mat-option>
+                <mat-option *ngFor="let church of (churches$ | async )" [value]="church.id">
+                  {{ church.name }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
           </mat-list>
-          <mat-list flex="30" class="margin-search" style="padding: 0 8px;">
-            <mat-form-field>
-              <mat-select placeholder="Cidade" (change)="search()" [(ngModel)]="filterCity">
-                <mat-option value="0">TODOS</mat-option>
-                <mat-option *ngFor="let city of (cities$ | async ); index as i" [value]="city.id">
-                  {{ city.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </mat-list>
-          <mat-list flex="30" class="margin-search" style="padding: 0 8px;">
+
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
               <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
                 <mat-option value="0">TODOS</mat-option>
-                <mat-option *ngFor="let analyst of (analysts$ | async ); index as i" [value]="analyst.id">
+                <mat-option *ngFor="let analyst of (analysts$ | async )" [value]="analyst.id">
                   {{ analyst.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list>
+
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+            <mat-form-field>
+              <mat-select placeholder="Resposável" (change)="search()" [(ngModel)]="filterResponsible">
+                <mat-option value="0">TODOS</mat-option>
+                <mat-option *ngFor="let responsible of (responsibles$ | async )" [value]="responsible.id">
+                  {{ responsible.name }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
           </mat-list>
         </div>
       </mat-expansion-panel>
-    </mat-accordion> -->
+    </mat-accordion>
     <mat-divider></mat-divider>
     <div fxFlex>
       <div class="header">
@@ -127,7 +139,8 @@
                 </mat-list-item>
               </mat-list>
               <mat-action-row>
-                <button *ngIf="observation.status === 1" mat-button style="background-color: #E8702A!important; color: #fff" matTooltip="Finalizar observação" (click)="finalize(observation)">FINALIZAR</button>
+                <button *ngIf="observation.status === 1" mat-button style="background-color: #E8702A!important; color: #fff" matTooltip="Finalizar observação"
+                  (click)="finalize(observation)">FINALIZAR</button>
                 <button mat-button color="warn" matTooltip="Excluir" (click)="remove(observation)">REMOVER</button>
                 <button mat-button color="primary" matTooltip="Editar" (click)="edit(observation)">EDITAR</button>
               </mat-action-row>

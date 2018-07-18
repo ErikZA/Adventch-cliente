@@ -9,6 +9,8 @@ import { AuthService } from '../../../../../shared/auth.service';
 import { Observation } from '../../../models/observation';
 import { ObservationStore } from '../observation.store';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
+import { Church } from '../../../models/church';
+import { User } from '../../../../../shared/models/user.model';
 
 @Component({
   selector: 'app-observation-data',
@@ -25,12 +27,21 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
 
   observations$: Observable<Observation[]>;
   //observations: Observation[] = new Array<Observation>();
+  churches$: Observable<Church[]>;
+  analysts$: Observable<User[]>;
+  responsibles$: Observable<User[]>;
 
   filterText: string;
+  filterStatus: number;
+  filterChurch: number;
+  filterAnalyst: number;
+  filterResponsible: number;
+  filterPeriodStart: Date;
+  filterPeriodEnd: Date;
 
   constructor(
     private authService: AuthService,
-    private store: ObservationStore,
+    public store: ObservationStore,
     private router: Router,
     private confirmDialogService: ConfirmDialogService
   ) { }
@@ -39,6 +50,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/observacoes')]);
     this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
       this.getData();
+      this.setObservables();
     });
     this.search$.subscribe(search => {
       this.filterText = search;
@@ -53,6 +65,12 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   private getData() {
     this.observations$ = this.store.observations$;
     this.store.loadAll();
+  }
+
+  private setObservables() {
+    this.churches$ = Observable.of(this.store.churches);
+    this.analysts$ = Observable.of(this.store.analysts);
+    this.responsibles$ = Observable.of(this.store.responsibles);
   }
 
   /* Usados pelo component */
@@ -104,6 +122,18 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
 
   public search() {
     let observations = this.store.searchText(this.filterText);
+    if (this.filterStatus != undefined && this.filterStatus != null && this.filterStatus != 0)
+      observations = this.store.searchStatus(this.filterStatus, observations);
+    if (this.filterChurch != undefined && this.filterChurch != null && this.filterChurch != 0)
+      observations = this.store.searchChurches(this.filterChurch, observations);
+    if (this.filterAnalyst != undefined && this.filterAnalyst != null && this.filterAnalyst != 0)
+      observations = this.store.searchAnalysts(this.filterStatus, observations);
+    if (this.filterResponsible != undefined && this.filterResponsible != null && this.filterResponsible != 0)
+      observations = this.store.searchResponsibles(this.filterResponsible, observations);
     this.observations$ = Observable.of(observations);
+  }
+
+  public expandPanel(matExpansionPanel): void {
+    matExpansionPanel.toggle();
   }
 }
