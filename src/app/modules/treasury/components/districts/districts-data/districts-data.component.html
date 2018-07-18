@@ -35,11 +35,9 @@
         <mat-divider></mat-divider>
       </div>
       <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()"
-        [scrollWindow]="false">
+        [scrollWindow]="false" style="margin-top: 15px;">
         <mat-accordion>
           <div *ngFor="let district of (districts$ | async ); index as i">
-            <mat-expansion-panel hideToggle *ngIf="i <= showList">
-              <mat-expansion-panel-header>
                 <mat-panel-description fxLayout="row" fxFlex>
                   <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
                     {{ district.name }}
@@ -47,8 +45,13 @@
                   <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
                     {{ district.analyst.name }}
                   </span>
+                  <span fxFlex fxFlex.gt-sm="50%" style="white-space: line-wrap;">
+                    <div style="float: right;">
+                      <button mat-button color="warn" matTooltip="Excluir" (click)="remove(district)">REMOVER</button>
+                      <button mat-button color="primary" matTooltip="Editar" (click)="edit(district)">EDITAR</button>
+                    </div>
+                  </span>
                 </mat-panel-description>
-              </mat-expansion-panel-header>
               <!-- <mat-list>
                 <h3 matSubheader>Informações do Distrito</h3>
                 <mat-list-item fxLayout="row">
@@ -61,10 +64,8 @@
                 </mat-list-item>
               </mat-list> -->
               <mat-action-row>
-                <button mat-button color="warn" matTooltip="Excluir" (click)="remove(district)">REMOVER</button>
-                <button mat-button color="primary" matTooltip="Editar" (click)="edit(district)">EDITAR</button>
+
               </mat-action-row>
-            </mat-expansion-panel>
           </div>
         </mat-accordion>
       </div>

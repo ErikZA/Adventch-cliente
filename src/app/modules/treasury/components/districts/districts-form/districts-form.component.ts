@@ -21,6 +21,7 @@ export class DistrictsFormComponent implements OnInit {
   params: any;
   values: any;
   users: any;
+  teste: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,12 +33,20 @@ export class DistrictsFormComponent implements OnInit {
     private sidenavService: SidenavService,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private service: TreasuryService,
   ) { }
   ngOnInit() {
-    this.store.loadUser();
-
     this.initForm();
-    this.users = this.store.users;
+    this.service.getUsers().subscribe((data) => {
+      this.users = data;
+    });
+
+    this.routeSubscription = this.route.params.subscribe((data) => {
+      if (data.id) {
+        this.editDistrict(this.store.districts);
+      }
+
+    });
   }
 
   initForm(): void {
@@ -54,31 +63,22 @@ export class DistrictsFormComponent implements OnInit {
   }
 
   saveTreasurer() {
+    if (!this.formDistrict.valid) {
+      return;
+    }
     this.routeSubscription = this.route.params.subscribe(params => {
       this.params = params['id'];
     });
     const unit = this.authService.getCurrentUnit();
+    const valor = this.users.filter( x => x.name === this.formDistrict.value.analyst);
 
-    this.params
-    ?
     this.values = {
       id: this.params,
       name: this.formDistrict.value.name,
       analyst:
         {
-          id: this.formDistrict.value.analyst.id,
-          name: this.formDistrict.value.analyst.name,
-        },
-      analystname: this.formDistrict.value.analyst.name,
-      id_unit: unit.id }
-    :
-    this.values = {
-      id: this.params,
-      name: this.formDistrict.value.name,
-      analyst:
-        {
-          id: this.formDistrict.value.analyst.id,
-          name: this.formDistrict.value.analyst.name,
+          id: valor[0].id,
+          name: this.formDistrict.value.analyst,
         },
       id_unit: unit.id };
 
@@ -95,6 +95,14 @@ export class DistrictsFormComponent implements OnInit {
     } else {
       return;
     }
+  }
+
+  editDistrict(district) {
+    this.formDistrict.setValue({
+      name: district.name,
+      analyst: district.analyst,
+    });
+    this.teste = district.analyst.name;
   }
 
 
