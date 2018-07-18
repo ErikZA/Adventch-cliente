@@ -9,14 +9,26 @@ import { Church } from '../../models/church';
 import { TreasuryService } from '../../treasury.service';
 import { AuthService } from '../../../../shared/auth.service';
 import { SidenavService } from '../../../../core/services/sidenav.service';
+import { Districts } from '../../models/districts';
+import { City } from '../../../../shared/models/city.model';
+import { User } from '../../../../shared/models/user.model';
 
 @Injectable()
 export class ChurchStore {
 
   churches$: Observable<Church[]>;
   private _churches: BehaviorSubject<Church[]>;
+
+  cities$: Observable<City[]>;
+  private _cities: BehaviorSubject<City[]>;
+
+  analysts$: Observable<User[]>;
+  private _analysts: BehaviorSubject<User[]>;
+
   private dataStore: {
-    churches: Church[]
+    churches: Church[],
+    cities: City[],
+    analysts: User[]
   };
   public church: Church;
 
@@ -27,10 +39,18 @@ export class ChurchStore {
     private sidenavService: SidenavService
   ) {
     this.dataStore = {
-      churches: []
+      churches: [],
+      cities: [],
+      analysts: []
     };
     this._churches = <BehaviorSubject<Church[]>>new BehaviorSubject([]);
     this.churches$ = this._churches.asObservable();
+
+    this._cities = <BehaviorSubject<City[]>>new BehaviorSubject([]);
+    this.cities$ = this._cities.asObservable();
+
+    this._analysts = <BehaviorSubject<User[]>>new BehaviorSubject([]);
+    this.analysts$ = this._analysts.asObservable();
 
     this.resetChurch();
   }
@@ -40,24 +60,62 @@ export class ChurchStore {
     const unit = this.authService.getCurrentUnit();
     this.service.getChurches(unit.id).subscribe((data: Church[]) => {
       this.dataStore.churches = data;
+      this.loadCities();
+      this.loadAnalysts();
       this._churches.next(Object.assign({}, this.dataStore).churches);
     });
   }
 
   /* Filtro */
-  public searchProcess(search: string) {
-    this.search(search);
-  }
-
-  private search(search: string) {
+  public searchText(search: string): Church[] {
     if (search === '' || search === undefined || search === null) {
-      this.churches$ = Observable.of(this.dataStore.churches);
+      return this.dataStore.churches;
     } else {
-      this.churches$ = Observable.of(this.dataStore.churches.filter(data => {
+      return this.dataStore.churches.filter(data => {
         return data.name.toLowerCase().indexOf(search) !== -1
+          || data.district.name.toLowerCase().indexOf(search) !== -1
+          || data.district.analyst.name.toLowerCase().indexOf(search) !== -1
           || data.city.name.toLowerCase().indexOf(search) !== -1
           || data.city.state.acronym.toLowerCase().indexOf(search) !== -1
-      }));
+      });
+    }
+  }
+
+  public searchDistricts(idDistrict: number, churches: Church[]): Church[] {
+    return churches.filter(x => x.district.id === idDistrict);
+  }
+
+  public searchCities(idCity: number, churches: Church[]): Church[] {
+    return churches.filter(x => x.city.id === idCity);
+  }
+
+  public searchAnalysts(idAnalyst: number, churches: Church[]): Church[] {
+    return churches.filter(x => x.district.analyst.id === idAnalyst);
+  }
+
+  private loadCities() {
+    this.dataStore.cities = new Array<City>();
+    if (this.dataStore.churches != null) {
+      this.dataStore.churches.forEach(church => {
+        if (this.dataStore.cities.map(x => x.id).indexOf(church.city.id) === -1) {
+          this.dataStore.cities.push(church.city);
+        }
+      });
+      this._cities.next(Object.assign({}, this.dataStore).cities);
+      this.dataStore.cities.sort((a, b) => a.name.localeCompare(b.name));
+    }
+  }
+
+  private loadAnalysts() {
+    this.dataStore.analysts = new Array<User>();
+    if (this.dataStore.churches != null) {
+      this.dataStore.churches.forEach(church => {
+        if (this.dataStore.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
+          this.dataStore.analysts.push(church.district.analyst);
+        }
+      });
+      this._analysts.next(Object.assign({}, this.dataStore).analysts);
+      this.dataStore.analysts.sort((a, b) => a.name.localeCompare(b.name));
     }
   }
 
@@ -92,7 +150,7 @@ export class ChurchStore {
     } else {
       this.dataStore.churches.push(church);
     }
-    this.dataStore.churches.sort((a, b) =>  a.name.localeCompare(b.name));
+    this.dataStore.churches.sort((a, b) => a.name.localeCompare(b.name));
     this._churches.next(Object.assign({}, this.dataStore).churches);
   }
 

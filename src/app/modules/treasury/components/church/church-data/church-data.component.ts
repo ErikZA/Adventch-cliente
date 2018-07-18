@@ -10,6 +10,10 @@ import { ChurchStore } from '../church.store';
 import { AuthService } from '../../../../../shared/auth.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
+import { User } from '../../../../../shared/models/user.model';
+import { City } from '../../../../../shared/models/city.model';
+import { TreasuryService } from '../../../treasury.service';
+import { Districts } from '../../../models/districts';
 
 @Component({
   selector: 'app-church-data',
@@ -23,9 +27,21 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   showList = 15;
   search$ = new Subject<string>();
   subscribeUnit: Subscription;
+  layout: String = 'row';
 
   churches$: Observable<Church[]>;
   churches: Church[] = new Array<Church>();
+
+  cities$: Observable<City[]>;
+  cities: City[] = new Array<City>();
+
+  analysts$: Observable<User[]>;
+  districts: Districts[] = new Array<Districts>();
+
+  filterDistrict: number;
+  filterCity: number;
+  filterAnalyst: number;
+  filterText: string = '';
 
   constructor(
     private store: ChurchStore,
@@ -33,18 +49,22 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     private confirmDialogService: ConfirmDialogService,
     private sidenavService: SidenavService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private service: TreasuryService
   ) { }
 
   ngOnInit() {
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
     this.search$.subscribe(search => {
-      this.store.searchProcess(search);
-      this.churches$ = this.store.churches$;
+      this.filterText = search;
+      this.search();
     });
     this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
       this.getData();
       this.closeSidenav();
+      this.loadDistricts();
+      this.loadCities();
+      this.loadAnalysts();
     });
     this.sidenavService.setSidenav(this.sidenavRight);
   }
@@ -56,6 +76,20 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   private getData() {
     this.churches$ = this.store.churches$;
     this.store.loadAll();
+  }
+
+  private loadDistricts() {
+    this.service.getDistricts(1).subscribe((data: Districts[]) => {
+      this.districts = data;
+    });
+  }
+
+  private loadCities() {
+    this.cities$ = this.store.cities$;
+  }
+
+  private loadAnalysts() {
+    this.analysts$ = this.store.analysts$;
   }
 
   /* Usados pelo component */
@@ -83,5 +117,35 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     this.store.church = church;
     this.router.navigate([church.id, 'editar'], { relativeTo: this.route });
     this.openSidenav();
+  }
+
+  public expandPanel(matExpansionPanel): void {
+    matExpansionPanel.toggle();
+  }
+
+  public onResize(event): void {
+    const element = event.target.innerWidth;
+    if (element > 600) {
+      this.layout = 'row';
+    } else {
+      this.layout = 'column';
+    }
+  }
+
+  public search() {
+    let churchesFilttered = this.store.searchText(this.filterText);
+
+    if (this.filterDistrict != undefined && this.filterDistrict != null && this.filterDistrict != 0) {
+      churchesFilttered = this.store.searchDistricts(this.filterDistrict, churchesFilttered);
+    }
+
+    if (this.filterCity != undefined && this.filterCity != null && this.filterCity != 0) {
+      churchesFilttered = this.store.searchCities(this.filterCity, churchesFilttered);
+    }
+
+    if (this.filterAnalyst != undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
+      churchesFilttered = this.store.searchAnalysts(this.filterAnalyst, churchesFilttered);
+    }
+    this.churches$ = Observable.of(churchesFilttered);
   }
 }
