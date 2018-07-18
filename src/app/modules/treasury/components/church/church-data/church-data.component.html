@@ -19,8 +19,47 @@
         <button mat-icon-button (click)="searchButton = !searchButton">
           <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
         </button>
+        <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
+          <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
+        </button>
       </div>
     </div>
+    <mat-accordion class="example-headers-align" #matExpansionPanel>
+      <mat-expansion-panel #matExpansionPanel hideToggle="true">
+        <div fxLayout="{{ layout }}" (window:resize)="onResize($event)">
+          <mat-list flex="30" class="margin-search" style="padding: 0 8px;">
+            <mat-form-field>
+              <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
+                <mat-option value="0">TODOS</mat-option>
+                <mat-option *ngFor="let district of districts" [value]="district.id">
+                  {{ district.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list>
+          <mat-list flex="30" class="margin-search" style="padding: 0 8px;">
+            <mat-form-field>
+              <mat-select placeholder="Cidade" (change)="search()" [(ngModel)]="filterCity">
+                <mat-option value="0">TODOS</mat-option>
+                <mat-option *ngFor="let city of (cities$ | async ); index as i" [value]="city.id">
+                  {{ city.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list>
+          <mat-list flex="30" class="margin-search" style="padding: 0 8px;">
+            <mat-form-field>
+              <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
+                <mat-option value="0">TODOS</mat-option>
+                <mat-option *ngFor="let analyst of (analysts$ | async ); index as i" [value]="analyst.id">
+                  {{ analyst.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
     <mat-divider></mat-divider>
     <div fxFlex>
       <div class="header">
@@ -63,7 +102,7 @@
                   <div fxLayout="column">
                     <div fxLayout="row" fxLayoutAlign="space-between">
                       <span class="text-bold" class="details-title">
-                        <b>Endereço: </b> {{ church.address }} - {{ church.CEP }}
+                        <b>Endereço: </b> {{ church.address }} - {{ church.cep }}
                       </span>
                     </div>
                   </div>
