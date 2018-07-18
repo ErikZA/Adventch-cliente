@@ -8,6 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import { AuthService } from '../../../../../shared/auth.service';
 import { Observation } from '../../../models/observation';
 import { ObservationStore } from '../observation.store';
+import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-observation-data',
@@ -23,18 +24,25 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   subscribeUnit: Subscription;
 
   observations$: Observable<Observation[]>;
-  observations: Observation[] = new Array<Observation>();
+  //observations: Observation[] = new Array<Observation>();
+
+  filterText: string;
 
   constructor(
     private authService: AuthService,
     private store: ObservationStore,
-    private router: Router
+    private router: Router,
+    private confirmDialogService: ConfirmDialogService
   ) { }
 
   ngOnInit() {
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/observacoes')]);
     this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
       this.getData();
+    });
+    this.search$.subscribe(search => {
+      this.filterText = search;
+      this.search();
     });
   }
 
@@ -62,14 +70,26 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   }
 
   public remove(observation: Observation) {
-    //this.confirmDialogService
-    //  .confirm('Remover', 'Você deseja realmente remover a igreja?', 'REMOVER')
-    //  .subscribe(res => { this.store.remove(church.id) });
+    this.confirmDialogService
+      .confirm('Remover', 'Você deseja realmente remover a observação?', 'REMOVER')
+      .subscribe(res => { this.store.remove(observation.id) });
   }
 
   public edit(observation: Observation) {
     //this.store.church = church;
     //this.router.navigate([church.id, 'editar'], { relativeTo: this.route });
     //this.openSidenav();
+  }
+
+  public getStatus(status): string {
+    if (status === 1) {
+      return 'Aberta';
+    }
+    return 'Fechada'
+  }
+
+  public search() {
+    let observations = this.store.searchText(this.filterText);
+    this.observations$ = Observable.of(observations);
   }
 }

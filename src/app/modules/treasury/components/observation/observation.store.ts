@@ -47,6 +47,8 @@ export class ObservationStore {
     } else {
       return this.dataStore.observations.filter(data => {
         return data.description.toLowerCase().indexOf(search) !== -1
+        || data.church.name.toLowerCase().indexOf(search) !== -1
+        || data.responsible.name.toLowerCase().indexOf(search) !== -1
       });
     }
   }
