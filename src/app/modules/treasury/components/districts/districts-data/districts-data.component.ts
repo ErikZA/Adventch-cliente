@@ -5,8 +5,9 @@ import { DistrictsStore } from '../districts.store';
 import { AuthService } from '../../../../../shared/auth.service';
 import { Router } from '@angular/router';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav, MatSnackBar } from '@angular/material';
 import { TreasuryService } from '../../../treasury.service';
+import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-districts-data',
@@ -30,6 +31,8 @@ export class DistrictsDataComponent implements OnInit, OnDestroy {
     private router: Router,
     private treasureService: TreasuryService,
     private sidenavService: SidenavService,
+    private snackBar: MatSnackBar,
+    private confirmDialogService: ConfirmDialogService,
   ) { }
 
   ngOnInit() {
@@ -67,7 +70,14 @@ export class DistrictsDataComponent implements OnInit, OnDestroy {
   }
 
   remove(district: Districts) {
-    this.store.remove(district.id);
+    this.confirmDialogService
+      .confirm('Remover', 'Você deseja realmente remover este distrito?', 'REMOVER')
+      .subscribe(res => {
+        if (res) {
+          this.store.remove(district.id);
+          this.snackBar.open('Distrito removido com sucesso.', 'OK', { duration: 5000 });
+        }
+      });
   }
 
   edit(district: Districts) {
