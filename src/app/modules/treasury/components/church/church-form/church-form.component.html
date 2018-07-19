@@ -43,8 +43,8 @@
           <div fxFlex="30" style="padding-right: 8px;">
             <mat-form-field  fxFlexFill>
               <mat-select placeholder="Estado" formControlName="state" required (change)="loadCities()">
-                <mat-option *ngFor="let district of states" [value]="district.id">
-                  {{ district.name }}
+                <mat-option *ngFor="let state of states" [value]="state.id">
+                  {{ state.name }}
                 </mat-option>
               </mat-select>
               <mat-error *ngIf="form.get('state').hasError('required')">Este campo é obrigatório</mat-error>
