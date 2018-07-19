@@ -98,13 +98,32 @@
               </mat-expansion-panel-header>
               <mat-list>
                 <h3 matSubheader>Informações da Igreja</h3>
-                <mat-list-item fxLayout="row">
-                  <div fxLayout="column">
-                    <div fxLayout="row" fxLayoutAlign="space-between">
+                <mat-list-item fxLayout="row" *ngIf="church.address">
+                  <div fxLayoutAlign="space-between">
+                    <span class="text-bold" class="details-title">
+                      <b>Endereço: </b> {{ church.address }} - {{ church.cep }}
+                    </span>
+                  </div>
+                </mat-list-item>
+                <mat-list-item fxLayout="row" *ngIf="church.district.name" fxHide fxShow.xs>
+                    <div fxLayoutAlign="space-between">
                       <span class="text-bold" class="details-title">
-                        <b>Endereço: </b> {{ church.address }} - {{ church.cep }}
+                        <b>Distrito: </b> {{ church.district.name }}
                       </span>
                     </div>
+                </mat-list-item>
+                <mat-list-item fxLayout="row" *ngIf="church.district.analyst.name" fxHide fxShow.xs>
+                  <div fxLayout="row" fxLayoutAlign="space-between">
+                    <span class="text-bold" class="details-title">
+                      <b>Analista: </b> {{ church.district?.analyst?.name }}
+                    </span>
+                  </div>
+                </mat-list-item>
+                <mat-list-item fxLayout="row" *ngIf="church.city.name" fxHide fxShow.xs>
+                  <div fxLayout="row" fxLayoutAlign="space-between">
+                    <span class="text-bold" class="details-title">
+                      <b>Cidade: </b> {{ church.city.name }} - {{ church.city.state.acronym }}
+                    </span>
                   </div>
                 </mat-list-item>
               </mat-list>
