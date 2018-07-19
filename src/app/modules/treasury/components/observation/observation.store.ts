@@ -84,7 +84,7 @@ export class ObservationStore {
   }
 
   public searchInDates(startDate: Date, endDate: Date, observations: Observation[]) {
-    return observations.filter(f => f.date > startDate && f.date < endDate);
+    return observations.filter(f => new Date(f.date) > startDate && new Date(f.date) < endDate);
   }
 
   /* Carregar */

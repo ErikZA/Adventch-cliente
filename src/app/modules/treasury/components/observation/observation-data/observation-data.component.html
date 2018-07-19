@@ -72,7 +72,7 @@
 
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
-              <input matInput [matDatepicker]="picker" placeholder="Início" [(ngModel)]="filterPeriodStart" (change)="search()">
+              <input matInput [matDatepicker]="picker" placeholder="Início" [(ngModel)]="filterPeriodStart" (dateChange)="search()">
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
@@ -80,7 +80,7 @@
 
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
-              <input matInput [matDatepicker]="picker2" placeholder="Final" [(ngModel)]="filterPeriodEnd" [min]="filterPeriodStart" (change)="search()">
+              <input matInput [matDatepicker]="picker2" placeholder="Final" [(ngModel)]="filterPeriodEnd" [min]="filterPeriodStart" (dateChange)="search()">
               <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
               <mat-datepicker #picker2></mat-datepicker>
             </mat-form-field>
