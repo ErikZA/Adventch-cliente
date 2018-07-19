@@ -57,6 +57,17 @@ export class ChurchFormComponent implements OnInit {
     });
   }
 
+  public checkIsEmpty(value): boolean {
+    debugger;
+    if (value === undefined || value === null) {
+      return true;
+    }
+    console.log(value.replace(/\s/g, "") == '');
+    if (value.replace(/\s/g, "") == '')
+      return false;
+      return true;
+  }
+
   public loadCities() {
     this.cities = [];
     const id = this.form.value.state;
@@ -79,7 +90,7 @@ export class ChurchFormComponent implements OnInit {
       }, 5000);
     }
   }
-  
+
   public reset() {
     this.form.reset();
     this.sidenavService.close();

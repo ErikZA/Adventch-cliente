@@ -11,6 +11,8 @@ import { Observation } from '../../models/observation';
 import { Church } from '../../models/church';
 import { User } from '../../../../shared/models/user.model';
 
+import * as moment from 'moment';
+
 @Injectable()
 export class ObservationStore {
 
@@ -34,6 +36,7 @@ export class ObservationStore {
       observations: []
     };
     this.init();
+    moment.locale('pt');
   }
 
   public init() {
@@ -63,8 +66,19 @@ export class ObservationStore {
         return data.description.toLowerCase().indexOf(search) !== -1
           || data.church.name.toLowerCase().indexOf(search) !== -1
           || data.responsible.name.toLowerCase().indexOf(search) !== -1
+          || moment(data.date).format('DD/MM/YYYY').toString().indexOf(search) !== -1
+          || this.filterStatus(search, data.status)
       });
     }
+  }
+
+  private filterStatus(search: string, status: number): boolean {
+    if (status === 1) {
+      return "aberta".indexOf(search) !== -1;
+    }
+    if (status === 2)
+      return "finalizada".indexOf(search) !== -1;
+    return false;
   }
 
   public searchStatus(status: number, observations: Observation[]): Observation[] {
