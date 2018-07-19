@@ -11,6 +11,7 @@ import { ObservationStore } from '../observation.store';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { Church } from '../../../models/church';
 import { User } from '../../../../../shared/models/user.model';
+import { ReportService } from '../../../../../shared/report.service';
 
 @Component({
   selector: 'app-observation-data',
@@ -43,7 +44,8 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     public store: ObservationStore,
     private router: Router,
-    private confirmDialogService: ConfirmDialogService
+    private confirmDialogService: ConfirmDialogService,
+    private reportService: ReportService
   ) { }
 
   ngOnInit() {
@@ -114,10 +116,10 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   }
 
   public getStatus(status): string {
-    if (status === 1) {
+    if (status == 1) {
       return 'Aberta';
     }
-    return 'Fechada'
+    return 'Finalizada'
   }
 
   public search() {
@@ -140,5 +142,47 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
 
   public expandPanel(matExpansionPanel): void {
     matExpansionPanel.toggle();
+  }
+
+  public generateGeneralReport(): void {
+    const data = this.getDataParams();
+    this.reportService.reportObservationsGeral(data).subscribe(urlData => {
+      const fileUrl = URL.createObjectURL(urlData);
+        let element;
+        element = document.createElement('a');
+        element.href = fileUrl;
+        element.download = 'observacoes.pdf';
+        element.target = '_blank';
+        element.click();
+      //this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+    }, err => {
+      console.log(err);
+      //this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+    });
+  }
+
+  private getStatusName(): string {
+    if (this.filterStatus === undefined || this.filterStatus === null || this.filterStatus === 0) {
+      return "TODOS";
+    }
+    return this.getStatus(this.filterStatus);
+  }
+
+  private getDataParams(): any {
+    const church = this.store.churches.find(f => f.id === this.filterChurch);
+    const analyst = this.store.analysts.find(f => f.id === this.filterAnalyst);
+    const responsible = this.store.analysts.find(f => f.id === this.filterResponsible);
+    return {
+      statusId: this.filterStatus,
+      statusName: this.getStatusName(),
+      churchId: this.filterChurch,
+      churchName: church === undefined ? 'TODAS' : church.name,
+      analystId: this.filterAnalyst,
+      analystName: analyst === undefined ? 'TODOS' : analyst.name,
+      responsibleId: this.filterResponsible,
+      responsibleName: responsible === undefined ? 'TODOS' : responsible.name,
+      dateStart: this.filterPeriodStart,
+      dateEnd: this.filterPeriodEnd,
+    };
   }
 }

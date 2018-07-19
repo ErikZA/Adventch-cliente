@@ -68,7 +68,7 @@ export class ObservationStore {
   }
 
   public searchStatus(status: number, observations: Observation[]): Observation[] {
-    return observations.filter(f => f.status === status);
+    return observations.filter(f => f.status == status);
   }
 
   public searchChurches(church: number, observations: Observation[]): Observation[] {

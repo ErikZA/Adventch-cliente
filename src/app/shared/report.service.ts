@@ -32,11 +32,18 @@ export class ReportService {
 
   private viewReport(reportName: string, moduleId: number, params: any): Observable<any> {
     const currentUserId = this.authService.getCurrentUser().id;
-    const url = `${environment.apiUrlReport}/reports/view/${reportName}?userId=${currentUserId}&module=${moduleId}&values=${params}`;
+    const unit = this.authService.getCurrentUnit();
+    const url = `${environment.apiUrlReport}/reports/view/${reportName}?userId=${currentUserId}&unitId=${unit.id}&unitName=${unit.name}&module=${moduleId}&values=${params}`;
     return this.http
       .get(url, { responseType: 'blob' })
       .map(res => new Blob([res], { type: 'application/pdf' }))
       .catch(err => Observable.throw(new Error(err)));
+  }
+
+  /* Relatório de tesouraria */
+  public reportObservationsGeral(data: any): Observable<any> {
+    const params = JSON.stringify(data);
+    return this.viewReport('observationsGeral', EModules.Treasury, params);
   }
 
 }
