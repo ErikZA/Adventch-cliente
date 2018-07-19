@@ -72,11 +72,11 @@ export class ChurchStore {
       return this.dataStore.churches;
     } else {
       return this.dataStore.churches.filter(data => {
-        return data.name.toLowerCase().indexOf(search) !== -1
-          || data.district.name.toLowerCase().indexOf(search) !== -1
-          || data.district.analyst.name.toLowerCase().indexOf(search) !== -1
-          || data.city.name.toLowerCase().indexOf(search) !== -1
-          || data.city.state.acronym.toLowerCase().indexOf(search) !== -1
+        return data.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || data.district.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || data.district.analyst.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || data.city.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || data.city.state.acronym.toLowerCase().indexOf(search.toLowerCase()) !== -1
       });
     }
   }

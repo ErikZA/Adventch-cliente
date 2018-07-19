@@ -80,7 +80,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   }
 
   private loadDistricts() {
-    this.service.getDistricts(1).subscribe((data: Districts[]) => {
+    this.service.getDistricts(this.authService.getCurrentUnit().id).subscribe((data: Districts[]) => {
       this.districts = data;
     });
   }

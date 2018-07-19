@@ -63,11 +63,11 @@ export class ObservationStore {
       return this.dataStore.observations;
     } else {
       return this.dataStore.observations.filter(data => {
-        return data.description.toLowerCase().indexOf(search) !== -1
-          || data.church.name.toLowerCase().indexOf(search) !== -1
-          || data.responsible.name.toLowerCase().indexOf(search) !== -1
-          || moment(data.date).format('DD/MM/YYYY').toString().indexOf(search) !== -1
-          || this.filterStatus(search, data.status)
+        return data.description.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || data.church.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || data.responsible.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || moment(data.date).format('DD/MM/YYYY').toString().indexOf(search.toLowerCase()) !== -1
+          || this.filterStatus(search.toLowerCase(), data.status)
       });
     }
   }
