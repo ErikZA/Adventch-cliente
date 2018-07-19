@@ -36,7 +36,7 @@ export class ObservationStore {
     this.init();
   }
 
-  public init() {    
+  public init() {
     this._observations = <BehaviorSubject<Observation[]>>new BehaviorSubject([]);
     this.observations$ = this._observations.asObservable();
     this.churches = new Array<Church>();
