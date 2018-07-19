@@ -1,17 +1,17 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav, MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 
 import { Subject, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 
 import { AuthService } from '../../../../../shared/auth.service';
-import { Observation } from '../../../models/observation';
-import { ObservationStore } from '../observation.store';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
+import { ReportService } from '../../../../../shared/report.service';
+import { ObservationStore } from '../observation.store';
+import { Observation } from '../../../models/observation';
 import { Church } from '../../../models/church';
 import { User } from '../../../../../shared/models/user.model';
-import { ReportService } from '../../../../../shared/report.service';
 
 @Component({
   selector: 'app-observation-data',
@@ -45,7 +45,8 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
     public store: ObservationStore,
     private router: Router,
     private confirmDialogService: ConfirmDialogService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -154,10 +155,10 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
         element.download = 'observacoes.pdf';
         element.target = '_blank';
         element.click();
-      //this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+        this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
     }, err => {
       console.log(err);
-      //this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+        this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
     });
   }
 
