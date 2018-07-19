@@ -57,11 +57,14 @@ export class ChurchFormComponent implements OnInit {
     });
   }
 
-  public loadCities() {
+  public loadCities(isEdit) {
     this.cities = [];
     const id = this.form.value.state;
-    this.service.getCities(id == null || undefined ? this.form.get('state').value : id).subscribe((data: City[]) => {
+    this.service.getCities(id == null || undefined ? this.store.church.city.state.id : id).subscribe((data: City[]) => {
       this.cities = Object.assign(this.cities, data as City[]);
+      if (isEdit) {
+        this.setValues();
+      }
     });
   }
 
@@ -74,14 +77,15 @@ export class ChurchFormComponent implements OnInit {
         ...this.form.value
       }
       this.store.save(data);
+      this.reset();
       setTimeout(() => {
-        this.reset();
       }, 5000);
     }
   }
 
   public reset() {
     this.form.reset();
+    this.form.markAsUntouched();
     this.sidenavService.close();
   }
 
@@ -91,8 +95,8 @@ export class ChurchFormComponent implements OnInit {
 
   public edit(id){
     if (id == this.store.church.id) {
-      this.loadCities();
-      this.setValues();
+      this.loadCities(true);
+      //this.setValues();    
     }
   }
 
