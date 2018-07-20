@@ -85,10 +85,16 @@
                   <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
                     {{ church.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+                  <span *ngIf="!church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+                    <i>Não Informado</i>
+                  </span>
+                  <span *ngIf="church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
                     {{ church.district.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+                  <span *ngIf="!church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+                    <i>Não Informado</i>
+                  </span>
+                  <span *ngIf="church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
                     {{ church.district?.analyst?.name }}
                   </span>
                   <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
