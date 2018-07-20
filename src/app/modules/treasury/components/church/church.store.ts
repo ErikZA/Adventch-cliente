@@ -136,7 +136,7 @@ export class ChurchStore {
   public save(data) {
     this.service.saveChurch(data).subscribe((church: Church) => {
       this.update(church);
-      this.sidenavService.close();
+      //this.sidenavService.close();
       this.resetChurch();
     }, err => {
       console.log(err);

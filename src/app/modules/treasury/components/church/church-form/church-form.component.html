@@ -13,7 +13,7 @@
         <div fxLayout="row" fxLayoutAlign="space-between start">
           <div fxFlex="70" style="padding-right: 8px;">
             <mat-form-field fxFlexFill>
-              <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200" pattern="^(\w+\s?)*$">
+              <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200" pattern="^[^-\s][\w\s-]+$">
               <mat-error *ngIf="form.get('name').hasError('required')">Este campo é obrigatório</mat-error>
               <mat-error *ngIf="form.get('name').hasError('pattern')">Este campo é inválido</mat-error>
               <mat-error *ngIf="form.get('name').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
@@ -22,7 +22,7 @@
           </div>
           <div fxFlex="30">
             <mat-form-field fxFlexFill>
-              <input matInput type="text" formControlName="code" placeholder="Código" required maxlength="100" pattern="^(\w+\s?)*$">
+              <input matInput type="text" formControlName="code" placeholder="Código" required maxlength="100" pattern="^[^-\s][\w\s-]+$">
               <mat-error *ngIf="form.get('code').hasError('required')">Este campo é obrigatório</mat-error>
               <mat-error *ngIf="form.get('name').hasError('pattern')">Este campo é inválido</mat-error>
               <mat-error *ngIf="form.get('code').hasError('maxlenght')">Digite um código com até 100 dígitos</mat-error>
@@ -63,13 +63,13 @@
         </div>
 
         <mat-form-field>
-          <input matInput type="text" formControlName="address" placeholder="Endereço" required maxlength="200" pattern="^(\w+\s?)*$">
+          <input matInput type="text" formControlName="address" placeholder="Endereço" required maxlength="200" pattern="^[^-\s][\w\s-]+$">
           <mat-error *ngIf="form.get('address').hasError('required')">Este campo é obrigatório</mat-error>
           <mat-error *ngIf="form.get('address').hasError('pattern')">Este campo é inválido</mat-error>
           <mat-error *ngIf="form.get('address').hasError('maxlenght')">Digite um endereço com até 200 dígitos</mat-error>
         </mat-form-field>
         <mat-form-field fxFlex>
-          <input matInput type="text" formControlName="cep" placeholder="CEP" required maxlength="20" pattern="^(\w+\s?)*$">
+          <input matInput type="text" formControlName="cep" placeholder="CEP" required maxlength="20" pattern="^[0-9]{5}-[0-9]{3}$">
           <mat-error *ngIf="form.get('cep').hasError('required')">Este campo é obrigatório</mat-error>
           <mat-error *ngIf="form.get('cep').hasError('pattern')">Este campo é inválido</mat-error>
           <mat-error *ngIf="form.get('cep').hasError('maxlenght')">Digite um CEP com até 20 dígitos</mat-error>

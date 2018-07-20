@@ -40,7 +40,6 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    debugger;
     this.initForm();
     this.loadDistricts();
     this.loadStates();
@@ -88,16 +87,16 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
         ...this.form.value
       }
       this.store.save(data);
-      this.reset();
-      /*setTimeout(() => {
-      }, 5000);*/
+      setTimeout(() => {
+        this.reset();
+      }, 5000);
     }
   }
 
   public reset() {
     this.form.reset();
     this.form.markAsUntouched();
-    this.sidenavService.close();
+    //this.sidenavService.close();
   }
 
   public checkState() {
