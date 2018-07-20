@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { MatSidenav } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
 import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 import { Districts } from '../../../models/districts';
 import { State } from '../../../../../shared/models/state.model';
@@ -19,9 +20,11 @@ import { Church } from '../../../models/church';
   templateUrl: './church-form.component.html',
   styleUrls: ['./church-form.component.scss']
 })
-export class ChurchFormComponent implements OnInit {
+export class ChurchFormComponent implements OnInit, OnDestroy {
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
 
+  subscribeUnit: Subscription;
+  
   form: FormGroup;
   districts: Districts[];
   states: State[];
@@ -37,12 +40,20 @@ export class ChurchFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    debugger;
     this.initForm();
     this.loadDistricts();
     this.loadStates();
     this.route.params.subscribe(params => {
       this.edit(params['id']);
     });
+    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+      this.reset();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
 
   initForm(): void {
@@ -78,8 +89,8 @@ export class ChurchFormComponent implements OnInit {
       }
       this.store.save(data);
       this.reset();
-      setTimeout(() => {
-      }, 5000);
+      /*setTimeout(() => {
+      }, 5000);*/
     }
   }
 
