@@ -59,7 +59,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
 
   initForm(): void {
     this.form = this.formBuilder.group({
-      name: ['', Validators.required],
+      name: [null, Validators.required],
       code: [null, Validators.required],
       district: [null, Validators.required],
       state: [null, Validators.required],
