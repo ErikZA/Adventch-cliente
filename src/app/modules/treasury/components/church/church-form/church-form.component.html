@@ -71,7 +71,7 @@
         <mat-form-field fxFlex>
           <input matInput type="text" formControlName="cep" placeholder="CEP" required maxlength="20" pattern="^[0-9]{5}-[0-9]{3}$">
           <mat-error *ngIf="form.get('cep').hasError('required')">Este campo é obrigatório</mat-error>
-          <mat-error *ngIf="form.get('cep').hasError('pattern')">Este campo é inválido</mat-error>
+          <mat-error *ngIf="form.get('cep').hasError('pattern')">Este campo é inválido (considere o padrão: 12345-678)</mat-error>
           <mat-error *ngIf="form.get('cep').hasError('maxlenght')">Digite um CEP com até 20 dígitos</mat-error>
         </mat-form-field>
       </div>

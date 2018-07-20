@@ -176,7 +176,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
   getChurches() {
     const unit = this.authService.getCurrentUnit();
     this.lstChurches = [];
-    this.subscribe1 = this.treasuryService.getChurches(unit.id).subscribe((data: Church[]) => {
+    this.subscribe1 = this.treasuryService.loadChurches(unit.id).subscribe((data: Church[]) => {
       this.lstChurches = Object.assign(this.lstChurches, data as Church[]);
     });
   }

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
-import { MatSidenav } from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
+import { MatSidenav, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -36,7 +36,9 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     private service: TreasuryService,
     private store: ChurchStore,
     private sidenavService: SidenavService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -57,7 +59,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
 
   initForm(): void {
     this.form = this.formBuilder.group({
-      name: [null, Validators.required],
+      name: ['', Validators.required],
       code: [null, Validators.required],
       district: [null, Validators.required],
       state: [null, Validators.required],
@@ -79,24 +81,29 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   }
 
   public save(): void {
-    const unit = this.authService.getCurrentUnit();
+    debugger;
     if (this.form.valid) {
+      const unit = this.authService.getCurrentUnit();
       const data = {
         id: this.store.church.id,
         unit: unit.id,
         ...this.form.value
       }
-      this.store.save(data);
-      setTimeout(() => {
+      this.service.saveChurch(data).subscribe((church: Church) => {
+        this.store.update(church);
         this.reset();
-      }, 5000);
+      }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao salvar igreja, tente novamente.', 'OK', { duration: 5000 });
+      });
     }
   }
 
   public reset() {
-    this.form.reset();
     this.form.markAsUntouched();
-    //this.sidenavService.close();
+    this.form.reset();
+    this.sidenavService.close();
+    this.router.navigate([this.router.url.replace('/novo', '').replace('/editar', '')]);
   }
 
   public checkState() {

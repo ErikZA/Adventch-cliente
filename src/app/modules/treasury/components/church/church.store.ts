@@ -132,19 +132,8 @@ export class ChurchStore {
     });
   }
 
-  /* Adição */
-  public save(data) {
-    this.service.saveChurch(data).subscribe((church: Church) => {
-      this.update(church);
-      //this.sidenavService.close();
-      this.resetChurch();
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao salvar igreja, tente novamente.', 'OK', { duration: 5000 });
-    });
-  }
-
-  private update(church: Church): void {
+  /* Atualização */
+  public update(church: Church): void {
     const index = this.dataStore.churches.findIndex(x => x.id === church.id);
     if (index >= 0) {
       this.dataStore.churches[index] = church;
@@ -153,6 +142,7 @@ export class ChurchStore {
     }
     this.dataStore.churches.sort((a, b) => a.name.localeCompare(b.name));
     this._churches.next(Object.assign({}, this.dataStore).churches);
+    this.resetChurch();
   }
 
   private resetChurch() {
