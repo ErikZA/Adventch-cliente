@@ -63,9 +63,6 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
       this.getData();
       this.closeSidenav();
-      this.loadDistricts();
-      this.loadCities();
-      this.loadAnalysts();
     });
     this.sidenavService.setSidenav(this.sidenavRight);
   }
@@ -77,6 +74,13 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   private getData() {
     this.churches$ = this.store.churches$;
     this.store.loadAll();
+    this.loadAll();
+  }
+
+  private loadAll() {
+    this.loadDistricts();
+    this.loadCities();
+    this.loadAnalysts();
   }
 
   private loadDistricts() {
