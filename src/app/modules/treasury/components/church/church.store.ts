@@ -60,7 +60,6 @@ export class ChurchStore {
     const unit = this.authService.getCurrentUnit();
     this.service.getChurches(unit.id).subscribe((data: Church[]) => {
       this.dataStore.churches = data;
-      debugger;
       this.loadCities();
       this.loadAnalysts();
       this._churches.next(Object.assign({}, this.dataStore).churches);

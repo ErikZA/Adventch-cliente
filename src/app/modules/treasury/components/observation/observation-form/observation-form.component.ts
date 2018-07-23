@@ -122,7 +122,7 @@ export class ObservationFormComponent implements OnInit {
     }
   }
 
-  editObservation(observation) {debugger;
+  editObservation(observation) {
     this.formObservation.setValue({
       observation: observation['0'].description,
       date: observation['0'].date,
