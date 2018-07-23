@@ -49,15 +49,17 @@ export class ObservationStore {
     this.responsibles = new Array<User>();
   }
 
-  loadObservation( id: number) {
-    return this.dataStore.observations.filter( x => x.id == id);
+  loadObservation(id: number) {
+    return this.dataStore.observations.filter(x => x.id == id);
   }
   /* Listagem */
   public loadAll(): void {
     const unit = this.authService.getCurrentUnit();
     this.service.getObservations(unit.id).subscribe((data: Observation[]) => {
       this.dataStore.observations = data;
-      this.load();
+      if (data != null) {
+        this.load();
+      }
       this._observations.next(Object.assign({}, this.dataStore).observations);
     });
   }
@@ -170,15 +172,18 @@ export class ObservationStore {
 
   /* Util */
   public update(observation): void {
-    const index = this.dataStore.observations.findIndex(x => x.id == observation.id);
-    if (index >= 0) {
-      const status = this.dataStore.observations[index].status;
-      observation.status = status;
-      this.dataStore.observations[index] = observation;
-    } else {
+    if (this.dataStore.observations === null) {
+      this.dataStore.observations = new Array<Observation>();
       this.dataStore.observations.push(observation);
+    } else {
+      const index = this.dataStore.observations.findIndex(x => x.id == observation.id);
+      if (index >= 0) {
+        this.dataStore.observations[index] = observation;
+      } else {
+        this.dataStore.observations.push(observation);
+      }
     }
-    // this.dataStore.observations.sort((a, b) => a.church.name.localeCompare(b.church.name));
+    this.dataStore.observations.sort((a, b) => a.church.name.localeCompare(b.church.name));
     this._observations.next(Object.assign({}, this.dataStore).observations);
   }
 }

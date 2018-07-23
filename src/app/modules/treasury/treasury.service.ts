@@ -153,7 +153,7 @@ export class TreasuryService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  saveObservation(data): Observable<any> {
+  saveObservation(data): Observable<Observation> {
     const url = '/treasury/observations/saveObservation';
     return this.http
       .post(url, data)

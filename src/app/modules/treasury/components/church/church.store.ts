@@ -111,7 +111,7 @@ export class ChurchStore {
     this.dataStore.analysts = new Array<User>();
     if (this.dataStore.churches != null) {
       this.dataStore.churches.forEach(church => {
-        if (this.dataStore.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
+        if (church.district.id != 0 && this.dataStore.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
           this.dataStore.analysts.push(church.district.analyst);
         }
       });
