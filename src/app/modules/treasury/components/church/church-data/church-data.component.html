@@ -85,10 +85,16 @@
                   <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
                     {{ church.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+                  <span *ngIf="!church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+                    <i>Não Informado</i>
+                  </span>
+                  <span *ngIf="church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
                     {{ church.district.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+                  <span *ngIf="!church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+                    <i>Não Informado</i>
+                  </span>
+                  <span *ngIf="church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
                     {{ church.district?.analyst?.name }}
                   </span>
                   <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
@@ -101,7 +107,10 @@
                 <mat-list-item fxLayout="row" *ngIf="church.address">
                   <div fxLayoutAlign="space-between">
                     <span class="text-bold" class="details-title">
-                      <b>Endereço: </b> {{ church.address }} - {{ church.cep }}
+                      <b>Código: </b> {{ church.code }}<br />
+                      <b>Endereço: </b> {{ church.address }} ({{ church.complement == '' ? 'Sem complemento' : church.complement }})<br />
+                      <b>CEP: </b>{{ church.cep }}
+                      <!--expandir a linha do registro exibindo o código da Igreja, endereço, complemento e cep, além dos botões: Editar e Remover-->
                     </span>
                   </div>
                 </mat-list-item>

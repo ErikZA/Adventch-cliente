@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
-import { MatSidenav } from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
+import { MatSidenav, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 import { Districts } from '../../../models/districts';
 import { State } from '../../../../../shared/models/state.model';
@@ -19,9 +20,11 @@ import { Church } from '../../../models/church';
   templateUrl: './church-form.component.html',
   styleUrls: ['./church-form.component.scss']
 })
-export class ChurchFormComponent implements OnInit {
+export class ChurchFormComponent implements OnInit, OnDestroy {
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
 
+  subscribeUnit: Subscription;
+  
   form: FormGroup;
   districts: Districts[];
   states: State[];
@@ -33,7 +36,9 @@ export class ChurchFormComponent implements OnInit {
     private service: TreasuryService,
     private store: ChurchStore,
     private sidenavService: SidenavService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -43,6 +48,13 @@ export class ChurchFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.edit(params['id']);
     });
+    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+      this.reset();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
 
   initForm(): void {
@@ -51,48 +63,53 @@ export class ChurchFormComponent implements OnInit {
       code: [null, Validators.required],
       district: [null, Validators.required],
       state: [null, Validators.required],
-      city: [null, Validators.required],
+      city: [{value: null, disabled: true}, Validators.required],
       address: [null, Validators.required],
+      complement: [null],
       cep: [null, Validators.required]
     });
   }
 
-  public loadCities() {
+  public loadCities(isEdit) {
     this.cities = [];
     const id = this.form.value.state;
-    this.service.getCities(id == null || undefined ? this.form.get('state').value : id).subscribe((data: City[]) => {
+    this.service.getCities(id == null || undefined ? this.store.church.city.state.id : id).subscribe((data: City[]) => {
+      this.form.get('city').enable();
       this.cities = Object.assign(this.cities, data as City[]);
+      if (isEdit) {
+        this.setValues();
+      }
     });
   }
 
   public save(): void {
-    const unit = this.authService.getCurrentUnit();
     if (this.form.valid) {
+      const unit = this.authService.getCurrentUnit();
       const data = {
         id: this.store.church.id,
         unit: unit.id,
         ...this.form.value
       }
-      this.store.save(data);
-      setTimeout(() => {
+      this.service.saveChurch(data).subscribe((church: Church) => {
+        this.store.update(church);
         this.reset();
-      }, 5000);
+      }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao salvar igreja, tente novamente.', 'OK', { duration: 5000 });
+      });
     }
   }
-  
+
   public reset() {
+    this.form.markAsUntouched();
     this.form.reset();
     this.sidenavService.close();
-  }
-
-  public checkState() {
-    return this.form.get('state').value === null;
+    this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
   }
 
   public edit(id){
     if (id == this.store.church.id) {
-      this.loadCities();
-      this.setValues();
+      this.loadCities(true);
     }
   }
 
@@ -120,6 +137,7 @@ export class ChurchFormComponent implements OnInit {
       state: new FormControl({value: church.city.state.id, disabled: false}, Validators.required),
       city: new FormControl({value: church.city.id, disabled: false}, Validators.required),
       address: new FormControl({value: church.address, disabled: false}, Validators.required),
+      complement: new FormControl({value: church.complement, disabled: false}),
       cep: new FormControl({value: church.cep, disabled: false}, Validators.required),
     });
   }

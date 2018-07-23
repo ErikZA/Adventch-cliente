@@ -22,6 +22,9 @@
         <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
           <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
         </button>
+        <button mat-icon-button matTooltip="Imprimir observações" (click)="generateGeneralReport()">
+          <mat-icon aria-label="Imprimir relatório geral">print</mat-icon>
+        </button>
       </div>
     </div>
     <mat-accordion class="example-headers-align" #matExpansionPanel>
@@ -39,7 +42,7 @@
 
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
-              <mat-select placeholder="Igreja" (change)="search()" [(ngModel)]="filterStatus">
+              <mat-select placeholder="Igreja" (change)="search()" [(ngModel)]="filterChurch">
                 <mat-option value="0">TODAS</mat-option>
                 <mat-option *ngFor="let church of (churches$ | async )" [value]="church.id">
                   {{ church.name }}
@@ -61,7 +64,7 @@
 
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
-              <mat-select placeholder="Resposável" (change)="search()" [(ngModel)]="filterResponsible">
+              <mat-select placeholder="Responsável" (change)="search()" [(ngModel)]="filterResponsible">
                 <mat-option value="0">TODOS</mat-option>
                 <mat-option *ngFor="let responsible of (responsibles$ | async )" [value]="responsible.id">
                   {{ responsible.name }}

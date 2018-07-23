@@ -73,6 +73,13 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+  loadChurches(unitId): Observable<Church[]> {
+    const url = '/treasury/churches/loadChurches/' + unitId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 
   saveChurch(data): Observable<any> {
     const url = '/treasury/churches/saveChurch';

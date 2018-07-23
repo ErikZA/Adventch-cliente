@@ -8,6 +8,7 @@ export class Church {
   unit: Unit;
   city: City;
   address: string;
+  complement: string;
   cep: string;
   name: string;
   code: string;

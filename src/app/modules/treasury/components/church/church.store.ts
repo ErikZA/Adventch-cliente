@@ -60,6 +60,7 @@ export class ChurchStore {
     const unit = this.authService.getCurrentUnit();
     this.service.getChurches(unit.id).subscribe((data: Church[]) => {
       this.dataStore.churches = data;
+      debugger;
       this.loadCities();
       this.loadAnalysts();
       this._churches.next(Object.assign({}, this.dataStore).churches);
@@ -72,11 +73,11 @@ export class ChurchStore {
       return this.dataStore.churches;
     } else {
       return this.dataStore.churches.filter(data => {
-        return data.name.toLowerCase().indexOf(search) !== -1
-          || data.district.name.toLowerCase().indexOf(search) !== -1
-          || data.district.analyst.name.toLowerCase().indexOf(search) !== -1
-          || data.city.name.toLowerCase().indexOf(search) !== -1
-          || data.city.state.acronym.toLowerCase().indexOf(search) !== -1
+        return data.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || data.district.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || data.district.analyst.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || data.city.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || data.city.state.acronym.toLowerCase().indexOf(search.toLowerCase()) !== -1
       });
     }
   }
@@ -132,19 +133,8 @@ export class ChurchStore {
     });
   }
 
-  /* Adição */
-  public save(data) {
-    this.service.saveChurch(data).subscribe((church: Church) => {
-      this.update(church);
-      this.sidenavService.close();
-      this.resetChurch();
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao salvar igreja, tente novamente.', 'OK', { duration: 5000 });
-    });
-  }
-
-  private update(church: Church): void {
+  /* Atualização */
+  public update(church: Church): void {
     const index = this.dataStore.churches.findIndex(x => x.id === church.id);
     if (index >= 0) {
       this.dataStore.churches[index] = church;
@@ -153,6 +143,7 @@ export class ChurchStore {
     }
     this.dataStore.churches.sort((a, b) => a.name.localeCompare(b.name));
     this._churches.next(Object.assign({}, this.dataStore).churches);
+    this.resetChurch();
   }
 
   private resetChurch() {
