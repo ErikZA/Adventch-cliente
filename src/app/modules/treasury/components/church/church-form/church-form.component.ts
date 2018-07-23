@@ -103,7 +103,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     this.form.markAsUntouched();
     this.form.reset();
     this.sidenavService.close();
-    this.router.navigate([this.router.url.replace('/novo', '').replace('/editar', '')]);
+    this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
   }
 
   public edit(id){
