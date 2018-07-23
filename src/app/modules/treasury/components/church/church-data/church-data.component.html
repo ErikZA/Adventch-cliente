@@ -107,7 +107,10 @@
                 <mat-list-item fxLayout="row" *ngIf="church.address">
                   <div fxLayoutAlign="space-between">
                     <span class="text-bold" class="details-title">
-                      <b>Endereço: </b> {{ church.address }} - {{ church.cep }}
+                      <b>Código: </b> {{ church.code }}<br />
+                      <b>Endereço: </b> {{ church.address }} ({{ church.complement == '' ? 'Sem complemento' : church.complement }})<br />
+                      <b>CEP: </b>{{ church.cep }}
+                      <!--expandir a linha do registro exibindo o código da Igreja, endereço, complemento e cep, além dos botões: Editar e Remover-->
                     </span>
                   </div>
                 </mat-list-item>

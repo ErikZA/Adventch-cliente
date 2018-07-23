@@ -65,6 +65,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
       state: [null, Validators.required],
       city: [{value: null, disabled: true}, Validators.required],
       address: [null, Validators.required],
+      complement: [null],
       cep: [null, Validators.required]
     });
   }
@@ -136,6 +137,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
       state: new FormControl({value: church.city.state.id, disabled: false}, Validators.required),
       city: new FormControl({value: church.city.id, disabled: false}, Validators.required),
       address: new FormControl({value: church.address, disabled: false}, Validators.required),
+      complement: new FormControl({value: church.complement, disabled: false}),
       cep: new FormControl({value: church.cep, disabled: false}, Validators.required),
     });
   }

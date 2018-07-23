@@ -1,5 +1,5 @@
-<div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}" [ngStyle.xs]="{'width.vw': 80}"
-  [ngStyle.xs]="{'width.vw': 100}">
+<div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"
+  [ngStyle.xs]="{'width.vw': 80}" [ngStyle.xs]="{'width.vw': 100}">
   <div fxLayout="column" fxLayoutAlign="start" class="container beautiful-scroll-x">
 
     <form [formGroup]="form" fxLayout="column" fxLayoutGap="60px">
@@ -41,7 +41,7 @@
 
         <div fxLayout="row">
           <div fxFlex="30" style="padding-right: 8px;">
-            <mat-form-field  fxFlexFill>
+            <mat-form-field fxFlexFill>
               <mat-select placeholder="Estado" formControlName="state" required (change)="loadCities()">
                 <mat-option *ngFor="let state of states" [value]="state.id">
                   {{ state.name }}
@@ -63,10 +63,15 @@
         </div>
 
         <mat-form-field>
-          <input matInput type="text" formControlName="address" placeholder="Endereço" required maxlength="200" pattern="^[^-\s][\w\s-]+$">
+          <input matInput type="text" formControlName="address" placeholder="Endereço" maxlength="200" pattern="^[^-\s][\w\s-]+$">
           <mat-error *ngIf="form.get('address').hasError('required')">Este campo é obrigatório</mat-error>
           <mat-error *ngIf="form.get('address').hasError('pattern')">Este campo é inválido</mat-error>
           <mat-error *ngIf="form.get('address').hasError('maxlenght')">Digite um endereço com até 200 dígitos</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="text" formControlName="complement" placeholder="Complemento" required maxlength="200" pattern="^[^-\s][\w\s-]+$">
+          <mat-error *ngIf="form.get('complement').hasError('pattern')">Este campo é inválido</mat-error>
+          <mat-error *ngIf="form.get('complement').hasError('maxlenght')">Digite um complemento com até 200 dígitos</mat-error>
         </mat-form-field>
         <mat-form-field fxFlex>
           <input matInput type="text" formControlName="cep" placeholder="CEP" required maxlength="20" pattern="^[0-9]{5}-[0-9]{3}$">
