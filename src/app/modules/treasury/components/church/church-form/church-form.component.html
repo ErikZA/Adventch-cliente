@@ -52,7 +52,7 @@
           </div>
           <div fxFlex="70">
             <mat-form-field fxFlexFill class="box-align">
-              <mat-select placeholder="Cidade" formControlName="city" required [disabled]="checkState()">
+              <mat-select placeholder="Cidade" formControlName="city" required>
                 <mat-option *ngFor="let city of cities" [value]="city.id">
                   {{ city.name }}
                 </mat-option>

@@ -63,7 +63,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
       code: [null, Validators.required],
       district: [null, Validators.required],
       state: [null, Validators.required],
-      city: [null, Validators.required],
+      city: [{value: null, disabled: true}, Validators.required],
       address: [null, Validators.required],
       cep: [null, Validators.required]
     });
@@ -73,6 +73,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     this.cities = [];
     const id = this.form.value.state;
     this.service.getCities(id == null || undefined ? this.store.church.city.state.id : id).subscribe((data: City[]) => {
+      this.form.get('city').enable();
       this.cities = Object.assign(this.cities, data as City[]);
       if (isEdit) {
         this.setValues();
@@ -81,7 +82,6 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   }
 
   public save(): void {
-    debugger;
     if (this.form.valid) {
       const unit = this.authService.getCurrentUnit();
       const data = {
@@ -106,14 +106,9 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     this.router.navigate([this.router.url.replace('/novo', '').replace('/editar', '')]);
   }
 
-  public checkState() {
-    return this.form.get('state').value === null;
-  }
-
   public edit(id){
     if (id == this.store.church.id) {
       this.loadCities(true);
-      //this.setValues();    
     }
   }
 
