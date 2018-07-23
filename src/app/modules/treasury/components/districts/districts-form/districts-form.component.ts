@@ -1,20 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { TreasuryService } from '../../../treasury.service';
-import { DistrictsStore } from '../districts.store';
 import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
-import { Districts } from '../../../models/districts';
+
 import { Subscription } from 'rxjs';
+
+import { Districts } from '../../../models/districts';
 import { AuthService } from '../../../../../shared/auth.service';
+import { SidenavService } from '../../../../../core/services/sidenav.service';
+import { TreasuryService } from '../../../treasury.service';
+import { DistrictsStore } from '../districts.store';
 
 @Component({
   selector: 'app-districts-form',
   templateUrl: './districts-form.component.html',
   styleUrls: ['./districts-form.component.scss']
 })
-export class DistrictsFormComponent implements OnInit {
+export class DistrictsFormComponent implements OnInit, OnDestroy {
+  subscribeUnit: Subscription;
 
   formDistrict: FormGroup;
   routeSubscription: Subscription;
@@ -35,6 +38,7 @@ export class DistrictsFormComponent implements OnInit {
     private authService: AuthService,
     private service: TreasuryService,
   ) { }
+
   ngOnInit() {
     this.initForm();
     this.service.getUsers().subscribe((data) => {
@@ -45,8 +49,15 @@ export class DistrictsFormComponent implements OnInit {
       if (data.id) {
         this.editDistrict(this.store.districts);
       }
-
     });
+
+    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+      this.close();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
 
   initForm(): void {

@@ -41,6 +41,9 @@ export class DistrictsDataComponent implements OnInit, OnDestroy {
       this.districts$ = this.store.districts$;
     });
     this.getData();
+    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+      this.getData();
+    });
     this.sidenavService.setSidenav(this.sidenavRight);
   }
 
