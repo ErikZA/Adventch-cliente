@@ -73,7 +73,7 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
 
   initForm(): void {
     this.formObservation = this.formBuilder.group({
-      observation: ['', [Validators.required, Validators.minLength(3)]],
+      description: ['', [Validators.required, Validators.minLength(3)]],
       church: [null],
       date: [null]
     });
