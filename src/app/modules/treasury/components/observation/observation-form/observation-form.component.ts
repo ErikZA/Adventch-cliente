@@ -142,7 +142,7 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
   close() {
     // this.store.openOb(new Observation());
     this.sidenavService.close();
-    this.router.navigate([this.router.url.replace('/novo', '').replace('distritos/' + this.values.id + '/editar', 'distritos')]);
+    this.router.navigate(['tesouraria/observacoes']);
     this.resetAllForms();
   }
 

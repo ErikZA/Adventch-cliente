@@ -58,7 +58,6 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
     this.sidenavService.setSidenav(this.sidenavRight);
     this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
       this.getData();
-      this.setObservables();
     });
     this.search$.subscribe(search => {
       this.filterText = search;
@@ -73,6 +72,10 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   private getData() {
     this.observations$ = this.store.observations$;
     this.store.loadAll();
+    this.observations$.subscribe(() => {
+      this.setObservables();
+      this.store.loadFilters();
+    })
   }
 
   private setObservables() {

@@ -57,9 +57,6 @@ export class ObservationStore {
     const unit = this.authService.getCurrentUnit();
     this.service.getObservations(unit.id).subscribe((data: Observation[]) => {
       this.dataStore.observations = data;
-      if (data != null) {
-        this.load();
-      }
       this._observations.next(Object.assign({}, this.dataStore).observations);
     });
   }
@@ -116,6 +113,7 @@ export class ObservationStore {
     this.loadResponsibles();
   }
   private loadChurches() {
+    //this.churches = new Array<Church>();
     this.dataStore.observations.forEach(observation => {
       if (this.churches.map(x => x.id).indexOf(observation.church.id) === -1) {
         this.churches.push(observation.church);
@@ -125,6 +123,7 @@ export class ObservationStore {
   }
 
   private loadAnalysts() {
+    //this.analysts = new Array<User>();
     this.dataStore.observations.forEach(observation => {
       if (this.analysts.map(x => x.id).indexOf(observation.church.district.analyst.id) === -1) {
         this.analysts.push(observation.church.district.analyst);
@@ -134,6 +133,7 @@ export class ObservationStore {
   }
 
   private loadResponsibles() {
+    //this.responsibles = new Array<User>();
     this.dataStore.observations.forEach(observation => {
       if (this.responsibles.map(x => x.id).indexOf(observation.responsible.id) === -1) {
         this.responsibles.push(observation.responsible);
@@ -168,8 +168,6 @@ export class ObservationStore {
     });
   }
 
-  /* Adição */
-
   /* Util */
   public update(observation): void {
     if (this.dataStore.observations === null) {
@@ -185,5 +183,12 @@ export class ObservationStore {
     }
     this.dataStore.observations.sort((a, b) => a.church.name.localeCompare(b.church.name));
     this._observations.next(Object.assign({}, this.dataStore).observations);
+  }
+
+  public loadFilters() {
+    this.churches = new Array<Church>();
+    this.churches = new Array<Church>();
+    this.churches = new Array<Church>();
+    this.load();
   }
 }
