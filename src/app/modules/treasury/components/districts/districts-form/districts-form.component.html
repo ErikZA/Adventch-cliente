@@ -13,7 +13,7 @@
         </mat-form-field>
         <mat-form-field>
           <mat-select placeholder="Analista" formControlName="analyst" [(ngModel)]="editAnalyst" required>
-            <mat-option *ngFor="let analyst of users" [value]="analyst.name">
+            <mat-option *ngFor="let analyst of users" [value]="analyst.id">
               {{ analyst.name }}
             </mat-option>
           </mat-select>
