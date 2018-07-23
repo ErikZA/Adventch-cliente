@@ -161,7 +161,7 @@
                 <button *ngIf="observation.status === 1" mat-button style="background-color: #E8702A!important; color: #fff" matTooltip="Finalizar observação"
                   (click)="finalize(observation)">FINALIZAR</button>
                 <button mat-button color="warn" matTooltip="Excluir" (click)="remove(observation)">REMOVER</button>
-                <button mat-button color="primary" matTooltip="Editar" (click)="edit(observation)">EDITAR</button>
+                <button mat-button color="primary" matTooltip="Editar" (click)="edit(observation)" *ngIf="observation.status === 1">EDITAR</button>
               </mat-action-row>
             </mat-expansion-panel>
           </div>
