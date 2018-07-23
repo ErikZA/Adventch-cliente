@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TreasuryService } from '../../../treasury.service';
 import { AuthService } from '../../../../../shared/auth.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -17,7 +17,9 @@ import { EObservationStatus } from '../../../models/Enums';
   templateUrl: './observation-form.component.html',
   styleUrls: ['./observation-form.component.scss']
 })
-export class ObservationFormComponent implements OnInit {
+export class ObservationFormComponent implements OnInit, OnDestroy {
+
+  subscribeUnit: Subscription;
 
   formObservation: FormGroup;
   churches: any;
@@ -45,8 +47,12 @@ export class ObservationFormComponent implements OnInit {
     const unit = this.authService.getCurrentUnit();
     this.initConfigurations();
     this.initForm();
-    this.service.loadAllChurches(unit.id).subscribe((data) => {
+    this.service.loadChurches(unit.id).subscribe((data) => {
       this.churches = data;
+    });
+
+    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+      this.close();
     });
 
     this.routeSubscription = this.route.params.subscribe((data) => {
@@ -54,9 +60,13 @@ export class ObservationFormComponent implements OnInit {
         const val = this.store.loadObservation(Number(data.id));
         this.editObservation(val);
       }
-
     });
   }
+
+  ngOnDestroy() {
+    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
+  }
+
 
   initForm(): void {
     this.formObservation = this.formBuilder.group({
@@ -80,7 +90,7 @@ export class ObservationFormComponent implements OnInit {
     this.router.navigate(['tesouraria/observacoes']);
   }
 
-  saveObservation() {
+  saveObservation() {  
     if (!this.formObservation.valid) {
       return;
     }
@@ -91,7 +101,7 @@ export class ObservationFormComponent implements OnInit {
     const responsible = this.authService.getCurrentUser();
 
     this.values = {
-      id: this.params,
+      id: this.params == undefined ? 0 : this.params,
       description: this.formObservation.value.observation,
       date: this.formObservation.value.date,
       church: {
@@ -105,8 +115,6 @@ export class ObservationFormComponent implements OnInit {
       unit: unit.id,
       status: EObservationStatus.Open,
     };
-
-
     if (this.formObservation.valid) {
       this.treasuryService.saveObservation(this.values).subscribe((data) => {
         this.store.update(this.values);
