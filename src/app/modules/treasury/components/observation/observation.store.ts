@@ -185,7 +185,7 @@ export class ObservationStore {
         this.dataStore.observations.push(observation);
       }
     }
-    //this.dataStore.observations.sort((a, b) => a.church.name.localeCompare(b.church.name));
+    this.dataStore.observations.sort((a, b) => a.church.name.localeCompare(b.church.name));
     this._observations.next(Object.assign({}, this.dataStore).observations);
   }
 }
