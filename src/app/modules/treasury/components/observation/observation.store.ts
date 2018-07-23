@@ -178,8 +178,6 @@ export class ObservationStore {
     } else {
       const index = this.dataStore.observations.findIndex(x => x.id == observation.id);
       if (index >= 0) {
-        const status = this.dataStore.observations[index].status;
-        observation.status = status;
         this.dataStore.observations[index] = observation;
       } else {
         this.dataStore.observations.push(observation);
