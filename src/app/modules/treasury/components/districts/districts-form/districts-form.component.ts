@@ -71,15 +71,14 @@ export class DistrictsFormComponent implements OnInit {
     });
     const unit = this.authService.getCurrentUnit();
     // modificar para id, caso de conflito
-    const valor = this.users.filter( x => x.name === this.formDistrict.value.analyst);
-
+    const valor = this.users.filter( x => x.id === this.formDistrict.value.analyst);
     this.values = {
       id: this.params,
       name: this.formDistrict.value.name,
       analyst:
         {
-          id: valor[0].id,
-          name: this.formDistrict.value.analyst,
+          id: this.formDistrict.value.analyst,
+          name: valor[0].name,
         },
       id_unit: unit.id };
 
@@ -103,7 +102,7 @@ export class DistrictsFormComponent implements OnInit {
       name: district.name,
       analyst: district.analyst,
     });
-    this.editAnalyst = district.analyst.name;
+    this.editAnalyst = Number(district.analyst.id);
   }
 
 
