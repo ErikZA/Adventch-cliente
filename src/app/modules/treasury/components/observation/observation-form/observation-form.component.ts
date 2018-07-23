@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TreasuryService } from '../../../treasury.service';
 import { AuthService } from '../../../../../shared/auth.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observation } from '../../../models/observation';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
@@ -44,9 +44,10 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    const unit = this.authService.getCurrentUnit();
     this.initConfigurations();
     this.initForm();
+
+    const unit = this.authService.getCurrentUnit();
     this.service.loadChurches(unit.id).subscribe((data) => {
       this.churches = data;
     });
@@ -58,7 +59,9 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.route.params.subscribe((data) => {
       if (data.id) {
         const val = this.store.loadObservation(Number(data.id));
-        this.editObservation(val);
+        if (val.length === 1) {
+          this.editObservation(val);
+        }
       }
     });
   }
@@ -71,7 +74,7 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
   initForm(): void {
     this.formObservation = this.formBuilder.group({
       observation: ['', [Validators.required, Validators.minLength(3)]],
-      churches: [null],
+      church: [null],
       date: [null]
     });
   }
@@ -99,25 +102,17 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
     });
     const unit = this.authService.getCurrentUnit();
     const responsible = this.authService.getCurrentUser();
-
+    
     this.values = {
       id: this.params == undefined ? 0 : this.params,
-      description: this.formObservation.value.observation,
-      date: this.formObservation.value.date,
-      church: {
-        id: this.editChurch ? this.editChurch : this.formObservation.value.churches.id,
-        name: this.editChurchName ? this.editChurchName : this.formObservation.value.churches.name,
-      },
-      responsible: {
-        id: responsible.id,
-        name: responsible.name,
-      },
+      responsible: responsible.id,
       unit: unit.id,
       status: EObservationStatus.Open,
+      ...this.formObservation.value
     };
     if (this.formObservation.valid) {
-      this.treasuryService.saveObservation(this.values).subscribe((data) => {
-        this.store.update(this.values);
+      this.treasuryService.saveObservation(this.values).subscribe((data: Observation) => {
+        this.store.update(data);
         this.snackBar.open('Observação armazenado com sucesso!', 'OK', { duration: 5000 });
         this.formObservation.markAsUntouched();
         this.close();
@@ -131,14 +126,15 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
   }
 
   editObservation(observation) {
-    this.formObservation.setValue({
-      observation: observation['0'].description,
-      date: observation['0'].date,
-      churches: null,
+    this.formObservation = new FormGroup({
+      description: new FormControl({value: observation['0'].description, disabled: false}, Validators.required),
+      date: new FormControl({value: observation['0'].date, disabled: false}, Validators.required),
+      church: new FormControl({value: observation['0'].church.id, disabled: false}, Validators.required),
     });
+
     this.editChurch = Number(observation['0'].church.id);
     const unit = this.authService.getCurrentUnit();
-    this.service.loadAllChurches(unit.id).subscribe((data) => {
+    this.service.loadChurches(unit.id).subscribe((data) => {
       this.editChurchName = data.find(x => x.id == observation['0'].church.id).name;
     });
   }

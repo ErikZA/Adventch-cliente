@@ -53,6 +53,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/observacoes')]);
     this.sidenavService.setSidenav(this.sidenavRight);
     this.subscribeUnit = this.authService.currentUnit.subscribe(() => {

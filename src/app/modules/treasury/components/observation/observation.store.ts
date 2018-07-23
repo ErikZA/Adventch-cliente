@@ -57,7 +57,7 @@ export class ObservationStore {
     const unit = this.authService.getCurrentUnit();
     this.service.getObservations(unit.id).subscribe((data: Observation[]) => {
       this.dataStore.observations = data;
-      if (data = null) {
+      if (data != null) {
         this.load();
       }
       this._observations.next(Object.assign({}, this.dataStore).observations);
