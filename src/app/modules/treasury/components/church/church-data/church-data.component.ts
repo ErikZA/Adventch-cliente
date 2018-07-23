@@ -75,6 +75,9 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     this.churches$ = this.store.churches$;
     this.store.loadAll();
     this.loadAll();
+    this.churches$.subscribe(() => {
+      this.store.loadFilters();
+    })
   }
 
   private loadAll() {

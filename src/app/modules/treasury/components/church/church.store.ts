@@ -60,8 +60,6 @@ export class ChurchStore {
     const unit = this.authService.getCurrentUnit();
     this.service.getChurches(unit.id).subscribe((data: Church[]) => {
       this.dataStore.churches = data;
-      this.loadCities();
-      this.loadAnalysts();
       this._churches.next(Object.assign({}, this.dataStore).churches);
     });
   }
@@ -94,6 +92,10 @@ export class ChurchStore {
   }
 
   /* Carregar */
+  public loadFilters() {
+    this.loadCities();
+    this.loadAnalysts();
+  }
   private loadCities() {
     this.dataStore.cities = new Array<City>();
     if (this.dataStore.churches != null) {
