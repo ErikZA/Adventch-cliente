@@ -55,7 +55,8 @@ export class DistrictsStore {
         this.districts$ = Observable.of(this.dataStore.districts);
       } else {
         this.districts$ = Observable.of(this.dataStore.districts.filter(data => {
-          return data.name.toLowerCase().indexOf(search) !== -1;
+          return data.name.toLowerCase().indexOf(search) !== -1
+          || data.analyst.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
         }));
       }
     }
