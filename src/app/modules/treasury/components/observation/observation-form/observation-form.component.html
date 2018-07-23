@@ -1,3 +1,34 @@
-<p>
-  observation-form works!
-</p>
+<div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"  [ngStyle.xs]="{'width.vw': 80}"
+  [ngStyle.xs]="{'width.vw': 100}">
+<div fxFlex>
+    <h2 class="title">Observação</h2>
+    <mat-divider></mat-divider>
+  </div>
+  <br />
+<form [formGroup]="formObservation" fxLayout="column">
+    <!-- <mat-form-field fxFlex>
+      <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
+    </mat-form-field> -->
+    <mat-form-field>
+      <mat-select placeholder="Igreja" formControlName="churches" [(ngModel)]="editChurch" required> 
+        <mat-option *ngFor="let church of churches" [value]="church.id">
+          {{ church.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field fxFlexFill>
+        <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerBirth" placeholder="Data" formControlName="date" [max]="dates.now">
+        <mat-datepicker-toggle matSuffix [for]="pickerBirth"></mat-datepicker-toggle>
+        <mat-datepicker #pickerBirth></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%">
+        <textarea formControlName="observation" matInput placeholder="Obsevação" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10"></textarea>
+    </mat-form-field>
+
+    <div fxLayout="row" fxLayoutAlign="space-between">
+      <button mat-button type="button" (click)="closeSidenav()">Cancelar</button>
+      <button mat-raised-button type="submit" (click)="saveObservation()" color="primary">Salvar</button>
+    </div>
+  </form>

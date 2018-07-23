@@ -36,58 +36,37 @@
       </div>
       <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()"
         [scrollWindow]="false" style="margin-top: 15px;">
-        <mat-accordion>
-          <div *ngFor="let district of (districts$ | async ); index as i">
-                <mat-panel-description fxLayout="row" fxFlex>
-                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
-                    {{ district.name }}
-                  </span>
-                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
-                    {{ district.analyst.name }}
-                  </span>
-                  <button mat-icon-button fxHide.gt-xs [matMenuTriggerFor]="menu" style="margin-top: -10px;">
-                      <mat-icon>more_vert</mat-icon>
-                  </button>
-                  <mat-menu #menu="matMenu">
-                      <button (click)="edit(district)" mat-menu-item>
-                        <mat-icon aria-label="Editar papel" color="primary">edit</mat-icon>
-                        <span>Editar</span>
-                      </button>
-                      <button (click)="remove(district)" mat-menu-item>
-                        <mat-icon aria-label="Excluir papel" color="warn">delete</mat-icon>
-                        <span>Excluir</span>
-                      </button>
-                  </mat-menu>
-                  <span fxLayout="row" fxLayoutAlign="end center" fxFlex fxHide.lt-sm style="margin-top: -10px;">
-                    <button mat-icon-button matTooltip="Editar" (click)="edit(district)" color="primary">
-                      <mat-icon aria-label="Editar papel">edit</mat-icon>
-                    </button>
-                    <button mat-icon-button matTooltip="Excluir" color="warn" (click)="remove(district)">
-                      <mat-icon aria-label="Excluir papel">delete</mat-icon>
-                    </button>
-                  </span>
-<!-- 
-                  <span fxFlex fxFlex.gt-sm="50%" style="white-space: line-wrap;">
-                    <div style="float: right;">
-                      <button mat-button color="warn" matTooltip="Excluir" (click)="remove(district)">REMOVER</button>
-                      <button mat-button color="primary" matTooltip="Editar" (click)="edit(district)">EDITAR</button>
-                    </div>
-                  </span> -->
-                </mat-panel-description>
-              <!-- <mat-list>
-                <h3 matSubheader>Informações do Distrito</h3>
-                <mat-list-item fxLayout="row">
-                  <div fxLayout="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px" fxFlex matLine>
-                    <div fxLayout="row" fxLayoutAlign="space-between">
-                      <span class="text-bold" class="details-title">
-                        <b>Endereço:</b></span>
-                    </div>
-                  </div>
-                </mat-list-item>
-              </mat-list> -->
-              <mat-action-row>
-
-              </mat-action-row>
+        <mat-accordion class="example-headers-align">
+          <div *ngFor="let district of (districts$ | async ); index as i" fxLayout="row wrap">
+            <mat-panel-description fxLayout="row" fxFlex>
+              <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;"  class="margin-search">
+                {{ district.name }}
+              </span>
+              <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;"  class="margin-search">
+                {{ district.analyst.name }}
+              </span>
+              <button mat-icon-button fxHide.gt-xs [matMenuTriggerFor]="menu" style="margin-top: -10px;">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button (click)="edit(district)" mat-menu-item>
+                  <mat-icon aria-label="Editar papel" color="primary">edit</mat-icon>
+                  <span>Editar</span>
+                </button>
+                <button (click)="remove(district)" mat-menu-item>
+                  <mat-icon aria-label="Excluir papel" color="warn">delete</mat-icon>
+                  <span>Excluir</span>
+                </button>
+              </mat-menu>
+              <span fxLayout="row" fxLayoutAlign="end center" fxFlex fxHide.lt-sm style="margin-top: -10px;">
+                <button mat-icon-button matTooltip="Editar" (click)="edit(district)" color="primary">
+                  <mat-icon aria-label="Editar papel">edit</mat-icon>
+                </button>
+                <button mat-icon-button matTooltip="Excluir" color="warn" (click)="remove(district)">
+                  <mat-icon aria-label="Excluir papel">delete</mat-icon>
+                </button>
+              </span>
+            </mat-panel-description>
           </div>
         </mat-accordion>
       </div>

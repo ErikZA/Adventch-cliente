@@ -21,6 +21,8 @@ export class ObservationStore {
     observations: Observation[]
   };
 
+  public observations: Observation;
+
   churches: Church[];
   analysts: User[];
   responsibles: User[];
@@ -44,6 +46,9 @@ export class ObservationStore {
     this.responsibles = new Array<User>();
   }
 
+  loadObservation( id: number) {
+    return this.dataStore.observations.filter( x => x.id == id);
+  }
   /* Listagem */
   public loadAll(): void {
     const unit = this.authService.getCurrentUnit();
@@ -62,7 +67,7 @@ export class ObservationStore {
       return this.dataStore.observations.filter(data => {
         return data.description.toLowerCase().indexOf(search) !== -1
           || data.church.name.toLowerCase().indexOf(search) !== -1
-          || data.responsible.name.toLowerCase().indexOf(search) !== -1
+          || data.responsible.name.toLowerCase().indexOf(search) !== -1;
       });
     }
   }
@@ -136,7 +141,7 @@ export class ObservationStore {
   public finalize(id) {
     const data = {
       id: id
-    }
+    };
     this.service.finalizeObservation(data).subscribe((observation: Observation) => {
       this.update(observation);
       this.snackBar.open('Observação finalizada!', 'OK', { duration: 5000 });
@@ -149,14 +154,16 @@ export class ObservationStore {
   /* Adição */
 
   /* Util */
-  private update(observation: Observation): void {
-    const index = this.dataStore.observations.findIndex(x => x.id === observation.id);
+  public update(observation): void {
+    const index = this.dataStore.observations.findIndex(x => x.id == observation.id);
     if (index >= 0) {
+      const status = this.dataStore.observations[index].status;
+      observation.status = status;
       this.dataStore.observations[index] = observation;
     } else {
       this.dataStore.observations.push(observation);
     }
-    this.dataStore.observations.sort((a, b) => a.church.name.localeCompare(b.church.name));
+    // this.dataStore.observations.sort((a, b) => a.church.name.localeCompare(b.church.name));
     this._observations.next(Object.assign({}, this.dataStore).observations);
   }
 }

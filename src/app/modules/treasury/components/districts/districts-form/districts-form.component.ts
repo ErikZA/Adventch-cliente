@@ -21,7 +21,7 @@ export class DistrictsFormComponent implements OnInit {
   params: any;
   values: any;
   users: any;
-  teste: any;
+  editAnalyst: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -51,7 +51,7 @@ export class DistrictsFormComponent implements OnInit {
 
   initForm(): void {
     this.formDistrict = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^(\w+\s?)*$/)]],
       analyst: [null]
     });
   }
@@ -62,7 +62,7 @@ export class DistrictsFormComponent implements OnInit {
     this.router.navigate(['tesouraria/distritos']);
   }
 
-  saveTreasurer() {
+  saveDistrict() {
     if (!this.formDistrict.valid) {
       return;
     }
@@ -70,6 +70,7 @@ export class DistrictsFormComponent implements OnInit {
       this.params = params['id'];
     });
     const unit = this.authService.getCurrentUnit();
+    // modificar para id, caso de conflito
     const valor = this.users.filter( x => x.name === this.formDistrict.value.analyst);
 
     this.values = {
@@ -102,7 +103,7 @@ export class DistrictsFormComponent implements OnInit {
       name: district.name,
       analyst: district.analyst,
     });
-    this.teste = district.analyst.name;
+    this.editAnalyst = district.analyst.name;
   }
 
 

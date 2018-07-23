@@ -110,10 +110,10 @@
             <mat-expansion-panel hideToggle *ngIf="i <= showList">
               <mat-expansion-panel-header>
                 <mat-panel-description fxLayout="row" fxFlex>
-                  <span fxFlex fxFlex.gt-sm="35%" style="white-space: line-wrap;">
+                  <span *ngIf="observation.church" fxFlex fxFlex.gt-sm="35%" style="white-space: line-wrap;">
                     {{ observation.church.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="35%" style="white-space: line-wrap;" fxHide.lt-sm>
+                  <span *ngIf="observation.responsible" fxFlex fxFlex.gt-sm="35%" style="white-space: line-wrap;" fxHide.lt-sm>
                     {{ observation.responsible.name }}
                   </span>
                   <span fxFlex fxFlex.gt-sm="15%" style="white-space: line-wrap;" fxHide.lt-sm>
@@ -128,7 +128,7 @@
                 <h3 matSubheader>Informações da observação</h3>
                 <mat-list-item fxLayout="row" style="height: auto">
                   <div fxLayout="column" fxFlex matLine>
-                    <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                    <span *ngIf="observation.responsible" class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
                       <b>Responsável:&ensp;</b> {{ observation.responsible.name }}
                     </span>
                     <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
@@ -146,7 +146,7 @@
                     </span>
                     <div *ngFor="let treasurer of observation.treasurers">
                       <mat-panel-description fxLayout="row" fxFlex>
-                        <span fxFlex="100%" class="details-title" style="white-space: normal; padding: 0 30px 0 30px">
+                        <span *ngIf="treasurer" fxFlex="100%" class="details-title" style="white-space: normal; padding: 0 30px 0 30px">
                           {{ treasurer.name }}
                         </span>
                       </mat-panel-description>

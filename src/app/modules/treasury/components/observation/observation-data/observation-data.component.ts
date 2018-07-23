@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatSidenav } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { Subject, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -11,6 +11,7 @@ import { ObservationStore } from '../observation.store';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { Church } from '../../../models/church';
 import { User } from '../../../../../shared/models/user.model';
+import { SidenavService } from '../../../../../core/services/sidenav.service';
 
 @Component({
   selector: 'app-observation-data',
@@ -26,7 +27,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   subscribeUnit: Subscription;
 
   observations$: Observable<Observation[]>;
-  //observations: Observation[] = new Array<Observation>();
+  // observations: Observation[] = new Array<Observation>();
   churches$: Observable<Church[]>;
   analysts$: Observable<User[]>;
   responsibles$: Observable<User[]>;
@@ -43,11 +44,14 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     public store: ObservationStore,
     private router: Router,
-    private confirmDialogService: ConfirmDialogService
+    private confirmDialogService: ConfirmDialogService,
+    private sidenavService: SidenavService,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/observacoes')]);
+    this.sidenavService.setSidenav(this.sidenavRight);
     this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
       this.getData();
       this.setObservables();
@@ -75,7 +79,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
 
   /* Usados pelo component */
   public closeSidenav() {
-    //this.sidenavService.close();
+    this.sidenavService.close();
     this.router.navigate(['tesouraria/observacoes']);
   }
 
@@ -84,7 +88,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   }
 
   public openSidenav() {
-    //this.sidenavService.open();
+    this.sidenavService.open();
   }
 
   public remove(observation: Observation) {
@@ -92,16 +96,25 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
       .confirm('Remover', 'Você deseja realmente remover a observação?', 'REMOVER')
       .subscribe(res => {
         if (res) {
-          this.store.remove(observation.id)
+          this.store.remove(observation.id);
         }
       });
   }
 
   public edit(observation: Observation) {
-    //this.store.church = church;
-    //this.router.navigate([church.id, 'editar'], { relativeTo: this.route });
-    //this.openSidenav();
+    // this.store. = observation;
+    this.router.navigate([observation.id, 'editar'], { relativeTo: this.route });
+    this.openSidenav();
   }
+
+  // edit(district: Districts) {
+  //   if (district.id === undefined) {
+  //     return;
+  //   }
+  //   this.store.openDistrict(district);
+  //   this.router.navigate(['tesouraria/distritos/' + district.id + '/editar']);
+  //   this.sidenavRight.open();
+  // }
 
   public finalize(observation: Observation) {
     this.confirmDialogService
@@ -117,7 +130,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
     if (status === 1) {
       return 'Aberta';
     }
-    return 'Fechada'
+    return 'Fechada';
   }
 
   public search() {

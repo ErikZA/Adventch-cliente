@@ -168,4 +168,11 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+  loadAllChurches(unitId): Observable<Church[]> {
+    const url = '/treasury/churches/loadAllChurches/' + unitId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 }
