@@ -57,57 +57,53 @@
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <mat-list>
-                <h3 matSubheader>Informações do Tesoureiro</h3>
-                <mat-list-item fxLayout="row">
-                  <div fxLayout="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px" fxFlex matLine>
-                    <div fxLayout="row" fxLayoutAlign="space-between">
-                      <span class="text-bold" class="details-title">
-                        <b>Igreja:</b> {{ treasurer.church.name }}</span>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="space-between">
-                      <span class="text-bold" class="details-title">
-                        <b>Cargo:</b> {{ treasurer.functionName }}</span>
-                    </div>
-                  </div>
+                <h3 matSubheader>Informações da tesoureiro</h3>
+                <mat-list-item fxLayout="row" style="height: auto">
                   <div fxLayout="column" fxFlex matLine>
-                    <span class="text-bold">Email: </span>
-                    <p> {{ treasurer.email || "Não Informado" }} </p>
-                  </div>
-                  <div fxLayout="column" fxFlex matLine>
-                    <span class="text-bold">Endereço: </span>
-                    <div fxLayout.lt-sm="column" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap.gt-xs="20px" style="white-space: line-wrap;">
-                      <p class="style-text" style="white-space: line-wrap;"> {{ treasurer.address || "Não Informado" }} {{ ", " + treasurer.addressComplement || "" }} </p>
-                      <p>
-                        <span class="text-bold">CEP: </span>
-                        <span> {{ treasurer.cep || "Não Informado" }} </span>
-                      </p>
-                    </div>
-                  </div>
-                  <div fxLayout="column" fxFlex matLine>
-                    <div class="text-bold">Telefone: </div>
-                    <ul class="margin-minus-20" *ngFor="let phone of treasurer.phones" fxLayout="column">
-                      <li *ngIf="treasurer.phones.length !== 0" fxFlex style="white-space: pre-line;">{{ phone.type }}: {{ phone.number }}
-                        <div style="white-space: pre-line;">
-                          Serviço(s) Utilizado(s): {{ !phone.isWhatsapp && !phone.isTelegram ? 'Nenhum serviço utilizado.': '' }}{{ phone.isWhatsapp
-                          ? 'Whatsapp' : ''}}{{ phone.isWhatsapp && phone.isTelegram ? ', ' : ''}} {{ phone.isTelegram ?
-                          'Telegram': ''}}
-                        </div>
-                      </li>
-                      <li *ngIf="treasurer.phones.length === 0">Não Informado</li>
-                    </ul>
-                  </div>
-                  <div fxLayout="column" fxFlex matLine>
-                    <span class="text-bold">Melhor Contato: </span>
-                    <p> {{ treasurer.contact || "Não Informado" }} </p>
-                  </div>
-                  <div fxLayout="column" fxFlex matLine>
-                    <span class="text-bold">Tempo no Cargo: </span>
-                    <p *ngIf="treasurer.dateRegister != null && treasurer.dateRegister != undefined; else dateIsNull">
-                      {{ treasurer.dateRegister | date: "dd/MM/yyyy" }} {{ " - Aproximadamente " + treasurer.dateRegisterFormatted }}
-                    </p>
-                    <ng-template #dateIsNull>
-                      <p>Não Informado</p>
-                    </ng-template>
+                    <span *ngIf="treasurer.church.name" class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                      <b>Igreja:&ensp;</b> {{ treasurer.church.name }}
+                    </span>
+                    <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                      <b>Cargo:&ensp;</b> {{ treasurer.functionName }}
+                    </span>
+                    <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                      <b>Email:&ensp;</b> {{ treasurer.email || "Não Informado" }}
+                    </span>
+
+                    <span class="details-title" fxLayout.lt-sm="column" style="white-space: pre-line; text-overflow: ellipsis;">
+                      <b>Endereço:&ensp;</b> {{ treasurer.address || "Não Informado" }} {{ ", " + treasurer.addressComplement
+                      || "" }}
+                    </span>
+                    <span class="details-title" fxLayout.lt-sm="column">
+                      <b>CEP:&ensp;</b> {{ treasurer.cep || "Não Informado" }}
+                    </span>
+                    <span class="details-title" fxLayout.lt-sm="column">
+                      <b>Telefone(s):&ensp;</b>
+                      
+                    <div *ngFor="let phone of treasurer.phones">
+                        <mat-panel-description fxLayout="row" fxFlex>
+                          <span fxFlex="100%" class="details-title" style="white-space: normal; padding: 0 30px 0 30px">
+                            {{ phone.type }}: {{ phone.number }}
+                            &ensp;
+                            Serviço(s) Utilizado(s): 
+                              {{ !phone.isWhatsapp && !phone.isTelegram ? 'Nenhum serviço utilizado.': '' }} 
+                              {{ phone.isWhatsapp ? 'Whatsapp' : ''}} 
+                              {{ phone.isWhatsapp && phone.isTelegram ? ', ' : ''}} 
+                              {{ phone.isTelegram ? 'Telegram': ''}}
+                          </span>
+                          <br />
+                        </mat-panel-description>
+                      </div>
+                    </span>
+                    <span class="details-title" fxLayout.lt-sm="column">
+                      <b>Melhor Contato:&ensp;</b> {{ treasurer.contact || "Não Informado" }}
+                    </span>
+                    <span *ngIf="treasurer.dateRegister != null && treasurer.dateRegister != undefined; else dateIsNull" class="details-title" fxLayout.lt-sm="column">
+                      <b>Tempo no Cargo:&ensp;</b> {{ treasurer.dateRegister | date: "dd/MM/yyyy" }} {{ " - Aproximadamente " + treasurer.dateRegisterFormatted }}
+                      <ng-template #dateIsNull>
+                        <p>Não Informado</p>
+                      </ng-template>
+                    </span>
                   </div>
                 </mat-list-item>
               </mat-list>
