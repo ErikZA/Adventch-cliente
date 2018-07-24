@@ -66,7 +66,7 @@
         <mat-list>
           <mat-list-item>
             <h3 matLine fxLayout="row">
-              <span fxFlex fxFlex.gt-sm="25%" >Igreja</span>
+              <span fxFlex fxFlex.gt-sm="25%">Igreja</span>
               <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Distrito</span>
               <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Analista</span>
               <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Cidade</span>
@@ -103,35 +103,27 @@
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <mat-list>
-                <h3 matSubheader>Informações da Igreja</h3>
-                <mat-list-item fxLayout="row" *ngIf="church.address">
-                  <div fxLayoutAlign="space-between">
-                    <span class="text-bold" class="details-title" style="white-space: pre-line; text-overflow: ellipsis;">
-                      <b>Código: </b> {{ church.code }}<br />
-                      <b>Endereço: </b> {{ church.address }} ({{ church.complement == '' ? 'Sem complemento' : church.complement }})<br />
-                      <b>CEP: </b>{{ church.cep }}
-                      <!--expandir a linha do registro exibindo o código da Igreja, endereço, complemento e cep, além dos botões: Editar e Remover-->
+                <h3 matSubheader>Informações da observação</h3>
+                <mat-list-item fxLayout="row" style="height: auto">
+                  <div fxLayout="column" fxFlex matLine>
+                    <span *ngIf="church.district.name" class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                      <b>Distrito: </b> {{ church.district.name }}
                     </span>
-                  </div>
-                </mat-list-item>
-                <mat-list-item fxLayout="row" *ngIf="church.district.name" fxHide fxShow.xs>
-                    <div fxLayoutAlign="space-between">
-                      <span class="text-bold" class="details-title">
-                        <b>Distrito: </b> {{ church.district.name }}
-                      </span>
-                    </div>
-                </mat-list-item>
-                <mat-list-item fxLayout="row" *ngIf="church.district.analyst.name" fxHide fxShow.xs>
-                  <div fxLayout="row" fxLayoutAlign="space-between">
-                    <span class="text-bold" class="details-title">
+                    <span *ngIf="church.district.analyst.name" class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
                       <b>Analista: </b> {{ church.district?.analyst?.name }}
                     </span>
-                  </div>
-                </mat-list-item>
-                <mat-list-item fxLayout="row" *ngIf="church.city.name" fxHide fxShow.xs>
-                  <div fxLayout="row" fxLayoutAlign="space-between">
-                    <span class="text-bold" class="details-title">
+                    <span *ngIf="church.city.name" class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
                       <b>Cidade: </b> {{ church.city.name }} - {{ church.city.state.acronym }}
+                    </span>
+
+                    <span *ngIf="church.code" class="details-title" fxLayout.lt-sm="column">
+                      <b>Código:&ensp;</b> {{ church.code }}
+                    </span>
+                    <span *ngIf="church.address" class="details-title" fxLayout.lt-sm="column" style="white-space: pre-line; text-overflow: ellipsis;">
+                      <b>Endereço:&ensp;</b> {{ church.address }} ({{ church.complement == '' ? 'Sem complemento' : church.complement }})
+                    </span>
+                    <span *ngIf="church.cep" class="details-title" fxLayout.lt-sm="column">
+                      <b>CEP:&ensp;</b>{{ church.cep }}
                     </span>
                   </div>
                 </mat-list-item>
