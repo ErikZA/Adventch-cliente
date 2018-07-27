@@ -13,6 +13,7 @@ import { DistrictsDataComponent } from './components/districts/districts-data/di
 import { DistrictsFormComponent } from './components/districts/districts-form/districts-form.component';
 import { ObservationDataComponent } from './components/observation/observation-data/observation-data.component';
 import { ObservationFormComponent } from './components/observation/observation-form/observation-form.component';
+import { DashboardTreasuryComponent } from './components/dashboard/dashboard-treasury-component';
 
 const routes: Routes = [
   { path: 'tesouraria', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
@@ -31,7 +32,8 @@ const routes: Routes = [
     { path: 'observacoes', component: ObservationDataComponent, children: [
       { path: 'novo', component: ObservationFormComponent },
       { path: ':id/editar', component: ObservationFormComponent }
-    ]}
+    ]},
+    { path: 'dashboard', component: DashboardTreasuryComponent },
   ]}
 ];
 

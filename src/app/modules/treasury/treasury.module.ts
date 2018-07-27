@@ -19,12 +19,17 @@ import { DistrictsStore } from './components/districts/districts.store';
 import { ObservationDataComponent } from './components/observation/observation-data/observation-data.component';
 import { ObservationFormComponent } from './components/observation/observation-form/observation-form.component';
 import { ObservationStore } from './components/observation/observation.store';
+import { DashboardTreasuryComponent } from './components/dashboard/dashboard-treasury-component';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   imports: [
     CommonModule,
     CoreModule,
-    TreasuryRoutingModule
+    TreasuryRoutingModule,
+    CommonModule,
+    CoreModule,
+    ChartsModule
   ],
   declarations: [
     TreasurerDataComponent,
@@ -35,13 +40,14 @@ import { ObservationStore } from './components/observation/observation.store';
     DistrictsFormComponent,
     ObservationDataComponent,
     ObservationFormComponent,
+    DashboardTreasuryComponent
   ],
   providers: [
     TreasuryService,
     TreasurerStore,
     ChurchStore,
     DistrictsStore,
-    ObservationStore
+    ObservationStore,
   ]
 })
 export class TreasuryModule { }

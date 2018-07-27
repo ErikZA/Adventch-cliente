@@ -1,0 +1,45 @@
+<div class="page-container mat-elevation-z2" fxFlex style="overflow: auto;">
+    <div style="padding: 0 0 0 15px">
+        <mat-form-field>
+            <mat-select placeholder="Analista">
+                <mat-option [value]="TODOS" (click)="filter(0)">
+                    TODOS
+                </mat-option>
+                <mat-option *ngFor="let analyst of users" [value]="analyst.id" (click)="filter(analyst.id)">
+                    {{ analyst.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+    <div fxLayout="row" fxLayout.xs="column">
+        <div class="process process-2">
+            <br/>
+            <p class="process-count process-2">{{cardChurchesData}}</p>
+            <p class="process-description">Igrejas</p>
+            <br/>
+        </div>
+        <div class="process process-3">
+            <br/>
+            <p class="process-count process-3">{{cardDistrictsData}}</p>
+            <p class="process-description">Distritos</p>
+            <br/>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div fxLayout="row" fxLayoutAlign="space-around center">
+        <div fxFlex="50" *ngIf="checkEmpty(chartObservationData)">
+            <!-- <div fxHide.sm style="z-index: 5; text-align: center; margin-top: 12%; margin-left: 21%; font-size: 16px; color: #2094c8"><p>Total</p> <p style="text-align: center;">{{chartObservationTotal}}</p></div> -->
+            <h4 fxLayoutAlign="center center">Observações</h4>
+            <canvas fxLayoutAlign="center center" baseChart [data]="chartObservationData" [labels]="chartObservationLabels" chartType="doughnut"
+                [options]="pieChartOptions" [colors]="chartColors"></canvas>
+        </div>
+
+        <div fxFlex="50" *ngIf="checkEmpty(chartTreasurersData)">
+            <h4 fxLayoutAlign="center center">Tesoureiros</h4>
+            <canvas fxLayoutAlign="center center" baseChart [data]="chartTreasurersData" [labels]="chartTreasurersLabels" chartType="doughnut"
+                [options]="pieChartOptions" [colors]="chartColors"></canvas>
+        </div>
+    </div>
+</div>

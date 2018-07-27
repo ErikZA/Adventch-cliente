@@ -182,4 +182,11 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+  getTreasuryDashboard(unitId, idAnalyst) {
+    const url = '/treasury/dashboard/getTreasuryDashboard/' + unitId + '/' + idAnalyst;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
 }

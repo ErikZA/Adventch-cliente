@@ -64,7 +64,7 @@
                 <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!this.checkPermission(6)" matTooltip="Sessão indisponível para a sua unidade" [matTooltipDisabled]="this.checkPermission(6)" matTooltipPosition="below">
                     <!--Novo Módulo-->
                     <mat-expansion-panel-header class="background-side-nav">
-                        <mat-panel-title>Tesouraria</mat-panel-title>
+                        <mat-panel-title [routerLink]="['/tesouraria/dashboard']">Tesouraria</mat-panel-title>
                     </mat-expansion-panel-header>
                     <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/distritos']">Distritos</a>
                     <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/igrejas']">Igrejas</a>
