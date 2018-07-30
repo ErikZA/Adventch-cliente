@@ -90,6 +90,7 @@ export class DashboardTreasuryComponent implements OnInit {
   getChartObservationData(array) {
     this.chartObservationData = [];
     this.chartObservationLabels = [];
+    this.chartObservationTotal = 0;
     const labels = [
       'Aberta',
       'Fechada',
@@ -106,6 +107,7 @@ export class DashboardTreasuryComponent implements OnInit {
   getChartTreasurersData(array) {
     this.chartTreasurersData = [];
     this.chartTreasurersLabels = [];
+    this.chartTreasurersTotal = 0;
     const labels = [
       'Tesoureiro(a)',
       'Tesoureir(a) Associado(a)',
@@ -113,6 +115,7 @@ export class DashboardTreasuryComponent implements OnInit {
     ];
     array.forEach((f, i) => {
       if (f !== 0) {
+        this.chartTreasurersTotal = this.chartTreasurersTotal + Number(f.functions);
         this.chartTreasurersData.push(f.functions);
         this.chartTreasurersLabels.push(labels[i]);
       }

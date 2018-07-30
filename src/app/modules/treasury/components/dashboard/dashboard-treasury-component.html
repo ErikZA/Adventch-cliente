@@ -30,13 +30,16 @@
     <br>
     <div fxLayout="row" fxLayoutAlign="space-around center">
         <div fxFlex="50" *ngIf="checkEmpty(chartObservationData)">
-            <!-- <div fxHide.sm style="z-index: 5; text-align: center; margin-top: 12%; margin-left: 21%; font-size: 16px; color: #2094c8"><p>Total</p> <p style="text-align: center;">{{chartObservationTotal}}</p></div> -->
+            <div fxHide fxShow.lg style="z-index: 5; text-align: center; margin-top: 11%; margin-left: 18.5%; font-size: 40px; color: #2094c8; position: absolute; width: 100px; height: 100px;"  fxLayoutAlign="center center">{{chartObservationTotal}}</div>
+            <div fxHide fxShow.xl  style="z-index: 5; text-align: center; margin-top: 10%; margin-left: 18.5%; font-size: 60px; color: #2094c8; position: absolute; width: 150px; height: 150px;"  fxLayoutAlign="center center">{{chartObservationTotal}}</div>
             <h4 fxLayoutAlign="center center">Observações</h4>
             <canvas fxLayoutAlign="center center" baseChart [data]="chartObservationData" [labels]="chartObservationLabels" chartType="doughnut"
                 [options]="pieChartOptions" [colors]="chartColors"></canvas>
         </div>
 
         <div fxFlex="50" *ngIf="checkEmpty(chartTreasurersData)">
+                <div fxHide fxShow.lg style="z-index: 5; text-align: center; margin-top: 11%; margin-left: 18.5%; font-size: 40px; color: #2094c8; position: absolute; width: 100px; height: 100px;"  fxLayoutAlign="center center">{{chartTreasurersTotal}}</div>
+                <div fxHide fxShow.xl  style="z-index: 5; text-align: center; margin-top: 10%; margin-left: 18.5%; font-size: 60px; color: #2094c8; position: absolute; width: 150px; height: 150px;" fxLayoutAlign="center center">{{chartTreasurersTotal}}</div>
             <h4 fxLayoutAlign="center center">Tesoureiros</h4>
             <canvas fxLayoutAlign="center center" baseChart [data]="chartTreasurersData" [labels]="chartTreasurersLabels" chartType="doughnut"
                 [options]="pieChartOptions" [colors]="chartColors"></canvas>
