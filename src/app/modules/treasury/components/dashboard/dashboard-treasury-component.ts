@@ -99,7 +99,7 @@ export class DashboardTreasuryComponent implements OnInit {
       if (f !== 0) {
         this.chartObservationTotal = this.chartObservationTotal + Number(f.status);
         this.chartObservationData.push(f.status);
-        this.chartObservationLabels.push(labels[i]);
+        this.chartObservationLabels.push(labels[f.id_status - 1]);
       }
     });
   }
@@ -115,9 +115,11 @@ export class DashboardTreasuryComponent implements OnInit {
     ];
     array.forEach((f, i) => {
       if (f !== 0) {
-        this.chartTreasurersTotal = this.chartTreasurersTotal + Number(f.functions);
-        this.chartTreasurersData.push(f.functions);
-        this.chartTreasurersLabels.push(labels[i]);
+        if (f.status !== 0) {
+          this.chartTreasurersTotal = this.chartTreasurersTotal + Number(f.functions);
+          this.chartTreasurersData.push(f.functions);
+          this.chartTreasurersLabels.push(labels[f.id_function - 1]);
+        }
       }
     });
   }

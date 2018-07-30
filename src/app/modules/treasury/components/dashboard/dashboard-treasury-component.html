@@ -28,18 +28,18 @@
     </div>
     <br>
     <br>
-    <div fxLayout="row" fxLayoutAlign="space-around center">
+    <div fxLayout="row wrap" fxLayoutAlign="space-around center">
         <div fxFlex="50" *ngIf="checkEmpty(chartObservationData)">
-            <div fxHide fxShow.lg style="z-index: 5; text-align: center; margin-top: 11%; margin-left: 18.5%; font-size: 40px; color: #2094c8; position: absolute; width: 100px; height: 100px;"  fxLayoutAlign="center center">{{chartObservationTotal}}</div>
-            <div fxHide fxShow.xl  style="z-index: 5; text-align: center; margin-top: 10%; margin-left: 18.5%; font-size: 60px; color: #2094c8; position: absolute; width: 150px; height: 150px;"  fxLayoutAlign="center center">{{chartObservationTotal}}</div>
+            <div fxHide fxShow.lg style="text-align: center; margin-top: 11%; margin-left: 18.5%; font-size: 40px; color: #2094c8; position: absolute; width: 100px; height: 100px;"  fxLayoutAlign="center center">{{chartObservationTotal}}</div>
+            <div fxHide fxShow.xl  style="text-align: center; margin-top: 10%; margin-left: 18.5%; font-size: 60px; color: #2094c8; position: absolute; width: 150px; height: 150px;"  fxLayoutAlign="center center">{{chartObservationTotal}}</div>
             <h4 fxLayoutAlign="center center">Observações</h4>
             <canvas fxLayoutAlign="center center" baseChart [data]="chartObservationData" [labels]="chartObservationLabels" chartType="doughnut"
                 [options]="pieChartOptions" [colors]="chartColors"></canvas>
         </div>
 
         <div fxFlex="50" *ngIf="checkEmpty(chartTreasurersData)">
-                <div fxHide fxShow.lg style="z-index: 5; text-align: center; margin-top: 11%; margin-left: 18.5%; font-size: 40px; color: #2094c8; position: absolute; width: 100px; height: 100px;"  fxLayoutAlign="center center">{{chartTreasurersTotal}}</div>
-                <div fxHide fxShow.xl  style="z-index: 5; text-align: center; margin-top: 10%; margin-left: 18.5%; font-size: 60px; color: #2094c8; position: absolute; width: 150px; height: 150px;" fxLayoutAlign="center center">{{chartTreasurersTotal}}</div>
+                <div fxHide fxShow.lg style="text-align: center; margin-top: 11%; margin-left: 18.5%; font-size: 40px; color: #2094c8; position: absolute; width: 100px; height: 100px;"  fxLayoutAlign="center center">{{chartTreasurersTotal}}</div>
+                <div fxHide fxShow.xl  style="text-align: center; margin-top: 10%; margin-left: 18.5%; font-size: 60px; color: #2094c8; position: absolute; width: 150px; height: 150px;" fxLayoutAlign="center center">{{chartTreasurersTotal}}</div>
             <h4 fxLayoutAlign="center center">Tesoureiros</h4>
             <canvas fxLayoutAlign="center center" baseChart [data]="chartTreasurersData" [labels]="chartTreasurersLabels" chartType="doughnut"
                 [options]="pieChartOptions" [colors]="chartColors"></canvas>
