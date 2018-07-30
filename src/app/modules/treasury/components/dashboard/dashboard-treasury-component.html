@@ -13,16 +13,16 @@
     </div>
     <mat-divider></mat-divider>
     <div fxLayout="row" fxLayout.xs="column">
-        <div class="process process-2">
-            <br/>
-            <p class="process-count process-2">{{cardChurchesData}}</p>
-            <p class="process-description">Igrejas</p>
-            <br/>
-        </div>
-        <div class="process process-3">
+        <div class="process process-3" routerLink="/tesouraria/distritos">
             <br/>
             <p class="process-count process-3">{{cardDistrictsData}}</p>
             <p class="process-description">Distritos</p>
+            <br/>
+        </div>
+        <div class="process process-2" routerLink="/tesouraria/igrejas">
+            <br/>
+            <p class="process-count process-2">{{cardChurchesData}}</p>
+            <p class="process-description">Igrejas</p>
             <br/>
         </div>
     </div>
@@ -30,16 +30,16 @@
     <br>
     <div fxLayout="row wrap" fxLayoutAlign="space-around center">
         <div fxFlex="50" *ngIf="checkEmpty(chartObservationData)">
-            <div fxHide fxShow.lg style="text-align: center; margin-top: 11%; margin-left: 18.5%; font-size: 40px; color: #2094c8; position: absolute; width: 100px; height: 100px;"  fxLayoutAlign="center center">{{chartObservationTotal}}</div>
-            <div fxHide fxShow.xl  style="text-align: center; margin-top: 10%; margin-left: 18.5%; font-size: 60px; color: #2094c8; position: absolute; width: 150px; height: 150px;"  fxLayoutAlign="center center">{{chartObservationTotal}}</div>
+            <div fxHide fxShow.lg class="doughnutTotal"  fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/observacoes">{{chartObservationTotal}}</p></div>
+            <div fxHide fxShow.xl class="doughnutTotall"  fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/observacoes">{{chartObservationTotal}}</p></div>
             <h4 fxLayoutAlign="center center">Observações</h4>
             <canvas fxLayoutAlign="center center" baseChart [data]="chartObservationData" [labels]="chartObservationLabels" chartType="doughnut"
                 [options]="pieChartOptions" [colors]="chartColors"></canvas>
         </div>
 
         <div fxFlex="50" *ngIf="checkEmpty(chartTreasurersData)">
-                <div fxHide fxShow.lg style="text-align: center; margin-top: 11%; margin-left: 18.5%; font-size: 40px; color: #2094c8; position: absolute; width: 100px; height: 100px;"  fxLayoutAlign="center center">{{chartTreasurersTotal}}</div>
-                <div fxHide fxShow.xl  style="text-align: center; margin-top: 10%; margin-left: 18.5%; font-size: 60px; color: #2094c8; position: absolute; width: 150px; height: 150px;" fxLayoutAlign="center center">{{chartTreasurersTotal}}</div>
+                <div fxHide fxShow.lg class="doughnutTotal"  fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/tesoureiros">{{chartTreasurersTotal}}</p></div>
+                <div fxHide fxShow.xl class="doughnutTotall" fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/tesoureiros">{{chartTreasurersTotal}}</p></div>
             <h4 fxLayoutAlign="center center">Tesoureiros</h4>
             <canvas fxLayoutAlign="center center" baseChart [data]="chartTreasurersData" [labels]="chartTreasurersLabels" chartType="doughnut"
                 [options]="pieChartOptions" [colors]="chartColors"></canvas>

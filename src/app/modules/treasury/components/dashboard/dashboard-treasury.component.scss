@@ -79,11 +79,11 @@
     cursor: pointer;
 }
 .process-2 {
-    background-color: #03a9f4!important;
+  background-color: #76d275!important;
 }
 
 .process-3 {
-    background-color: #76d275!important;
+  background-color: #03a9f4!important;
 }
 
 
@@ -122,3 +122,27 @@
         padding: 10px 25px 0;
     }
   }
+
+.doughnutTotal{
+  text-align: center;
+  margin-top: 11%;
+  margin-left: 18.5%;
+  font-size: 40px;
+  color: #2094c8;
+  position: absolute;
+  width: 100px;
+  height: 100px;
+}
+
+.doughnutTotall{
+  text-align: center;
+  margin-top: 10%;
+  margin-left: 18.5%;
+  font-size: 60px;
+  color: #2094c8;
+  position: absolute;
+  width: 150px;
+  height: 150px;
+}
+
+  
