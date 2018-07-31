@@ -30,16 +30,16 @@
     <br>
     <div fxLayout="row wrap" fxLayoutAlign="space-around center">
         <div fxFlex="50" *ngIf="checkEmpty(chartTreasurersData)">
-            <div fxHide fxShow.lg class="doughnutTotal"  fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/tesoureiros">{{chartTreasurersTotal}}</p></div>
-            <div fxHide fxShow.xl class="doughnutTotall" fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/tesoureiros">{{chartTreasurersTotal}}</p></div>
+            <div fxHide fxShow.lg class="doughnutTotal" [ngStyle]="{'font-size': chartTreasurersTotal.toString().length >= 4  ? '30px' : '40px' }"  fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/tesoureiros">{{chartTreasurersTotal}}</p></div>
+            <div fxHide fxShow.xl class="doughnutTotall" [ngStyle]="{'font-size': chartTreasurersTotal.toString().length >= 4  ? '50px' : '60px' }" fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/tesoureiros">{{chartTreasurersTotal}}</p></div>
             <h4 fxLayoutAlign="center center">Tesoureiros</h4>
             <canvas fxLayoutAlign="center center" baseChart [data]="chartTreasurersData" [labels]="chartTreasurersLabels" chartType="doughnut"
                 [options]="pieChartOptions" [colors]="chartColors"></canvas>
         </div>
 
         <div fxFlex="50" *ngIf="checkEmpty(chartObservationData)">
-            <div fxHide fxShow.lg class="doughnutTotal"  fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/observacoes">{{chartObservationTotal}}</p></div>
-            <div fxHide fxShow.xl class="doughnutTotall"  fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/observacoes">{{chartObservationTotal}}</p></div>
+            <div fxHide fxShow.lg class="doughnutTotal" [ngStyle]="{'font-size': chartObservationTotal.toString().length >= 4  ? '30px' : '40px' }" fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/observacoes">{{chartObservationTotal}}</p></div>
+            <div fxHide fxShow.xl class="doughnutTotall" [ngStyle]="{'font-size': chartObservationTotal.toString().length >= 4  ? '50px' : '60px' }" fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/observacoes">{{chartObservationTotal}}</p></div>
             <h4 fxLayoutAlign="center center">Observações</h4>
             <canvas fxLayoutAlign="center center" baseChart [data]="chartObservationData" [labels]="chartObservationLabels" chartType="doughnut"
                 [options]="pieChartOptions" [colors]="chartColors"></canvas>
