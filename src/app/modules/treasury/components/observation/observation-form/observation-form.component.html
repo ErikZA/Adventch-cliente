@@ -1,0 +1,35 @@
+<div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"  [ngStyle.xs]="{'width.vw': 80}"
+  [ngStyle.xs]="{'width.vw': 100}">
+<div fxFlex>
+    <h2 class="title">Observação</h2>
+    <mat-divider></mat-divider>
+  </div>
+  <br />
+<form [formGroup]="formObservation" fxLayout="column">
+    <!-- <mat-form-field fxFlex>
+      <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
+    </mat-form-field> -->
+    <mat-form-field>
+      <mat-select placeholder="Igreja" formControlName="church" [(ngModel)]="editChurch" required> 
+        <mat-option *ngFor="let church of churches" [value]="church.id">
+          {{ church.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field fxFlexFill>
+        <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerBirth" placeholder="Data" formControlName="date" [max]="dates.now" required>
+        <mat-datepicker-toggle matSuffix [for]="pickerBirth"></mat-datepicker-toggle>
+        <mat-datepicker #pickerBirth></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%">
+        <textarea formControlName="description" matInput placeholder="Descrição" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10" required pattern="^[^-\s][\w\s-]+$"></textarea>
+        <mat-error *ngIf="formObservation.get('description').hasError('pattern')">Este campo é inválido</mat-error>
+    </mat-form-field>
+
+    <div fxLayout="row" fxLayoutAlign="space-between">
+      <button mat-button type="button" (click)="closeSidenav()">CANCELAR</button>
+      <button mat-raised-button type="submit" (click)="saveObservation()" color="primary">SALVAR</button>
+    </div>
+  </form>

@@ -10,20 +10,44 @@ import { TreasurerDataComponent } from './components/treasurer/treasurer-data/tr
 import { TreasurerFormComponent } from './components/treasurer/treasurer-form/treasurer-form.component';
 
 import { TreasuryRoutingModule } from './treasury-routing.module';
+import { ChurchDataComponent } from './components/church/church-data/church-data.component';
+import { ChurchFormComponent } from './components/church/church-form/church-form.component';
+import { ChurchStore } from './components/church/church.store';
+import { DistrictsDataComponent } from './components/districts/districts-data/districts-data.component';
+import { DistrictsFormComponent } from './components/districts/districts-form/districts-form.component';
+import { DistrictsStore } from './components/districts/districts.store';
+import { ObservationDataComponent } from './components/observation/observation-data/observation-data.component';
+import { ObservationFormComponent } from './components/observation/observation-form/observation-form.component';
+import { ObservationStore } from './components/observation/observation.store';
+import { DashboardTreasuryComponent } from './components/dashboard/dashboard-treasury-component';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   imports: [
     CommonModule,
     CoreModule,
-    TreasuryRoutingModule
+    TreasuryRoutingModule,
+    CommonModule,
+    CoreModule,
+    ChartsModule
   ],
   declarations: [
     TreasurerDataComponent,
     TreasurerFormComponent,
+    ChurchDataComponent,
+    ChurchFormComponent,
+    DistrictsDataComponent,
+    DistrictsFormComponent,
+    ObservationDataComponent,
+    ObservationFormComponent,
+    DashboardTreasuryComponent
   ],
   providers: [
     TreasuryService,
-    TreasurerStore
+    TreasurerStore,
+    ChurchStore,
+    DistrictsStore,
+    ObservationStore,
   ]
 })
 export class TreasuryModule { }

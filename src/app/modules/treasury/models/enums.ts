@@ -8,3 +8,8 @@ export enum EGender {
   Male = 1,
   Female = 2
 }
+
+export enum EObservationStatus {
+  Open = 1,
+  Closed = 2
+}

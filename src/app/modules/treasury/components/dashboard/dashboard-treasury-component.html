@@ -1,0 +1,48 @@
+<div class="page-container mat-elevation-z2" fxFlex style="overflow: auto;">
+    <div style="padding: 0 0 0 15px">
+        <mat-form-field>
+            <mat-select placeholder="Analista">
+                <mat-option [value]="TODOS" (click)="filter(0)">
+                    TODOS
+                </mat-option>
+                <mat-option *ngFor="let analyst of users" [value]="analyst.id" (click)="filter(analyst.id)">
+                    {{ analyst.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+    <div fxLayout="row" fxLayout.xs="column">
+        <div class="process process-3" routerLink="/tesouraria/distritos">
+            <br/>
+            <p class="process-count process-3">{{cardDistrictsData}}</p>
+            <p class="process-description">Distritos</p>
+            <br/>
+        </div>
+        <div class="process process-2" routerLink="/tesouraria/igrejas">
+            <br/>
+            <p class="process-count process-2">{{cardChurchesData}}</p>
+            <p class="process-description">Igrejas</p>
+            <br/>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div fxLayout="row wrap" fxLayoutAlign="space-around center">
+        <div fxFlex="50" *ngIf="checkEmpty(chartTreasurersData)">
+            <div fxHide fxShow.lg class="doughnutTotal" [ngStyle]="{'font-size': chartTreasurersTotal.toString().length >= 4  ? '30px' : '40px' }"  fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/tesoureiros">{{chartTreasurersTotal}}</p></div>
+            <div fxHide fxShow.xl class="doughnutTotall" [ngStyle]="{'font-size': chartTreasurersTotal.toString().length >= 4  ? '50px' : '60px' }" fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/tesoureiros">{{chartTreasurersTotal}}</p></div>
+            <h4 fxLayoutAlign="center center">Tesoureiros</h4>
+            <canvas fxLayoutAlign="center center" baseChart [data]="chartTreasurersData" [labels]="chartTreasurersLabels" chartType="doughnut"
+                [options]="pieChartOptions" [colors]="chartColors"></canvas>
+        </div>
+
+        <div fxFlex="50" *ngIf="checkEmpty(chartObservationData)">
+            <div fxHide fxShow.lg class="doughnutTotal" [ngStyle]="{'font-size': chartObservationTotal.toString().length >= 4  ? '30px' : '40px' }" fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/observacoes">{{chartObservationTotal}}</p></div>
+            <div fxHide fxShow.xl class="doughnutTotall" [ngStyle]="{'font-size': chartObservationTotal.toString().length >= 4  ? '50px' : '60px' }" fxLayoutAlign="center center"><p style="cursor: pointer;" routerLink="/tesouraria/observacoes">{{chartObservationTotal}}</p></div>
+            <h4 fxLayoutAlign="center center">Observações</h4>
+            <canvas fxLayoutAlign="center center" baseChart [data]="chartObservationData" [labels]="chartObservationLabels" chartType="doughnut"
+                [options]="pieChartOptions" [colors]="chartColors"></canvas>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+<div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"  [ngStyle.xs]="{'width.vw': 80}"
+  [ngStyle.xs]="{'width.vw': 100}">
+  <div fxLayout="column" fxLayoutAlign="start" class="container beautiful-scroll-x" style="margin-top: 20px;">
+    <div fxLayout="column">
+      <div fxFlex>
+        <h2 class="title">Distrito</h2>
+        <mat-divider></mat-divider>
+      </div>
+      <br />
+      <form [formGroup]="formDistrict" fxLayout="column">
+        <mat-form-field fxFlex>
+          <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="Analista" formControlName="analyst" [(ngModel)]="editAnalyst" required>
+            <mat-option *ngFor="let analyst of users" [value]="analyst.id">
+              {{ analyst.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <button mat-button type="button" (click)="closeSidenav()">Cancelar</button>
+          <button mat-raised-button type="submit" (click)="saveDistrict()" color="primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
