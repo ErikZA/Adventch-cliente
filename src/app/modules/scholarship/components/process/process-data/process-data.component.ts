@@ -60,6 +60,9 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
 
   subscribeUnit: Subscription;
 
+  // Verificar tipo de usuário que pode modificar projeto ou não
+  isScholarship: boolean;
+
   constructor(
     public scholarshipService: ScholarshipService,
     public authService: AuthService,
@@ -79,6 +82,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.isScholarship = this.authService.getCurrentUser().isScholarship;
     this.router.navigate([this.router.url.replace(/.*/, 'bolsas/processos')]);
     this.schoolIsVisible();
     this.getAllDatas();

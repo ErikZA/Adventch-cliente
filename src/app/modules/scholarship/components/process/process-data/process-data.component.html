@@ -200,7 +200,7 @@
                                     </div>
                                 </mat-list-item>
                             </mat-list>
-                            <mat-action-row fxLayout="row" fxLayout.xs="column">
+                            <mat-action-row fxLayout="row" fxLayout.xs="column" *ngIf="isScholarship">
                                 <button *ngIf="process.status == 1 && authService.getCurrentUser().idSchool === 0" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="toWaiting(process)">INICIAR</button>
                                 <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status === 2 || process.status === 3)" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency(process)">PENDÊNCIA</button>
                                 <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status > 1 && process.status < 7)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu"><mat-icon>list</mat-icon> INDEFERIR</button>
