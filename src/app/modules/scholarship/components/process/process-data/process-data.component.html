@@ -214,7 +214,7 @@
                                 </mat-menu>
                                 <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status > 1)" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove(process)">APROVAR</button>
                                 <button *ngIf="checkUserRemoved()" mat-button color="warn" matTooltip="Excluir" (click)="removeProcess(process)">REMOVER</button>
-                                <button *ngIf="process.status === 1" mat-button color="primary" matTooltip="Editar" (click)="editProcess(process)">EDITAR</button>
+                                <button mat-button color="primary" matTooltip="Editar" (click)="editProcess(process)">EDITAR</button>
                             </mat-action-row>
                         </mat-expansion-panel>
                     </div>

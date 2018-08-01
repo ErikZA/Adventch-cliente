@@ -57,7 +57,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   statusFilters: Number[];
   valueSearch: string;
   inSearch: boolean;
-  
+
   subscribeUnit: Subscription;
 
   constructor(
@@ -387,8 +387,8 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   checkUserRemoved() {
-    const { id } = this.authService.getCurrentUser();       
-    return id == 160 || id == 2702 || id == 2704? true :false;
+    const { id } = this.authService.getCurrentUser();
+    return id == 160 || id == 2702 || id == 2704 || id == 2705 || id == 2743? true :false;
   }
 
   public generateNewPasswordResponsible(process: Process): void {
