@@ -18,13 +18,13 @@
     </mat-form-field>
 
     <mat-form-field fxFlexFill>
-        <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerBirth" placeholder="Data" formControlName="date" [max]="dates.now" required>
+        <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerBirth" placeholder="Data" formControlName="date" required>
         <mat-datepicker-toggle matSuffix [for]="pickerBirth"></mat-datepicker-toggle>
         <mat-datepicker #pickerBirth></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field style="width: 100%">
-        <textarea formControlName="description" matInput placeholder="Descrição" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10" required pattern="^[^-\s][\w\s-]+$"></textarea>
+        <textarea formControlName="description" matInput placeholder="Descrição" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10" required></textarea>
         <mat-error *ngIf="formObservation.get('description').hasError('pattern')">Este campo é inválido</mat-error>
     </mat-form-field>
 
