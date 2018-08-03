@@ -31,7 +31,7 @@
   <div fxLayout="row wrap" fxLayoutAlign="space-around center">
     <div *ngIf="checkEmpty(chartTreasurersData)">
       <h4 fxLayoutAlign="center center">Tesoureiros</h4>
-      <div class="wrapper" routerLink="/tesouraria/distritos">
+      <div class="wrapper" routerLink="/tesouraria/tesoureiros">
         <div class="text">{{chartTreasurersTotal}}</div>
         <canvas style="width: 400px!important" fxLayoutAlign="center center" baseChart [data]="chartTreasurersData" [labels]="chartTreasurersLabels"
           chartType="doughnut" [options]="pieChartOptions" [colors]="chartColors"></canvas>
