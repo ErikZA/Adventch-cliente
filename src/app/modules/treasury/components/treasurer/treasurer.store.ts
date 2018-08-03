@@ -39,15 +39,15 @@ export class TreasurerStore {
     this.loadAllTreasurers();
   }
 
-  public searchTreasurers(search) {
+  public searchTreasurers(search): Treasurer[] {
     if (search === '' || search === undefined || search === null) {
-      this.treasurers$ = Observable.of(this.dataStore.treasurers);
+      return this.dataStore.treasurers;
     } else {
-      this.treasurers$ = Observable.of(this.dataStore.treasurers.filter(data => {
+      return this.dataStore.treasurers.filter(data => {
         return data.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
         || data.church.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
         || data.functionName.toLowerCase().indexOf(search.toLowerCase()) !== -1;
-      }));
+      });
     }
   }
 

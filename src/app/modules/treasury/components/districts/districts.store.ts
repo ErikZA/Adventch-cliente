@@ -44,20 +44,15 @@ export class DistrictsStore {
     this.districts = district;
   }
 
-  /* Filtro */
-  public searchProcess(search: string) {
-    this.search(search);
-  }
-
   /*Search*/
-  private search(search: string) {
+  public search(search: string): Districts[] {
     if (search === '' || search === undefined || search === null) {
-      this.districts$ = Observable.of(this.dataStore.districts);
+      return this.dataStore.districts;
     } else {
-      this.districts$ = Observable.of(this.dataStore.districts.filter(data => {
+      return this.dataStore.districts.filter(data => {
         return data.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
           || data.analyst.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
-      }));
+      });
     }
   }
 
