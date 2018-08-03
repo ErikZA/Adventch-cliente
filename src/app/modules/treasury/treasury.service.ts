@@ -120,7 +120,7 @@ export class TreasuryService {
   }
 
   getUsers() {
-    const url = '/treasury/districts/getAllUsers/';
+    const url = '/treasury/districts/getAllUsersAnalysts/';
     return this.http
       .get(url)
       .map((res: Response) => res)

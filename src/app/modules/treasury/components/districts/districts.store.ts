@@ -11,9 +11,9 @@ import { User } from '../../../../shared/models/user.model';
 
 @Injectable()
 export class DistrictsStore {
-    districts$: Observable<Districts[]>;
-    users: User[] = null;
+  districts$: Observable<Districts[]>;
   private _districts: BehaviorSubject<Districts[]>;
+  users: User[] = null;
   private dataStore: {
     districts: Districts[]
   };
@@ -23,66 +23,66 @@ export class DistrictsStore {
     private authService: AuthService
   ) {
     this.dataStore = {
-        districts: []
+      districts: []
     };
     this._districts = <BehaviorSubject<Districts[]>>new BehaviorSubject([]);
     this.districts$ = this._districts.asObservable();
-    this.districts = new Districts();
+    //this.districts = new Districts();
   }
 
-    /* Listagem */
-    public loadAll(): void {
-        const unit = this.authService.getCurrentUnit();
-        this.service.getDistricts(unit.id).subscribe((data: Districts[]) => {
-          this.dataStore.districts = data;
-          this._districts.next(Object.assign({}, this.dataStore).districts);
-        });
-      }
+  /* Listagem */
+  public loadAll(): void {
+    const unit = this.authService.getCurrentUnit();
+    this.service.getDistricts(unit.id).subscribe((data: Districts[]) => {
+      this.dataStore.districts = data;
+      this._districts.next(Object.assign({}, this.dataStore).districts);
+    });
+  }
 
-    /* Abrir sidenav*/
-    openDistrict(district) {
-      this.districts = district;
-    }
+  /* Abrir sidenav*/
+  openDistrict(district) {
+    this.districts = district;
+  }
 
-    /* Filtro */
-    public searchProcess(search: string) {
-      this.search(search);
-    }
+  /* Filtro */
+  public searchProcess(search: string) {
+    this.search(search);
+  }
 
-    /*Search*/
-    private search(search: string) {
-      if (search === '' || search === undefined || search === null) {
-        this.districts$ = Observable.of(this.dataStore.districts);
-      } else {
-        this.districts$ = Observable.of(this.dataStore.districts.filter(data => {
-          return data.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+  /*Search*/
+  private search(search: string) {
+    if (search === '' || search === undefined || search === null) {
+      this.districts$ = Observable.of(this.dataStore.districts);
+    } else {
+      this.districts$ = Observable.of(this.dataStore.districts.filter(data => {
+        return data.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
           || data.analyst.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
-        }));
-      }
+      }));
     }
+  }
 
-    /* Remoção */
-    public remove(id) {
-      this.service.removeDistricts(id).subscribe(() => {
-        const index = this.dataStore.districts.findIndex(x => x.id === id);
-        this.dataStore.districts.splice(index, 1);
-        return true;
-      }, err => {
-        console.log(err);
-        return false;
-      });
-    }
+  /* Remoção */
+  public remove(id) {
+    this.service.removeDistricts(id).subscribe(() => {
+      const index = this.dataStore.districts.findIndex(x => x.id === id);
+      this.dataStore.districts.splice(index, 1);
+      return true;
+    }, err => {
+      console.log(err);
+      return false;
+    });
+  }
 
-    /* Salvar*/
-    public updateDistricts(district) {
-      const index = this.dataStore.districts.findIndex(x => x.id == Number(district.id));
-      if (index >= 0) {
-        this.dataStore.districts[index] = district;
-        this.dataStore.districts[index].analyst.name = district.analyst.name;
-      } else {
-        this.dataStore.districts.push(district);
-      }
-      this.districts = new Districts();
+  /* Salvar*/
+  public updateDistricts(district) {
+    const index = this.dataStore.districts.findIndex(x => x.id == Number(district.id));
+    if (index >= 0) {
+      this.dataStore.districts[index] = district;
+      this.dataStore.districts[index].analyst.name = district.analyst.name;
+    } else {
+      this.dataStore.districts.push(district);
     }
+    this.districts = new Districts();
+  }
 
 }

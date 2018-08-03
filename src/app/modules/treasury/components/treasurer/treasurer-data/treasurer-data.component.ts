@@ -47,8 +47,9 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getData();
     this.search$.subscribe(search => {
-      this.store.searchTreasurers(search);
+      //console.log('-> ' + search + 'Hours: ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds());
       this.treasurers$ = this.store.treasurers$;
+      this.store.searchTreasurers(search);
     });
     this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
       this.getData();

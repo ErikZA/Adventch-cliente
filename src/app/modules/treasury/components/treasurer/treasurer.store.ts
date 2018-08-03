@@ -44,9 +44,9 @@ export class TreasurerStore {
       this.treasurers$ = Observable.of(this.dataStore.treasurers);
     } else {
       this.treasurers$ = Observable.of(this.dataStore.treasurers.filter(data => {
-        return data.name.toLowerCase().indexOf(search) !== -1
-        || data.church.name.toLowerCase().indexOf(search) !== -1
-        || data.functionName.toLowerCase().indexOf(search) !== -1;
+        return data.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+        || data.church.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+        || data.functionName.toLowerCase().indexOf(search.toLowerCase()) !== -1;
       }));
     }
   }
@@ -88,6 +88,7 @@ export class TreasurerStore {
   private loadAllTreasurers(): void {
     const unit = this.authService.getCurrentUnit();
     this.service.getTreasurers(unit.id).subscribe((data: Treasurer[]) => {
+      debugger;
       this.dataStore.treasurers = data;
       this.formatTreasurers();
       this._treasurers.next(Object.assign({}, this.dataStore).treasurers);

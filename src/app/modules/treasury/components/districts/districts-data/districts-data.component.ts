@@ -36,11 +36,11 @@ export class DistrictsDataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.getData();
     this.search$.subscribe(search => {
       this.store.searchProcess(search);
       this.districts$ = this.store.districts$;
     });
-    this.getData();
     this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
       this.getData();
     });

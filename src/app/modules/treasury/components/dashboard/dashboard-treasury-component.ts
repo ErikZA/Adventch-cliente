@@ -110,8 +110,8 @@ export class DashboardTreasuryComponent implements OnInit {
     this.chartTreasurersTotal = 0;
     const labels = [
       'Tesoureiro(a)',
-      'Tesoureir(a) Associado(a)',
-      'Tesoureiro Assistente',
+      'Associado(a)',
+      'Assistente',
     ];
     array.forEach((f, i) => {
       if (f !== 0) {
