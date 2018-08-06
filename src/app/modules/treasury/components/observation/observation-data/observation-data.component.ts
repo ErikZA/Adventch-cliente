@@ -149,7 +149,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
       observations = this.store.searchChurches(this.filterChurch, observations);
     }
     if (this.filterAnalyst != undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
-      observations = this.store.searchAnalysts(this.filterStatus, observations);
+      observations = this.store.searchAnalysts(this.filterAnalyst, observations);
     }
     if (this.filterResponsible != undefined && this.filterResponsible != null && this.filterResponsible != 0) {
       observations = this.store.searchResponsibles(this.filterResponsible, observations);
