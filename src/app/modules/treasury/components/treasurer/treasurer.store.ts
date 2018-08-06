@@ -88,7 +88,6 @@ export class TreasurerStore {
   private loadAllTreasurers(): void {
     const unit = this.authService.getCurrentUnit();
     this.service.getTreasurers(unit.id).subscribe((data: Treasurer[]) => {
-      debugger;
       this.dataStore.treasurers = data;
       this.formatTreasurers();
       this._treasurers.next(Object.assign({}, this.dataStore).treasurers);
