@@ -47,6 +47,16 @@
               </mat-select>
             </mat-form-field>
           </mat-list>
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+            <mat-form-field>
+              <mat-select placeholder="Cargo" (change)="search()" [(ngModel)]="filterFunction">
+                <mat-option value="0">TODOS</mat-option>
+                <mat-option [value]="1">Tesoureiro (a)</mat-option>
+                <mat-option [value]="2">Tesoureiro (a) Associado (a)</mat-option>
+                <mat-option [value]="3">Tesoureiro (a) Assistente</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list>
         </div>
       </mat-expansion-panel>
     </mat-accordion>

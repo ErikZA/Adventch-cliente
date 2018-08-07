@@ -37,6 +37,7 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
 
   filterDistrict: number;
   filterAnalyst: number;
+  filterFunction: number;
   districts: Districts[] = new Array<Districts>();
   analysts: User[] = new Array<User>();
 
@@ -164,7 +165,11 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
       treasurersFilttered = this.store.searchDistricts(this.filterAnalyst, treasurersFilttered);
     }
     if (this.filterAnalyst != undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
+      console.log(treasurersFilttered);
       treasurersFilttered = this.store.searchAnalyst(this.filterAnalyst, treasurersFilttered);
+    }
+    if (this.filterFunction != undefined && this.filterFunction != null && this.filterFunction != 0) {
+      treasurersFilttered = this.store.searchFunction(this.filterFunction, treasurersFilttered);
     }
     this.treasurers$ = Observable.of(treasurersFilttered);    
   }

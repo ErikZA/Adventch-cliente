@@ -118,4 +118,8 @@ export class TreasurerStore {
   public searchDistricts(idDistrict: number, treasurers: Treasurer[]): Treasurer[] {
     return treasurers.filter(x => x.church.district.id === idDistrict);
   }
+
+  public searchFunction(idFunction: number, treasurers: Treasurer[]): Treasurer[] {
+    return treasurers.filter(x => x.function == idFunction);
+  }
 }
