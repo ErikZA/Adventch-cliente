@@ -19,11 +19,37 @@
         <button mat-icon-button (click)="searchButton = !searchButton">
           <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
         </button>
-        <!-- <button mat-icon-button>
-              <mat-icon aria-label="Filtrar lista de tesoureiro">filter_list</mat-icon>
-            </button> -->
+        <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
+          <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
+        </button>
       </div>
     </div>
+    <mat-accordion class="example-headers-align" #matExpansionPanel>
+      <mat-expansion-panel #matExpansionPanel hideToggle="true">
+        <div fxLayout="row wrap" style="flex-wrap: wrap;">
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+            <mat-form-field>
+              <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
+                <mat-option value="0">TODOS</mat-option>
+                <mat-option *ngFor="let district of districts" [value]="district.id">
+                  {{ district.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list>
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+            <mat-form-field>
+              <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
+                <mat-option value="0">TODOS</mat-option>
+                <mat-option *ngFor="let analyst of analysts" [value]="analyst.id">
+                  {{ analyst.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
     <mat-divider></mat-divider>
     <div fxFlex>
       <div class="header">

@@ -4,11 +4,13 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/of';
 
-import { Treasurer } from '../../models/treasurer';
+import * as moment from 'moment';
+
 import { TreasuryService } from '../../treasury.service';
 import { AuthService } from './../../../../shared/auth.service';
 
-import * as moment from 'moment';
+import { Treasurer } from '../../models/treasurer';
+import { User } from '../../../../shared/models/user.model';
 
 @Injectable()
 export class TreasurerStore {
@@ -88,7 +90,6 @@ export class TreasurerStore {
   private loadAllTreasurers(): void {
     const unit = this.authService.getCurrentUnit();
     this.service.getTreasurers(unit.id).subscribe((data: Treasurer[]) => {
-      debugger;
       this.dataStore.treasurers = data;
       this.formatTreasurers();
       this._treasurers.next(Object.assign({}, this.dataStore).treasurers);
@@ -108,5 +109,13 @@ export class TreasurerStore {
         }
       }
     );
+  }
+
+  public searchAnalyst(idAnalyst: number, treasurers: Treasurer[]): Treasurer[] {
+    return treasurers.filter(x => x.church.district.analyst.id === idAnalyst);
+  }
+
+  public searchDistricts(idDistrict: number, treasurers: Treasurer[]): Treasurer[] {
+    return treasurers.filter(x => x.church.district.id === idDistrict);
   }
 }

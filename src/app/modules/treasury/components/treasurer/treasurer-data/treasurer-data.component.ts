@@ -15,6 +15,8 @@ import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { TreasurerStore } from '../treasurer.store';
 
 import { Treasurer } from '../../../models/treasurer';
+import { Districts } from '../../../models/districts';
+import { User } from '../../../../../shared/models/user.model';
 
 @Component({
   selector: 'app-treasurer-data',
@@ -27,10 +29,16 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
   searchButton = false;
   showList = 15;
   search$ = new Subject<string>();
+  filterText: string = '';
   treasurers$: Observable<Treasurer[]>;
 
   subscribeUnit: Subscription;
   treasurers: Treasurer[] = new Array<Treasurer>();
+
+  filterDistrict: number;
+  filterAnalyst: number;
+  districts: Districts[] = new Array<Districts>();
+  analysts: User[] = new Array<User>();
 
   constructor(
     private authService: AuthService,
@@ -47,7 +55,8 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getData();
     this.search$.subscribe(search => {
-      this.treasurers$ = Observable.of(this.store.searchTreasurers(search));
+      this.filterText = search;
+      this.search();
     });
     this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
       this.getData();
@@ -62,7 +71,9 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
 
   getData() {
     this.treasurers$ = this.store.treasurers$;
-    this.store.loadAll();
+    this.store.loadAll();    
+    this.loadAnalysts();
+    this.loadDistricts();
   }
 
   editTreasurer(treasurer): void {
@@ -140,5 +151,33 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
 
   onScroll() {
     this.showList += 15;
+  }
+
+  public expandPanel(matExpansionPanel): void {
+    matExpansionPanel.toggle();
+  }
+
+  public search() {
+    let treasurersFilttered = this.store.searchTreasurers(this.filterText);
+
+    if (this.filterDistrict != undefined && this.filterDistrict != null && this.filterDistrict != 0) {
+      treasurersFilttered = this.store.searchDistricts(this.filterAnalyst, treasurersFilttered);
+    }
+    if (this.filterAnalyst != undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
+      treasurersFilttered = this.store.searchAnalyst(this.filterAnalyst, treasurersFilttered);
+    }
+    this.treasurers$ = Observable.of(treasurersFilttered);    
+  }
+
+  private loadDistricts() {
+    this.treasureService.getDistricts(this.authService.getCurrentUnit().id).subscribe((data: Districts[]) => {
+      this.districts = data;
+    });
+  }
+
+  private loadAnalysts() {
+    this.treasureService.loadAnalysts(this.authService.getCurrentUnit().id).subscribe((data: User[]) => {
+      this.analysts = data;
+    });
   }
 }

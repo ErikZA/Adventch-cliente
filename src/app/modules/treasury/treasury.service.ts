@@ -9,6 +9,7 @@ import { Districts } from './models/districts';
 import { State } from '../../shared/models/state.model';
 import { City } from '../../shared/models/city.model';
 import { Observation } from './models/observation';
+import { User } from '../../shared/models/user.model';
 
 @Injectable()
 export class TreasuryService {
@@ -121,6 +122,14 @@ export class TreasuryService {
 
   getUsers() {
     const url = '/treasury/districts/getAllUsersAnalysts/';
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  loadAnalysts(unit): Observable<User[]> {
+    const url = '/treasury/districts/loadAnalysts/' + unit;
     return this.http
       .get(url)
       .map((res: Response) => res)
