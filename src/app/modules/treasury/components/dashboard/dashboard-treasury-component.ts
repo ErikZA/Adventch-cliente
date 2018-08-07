@@ -52,9 +52,10 @@ export class DashboardTreasuryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const unit = this.authService.getCurrentUnit();
     this.mediaSubscription = this.media.subscribe((change: MediaChange) => setTimeout(() => this.isMobile = change.mqAlias === 'xs'));
     this.getDataSubscription = this.getDashboardData(0);
-    this.service.getUsers().subscribe((data) => {
+    this.service.getUsers(unit.id).subscribe((data) => {
       this.users = data;
     });
   }

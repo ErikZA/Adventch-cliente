@@ -120,8 +120,8 @@ export class TreasuryService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getUsers() {
-    const url = '/treasury/districts/getAllUsersAnalysts/';
+  getUsers(unit) {
+    const url = '/treasury/districts/getAllUsersAnalysts/' + unit;
     return this.http
       .get(url)
       .map((res: Response) => res)

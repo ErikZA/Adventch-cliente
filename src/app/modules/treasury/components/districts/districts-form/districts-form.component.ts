@@ -41,7 +41,8 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initForm();
-    this.service.getUsers().subscribe((data) => {
+    const unit = this.authService.getCurrentUnit();
+    this.service.getUsers(unit.id).subscribe((data) => {
       this.users = data;
     });
 
