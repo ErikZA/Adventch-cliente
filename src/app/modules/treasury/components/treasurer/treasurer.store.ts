@@ -120,6 +120,6 @@ export class TreasurerStore {
   }
 
   public searchFunction(idFunction: number, treasurers: Treasurer[]): Treasurer[] {
-    return treasurers.filter(x => x.function == idFunction);
+    return treasurers.filter(x => x.function === idFunction);
   }
 }

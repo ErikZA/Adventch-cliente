@@ -72,7 +72,7 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
 
   getData() {
     this.treasurers$ = this.store.treasurers$;
-    this.store.loadAll();    
+    this.store.loadAll();
     this.loadAnalysts();
     this.loadDistricts();
   }
@@ -162,16 +162,15 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
     let treasurersFilttered = this.store.searchTreasurers(this.filterText);
 
     if (this.filterDistrict != undefined && this.filterDistrict != null && this.filterDistrict != 0) {
-      treasurersFilttered = this.store.searchDistricts(this.filterAnalyst, treasurersFilttered);
+      treasurersFilttered = this.store.searchDistricts(this.filterDistrict, treasurersFilttered);
     }
     if (this.filterAnalyst != undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
-      console.log(treasurersFilttered);
       treasurersFilttered = this.store.searchAnalyst(this.filterAnalyst, treasurersFilttered);
     }
     if (this.filterFunction != undefined && this.filterFunction != null && this.filterFunction != 0) {
       treasurersFilttered = this.store.searchFunction(this.filterFunction, treasurersFilttered);
     }
-    this.treasurers$ = Observable.of(treasurersFilttered);    
+    this.treasurers$ = Observable.of(treasurersFilttered);
   }
 
   private loadDistricts() {
