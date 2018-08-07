@@ -11,6 +11,7 @@ const currentUnit: EventEmitter<Unit> = new EventEmitter<Unit>();
 const currentResponsible: EventEmitter<Responsible> = new EventEmitter<Responsible>();
 
 const parseJsonObject = (data: any) => {
+  if (!data) { return; }
   return JSON.parse(data);
 };
 
