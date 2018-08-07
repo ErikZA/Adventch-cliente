@@ -8,6 +8,8 @@ import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { MatSidenav, MatSnackBar } from '@angular/material';
 import { TreasuryService } from '../../../treasury.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
+import { auth } from '../../../../../auth/auth';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-districts-data',
@@ -27,7 +29,6 @@ export class DistrictsDataComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: DistrictsStore,
-    private authService: AuthService,
     private router: Router,
     private treasureService: TreasuryService,
     private sidenavService: SidenavService,
@@ -40,7 +41,8 @@ export class DistrictsDataComponent implements OnInit, OnDestroy {
     this.search$.subscribe(search => {
       this.districts$ = Observable.of(this.store.search(search));
     });
-    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+    this.getData();
+    this.subscribeUnit = auth.currentUnit.pipe(distinctUntilChanged()).subscribe(() => {
       this.getData();
     });
     this.sidenavService.setSidenav(this.sidenavRight);

@@ -14,6 +14,7 @@ import { TreasuryService } from '../../../treasury.service';
 import { ChurchStore } from '../church.store';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { Church } from '../../../models/church';
+import { auth } from '../../../../../auth/auth';
 
 @Component({
   selector: 'app-church-form',
@@ -24,7 +25,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
 
   subscribeUnit: Subscription;
-  
+
   form: FormGroup;
   districts: Districts[];
   states: State[];
@@ -48,7 +49,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.edit(params['id']);
     });
-    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+    this.subscribeUnit = auth.currentUnit.subscribe(() => {
       this.reset();
     });
   }
@@ -84,7 +85,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
 
   public save(): void {
     if (this.form.valid) {
-      const unit = this.authService.getCurrentUnit();
+      const unit = auth.getCurrentUnit();
       const data = {
         id: this.store.church.id,
         unit: unit.id,
@@ -114,7 +115,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   }
 
   private loadDistricts() {
-    const unit = this.authService.getCurrentUnit();
+    const unit = auth.getCurrentUnit();
     this.districts = [];
     this.service.getDistricts(unit.id).subscribe((data: Districts[]) => {
       this.districts = Object.assign(this.districts, data as Districts[]);

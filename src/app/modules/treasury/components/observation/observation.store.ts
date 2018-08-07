@@ -12,6 +12,7 @@ import { Church } from '../../models/church';
 import { User } from '../../../../shared/models/user.model';
 
 import * as moment from 'moment';
+import { auth } from '../../../../auth/auth';
 
 @Injectable()
 export class ObservationStore {
@@ -54,7 +55,7 @@ export class ObservationStore {
   }
   /* Listagem */
   public loadAll(): void {
-    const unit = this.authService.getCurrentUnit();
+    const unit = auth.getCurrentUnit();
     this.service.getObservations(unit.id).subscribe((data: Observation[]) => {
       this.dataStore.observations = data;
       this._observations.next(Object.assign({}, this.dataStore).observations);

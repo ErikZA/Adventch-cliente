@@ -10,6 +10,7 @@ import { AuthService } from '../../../../../shared/auth.service';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { TreasuryService } from '../../../treasury.service';
 import { DistrictsStore } from '../districts.store';
+import { auth } from '../../../../../auth/auth';
 
 @Component({
   selector: 'app-districts-form',
@@ -52,7 +53,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+    this.subscribeUnit = auth.currentUnit.subscribe(() => {
       this.close();
     });
   }
@@ -81,7 +82,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.route.params.subscribe(params => {
       this.params = params['id'];
     });
-    const unit = this.authService.getCurrentUnit();
+    const unit = auth.getCurrentUnit();
     // modificar para id, caso de conflito
     const valor = this.users.filter( x => x.id === this.formDistrict.value.analyst);
     this.values = {

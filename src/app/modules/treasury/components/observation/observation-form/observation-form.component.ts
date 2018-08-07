@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ObservationStore } from '../observation.store';
 import { MatSnackBar } from '@angular/material';
 import { EObservationStatus } from '../../../models/Enums';
+import { auth } from '../../../../../auth/auth';
 
 @Component({
   selector: 'app-observation-form',
@@ -47,12 +48,12 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
     this.initConfigurations();
     this.initForm();
 
-    const unit = this.authService.getCurrentUnit();
+    const unit = auth.getCurrentUnit();
     this.service.loadChurches(unit.id).subscribe((data) => {
       this.churches = data;
     });
 
-    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+    this.subscribeUnit = auth.currentUnit.subscribe(() => {
       this.close();
     });
 
@@ -93,16 +94,16 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
     this.router.navigate(['tesouraria/observacoes']);
   }
 
-  saveObservation() {  
+  saveObservation() {
     if (!this.formObservation.valid) {
       return;
     }
     this.routeSubscription = this.route.params.subscribe(params => {
       this.params = params['id'];
     });
-    const unit = this.authService.getCurrentUnit();
-    const responsible = this.authService.getCurrentUser();
-    
+    const unit = auth.getCurrentUnit();
+    const responsible = auth.getCurrentUser();
+
     this.values = {
       id: this.params == undefined ? 0 : this.params,
       responsible: responsible.id,
@@ -133,7 +134,7 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
     });
 
     this.editChurch = Number(observation['0'].church.id);
-    const unit = this.authService.getCurrentUnit();
+    const unit = auth.getCurrentUnit();
     this.service.loadChurches(unit.id).subscribe((data) => {
       this.editChurchName = data.find(x => x.id == observation['0'].church.id).name;
     });

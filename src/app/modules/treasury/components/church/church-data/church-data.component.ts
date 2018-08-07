@@ -14,6 +14,7 @@ import { User } from '../../../../../shared/models/user.model';
 import { City } from '../../../../../shared/models/city.model';
 import { TreasuryService } from '../../../treasury.service';
 import { Districts } from '../../../models/districts';
+import { auth } from '../../../../../auth/auth';
 
 @Component({
   selector: 'app-church-data',
@@ -60,7 +61,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
       this.filterText = search;
       this.search();
     });
-    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+    this.subscribeUnit = auth.currentUnit.subscribe(() => {
       this.getData();
       this.closeSidenav();
     });
@@ -87,7 +88,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   }
 
   private loadDistricts() {
-    this.service.getDistricts(this.authService.getCurrentUnit().id).subscribe((data: Districts[]) => {
+    this.service.getDistricts(auth.getCurrentUnit().id).subscribe((data: Districts[]) => {
       this.districts = data;
     });
   }

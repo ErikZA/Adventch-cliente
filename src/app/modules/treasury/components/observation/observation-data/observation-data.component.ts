@@ -13,6 +13,7 @@ import { Observation } from '../../../models/observation';
 import { Church } from '../../../models/church';
 import { User } from '../../../../../shared/models/user.model';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
+import { auth } from '../../../../../auth/auth';
 
 @Component({
   selector: 'app-observation-data',
@@ -56,7 +57,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
     this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/observacoes')]);
     this.sidenavService.setSidenav(this.sidenavRight);
-    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+    this.subscribeUnit = auth.currentUnit.subscribe(() => {
       this.getData();
     });
     this.search$.subscribe(search => {

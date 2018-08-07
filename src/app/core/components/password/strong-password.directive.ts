@@ -7,8 +7,6 @@ import {
 } from '@angular/core';
 import {
   AbstractControl,
-  NG_VALIDATORS,
-  Validator,
   ValidatorFn,
   Validators
 } from '@angular/forms';

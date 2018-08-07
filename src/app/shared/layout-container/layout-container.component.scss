@@ -1,0 +1,16 @@
+.page-container {
+    min-height: calc(100vh - 92px);
+}
+
+.title {
+    color: gray;
+}
+
+.container {
+    overflow: auto;
+    max-height: calc(100vh - 250px);
+}
+
+.margin-top-small {
+    margin-top: 1%;
+}

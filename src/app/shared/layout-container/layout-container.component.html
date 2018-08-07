@@ -1,0 +1,12 @@
+<div class="page-container mat-elevation-z2" fxLayoutAlign="center">
+    <div fxFlex.gt-sm="95%" fxFlex="97%">
+        <div class="margin-top-small" fxLayout="row" fxFlex fxLayoutAlign="space-between center">
+            <h2 class="title" fxFlex>{{ title }}</h2>
+            <button mat-button (click)="buttonClick()" color="primary">{{ buttonLabel }}</button>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="container" class="margin-top-small">
+            <ng-content></ng-content>
+        </div>
+    </div>
+</div>

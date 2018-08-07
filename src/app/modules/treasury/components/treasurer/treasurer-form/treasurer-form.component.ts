@@ -11,7 +11,7 @@ import { AuthService } from '../../../../../shared/auth.service';
 import { TreasuryService } from '../../../treasury.service';
 import { TreasurerStore } from '../treasurer.store';
 
-import { Phone } from './../../../models/phone';
+import { Phone } from '../../../models/phone';
 import { Church } from '../../../models/church';
 import { Treasurer } from '../../../models/treasurer';
 
@@ -20,6 +20,7 @@ import * as moment from 'moment';
 
 import { TreasurerDataComponent } from '../treasurer-data/treasurer-data.component';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
+import { auth } from '../../../../../auth/auth';
 
 @Component({
   selector: 'app-treasurer-form',
@@ -56,7 +57,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
     this.initConfigurations();
     this.initForm();
     this.getChurches();
-    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+    this.subscribeUnit = auth.currentUnit.subscribe(() => {
       this.updateUnit();
     });
     this.subscribe2 = this.activatedRoute.params.subscribe((data) => {
@@ -174,7 +175,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
   }
 
   getChurches() {
-    const unit = this.authService.getCurrentUnit();
+    const unit = auth.getCurrentUnit();
     this.lstChurches = [];
     this.subscribe1 = this.treasuryService.loadChurches(unit.id).subscribe((data: Church[]) => {
       this.lstChurches = Object.assign(this.lstChurches, data as Church[]);
@@ -193,7 +194,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
       ...this.formPersonal.value,
       ...this.formContact.value,
       phones: this.formPhones.value[0].number == null ? [] : this.formPhones.value,
-      unitId: this.authService.getCurrentUnit().id,
+      unitId: auth.getCurrentUnit().id,
       id: this.store.treasurer.id,
       identity: this.store.treasurer.identity
     };

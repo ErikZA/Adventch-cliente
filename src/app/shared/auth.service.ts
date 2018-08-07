@@ -1,3 +1,5 @@
+import { auth } from '../auth/auth';
+import { SharedService } from './shared.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -12,6 +14,8 @@ import { Permission } from './models/permission.model';
 import { Responsible } from '../modules/scholarship/models/responsible';
 
 import { User } from './models/user.model';
+import { Profile } from '../modules/administration/models/profile/profile.model';
+import { Feature } from '../modules/administration/models/feature.model';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +28,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private sharedService: SharedService
   ) { }
 
   loggedIn() {
@@ -45,130 +50,70 @@ export class AuthService {
       } else {
         this.router.navigate(['/educacao']);
       }
-    } else {
+    } else if (!window.location.pathname.startsWith('/resetar-senha')) {
       this.router.navigate(['/login']);
     }
   }
 
-  login(email: string, password: string) {
-    const body = JSON.stringify({ email: email, password: password });
-    return this.http
-      .post<any>('/shared/login', body)
-      .retry(3)
-      .toPromise()
-      .then(data => {
-        let user = data.user as User;
-        if (user) {
-          user.firstName = user.name.split(' ')[0];
-          // user.photoUrl = `${environment.apiUrl}/users/photo/${user.identifier}/${user.photoDate}`;
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          localStorage.setItem('token', data.token);
-          this.currentUser.emit(user);
-          this.showApp.emit(true);
-        } else {
-          user = new User();
-          user.email = localStorage.getItem('lastLogin');
-          this.currentUser.emit(user);
-          this.showApp.emit(false);
-        }
-        return user;
-      }).catch((error: any) => {
-        Promise.reject(error);
-      });
-  }
-
-  logoff() {
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('token');
-    localStorage.removeItem('currentUnit');
-    localStorage.removeItem('currentResponsible');
-    localStorage.removeItem('tokenResponsible');
-    const user: User = new User();
-    user.email = localStorage.getItem('lastLogin');
-    this.currentUser.emit(user);
-    this.showApp.emit(false);
-    this.router.navigate(['/login']);
-  }
-
   logoffResponsible() {
-    localStorage.removeItem('currentResponsible');
-    localStorage.removeItem('tokenResponsible');
     this.router.navigate(['/educacao']);
+    auth.logoffResponsible();
   }
 
-  setCurrentUnit(unit) {
-    localStorage.setItem('currentUnit', JSON.stringify(unit));
-    this.currentUnit.emit();
+  public setCurrentUnit(unit: Unit): void {
+    this.setPermissionsUser(unit.id);
+    auth.setCurrentUnit(unit);
+  }
+
+  private setPermissionsUser(unitId: number) {
+    const user = auth.getCurrentUser();
+    this.sharedService.getProfilesUser(user.id, unitId).subscribe(profiles => {
+      if (profiles) {
+        user.profiles = profiles;
+        auth.setCurrentUser(user);
+      }
+    }, err => {
+      user.profiles = [];
+      auth.setCurrentUser(user);
+    });
+  }
+  redirectToHome(): void {
+    this.router.navigate(['/']);
   }
 
   getCurrentUnit() {
-    const unit: Unit = JSON.parse(localStorage.getItem('currentUnit'));
-    return unit;
+    return auth.getCurrentUnit();
   }
 
   getCurrentUser() {
-    const user: User = JSON.parse(localStorage.getItem('currentUser'));
-    return user;
+    return auth.getCurrentUser();
+  }
+
+  setCurrentUser(user: User) {
+    auth.setCurrentUser(user);
   }
 
   getcurrentResponsible() {
-    const responsible: Responsible = JSON.parse(localStorage.getItem('currentResponsible'));
-    return responsible;
+    return auth.getCurrentResponsible();
   }
 
-  updatePermissions(permissions) {
-    this.permissions = permissions;
-    const user = this.getCurrentUser();
-    user.permissions = permissions;
-    localStorage.setItem('currentUser', JSON.stringify(user));
-  }
-
-  checkPermission(module) {
-    if (module === 0 || module === 1) { // Permissão liberada para "Geral" e "Aplicativos"
-      return true;
-    }
-    if (this.permissions === undefined || this.permissions === null) {
-      if (this.getCurrentUser().permissions === undefined || this.getCurrentUser().permissions === null) {
-        return false;
-      }
-      this.permissions = this.getCurrentUser().permissions;
-    }
-    for (const permission of this.permissions) {
-      if (permission.module === module) {
-        return true;
+  public checkUserIsAdmin(): boolean {
+    const user = auth.getCurrentUser();
+    if (user) {
+      const { isSysAdmin } = user;
+      if (isSysAdmin) {
+        return !!isSysAdmin;
       }
     }
     return false;
   }
 
-  getModule(url: String) {
-    if (url.toLowerCase().match('tesouraria')) {
-        return EModules.Treasury;
+  public checkModuleAccess(module: EModules): boolean {
+    const modules = this.getCurrentUnit() ? this.getCurrentUnit().modules : undefined;
+    if (!module || !Array.isArray(modules)) {
+      return false;
     }
-    if (url.toLowerCase().match('bolsas')) {
-      return EModules.Scholarship;
-    }
-    if (url === '/') {
-        return EModules.General;
-    }
-    return undefined;
-  }
 
-  checkAccess(url: String, unit: Unit) {
-    return this.checkPermission(this.getModule(url));
-  }
-
-  getPermissions(): Observable<Permission[]> {
-    const url = '/shared/getPermissions/' + this.getCurrentUser().id + '/' + this.getCurrentUnit().id;
-    return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
-  }
-
-  checkPermissionModule(idModule) {
-    const url = '/shared/checkPermissionModule/' + this.getCurrentUser().id + '/' + this.getCurrentUnit().id + '/' + idModule;
-    return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+    return modules.includes(module);
   }
 }

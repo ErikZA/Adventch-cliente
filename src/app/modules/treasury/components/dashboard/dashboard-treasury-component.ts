@@ -3,6 +3,7 @@ import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
 import { TreasuryService } from '../../treasury.service';
 import { AuthService } from '../../../../shared/auth.service';
+import { auth } from '../../../../auth/auth';
 
 @Component({
   selector: 'app-dashboard-treasury',
@@ -61,7 +62,7 @@ export class DashboardTreasuryComponent implements OnInit {
   }
 
   getDashboardData(idAnalyst) {
-    const unit = this.authService.getCurrentUnit();
+    const unit = auth.getCurrentUnit();
     return this.service.getTreasuryDashboard(unit.id, idAnalyst).subscribe((data) => {
       if (data) {
         this.getChartObservationData(data.chartObservationData);

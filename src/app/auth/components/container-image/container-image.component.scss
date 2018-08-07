@@ -1,0 +1,18 @@
+%container-login {
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+    opacity: .8;
+}
+
+.login-main {
+    @extend %container-login;
+    background-image: url('../../../../assets/img/bg-img/fundo.jpg');
+}
+
+.login-education {
+    @extend %container-login;
+    background-image: url('../../../../assets/img/boxed-bg/polygon/bg/7.jpg');
+}

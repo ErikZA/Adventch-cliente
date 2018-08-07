@@ -4,23 +4,25 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { Observable } from 'rxjs/Observable';
-import { map, delay } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
+import { map } from 'rxjs/operators';
+
 
 import { MatSnackBar } from '@angular/material';
 
-import { ProcessesStore } from './../processes.store';
+import { ProcessesStore } from '../processes.store';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { ScholarshipService } from '../../../scholarship.service';
 import { ReportService } from '../../../../../shared/report.service';
 
-import { Student } from './../../../models/student';
+import { Student } from '../../../models/student';
 import { Process } from '../../../models/process';
 import { Responsible } from '../../../models/responsible';
 import { AuthService } from '../../../../../shared/auth.service';
 import { StudentSerie } from '../../../models/studentSerie';
 
 import { CustomValidators } from '../../../../../core/custom-validators';
+import { auth } from '../../../../../auth/auth';
 
 @Component({
   selector: 'app-process-form',
@@ -186,7 +188,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   process: Process;
   loading: boolean;
   studentsSeries$: Observable<StudentSerie[]>;
-  
+
   subscribeUnit: Subscription;
 
   constructor(
@@ -209,7 +211,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     this.studentsSeries$ = this.store.studentSeries$;
     this.route.params.subscribe(params => {
       this.store.processes$.pipe(
-        map((todos: Process[]) => todos != null ? todos.find((item: Process) => item.identity.toLocaleUpperCase() === params['identifyProcess']) : new Process())
+        map((todos: Process[]) => todos != null ? todos
+          .find((item: Process) => item.identity.toLocaleUpperCase() === params['identifyProcess']) : new Process())
       ).subscribe(x => {
         this.process = x;
         if (!params['identifyProcess']) {
@@ -222,7 +225,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         this.store.loadProcessByIdentity(params['identifyProcess']);
       }
     });
-    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+    this.subscribeUnit = auth.currentUnit.subscribe(() => {
       this.resetAll();
     });
   }
@@ -416,10 +419,10 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       responsibleId: this.responsible === undefined || this.responsible.id === undefined ? 0 : this.responsible.id,
       studentId: studentSelected === undefined || studentSelected.length === 0 ? 0 : studentSelected[0].id,
       schoolId: idScholSelected,
-      unitId: this.authService.getCurrentUnit().id,
+      unitId: auth.getCurrentUnit().id,
       status: status,
       id: isEdit ? this.process.id : 0,
-      userId: this.authService.getCurrentUser().identifier,
+      userId: auth.getCurrentUser().id,
       ...this.formProcess.value,
       ...this.formCheckDocuments.value,
     };

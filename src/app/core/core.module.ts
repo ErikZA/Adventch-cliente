@@ -1,4 +1,3 @@
-import { BackButtonComponent } from './components/back-button/back-button.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,13 +18,18 @@ import { FocusDirective } from './components/focus.directive';
 import { MaterialModule } from './material/material.module';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import { SidenavService } from './services/sidenav.service';
-import { ChangePasswordComponent } from './components/password/change-password/change-password.component';
-import { ChangePasswordService } from './components/password/change-password/change-password.service';
-import { StrengthMeterComponent } from './components/password/strength-meter/strength-meter.component';
-import { PasswordFeedbackComponent } from './components/password/password-feedback/password-feedback.component';
-import { StrongPasswordDirective } from './components/password/strong-password.directive';
 import { InputMaskDirective } from './components/input-mask.directive';
+import { LayoutComponent } from '../shared/layout/layout.component';
+import { ScholarshipService } from '../modules/scholarship/scholarship.service';
+import { PasswordFeedbackComponent } from './components/password/password-feedback/password-feedback.component';
+import { StrengthMeterComponent } from './components/password/strength-meter/strength-meter.component';
+import { FeatureDirective } from './components/permissions/directive/feature.directive';
+import { StrongPasswordDirective } from './components/password/strong-password.directive';
+import { PermissionService } from './components/permissions/service/permission.service';
+import { BackButtonComponent } from './components/back-button/back-button.component';
 
+import { NgProgressModule } from '@ngx-progressbar/core';
+import { NgProgressHttpModule } from '@ngx-progressbar/http';
 // const globalRippleConfig: RippleGlobalOptions = {
 //   disabled: false,
 //   baseSpeedFactor: 1.5 // Ripples will animate 50% faster than before.
@@ -37,9 +41,9 @@ import { InputMaskDirective } from './components/input-mask.directive';
     FormsModule,
     RouterModule,
     ReactiveFormsModule,
-
     TranslateModule,
-
+    NgProgressHttpModule,
+    NgProgressModule,
     FlexLayoutModule,
     InfiniteScrollModule,
     MaterialModule
@@ -51,18 +55,24 @@ import { InputMaskDirective } from './components/input-mask.directive';
     IconPickerComponent,
     LockScreenComponent,
     FocusDirective,
+    LayoutComponent,
 
     // new Components
-    ChangePasswordComponent,
+    StrongPasswordDirective,
+    PasswordFeedbackComponent,
+    StrengthMeterComponent,
     InputMaskDirective,
     BackButtonComponent,
+    FeatureDirective,
 
     // modules Generics
     FlexLayoutModule,
     InfiniteScrollModule,
     MaterialModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgProgressHttpModule,
+    NgProgressModule
   ],
   declarations: [
     // old Declarations
@@ -71,21 +81,23 @@ import { InputMaskDirective } from './components/input-mask.directive';
     IconPickerComponent,
     LockScreenComponent,
     FocusDirective,
+    LayoutComponent,
 
     // new Declarations
-    ProgressSpinnerComponent,
-    ChangePasswordComponent,
-    StrengthMeterComponent,
     PasswordFeedbackComponent,
+    StrengthMeterComponent,
     StrongPasswordDirective,
+    ProgressSpinnerComponent,
     InputMaskDirective,
-    BackButtonComponent
+    BackButtonComponent,
+    FeatureDirective
   ],
   providers: [
     LockScreenService,
     ConfirmDialogService,
     SidenavService,
-    ChangePasswordService
+    ScholarshipService,
+    PermissionService
     // { provide: DateAdapter, useClass: CustomDateAdapter },
     // { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
     // { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
@@ -93,7 +105,6 @@ import { InputMaskDirective } from './components/input-mask.directive';
   ],
   entryComponents: [
     ConfirmDialogComponent,
-    ChangePasswordComponent,
     LockScreenComponent
   ]
 })

@@ -8,6 +8,7 @@ import { AuthService } from '../../../../shared/auth.service';
 
 import * as moment from 'moment';
 import { User } from '../../../../shared/models/user.model';
+import { auth } from '../../../../auth/auth';
 
 @Injectable()
 export class DistrictsStore {
@@ -27,12 +28,11 @@ export class DistrictsStore {
     };
     this._districts = <BehaviorSubject<Districts[]>>new BehaviorSubject([]);
     this.districts$ = this._districts.asObservable();
-    //this.districts = new Districts();
   }
 
   /* Listagem */
   public loadAll(): void {
-    const unit = this.authService.getCurrentUnit();
+    const unit = auth.getCurrentUnit();
     this.service.getDistricts(unit.id).subscribe((data: Districts[]) => {
       this.dataStore.districts = data;
       this._districts.next(Object.assign({}, this.dataStore).districts);

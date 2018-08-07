@@ -1,0 +1,88 @@
+<form [formGroup]="formProfile" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="loading">
+    <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
+        <div fxFlex>
+            <h2 class="title"> {{ labelTitle() }} Papel</h2>
+            <mat-divider></mat-divider>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center" fxLayout.lt-md="column" fxFlex class="margin-bottom-30">
+        <div fxLayout="column" fxFlex="50%">
+            <mat-form-field fxFlex>
+                <input matInput type="text" formControlName="name" placeholder="Nome do Papel" required minlength="3" maxlength="200">
+                <mat-error *ngIf="formProfile.get('name').hasError('required')">Este campo é obrigatório</mat-error>
+                <mat-error *ngIf="formProfile.get('name').hasError('minlength')">Nome do papel pequeno, digite um nome com mais de 3 dígitos</mat-error>
+                <mat-error *ngIf="formProfile.get('name').hasError('maxlenght')">Nome do papel grande, digite um nome com menos de 200 dígitos</mat-error>
+                <mat-error *ngIf="formProfile.get('name').hasError('pattern')">Digite um nome válido.</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Modulo" (valueChange)="changeModuleOfProfile($event)" formControlName="software" required>
+                    <mat-option *ngIf="modules === undefined || modules === null || modules.length === 0" value="">Nenhum Modulo Disponível</mat-option>
+                    <ng-container *ngFor="let module of modules">
+                        <mat-option *ngIf="module > 5" [value]="module">
+                            {{ getModuleName(module) }}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <div class="padding-form card">
+                <p class="section-form">Permissões das Funcionalidades</p>
+                <mat-divider></mat-divider>
+                <div class="form-responsible" fxLayout="row" fxLayoutGap="20px" fxFlex>
+                    <ng-template #moduleNotSelected>
+                        <div class="title" fxFlex="100%" fxLayout="column" fxLayoutAlign="center center">
+                            <p>Selecione um modulo.</p>
+                        </div>
+                    </ng-template>
+                    <ng-template #notDisponible>
+                        <div class="title" fxFlex="100%" fxLayout="column" fxLayoutAlign="center center">
+                            <p>Nenhum funcionalidade encontrada, selecione outro modulo.</p>
+                        </div>
+                    </ng-template>
+                    <ng-container *ngIf="modules === undefined || modules === null || modules.length === 0; else hasModules">
+                        <div class="title" fxFlex="100%" fxLayout="column" fxLayoutAlign="center center">
+                            <p>A sua unidade atual não possuí nenhum modulo disponível.</p>
+                        </div>
+                    </ng-container>
+                </div>
+                <ng-template #hasModules>
+                    <ng-container *ngIf="(features$ | async) !== null && (features$ | async) !== undefined; else moduleNotSelected">
+                        <ng-container *ngIf="(features$ | async)?.length !== 0 && (features$ | async) as f; else notDisponible">
+                            <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="gappx" fxFlex>
+                                <div fxLayout="column" fxFlex>
+                                    <section class="checkers" *ngFor="let feature of formPermissions.controls as controls; let i = index" class="example-section">
+                                        <ng-container *ngIf="!f[i].isSpecial">
+                                            <div [formGroup]="feature" class="margin-top-20 margin-bottom-30 check">
+                                                <mat-checkbox formControlName="isActive" class="margin-checkebox text-bold" (change)="changeCheckFeature($event.checked, feature.get('permissions'))">{{ f[i].name }}</mat-checkbox>
+                                                <div *ngFor="let permission of feature.controls['permissions'].controls; let j = index">
+                                                    <div [formGroup]="permission" class="margin-left-30 margin-top-10">
+                                                        <mat-checkbox formControlName="isActive" class="margin-checkebox" (change)="changeCheckPermissions($event.checked, feature)">{{ f[i].permissions[j].name }}</mat-checkbox>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </section>
+                                </div>
+                                <div fxLayout="column" fxFlex>
+                                    <section class="checkers" *ngFor="let feature of formPermissions.controls as controls; let i = index" class="example-section">
+                                        <ng-container *ngIf="f[i].isSpecial">
+                                            <div [formGroup]="feature" class="margin-top-20 margin-bottom-30 check">
+                                                <mat-checkbox formControlName="isActive" class="margin-checkebox text-bold">{{ f[i].name }}</mat-checkbox>
+                                            </div>
+                                        </ng-container>
+                                    </section>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <mat-error *ngIf="formSubmittedOnce && !checkIfHaveMarkedFeatureAndPermission()">Selecione ao menos uma funcionalidade para salvar o papel</mat-error>
+                    </ng-container>
+                </ng-template>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
+                <a class="positionButtom" (click)="closeSidenav()">
+                    <back-button></back-button>
+                </a>
+                <button class="positionButtom" mat-raised-button type="submit" (click)="saveProfile()" color="primary" [disabled]="isSending">SALVAR</button>
+            </div>
+        </div>
+    </div>
+</form>

@@ -6,9 +6,11 @@ import { Subscription } from 'rxjs/Subscription';
 // import { TranslateService } from '@ngx-translate/core';
 import * as _ from 'lodash';
 
+import { auth } from './auth/auth';
 import { User } from './shared/models/user.model';
 import { AuthService } from './shared/auth.service';
 import { MatIconRegistry } from '@angular/material';
+import { Responsible } from './modules/scholarship/models/responsible';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +20,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   subscribe1: Subscription;
   subscribe2: Subscription;
+  subscribe3: Subscription;
   currentUser: User;
+  currentResponsible: Responsible;
   showApp = false;
 
   title = 'Adven.tech';
@@ -37,10 +41,22 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscribe1 = this.authService.currentUser.subscribe(currentUser => this.currentUser = currentUser, err => { console.log(err); });
-    this.subscribe2 = this.authService.showApp.subscribe(showApp => this.showApp = showApp, err => { console.log(err); });
-    if (!this.showApp) {
-      this.authService.loggedIn();
+    this.subscribe1 = auth.currentUser.subscribe(currentUser => this.currentUser = currentUser, err => { console.log(err); });
+    this.subscribe2 = auth.showApp.subscribe(showApp => this.showApp = showApp, err => { console.log(err); });
+    this.subscribe3 = auth.currentResponsible
+      .subscribe(currentResponsible => this.currentResponsible = currentResponsible, err => console.log(err));
+    if (!this.showApp && this.currentUser) {
+      auth.loggedInMain();
+      if (!this.showApp) {
+        this.router.navigate(['/login']);
+        auth.logoffMain();
+      }
+    } else if (!this.showApp && this.currentResponsible) {
+      auth.loggedInResponsible();
+      if (!this.showApp) {
+        this.router.navigate(['/educacao']);
+        auth.logoffResponsible();
+      }
     }
   }
 
@@ -50,7 +66,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logoff() {
-    this.authService.logoff();
+    this.router.navigate(['/login']);
+    auth.logoffMain();
+    auth.logoffResponsible();
   }
 
   // @HostListener('window:beforeunload', ['$event'])

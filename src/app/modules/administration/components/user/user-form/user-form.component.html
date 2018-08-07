@@ -1,0 +1,80 @@
+<form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="loading">
+    <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
+        <div fxFlex>
+            <h2 class="title"> {{ labelTitle() }} Usuário</h2>
+            <mat-divider></mat-divider>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center" fxLayout.lt-md="column" fxFlex class="margin-bottom-30">
+        <div fxLayout="column" fxLayoutGap="20px" ngStyle.gt-sm="margin: 50px 0" fxFlex="50%">
+            <mat-form-field fxFlex>
+                <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
+                <mat-error *ngIf="form.get('name').hasError('required')">Este campo é obrigatório</mat-error>
+                <mat-error *ngIf="form.get('name').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
+                <mat-error *ngIf="form.get('name').hasError('maxlenght')">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
+                <mat-error *ngIf="form.get('name').hasError('pattern')">Digite um nome válido.</mat-error>
+            </mat-form-field>
+            <mat-form-field fxFlex>
+                <input matInput placeholder="Email" type="email" required formControlName="email" maxlength="100" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+                <mat-error *ngIf="form.get('email').hasError('required')">Este campo é obrigatório</mat-error>
+                <mat-error *ngIf="form.get('email').hasError('pattern')">Digite um email válido</mat-error>
+            </mat-form-field>
+            <div fxLayout="column" *ngIf="!checkIsEdit()">
+                <mat-form-field hintLabel="Tamanho mínimo: 6 caracteres" fxFlex>
+                    <input matInput formControlName="password" placeholder="Senha" [type]="hideNew ? 'password' : 'text'" required>
+                    <mat-icon matSuffix (click)="hideNew = !hideNew">{{ hideNew ? 'visibility' : 'visibility_off' }}</mat-icon>
+                    <mat-error *ngIf="form.get('password').hasError('required')">Este campo é obrigatório</mat-error>
+                    <mat-error *ngIf="form.get('password').hasError('minlength')">Digite uma senha com tamanho maior que 6 dígitos</mat-error>
+                </mat-form-field>
+                <div *ngIf="form.get('password').value != null" style="margin-top: 5%" fxFlex>
+                    <app-strength-meter [password]="form.get('password').value" (strength)="onStrength($event)"></app-strength-meter>
+                    <mat-error [ngClass]="{'color-font-grey': strength >= 2, 'font-feedback': strength < 2 }">{{ getMensage() }}</mat-error>
+                    <!-- <app-password-feedback *ngIf="form.get('password').errors?.strongPassword" [feedback]="form.get('password').errors.strongPassword.feedback">
+              </app-password-feedback> -->
+                </div>
+            </div>
+            <mat-form-field fxFlex>
+                <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerBirth" placeholder="Data de Nascimento" formControlName="birthday" [min]="dates.min" [max]="dates.max">
+                <mat-datepicker-toggle matSuffix [for]="pickerBirth"></mat-datepicker-toggle>
+                <mat-datepicker #pickerBirth></mat-datepicker>
+                <mat-error *ngIf="form.get('birthday').hasError('min')">Data inválida, digite uma data maior que {{ dates.min }}</mat-error>
+                <mat-error *ngIf="form.get('birthday').hasError('max')">Data inválida, digite uma data menor que {{ dates.max }}</mat-error>
+            </mat-form-field>
+            <ng-template #thenSchools>
+                <mat-form-field fxFlex>
+                    <mat-select formControlName="school" placeholder="Escola" required>
+                        <mat-option [value]="0">Todas Escolas</mat-option>
+                        <span *ngFor="let school of (schools$ | async)">
+                    <mat-option [value]="school.id">{{ school.name }}</mat-option>
+                  </span>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('school').hasError('required')">Selecione uma escola</mat-error>
+                </mat-form-field>
+            </ng-template>
+            <mat-slide-toggle fxFlex fxFlexAlign="end" formControlName="isAdmin" class="example-margin" color="primary">Administrador</mat-slide-toggle>
+            <div *ngIf="!!modules">
+                <div *ngFor="let formProfile of formProfiles.controls; let i = index">
+                    <div [formGroup]="formProfile" fxLayout="row" fxLayoutGap="20px" fxLayoutGap.gt-sm="20px" fxFlex>
+                        <mat-checkbox formControlName="access" class="margin-check" (change)="setValidatorsSelectsProfiles()">{{ getModuleName(modules[i]) }}</mat-checkbox>
+                        <mat-form-field>
+                            <mat-select formControlName="id" placeholder="Papel" required>
+                                <span *ngFor="let profile of (profiles$ | async)">
+                                  <mat-option *ngIf="profile.software === modules[i]" [value]="profile.id">{{ profile.name }}</mat-option>
+                                </span>
+                            </mat-select>
+                            <mat-error *ngIf="formProfile.get('id').hasError('required')">Selecione um papel</mat-error>
+                        </mat-form-field>
+                        <ng-container *ngIf="modules[i] === 7; then thenSchools"></ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <div fxLayout="row" ngStyle.gt-sm="margin-top: 60px" fxLayoutAlign="space-between">
+                <a (click)="closeSidenav()">
+                    <back-button></back-button>
+                </a>
+                <button mat-raised-button type="submit" (click)="saveUser()" color="primary" [disabled]="isSending">SALVAR</button>
+            </div>
+        </div>
+    </div>
+</form>

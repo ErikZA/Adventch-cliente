@@ -4,10 +4,6 @@ import { CanActivate, CanLoad, ActivatedRouteSnapshot, RouterStateSnapshot, Rout
 import { Observable } from 'rxjs/Observable';
 
 import { AuthService } from './auth.service';
-import { User } from './models/user.model';
-import { EModules } from './models/modules.enum';
-import { Unit } from './models/unit.model';
-import { Permission } from './models/permission.model';
 import { tokenNotExpired } from 'angular2-jwt';
 import { Responsible } from '../modules/scholarship/models/responsible';
 
@@ -37,7 +33,8 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
 
     private checkAccessUser(route, state?) {
-        if (tokenNotExpired('token')) {
+        return true; // mudar para permissões
+        /*if (tokenNotExpired('token')) {
             const user: User = JSON.parse(localStorage.getItem('currentUser'));
             if (user == null || user === undefined) {
                 this.router.navigate(['/login']);
@@ -53,7 +50,7 @@ export class AuthGuard implements CanActivate, CanLoad {
         }
         this.authService.logoff();
         this.router.navigate(['/login']);
-        return false;
+        return false;*/
     }
 
     private checkAccessResponsible() {

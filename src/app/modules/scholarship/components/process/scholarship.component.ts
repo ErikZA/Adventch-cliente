@@ -15,6 +15,7 @@ import { ScholarshipService } from '../../scholarship.service';
 import { School } from '../../models/school';
 import { Process } from '../../models/process';
 import { ProcessesStore } from './processes.store';
+import { auth } from '../../../../auth/auth';
 
 @Component({
   selector: 'app-scholarship',
@@ -27,7 +28,7 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
   idSchool = -1;
   schools$: Observable<School[]>;
   processes$: Observable<Process[]>;
-  
+
   subscribeUnit: Subscription;
 
   constructor(
@@ -43,8 +44,8 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
     this.getAllDatas();
     this.setSchoolInitial();
     this.sidenavService.setSidenav(this.sidenavRight);
-        
-    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+
+    this.subscribeUnit = auth.currentUnit.subscribe(() => {
       this.getAllDatas();
       this.setSchoolInitial();
     });
@@ -61,10 +62,10 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
   }
 
   private setSchoolInitial(): void {
-    if (this.authService.getCurrentUser().idSchool === 0) {
+    if (auth.getCurrentUser().idSchool === 0) {
       this.idSchool = this.scholarshipService.schoolSelected;
     } else {
-      this.idSchool = this.authService.getCurrentUser().idSchool;
+      this.idSchool = auth.getCurrentUser().idSchool;
       this.scholarshipService.schoolSelected = this.idSchool;
     }
     this.changeDashboard();
@@ -73,7 +74,7 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
   public getTotalByStatus(idStatus): Observable<Process[]> {
     return this.processes$.pipe(
       map((todos: Process[]) =>
-          todos != null ? todos.filter(p => p.status === idStatus) : []      
+          todos != null ? todos.filter(p => p.status === idStatus) : []
     ));
   }
 

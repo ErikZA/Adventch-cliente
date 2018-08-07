@@ -1,0 +1,41 @@
+<app-layout-container [title]="'Editar Perfil'" [buttonLabel]="'Alterar Senha'" (buttonHeader)="changeComponent($event)">
+    <form method="post" [formGroup]="formUser" fxFlex *ngIf="loading">
+        <div fxLayout="row" fxLayoutAlign="center">
+            <div fxLayout="column" fxFlex fxFlex.gt-md="50%" class="padding-form card">
+                <p class="section-form">Informações do Perfil</p>
+                <mat-divider></mat-divider>
+                <div class="form" fxLayoutGap="20px" fxLayout="column" fxFlex>
+                    <mat-form-field fxFlex>
+                        <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
+                        <mat-error *ngIf="formUser.get('name').hasError('required')">Este campo é obrigatório</mat-error>
+                        <mat-error *ngIf="formUser.get('name').hasError('minlength')">Nome do papel pequeno, digite um nome com mais de 3 dígitos</mat-error>
+                        <mat-error *ngIf="formUser.get('name').hasError('maxlenght')">Nome do papel grande, digite um nome com menos de 200 dígitos</mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <input matInput placeholder="Email" formControlName="email" maxlength="200" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+                        <mat-error *ngIf="formUser.get('email').hasError('pattern')">
+                            Digite um email válido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <input matInput type="text" formControlName="cpf" placeholder="CPF" pattern="[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}">
+                        <mat-error *ngIf="formUser.get('cpf').hasError('pattern')">Digite um CPF válido</mat-error>
+                        <mat-error *ngIf="formUser.get('cpf').hasError('validcpfCnpj')">CPF Inválido</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerBirth" placeholder="Data de Nascimento" formControlName="birthday" [min]="dates.min" [max]="dates.max">
+                        <mat-datepicker-toggle matSuffix [for]="pickerBirth"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerBirth></mat-datepicker>
+                    </mat-form-field>
+                    <div fxLayout="column" fxLayoutAlign="start end">
+                        <div fxFlex fxFlexOffset="5%">
+                            <button type="submit" (click)="saveUser()" mat-raised-button color="primary">SALVAR</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="photo-user" fxFlex>
+            </div> -->
+        </div>
+    </form>
+</app-layout-container>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CoreModule } from '../../core/core.module';
 
 import { ScholarshipRoutingModule } from './scholarship-routing.module';
+import { ModuleGuard } from '../../shared/module.guard';
 
 import { MatGridListModule } from '@angular/material';
 
@@ -16,6 +17,7 @@ import { VacancyComponent } from './components/process/vacancy/vacancy.component
 
 import { ScholarshipService } from './scholarship.service';
 import { ProcessesStore } from './components/process/processes.store';
+import { FeatureGuard } from '../../shared/feature.guard';
 
 @NgModule({
   imports: [
@@ -26,7 +28,9 @@ import { ProcessesStore } from './components/process/processes.store';
   ],
   providers: [
     ScholarshipService,
-    ProcessesStore
+    ProcessesStore,
+    ModuleGuard,
+    FeatureGuard
   ],
   declarations: [
     ScholarshipComponent,

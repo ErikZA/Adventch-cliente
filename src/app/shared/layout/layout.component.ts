@@ -1,20 +1,24 @@
-import { Component, OnInit, OnDestroy, Inject, ViewChild, Output } from '@angular/core';
+import { User } from '../models/user.model';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs/Subscription';
 
-import { AppComponent } from '../../../app/app.component';
-import { AuthService } from '../auth.service';
-import { SidenavService } from '../../core/services/sidenav.service';
-import { MatDrawer, MatDialog, MatDialogRef } from '@angular/material';
-import { ChangePasswordComponent } from '../../core/components/password/change-password/change-password.component';
-import { SharedService } from '../shared.service';
-import { Unit } from '../models/unit.model';
-import { EventEmitter } from 'events';
-import { EModules } from '../models/modules.enum';
+import { AppComponent } from '../../app.component';
+
 import { ScholarshipService } from '../../modules/scholarship/scholarship.service';
-import { Permission } from '../models/permission.model';
+import { SidenavService } from '../../core/services/sidenav.service';
+import { MatDrawer } from '@angular/material';
+import { SharedService } from '../shared.service';
+import { AuthService } from '../auth.service';
+import { PermissionService } from '../../core/components/permissions/service/permission.service';
+import { ReleaseNotesStore } from '../release-notes/release-notes.store';
+
+import { Unit } from '../models/unit.model';
+import { auth } from '../../auth/auth';
+import { EFeatures } from '../models/EFeatures.enum';
+import { EPermissions } from '../models/permissions.enum';
 
 @Component({
   selector: 'app-layout',
@@ -29,31 +33,34 @@ export class LayoutComponent implements OnInit, OnDestroy {
   isMobile = false;
   isOpen = true;
   get year(): number { return new Date().getFullYear(); }
-  dialogRef: MatDialogRef<ChangePasswordComponent>;
   subscribe1: Subscription;
   subscribe2: Subscription;
   lstUnits: Unit[] = new Array<Unit>();
   unit: Unit;
   urlScholarship: String;
+  user: User;
 
   constructor(
     public authService: AuthService,
     private media: ObservableMedia,
-    private dialog: MatDialog,
     public router: Router,
     public scholarshipService: ScholarshipService,
     public app: AppComponent,
     public sharedService: SharedService,
-    private sidenavService: SidenavService
+    private sidenavService: SidenavService,
+    public releaseNotes: ReleaseNotesStore,
+    private permissionService: PermissionService
   ) { }
-
-  redirectToDashboard() {
-    this.router.navigate(['/bolsas/dashboard']);
-  }
 
 
   ngOnInit() {
     this.getUnits();
+    auth.currentUser.subscribe(user => {
+      if (user) {
+        this.user = user;
+      }
+    });
+    this.releaseNotes.getVersion();
     this.subscribe = this.media.subscribe((change: MediaChange) => {
       this.isMobile = (change.mqAlias === 'xs');
       this.isOpen = !(this.isMobile || (change.mqAlias === 'sm') || (change.mqAlias === 'md'));
@@ -64,8 +71,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.subscribe.unsubscribe();
   }
 
+
   logoff() {
-    this.authService.logoff();
+    this.router.navigate(['/login']);
+    auth.logoffMain();
     if (this.subscribe1 !== undefined) {
       this.subscribe1.unsubscribe();
     }
@@ -74,59 +83,67 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  getUrlScholarship() {
-    return this.router.url.replace('/novo', '') + '/novo';
+  public redirectToDashboard(): void {
+    if (this.permissionService.checkFeatureAccess(EFeatures.DASHBOARDBOLSAS)) {
+      this.router.navigate(['/bolsas/dashboard']);
+    }
   }
+
+  public redirectToTreasury(): void {
+    if (this.permissionService.checkFeatureAccess(EFeatures.DASHBOARDTESOURARIA)) {
+      this.router.navigate(['/tesouraria/dashboard']);
+    }
+  }
+
 
   updateCurrentNav(nav: string) {
     this.router.navigate([this.router.url.replace(/.*/, nav)]);
   }
 
-  changePassword() {
-    this.dialogRef = this.dialog.open(ChangePasswordComponent, {
-      width: '400px',
-      height: '500px'
-    });
-    this.dialogRef.afterClosed().subscribe(result => {
-      if (!result) { return; }
-    });
-  }
-
   getUnits() {
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    this.unit = this.authService.getCurrentUnit();
-    this.subscribe1 = this.sharedService.getUnits(user.identifier).subscribe((data: Unit[]) => {
+    this.user = auth.getCurrentUser();
+    this.unit = auth.getCurrentUnit();
+    this.subscribe1 = this.sharedService.getUnits(this.user.id).subscribe((data: Unit[]) => {
       this.lstUnits = Object.assign(this.lstUnits, data as Unit[]);
-      if (this.unit == null) {
-        this.unit = this.lstUnits[0];
+      if (data) {
+        if (!this.unit || this.unit === null || this.unit === undefined) {
+          this.unit = data[0];
+          this.updateUnit(this.unit);
+        } else {
+          this.updateUnit(this.unit);
+        }
       }
-      this.updateUnit(this.unit);
     });
 
   }
-
-  updateUnit(unit) {
+  public redirectToHome() {
+    if (this.router.url !== '/') {
+      this.router.navigate(['/']);
+    }
+  }
+  public updateUnit(unit): void {
     this.unit = unit;
     this.authService.setCurrentUnit(unit);
-    const user = this.authService.getCurrentUser();
-    this.subscribe2 = this.sharedService.getPermissions(user.id, unit.id).subscribe((data: Permission[]) => {
-      this.authService.updatePermissions(data);
-      if (!this.authService.checkAccess(this.router.url, unit)) {
-        this.router.navigate(['/']);
-      }
-    });
   }
 
   public isRouteActive(route) {
     return this.router.url.indexOf(route) !== -1;
   }
 
-  public checkPermission(module) {
-    return this.authService.checkPermission(module);
+  public checkUserIsAdmin(): boolean {
+    return this.authService.checkUserIsAdmin();
+  }
+
+  public checkPermissionSoftware(module): boolean {
+    return this.authService.checkModuleAccess(module) && this.checkContaisProfile(module);
+  }
+
+  public checkContaisProfile(module): boolean {
+    return this.permissionService.checkProfileContaisSoftware(module);
   }
 
   public checkPermissionScholarship() {
-    return this.authService.getCurrentUser().isScholarship;
+    return auth.getCurrentUser().isScholarship;
   }
 
   openSidenav() {
@@ -134,5 +151,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.navMenu.close();
     }
     this.sidenavService.open();
+  }
+
+  public changeProfile(): void {
+    this.router.navigate(['/perfil/editar']);
   }
 }

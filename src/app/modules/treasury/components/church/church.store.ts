@@ -12,6 +12,7 @@ import { SidenavService } from '../../../../core/services/sidenav.service';
 import { Districts } from '../../models/districts';
 import { City } from '../../../../shared/models/city.model';
 import { User } from '../../../../shared/models/user.model';
+import { auth } from '../../../../auth/auth';
 
 @Injectable()
 export class ChurchStore {
@@ -57,7 +58,7 @@ export class ChurchStore {
 
   /* Listagem */
   public loadAll(): void {
-    const unit = this.authService.getCurrentUnit();
+    const unit = auth.getCurrentUnit();
     this.service.getChurches(unit.id).subscribe((data: Church[]) => {
       this.dataStore.churches = data;
       this._churches.next(Object.assign({}, this.dataStore).churches);

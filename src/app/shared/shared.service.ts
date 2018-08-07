@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
 
-import { User } from './models/user.model';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/throw';
+
 import { Unit } from './models/unit.model';
-import { Permission } from './models/permission.model';
+import { EModules } from './models/modules.enum';
+import { User } from './models/user.model';
+import { Profile } from '../modules/administration/models/profile/profile.model';
 
 @Injectable()
 export class SharedService {
@@ -13,11 +16,17 @@ export class SharedService {
     private http: HttpClient
   ) { }
 
-  getUnits(id): Observable<Unit[]> {
-    const url = '/shared/getUnits/' + id;
+  public getUnits(id): Observable<Unit[]> {
+    const url = `/shared/getUnits/${id}`;
     return this.http
       .get(url)
-      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public getUnitModules(unitId: number): Observable<EModules[]> {
+    const url = `/shared/getModules/${unitId}`;
+    return this.http
+      .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
@@ -28,11 +37,55 @@ export class SharedService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getPermissions(idUser, idUnit): Observable<Permission[]> {
-    const url = '/shared/getPermissions/' + idUser + '/' + idUnit;
+  getReleaseNotes() {
+    const url = '/shared/getReleasesNotes/';
     return this.http
       .get(url)
-      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  getCurrentRelease() {
+    const url = '/shared/getCurrentRelease/';
+    return this.http
+      .get(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  insertReleaseNotes(data) {
+    const url = '/shared/insertReleaseNotes';
+    return this.http
+      .post(url, data)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public getUser(id: number): Observable<User> {
+    const url = `/usermanagement/${id}/`;
+    return this.http
+      .get(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public saveUser(user: any): Observable<User> {
+    if (!user.id || !user.unitId) {
+      throw new Error('user id is invalid for edit');
+    }
+    const url = `/usermanagement/${user.id}/`;
+    return this.http
+      .put(url, user)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public getProfilesUser(id: number, unitId: number): Observable<Profile[]> {
+    const url = `/usermanagement/${id}/profile/unit/${unitId}`;
+    return this.http
+      .get(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public passwordReset(password: { token: string, password: string }): Observable<any> {
+    const url = '/auth/password-reset';
+    return this.http
+      .post(url, password)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }

@@ -1,7 +1,8 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { MatDialogRef, MatDialog } from '@angular/material';
-import { ChangePasswordComponent } from '../../core/components/password/change-password/change-password.component';
+import { auth } from './../../auth/auth';
 
 @Component({
   selector: 'app-page-not-found',
@@ -11,28 +12,19 @@ import { ChangePasswordComponent } from '../../core/components/password/change-p
 export class PageNotFoundComponent implements OnInit {
 
   get year(): number { return new Date().getFullYear(); }
-  dialogRef: MatDialogRef<ChangePasswordComponent>;
 
   constructor(
     public authService: AuthService,
     private dialog: MatDialog,
+    private router: Router
   ) { }
 
   ngOnInit() {
   }
 
   logoff() {
-    this.authService.logoff();
-  }
-
-  changePassword() {
-    this.dialogRef = this.dialog.open(ChangePasswordComponent, {
-      width: '400px',
-      height: '500px'
-    });
-    this.dialogRef.afterClosed().subscribe(result => {
-      if (!result) { return; }
-    });
+    this.router.navigate(['/login']);
+    auth.logoffMain();
   }
 
 }

@@ -1,4 +1,5 @@
-import { Permission } from './permission.model';
+import { Profile } from '../../modules/administration/models/profile/profile.model';
+import { Role } from '../../modules/administration/models/role.model';
 
 export class User {
   id: number;
@@ -6,10 +7,14 @@ export class User {
   name: string;
   firstName: string;
   email: string;
-  isSysAdmin: number;
+  birthday?: Date;
+  cpf?: string;
+  idDefaultUnit: number;
+  isSysAdmin: boolean;
   isScholarship: boolean;
   idSchool: number;
-  permissions: Permission[];
+  roles: Role[];
+  profiles: Profile[];
 
   constructor() { }
 }

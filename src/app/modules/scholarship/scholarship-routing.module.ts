@@ -9,19 +9,81 @@ import { ResponsibleDataComponent } from './components/responsible/responsible-d
 import { ResponsibleLoginComponent } from './components/responsible/responsible-login/responsible-login.component';
 
 import { AuthGuard } from '../../shared/auth.guard';
+import { EModules } from '../../shared/models/modules.enum';
+import { ModuleGuard } from '../../shared/module.guard';
+import { FeatureGuard } from '../../shared/feature.guard';
+import { AuthResponsibleGuard } from '../../shared/guards/auth-responsible.guard';
+import { AuthMainGuard } from '../../shared/guards/auth-main.guard';
+import { EFeatures } from '../../shared/models/EFeatures.enum';
+import { EPermissions } from '../../shared/models/permissions.enum';
 
 const routes: Routes = [
-  { path: 'educacao', component: ResponsibleLoginComponent },
-  { path: 'educacao/consultar', component: ResponsibleDataComponent, canActivate: [AuthGuard], canLoad: [AuthGuard] },
-  { path: 'bolsas', component: LayoutComponent, canActivate: [AuthGuard], canLoad: [AuthGuard], children: [
-    { path: 'dashboard', component: ScholarshipComponent, children: [
-      { path: 'novo', component: ProcessFormComponent }
-    ]},
-    { path: 'processos', component: ProcessDataComponent, children: [
-      { path: 'novo', component: ProcessFormComponent },
-      { path: ':identifyProcess/editar', component: ProcessFormComponent}
-    ]}
-  ]}
+  // { path: 'educacao', component: ResponsibleLoginComponent, pathMatch: 'full' },
+  {
+    path: 'educacao/consultar',
+    component: ResponsibleDataComponent,
+    pathMatch: 'full',
+    canActivate: [AuthResponsibleGuard],
+    canLoad: [AuthResponsibleGuard]
+  },
+  {
+    path: 'bolsas',
+    component: LayoutComponent,
+    canActivate: [AuthMainGuard, ModuleGuard],
+    canLoad: [AuthMainGuard, ModuleGuard],
+    children: [
+      {
+        path: 'dashboard', component: ScholarshipComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
+          {
+            path: 'novo',
+            component: ProcessFormComponent,
+            canActivate: [FeatureGuard],
+            canLoad: [FeatureGuard],
+            data: {
+              feature: EFeatures.PROCESSOS,
+              permission: EPermissions.CRIAR
+            }
+          }
+        ],
+        data: {
+          feature: EFeatures.DASHBOARDBOLSAS
+        }
+      },
+      {
+        path: 'processos', component: ProcessDataComponent,
+        canActivate: [FeatureGuard],
+        canLoad: [FeatureGuard],
+        children: [
+          {
+            path: 'novo',
+            component: ProcessFormComponent,
+            canActivate: [FeatureGuard],
+            canLoad: [FeatureGuard],
+            data: {
+              feature: EFeatures.PROCESSOS,
+              permission: EPermissions.CRIAR
+            }
+          },
+          {
+            path: ':identifyProcess/editar',
+            component: ProcessFormComponent,
+            canActivate: [FeatureGuard],
+            canLoad: [FeatureGuard],
+            data: {
+              feature: EFeatures.PROCESSOS,
+              permission: EPermissions.EDITAR
+            }
+          }
+        ],
+        data: {
+          feature: EFeatures.PROCESSOS
+        }
+      }
+    ],
+    data: {
+      module: EModules.Scholarship
+    }
+  }
 ];
 
 @NgModule({

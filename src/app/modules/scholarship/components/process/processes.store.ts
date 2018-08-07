@@ -8,13 +8,14 @@ import 'rxjs/add/observable/of';
 
 import { MatSnackBar } from '@angular/material';
 
-import { Process } from './../../models/process';
-import { School } from './../../models/school';
-import { StudentSerie } from './../../models/studentSerie';
-import { AuthService } from './../../../../shared/auth.service';
+import { Process } from '../../models/process';
+import { School } from '../../models/school';
+import { StudentSerie } from '../../models/studentSerie';
+import { AuthService } from '../../../../shared/auth.service';
 import { ScholarshipService } from '../../scholarship.service';
-import { ReportService } from './../../../../shared/report.service';
+import { ReportService } from '../../../../shared/report.service';
 import { SidenavService } from '../../../../core/services/sidenav.service';
+import { auth } from '../../../../auth/auth';
 
 @Injectable()
 export class ProcessesStore {
@@ -66,13 +67,21 @@ export class ProcessesStore {
     this.loadAllSchools();
   }
 
-  private loadAllSchools(): void {
-    let idUnit = this.authService.getCurrentUnit().id;
-    this.service.getSchools(idUnit).subscribe((data: School[]) => {
-      if (this.authService.getCurrentUser().idSchool === 0) {
+  public loadSchools(): void {
+    const { id } = auth.getCurrentUnit();
+    this.service.getSchools(id).subscribe((data: School[]) => {
+      this.dataStore.schools = data;
+      this._schools.next(Object.assign({}, this.dataStore).schools);
+    }, error => console.log('Could not load todos schools.'));
+  }
+
+  public loadAllSchools(): void {
+    const { id } = auth.getCurrentUnit();
+    this.service.getSchools(id).subscribe((data: School[]) => {
+      if (auth.getCurrentUser().idSchool === 0) {
         this.dataStore.schools = data;
       } else {
-        this.dataStore.schools = data.filter(x => x.id === this.authService.getCurrentUser().idSchool);
+        this.dataStore.schools = data.filter(x => x.id === auth.getCurrentUser().idSchool);
       }
       this._schools.next(Object.assign({}, this.dataStore).schools);
     }, error => console.log('Could not load todos processes.'));
@@ -80,9 +89,9 @@ export class ProcessesStore {
 
   private loadAllProcesses(): void {
     let idSchool;
-    idSchool = this.authService.getCurrentUser().idSchool === 0 ? -1 : this.authService.getCurrentUser().idSchool;
-    let idUnit = this.authService.getCurrentUnit().id;
-    this.service.getProcesses(idSchool, idUnit).subscribe(data => {
+    idSchool = auth.getCurrentUser().idSchool === 0 ? -1 : auth.getCurrentUser().idSchool;
+    const { id } = auth.getCurrentUnit();
+    this.service.getProcesses(idSchool, id).subscribe(data => {
       this.setStatus(data);
       this.setStudentsSerie(data);
       this.dataStore.processes = data;
@@ -259,7 +268,7 @@ export class ProcessesStore {
   private updateProcess(process: Process): void {
     process.statusString = this.getStatusToString(process.status);
     if (this.dataStore.processes.length == 0) {
-      this.dataStore.processes.push(process)
+      this.dataStore.processes.push(process);
     } else {
       this.dataStore.processes.forEach((p: Process, i: number) => {
         if (p.id === process.id) {

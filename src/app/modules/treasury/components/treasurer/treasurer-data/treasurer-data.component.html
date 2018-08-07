@@ -1,160 +1,164 @@
-<mat-sidenav fxLayout="column" #sidenavRight mode="side" align="end" class="sidenav-right mat-elevation-z4" (keydown.esc)="closeSidenav()"
-  [class.mat-drawer-opened]="sidenavRight.opened" [class.mat-drawer-closed]="!sidenavRight.opened">
-  <button mat-icon-button type="button" matTooltip="Fechar" (click)="closeSidenav()">
+<mat-sidenav fxLayout="column" #sidenavRight mode="side" align="end" class="sidenav-right mat-elevation-z4" (keydown.esc)="closeSidenav()" [class.mat-drawer-opened]="sidenavRight.opened" [class.mat-drawer-closed]="!sidenavRight.opened">
+    <button mat-icon-button type="button" matTooltip="Fechar" (click)="closeSidenav()">
     <mat-icon>clear</mat-icon>
   </button>
-  <div fxFlex fxFlexAlign="center">
-    <router-outlet></router-outlet>
-  </div>
+    <div fxFlex fxFlexAlign="center">
+        <router-outlet></router-outlet>
+    </div>
 </mat-sidenav>
 
 <div class="page-container mat-elevation-z2" fxLayoutAlign="center">
-  <div fxFlex="95%">
-    <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
-      <h2 class="title" *ngIf="!searchButton">Lista de Tesoureiros</h2>
-      <mat-form-field *ngIf="searchButton" fxFlex>
-        <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
-      </mat-form-field>
-      <div class="buttons" fxLayoutAlign="start center">
-        <button mat-icon-button (click)="searchButton = !searchButton">
+    <div fxFlex="95%">
+        <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
+            <h2 class="title" *ngIf="!searchButton">Lista de Tesoureiros</h2>
+            <mat-form-field *ngIf="searchButton" fxFlex>
+                <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
+            </mat-form-field>
+            <div class="buttons" fxLayoutAlign="start center">
+                <button mat-icon-button (click)="searchButton = !searchButton">
           <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
         </button>
-        <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
+                <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
           <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
         </button>
-      </div>
-    </div>
-    <mat-accordion class="example-headers-align" #matExpansionPanel>
-      <mat-expansion-panel #matExpansionPanel hideToggle="true">
-        <div fxLayout="row wrap" style="flex-wrap: wrap;">
-          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-            <mat-form-field>
-              <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
-                <mat-option value="0">TODOS</mat-option>
-                <mat-option *ngFor="let district of districts" [value]="district.id">
-                  {{ district.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </mat-list>
-          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-            <mat-form-field>
-              <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
-                <mat-option value="0">TODOS</mat-option>
-                <mat-option *ngFor="let analyst of analysts" [value]="analyst.id">
-                  {{ analyst.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </mat-list>
-          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-            <mat-form-field>
-              <mat-select placeholder="Cargo" (change)="search()" [(ngModel)]="filterFunction">
-                <mat-option value="0">TODOS</mat-option>
-                <mat-option [value]="1">Tesoureiro (a)</mat-option>
-                <mat-option [value]="2">Tesoureiro (a) Associado (a)</mat-option>
-                <mat-option [value]="3">Tesoureiro (a) Assistente</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </mat-list>
+            </div>
         </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-    <mat-divider></mat-divider>
-    <div fxFlex>
-      <div class="header">
-        <mat-list>
-          <mat-list-item>
-            <h3 matLine fxLayout="row">
-              <span fxFlex fxFlex.gt-sm="60%">Nome do tesoureiro</span>
-              <span fxFlex="200px" fxHide.lt-sm fxFlexAlign="left">Igreja</span>
-              <span fxFlex="150px" fxHide.lt-sm fxFlexAlign="left">Cargo</span>
-            </h3>
-          </mat-list-item>
-        </mat-list>
+        <mat-accordion class="example-headers-align" #matExpansionPanel>
+            <mat-expansion-panel #matExpansionPanel hideToggle="true">
+                <div fxLayout="row wrap" style="flex-wrap: wrap;">
+                    <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+                        <mat-form-field>
+                            <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
+                                <mat-option value="0">TODOS</mat-option>
+                                <mat-option *ngFor="let district of districts" [value]="district.id">
+                                    {{ district.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-list>
+                    <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+                        <mat-form-field>
+                            <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
+                                <mat-option value="0">TODOS</mat-option>
+                                <mat-option *ngFor="let analyst of analysts" [value]="analyst.id">
+                                    {{ analyst.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-list>
+                    <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+                        <mat-form-field>
+                            <mat-select placeholder="Cargo" (change)="search()" [(ngModel)]="filterFunction">
+                                <mat-option value="0">TODOS</mat-option>
+                                <mat-option [value]="1">Tesoureiro (a)</mat-option>
+                                <mat-option [value]="2">Tesoureiro (a) Associado (a)</mat-option>
+                                <mat-option [value]="3">Tesoureiro (a) Assistente</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-list>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
         <mat-divider></mat-divider>
-      </div>
-      <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()"
-        [scrollWindow]="false">
-        <mat-accordion>
-          <div *ngFor="let treasurer of (treasurers$ | async ); index as i">
-            <mat-expansion-panel hideToggle *ngIf="i <= showList">
-              <mat-expansion-panel-header>
-                <mat-panel-description fxLayout="row" fxFlex>
-                  <span fxFlex fxFlex.gt-sm="60%" style="white-space: line-wrap;">
+        <div fxFlex>
+            <div class="header">
+                <mat-list>
+                    <mat-list-item>
+                        <h3 matLine fxLayout="row">
+                            <span fxFlex fxFlex.gt-sm="60%">Nome do tesoureiro</span>
+                            <span fxFlex="200px" fxHide.lt-sm fxFlexAlign="left">Igreja</span>
+                            <span fxFlex="150px" fxHide.lt-sm fxFlexAlign="left">Cargo</span>
+                        </h3>
+                    </mat-list-item>
+                </mat-list>
+                <mat-divider></mat-divider>
+            </div>
+            <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
+                <mat-accordion>
+                    <div *ngFor="let treasurer of (treasurers$ | async ); index as i">
+                        <mat-expansion-panel hideToggle *ngIf="i <= showList">
+                            <mat-expansion-panel-header>
+                                <mat-panel-description fxLayout="row" fxFlex>
+                                    <span fxFlex fxFlex.gt-sm="60%" style="white-space: line-wrap;">
                     {{ treasurer.name }}
                   </span>
-                  <span fxFlex="200px" fxHide.lt-sm fxFlexAlign="center" style="white-space: line-wrap;">
+                                    <span fxFlex="200px" fxHide.lt-sm fxFlexAlign="center" style="white-space: line-wrap;">
                     {{ treasurer.church.name }}
                   </span>
-                  <span fxFlex="150px" fxHide.lt-sm fxFlexAlign="center" style="white-space: line-wrap;">
+                                    <span fxFlex="150px" fxHide.lt-sm fxFlexAlign="center" style="white-space: line-wrap;">
                     {{ treasurer.functionName }}
                   </span>
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <mat-list>
-                <h3 matSubheader>Informações da tesoureiro</h3>
-                <mat-list-item fxLayout="row" style="height: auto">
-                  <div fxLayout="column" fxFlex matLine>
-                    <span *ngIf="treasurer.church.name" class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-list>
+                                <h3 matSubheader>Informações da tesoureiro</h3>
+                                <mat-list-item fxLayout="row" style="height: auto">
+                                    <div fxLayout="column" fxFlex matLine>
+                                        <span *ngIf="treasurer.church.name" class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
                       <b>Igreja:&ensp;</b> {{ treasurer.church.name }}
                     </span>
-                    <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                                        <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
                       <b>Cargo:&ensp;</b> {{ treasurer.functionName }}
                     </span>
-                    <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                                        <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
                       <b>Email:&ensp;</b> {{ treasurer.email || "Não Informado" }}
                     </span>
 
-                    <span class="details-title" fxLayout.lt-sm="column" style="white-space: pre-line; text-overflow: ellipsis;">
+                                        <span class="details-title" fxLayout.lt-sm="column" style="white-space: pre-line; text-overflow: ellipsis;">
                       <b>Endereço:&ensp;</b> {{ treasurer.address || "Não Informado" }} {{ ", " + treasurer.addressComplement
                       || "" }}
                     </span>
-                    <span class="details-title" fxLayout.lt-sm="column">
+                                        <span class="details-title" fxLayout.lt-sm="column">
                       <b>CEP:&ensp;</b> {{ treasurer.cep || "Não Informado" }}
                     </span>
-                    <span class="details-title" fxLayout.lt-sm="column">
+                                        <span class="details-title" fxLayout.lt-sm="column">
                       <b>Telefone(s):&ensp;</b>
-                      
+
                     <div *ngFor="let phone of treasurer.phones">
                         <mat-panel-description fxLayout="row" fxFlex>
                           <span fxFlex="100%" class="details-title" style="white-space: normal; padding: 0 30px 0 30px">
                             {{ phone.type }}: {{ phone.number }}
                             &ensp;
-                            Serviço(s) Utilizado(s): 
-                              {{ !phone.isWhatsapp && !phone.isTelegram ? 'Nenhum serviço utilizado.': '' }} 
-                              {{ phone.isWhatsapp ? 'Whatsapp' : ''}} 
-                              {{ phone.isWhatsapp && phone.isTelegram ? ', ' : ''}} 
+                            Serviço(s) Utilizado(s):
+                              {{ !phone.isWhatsapp && !phone.isTelegram ? 'Nenhum serviço utilizado.': '' }}
+                              {{ phone.isWhatsapp ? 'Whatsapp' : ''}}
+                              {{ phone.isWhatsapp && phone.isTelegram ? ', ' : ''}}
                               {{ phone.isTelegram ? 'Telegram': ''}}
                           </span>
-                          <br />
-                        </mat-panel-description>
-                      </div>
-                    </span>
-                    <span class="details-title" fxLayout.lt-sm="column">
+                                        <br />
+                                        </mat-panel-description>
+                                    </div>
+                                    </span>
+                                    <span class="details-title" fxLayout.lt-sm="column">
                       <b>Melhor Contato:&ensp;</b> {{ treasurer.contact || "Não Informado" }}
                     </span>
-                    <span *ngIf="treasurer.dateRegister != null && treasurer.dateRegister != undefined; else dateIsNull" class="details-title" fxLayout.lt-sm="column">
+                                    <span *ngIf="treasurer.dateRegister != null && treasurer.dateRegister != undefined; else dateIsNull" class="details-title" fxLayout.lt-sm="column">
                       <b>Tempo no Cargo:&ensp;</b> {{ treasurer.dateRegister | date: "dd/MM/yyyy" }} {{ " - Aproximadamente " + treasurer.dateRegisterFormatted }}
                       <ng-template #dateIsNull>
                         <p>Não Informado</p>
                       </ng-template>
                     </span>
-                  </div>
-                </mat-list-item>
-              </mat-list>
-              <mat-action-row>
-                <button mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Ver observações" [routerLink]="['/tesouraria/observacoes']">OBSERVAÇÕES</button>
-                <button mat-button color="warn" matTooltip="Excluir Tesoureiro" (click)="removeTreasurer(treasurer)">REMOVER</button>
-                <button mat-button color="primary" matTooltip="Editar Tesoureiro" (click)="editTreasurer(treasurer)">EDITAR</button>
-              </mat-action-row>
-            </mat-expansion-panel>
-          </div>
-        </mat-accordion>
-      </div>
+                    </div>
+                    </mat-list-item>
+                    </mat-list>
+                    <mat-action-row>
+                        <ng-template [Feature]="49" permission="1">
+                            <button mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Ver observações" [routerLink]="['/tesouraria/observacoes']">OBSERVAÇÕES</button>
+                        </ng-template>
+                        <ng-template [Feature]="38" permission="4">
+                            <button mat-button color="warn" matTooltip="Excluir Tesoureiro" (click)="removeTreasurer(treasurer)">REMOVER</button>
+                        </ng-template>
+                        <ng-template [Feature]="38" permission="3">
+                            <button mat-button color="primary" matTooltip="Editar Tesoureiro" (click)="editTreasurer(treasurer)">EDITAR</button>
+                        </ng-template>
+                    </mat-action-row>
+                    </mat-expansion-panel>
+            </div>
+            </mat-accordion>
+        </div>
     </div>
-  </div>
 </div>
-<button mat-fab color="primary" class="mat-fab-right" routerLink="./novo" (click)="openSidenav()">
-  <mat-icon aria-label="Adicionar tesoureiro">add</mat-icon>
-</button>
+</div>
+<ng-template [Feature]="38" permission="1">
+    <button mat-fab color="primary" class="mat-fab-right" routerLink="./novo" (click)="openSidenav()"><mat-icon aria-label="Adicionar tesoureiro">add</mat-icon></button>
+</ng-template>

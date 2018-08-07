@@ -10,6 +10,8 @@ import { TreasurerDataComponent } from './components/treasurer/treasurer-data/tr
 import { TreasurerFormComponent } from './components/treasurer/treasurer-form/treasurer-form.component';
 
 import { TreasuryRoutingModule } from './treasury-routing.module';
+import { ModuleGuard } from '../../shared/module.guard';
+import { FeatureGuard } from '../../shared/feature.guard';
 import { ChurchDataComponent } from './components/church/church-data/church-data.component';
 import { ChurchFormComponent } from './components/church/church-form/church-form.component';
 import { ChurchStore } from './components/church/church.store';
@@ -45,6 +47,8 @@ import { ChartsModule } from 'ng2-charts';
   providers: [
     TreasuryService,
     TreasurerStore,
+    ModuleGuard,
+    FeatureGuard,
     ChurchStore,
     DistrictsStore,
     ObservationStore,

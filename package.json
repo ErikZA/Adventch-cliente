@@ -27,6 +27,8 @@
         "@angular/router": "^5.2.9",
         "@angular/tsc-wrapped": "^4.4.6",
         "@material/button": "^0.35.0",
+        "@ngx-progressbar/core": "^4.0.1",
+        "@ngx-progressbar/http": "^4.0.1",
         "@ngx-translate/core": "^10.0.1",
         "@ngx-translate/http-loader": "^3.0.1",
         "angular-in-memory-web-api": "^0.6.0",
@@ -62,6 +64,6 @@
         "protractor": "~5.3.1",
         "ts-node": "~5.0.1",
         "tslint": "~5.9.1",
-        "typescript": "~2.8.1"
+        "typescript": "^2.6.2"
     }
 }

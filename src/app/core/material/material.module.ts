@@ -33,7 +33,8 @@ import {
   MatTabsModule,
   MatChipsModule,
   MatToolbarModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatGridListModule
 } from '@angular/material';
 
 
@@ -70,7 +71,8 @@ import {
     MatTabsModule,
     MatChipsModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatGridListModule
   ]
 })
 export class MaterialModule { }

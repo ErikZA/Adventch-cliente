@@ -24,9 +24,10 @@ import { MatDialogRef,
         MatSnackBar,
         MatSidenav,
         MatSlideToggleChange,
-        MatDialogConfig} from '@angular/material';
+        MatDialogConfig } from '@angular/material';
 
 import { ProcessesStore } from '../processes.store';
+import { auth } from '../../../../../auth/auth';
 
 @Component({
   selector: 'app-process-data',
@@ -82,8 +83,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.isScholarship = this.authService.getCurrentUser().isScholarship;
-    this.router.navigate([this.router.url.replace(/.*/, 'bolsas/processos')]);
+    this.isScholarship = auth.getCurrentUser().isScholarship;
     this.schoolIsVisible();
     this.getAllDatas();
     this.processes$.subscribe(x => { this.processes = x; });
@@ -94,11 +94,11 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       this.searchProcess('');
     });
     this.sidenavService.setSidenav(this.sidenavRight);
-    this.subscribeUnit = this.authService.currentUnit.subscribe(() => {
+    this.subscribeUnit = auth.currentUnit.subscribe(() => {
       this.getAllDatas();
-      this.sidenavRight.close();
-      this.scholarshipService.updateSchool(-1);
+      this.scholarshipService.updateSchool(auth.getCurrentUser().idSchool);
     });
+    this.router.navigate([this.router.url.replace(/.*/, 'bolsas/processos')]);
   }
 
   ngOnDestroy() {
@@ -130,7 +130,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
         });
       });
     } else {
-      this.schoolsFilters.push(this.authService.getCurrentUser().idSchool);
+      this.schoolsFilters.push(auth.getCurrentUser().idSchool);
     }
   }
 
@@ -185,17 +185,17 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   public schoolIsVisible(): void {
-    this.showSchool = this.authService.getCurrentUser().idSchool === 0 ? true : false;
+    this.showSchool = auth.getCurrentUser().idSchool === 0 ? true : false;
   }
 
   public toWaiting(process: Process): void {
-    if (this.authService.getCurrentUser().idSchool === 0 && process.status === 1) {
+    if (auth.getCurrentUser().idSchool === 0 && process.status === 1) {
       this.store.changeStatus(this.setStatusChangeProcess(process, 2, 'Iniciado'));
     }
   }
 
   public toReject(process, idMotive: number): void {
-    if (this.authService.getCurrentUser().idSchool === 0 && (process.status > 1 && process.status < 7)) {
+    if (auth.getCurrentUser().idSchool === 0 && (process.status > 1 && process.status < 7)) {
       this.store.sendRejection(this.setDataRejection(process), idMotive);
     }
   }
@@ -205,13 +205,13 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       id: process.id,
       status: 7,
       description: 'Indeferido',
-      user: this.authService.getCurrentUser().identifier,
+      user: auth.getCurrentUser().id,
       process: process
     };
   }
 
   public toNotEnroll(process: Process): void {
-    if (this.authService.getCurrentUser().idSchool === 0 && (process.status === 5 || process.status === 6)) {
+    if (auth.getCurrentUser().idSchool === 0 && (process.status === 5 || process.status === 6)) {
       this.store.changeStatus(this.setStatusChangeProcess(process, 8, 'Não Matriculou'));
     }
   }
@@ -221,7 +221,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       id: process.id,
       status: status,
       description: description,
-      user: this.authService.getCurrentUser().identifier,
+      user: auth.getCurrentUser().id,
       process: process
     };
   }
@@ -235,7 +235,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   private setProcessSendDocuments(process: Process, checked: boolean): any {
     return {
       id: process.id,
-      user: this.authService.getCurrentUser().identifier,
+      user: auth.getCurrentUser().id,
       isSendDocument: checked,
       description: checked ? 'Documentos Pendentes Enviados' : 'Documentos Pendentes Não Enviados',
       process: process
@@ -274,7 +274,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     return {
         id: process.id,
         pendency: data.pendency,
-        user: this.authService.getCurrentUser().identifier,
+        user: auth.getCurrentUser().id,
         status: 3,
         isSendDocument: false,
         description: 'Adicionando Pendência',
@@ -321,7 +321,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       status: data.idStatus,
       description: data.description,
       dateRegistration: data.dateRegistration,
-      user: this.authService.getCurrentUser().identifier,
+      user: auth.getCurrentUser().id,
       process: process
     };
   }
@@ -385,13 +385,13 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       .confirm('Remover registro', 'Você deseja realmente remover este processo?', 'REMOVER')
       .subscribe(res => {
         if (res === true) {
-          this.store.removeProcess(process.id, this.authService.getCurrentUser().id);
+          this.store.removeProcess(process.id, auth.getCurrentUser().id);
         }
       });
   }
 
   checkUserRemoved() {
-    const { id } = this.authService.getCurrentUser();
+    const { id } = auth.getCurrentUser();
     return id == 160 || id == 2702 || id == 2704 || id == 2705 || id == 2743? true :false;
   }
 
@@ -403,7 +403,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   private setDataNewPasswordResponsible(process: Process) {
     return {
       id: process.student.responsible.id,
-      idUser: this.authService.getCurrentUser().identifier
+      idUser: auth.getCurrentUser().id
     };
   }
 }

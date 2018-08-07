@@ -7,10 +7,10 @@ import 'rxjs/add/observable/of';
 import * as moment from 'moment';
 
 import { TreasuryService } from '../../treasury.service';
-import { AuthService } from './../../../../shared/auth.service';
+import { AuthService } from '../../../../shared/auth.service';
 
+import { auth } from '../../../../auth/auth';
 import { Treasurer } from '../../models/treasurer';
-import { User } from '../../../../shared/models/user.model';
 
 @Injectable()
 export class TreasurerStore {
@@ -88,7 +88,7 @@ export class TreasurerStore {
   }
 
   private loadAllTreasurers(): void {
-    const unit = this.authService.getCurrentUnit();
+    const unit = auth.getCurrentUnit();
     this.service.getTreasurers(unit.id).subscribe((data: Treasurer[]) => {
       this.dataStore.treasurers = data;
       this.formatTreasurers();

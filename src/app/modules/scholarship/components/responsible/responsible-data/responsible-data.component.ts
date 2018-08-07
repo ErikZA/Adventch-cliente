@@ -5,6 +5,8 @@ import { ScholarshipService } from '../../../scholarship.service';
 
 import { Process } from '../../../models/process';
 import { Responsible } from '../../../models/responsible';
+import { auth } from '../../../../../auth/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-responsible-data',
@@ -20,7 +22,8 @@ export class ResponsibleDataComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private scholarshipService: ScholarshipService
+    private scholarshipService: ScholarshipService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -30,7 +33,7 @@ export class ResponsibleDataComponent implements OnInit {
   }
 
   loadCurrentResponsible() {
-    this.responsible = this.authService.getcurrentResponsible();
+    this.responsible = auth.getCurrentResponsible();
   }
 
   loadProcesses() {
@@ -85,7 +88,8 @@ export class ResponsibleDataComponent implements OnInit {
   }
 
   logoff() {
-    this.authService.logoffResponsible();
+    this.router.navigate(['/educacao']);
+    auth.logoffResponsible();
   }
 
   /*

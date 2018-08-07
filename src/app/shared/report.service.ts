@@ -4,10 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/throw';
 
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { EModules } from './models/modules.enum';
+import { auth } from '../auth/auth';
 
 @Injectable()
 export class ReportService {
@@ -31,9 +33,11 @@ export class ReportService {
   }
 
   private viewReport(reportName: string, moduleId: number, params: any): Observable<any> {
-    const currentUserId = this.authService.getCurrentUser().id;
-    const currentUnit = this.authService.getCurrentUnit();
-    const url = `${environment.apiUrlReport}/reports/view/${reportName}?userId=${currentUserId}&module=${moduleId}&values=${params}&unitId=${currentUnit.id}&unitName=${currentUnit.name}`;
+    const currentUserId = auth.getCurrentUser().id;
+    const currentUnit = auth.getCurrentUnit();
+    const url = `${environment.apiUrlReport}/reports/view/
+    ${reportName}?userId=${currentUserId}&module=${moduleId}
+    &values=${params}&unitId=${currentUnit.id}&unitName=${currentUnit.name}`;
     return this.http
       .get(url, { responseType: 'blob' })
       .map(res => new Blob([res], { type: 'application/pdf' }))

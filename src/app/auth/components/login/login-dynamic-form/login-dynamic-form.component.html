@@ -1,0 +1,13 @@
+<form [formGroup]="form" method="post" fxLayout="column" fxLayoutGap="25px">
+    <mat-form-field fxFlex>
+        <input matInput [placeholder]="loginName" formControlName="login" maxlength="200">
+        <mat-icon matSuffix>person</mat-icon>
+        <!-- <mat-error *ngIf="form.get('login').hasError('required')"></mat-error> -->
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Senha" formControlName="password" [type]="hide ? 'password' : 'text'" (keyup.enter)="login()">
+        <mat-icon matSuffix (click)="hide = !hide">{{ hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+    </mat-form-field>
+    <mat-checkbox color="primary" [checked]="remember" (change)="rememberMe($event.checked)">Lembrar-me</mat-checkbox>
+    <button fxFlex mat-flat-button color="primary" type="submit" (click)="login()">ENTRAR</button>
+</form>

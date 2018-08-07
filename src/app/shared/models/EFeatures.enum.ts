@@ -1,0 +1,15 @@
+// Acrescentar número igual a tabela
+export enum EFeatures {
+  TESOUREIRO = 38,
+  DASHBOARDBOLSAS = 39,
+  PROCESSOS = 40,
+  INICIARANALISE = 41,
+  CRIARPENDENCIA = 42,
+  INDEFERIR = 43,
+  APROVAR = 44,
+  NAOMATRICULOU = 45,
+  DASHBOARDTESOURARIA = 46,
+  DISTRITOS = 47,
+  IGREJAS = 48,
+  OBSERVACOES = 49,
+}
