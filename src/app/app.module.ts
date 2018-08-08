@@ -42,7 +42,6 @@ import ptBr from '@angular/common/locales/pt';
 import { ReleaseNotesDataComponent } from './shared/release-notes/components/release-notes-data/release-notes-data.component';
 import { ReleaseNotesFormComponent } from './shared/release-notes/components/release-notes-form/release-notes-form.component';
 import { ModuleGuard } from './shared/module.guard';
-import { RedefinePasswordGuard } from './shared/redefine-password/redefine-password.guard';
 import { AuthMainGuard } from './shared/guards/auth-main.guard';
 import { AuthResponsibleGuard } from './shared/guards/auth-responsible.guard';
 import { NgProgressModule } from '@ngx-progressbar/core';
@@ -111,8 +110,7 @@ registerLocaleData(ptBr);
     ReleaseNotesStore,
     ProfileStore,
     ModuleGuard,
-    AdminGuard,
-    RedefinePasswordGuard
+    AdminGuard
   ],
   bootstrap: [AppComponent]
 })

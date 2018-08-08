@@ -1,4 +1,4 @@
-<form [formGroup]="form" method="post" fxLayout="column" fxLayoutGap="25px">
+<form [formGroup]="form" fxLayout="column" fxLayoutGap="25px" *ngIf="loading">
     <mat-form-field fxFlex>
         <input matInput [placeholder]="loginName" formControlName="login" maxlength="200">
         <mat-icon matSuffix>person</mat-icon>

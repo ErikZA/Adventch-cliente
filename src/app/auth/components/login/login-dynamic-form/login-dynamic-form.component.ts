@@ -18,6 +18,7 @@ export class LoginDynamicFormComponent implements OnInit {
   hide = true;
   form: FormGroup;
   remember = false;
+  loading = false;
 
   constructor(
     private formBuilder: FormBuilder
@@ -33,6 +34,7 @@ export class LoginDynamicFormComponent implements OnInit {
       login: [login ? login : null, [Validators.required]],
       password: [null, Validators.required]
     });
+    this.loading = true;
   }
 
   public rememberMe(remember: boolean): void {

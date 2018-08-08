@@ -8,7 +8,6 @@ import { LayoutComponent } from './shared/layout/layout.component';
 import { AuthGuard } from './shared/auth.guard';
 import { AdminGuard } from './shared/admin.guard';
 import { ModuleGuard } from './shared/module.guard';
-import { RedefinePasswordGuard } from './shared/redefine-password/redefine-password.guard';
 
 // shared
 import { DashboardComponent } from './shared/dashboard/dashboard.component';
