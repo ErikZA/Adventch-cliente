@@ -38,7 +38,6 @@ export class UserDataComponent implements OnInit {
     private sidenavService: SidenavService,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService,
     private location: Location,
     private confirmDialogService: ConfirmDialogService,
   ) { }
@@ -56,7 +55,6 @@ export class UserDataComponent implements OnInit {
         this.updateUnit();
       }
     });
-
     utils.checkRouteUrl(this.router, '/administracao/usuarios', () => this.sidenavRight.close());
   }
 
@@ -66,7 +64,8 @@ export class UserDataComponent implements OnInit {
   }
 
   private updateUnit(): void {
-    this.store.loadAllUsers();
+    this.users$ = Observable.create(null);
+    this.loadAllDatas();
     this.sidenavService.close();
     const regex = /usuarios(.*)/;
     const url = this.router.url.match(regex);
@@ -129,6 +128,7 @@ export class UserDataComponent implements OnInit {
       .subscribe(res => {
         if (res === true) {
           this.store.removeUser(user.id);
+          this.searchUser(this.search);
         }
       });
   }
