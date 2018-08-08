@@ -2,7 +2,7 @@
   <div style="padding: 0 0 0 15px">
     <mat-form-field>
       <mat-select placeholder="Analista">
-        <mat-option [value]="TODOS" (click)="filter(0)">
+        <mat-option (click)="filter(0)">
           TODOS
         </mat-option>
         <mat-option *ngFor="let analyst of users" [value]="analyst.id" (click)="filter(analyst.id)">
