@@ -3,7 +3,9 @@ import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { MatSidenav } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Subject, Observable, Subscription } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 import { Church } from '../../../models/church';
 import { ChurchStore } from '../church.store';
@@ -42,7 +44,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   filterDistrict: number;
   filterCity: number;
   filterAnalyst: number;
-  filterText: string = '';
+  filterText = '';
 
   constructor(
     private store: ChurchStore,
@@ -103,7 +105,6 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
 
   /* Usados pelo component */
   closeSidenav() {
-    // this.treasureService.setTreasurer(new Treasurer());
     this.sidenavService.close();
     this.router.navigate(['tesouraria/igrejas']);
   }
@@ -136,27 +137,18 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     matExpansionPanel.toggle();
   }
 
-  // public onResize(event): void {
-  //   const element = event.target.innerWidth;
-  //   if (element > 600) {
-  //     this.layout = 'row';
-  //   } else {
-  //     this.layout = 'column';
-  //   }
-  // }
-
   public search() {
     let churchesFilttered = this.store.searchText(this.filterText);
 
-    if (this.filterDistrict != undefined && this.filterDistrict != null && this.filterDistrict != 0) {
+    if (this.filterDistrict !== undefined && this.filterDistrict !== null && this.filterDistrict !== 0) {
       churchesFilttered = this.store.searchDistricts(this.filterDistrict, churchesFilttered);
     }
 
-    if (this.filterCity != undefined && this.filterCity != null && this.filterCity != 0) {
+    if (this.filterCity !== undefined && this.filterCity !== null && this.filterCity !== 0) {
       churchesFilttered = this.store.searchCities(this.filterCity, churchesFilttered);
     }
 
-    if (this.filterAnalyst != undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
+    if (this.filterAnalyst !== undefined && this.filterAnalyst !== null && this.filterAnalyst !== 0) {
       churchesFilttered = this.store.searchAnalysts(this.filterAnalyst, churchesFilttered);
     }
     this.churches$ = Observable.of(churchesFilttered);

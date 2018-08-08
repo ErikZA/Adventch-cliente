@@ -51,7 +51,7 @@ export class ObservationStore {
   }
 
   loadObservation(id: number) {
-    return this.dataStore.observations.filter(x => x.id == id);
+    return this.dataStore.observations.filter(x => x.id === id);
   }
   /* Listagem */
   public loadAll(): void {
@@ -72,7 +72,7 @@ export class ObservationStore {
           || data.church.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
           || data.responsible.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
           || moment(data.date).format('DD/MM/YYYY').toString().indexOf(search.toLowerCase()) !== -1
-          || this.filterStatus(search.toLowerCase(), data.status)
+          || this.filterStatus(search.toLowerCase(), data.status);
       });
     }
   }
@@ -88,7 +88,7 @@ export class ObservationStore {
   }
 
   public searchStatus(status: number, observations: Observation[]): Observation[] {
-    return observations.filter(f => f.status == status);
+    return observations.filter(f => f.status === status);
   }
 
   public searchChurches(church: number, observations: Observation[]): Observation[] {
@@ -114,7 +114,6 @@ export class ObservationStore {
     this.loadResponsibles();
   }
   private loadChurches() {
-    //this.churches = new Array<Church>();
     this.dataStore.observations.forEach(observation => {
       if (this.churches.map(x => x.id).indexOf(observation.church.id) === -1) {
         this.churches.push(observation.church);
@@ -124,7 +123,6 @@ export class ObservationStore {
   }
 
   private loadAnalysts() {
-    //this.analysts = new Array<User>();
     this.dataStore.observations.forEach(observation => {
       if (this.analysts.map(x => x.id).indexOf(observation.church.district.analyst.id) === -1) {
         this.analysts.push(observation.church.district.analyst);
@@ -134,7 +132,6 @@ export class ObservationStore {
   }
 
   private loadResponsibles() {
-    //this.responsibles = new Array<User>();
     this.dataStore.observations.forEach(observation => {
       if (this.responsibles.map(x => x.id).indexOf(observation.responsible.id) === -1) {
         this.responsibles.push(observation.responsible);
@@ -175,14 +172,13 @@ export class ObservationStore {
       this.dataStore.observations = new Array<Observation>();
       this.dataStore.observations.push(observation);
     } else {
-      const index = this.dataStore.observations.findIndex(x => x.id == observation.id);
+      const index = this.dataStore.observations.findIndex(x => x.id === observation.id);
       if (index >= 0) {
         this.dataStore.observations[index] = observation;
       } else {
         this.dataStore.observations.push(observation);
       }
     }
-    //this.dataStore.observations.sort((a, b) => a.church.name.localeCompare(b.church.name));
     this._observations.next(Object.assign({}, this.dataStore).observations);
   }
 

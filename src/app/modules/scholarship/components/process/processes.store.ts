@@ -241,7 +241,7 @@ export class ProcessesStore {
   }
 
   private filterStatus(statusId: Array<Number>, processes: Process[]): Process[] {
-    if (processes !== undefined || processes != null) {
+    if (processes !== undefined || processes !== null) {
       return processes.filter(process => {
         return statusId.some(x => x === process.status);
       });
@@ -267,7 +267,7 @@ export class ProcessesStore {
 
   private updateProcess(process: Process): void {
     process.statusString = this.getStatusToString(process.status);
-    if (this.dataStore.processes.length == 0) {
+    if (this.dataStore.processes.length === 0) {
       this.dataStore.processes.push(process);
     } else {
       this.dataStore.processes.forEach((p: Process, i: number) => {

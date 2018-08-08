@@ -2,8 +2,9 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatSidenav, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Subject, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 
 import { AuthService } from '../../../../../shared/auth.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
@@ -76,7 +77,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
     this.observations$.subscribe(() => {
       this.setObservables();
       this.store.loadFilters();
-    })
+    });
   }
 
   private setObservables() {
@@ -135,7 +136,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   }
 
   public getStatus(status): string {
-    if (status == 1) {
+    if (status === 1) {
       return 'Aberta';
     }
     return 'Finalizada';
@@ -143,16 +144,16 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
 
   public search() {
     let observations = this.store.searchText(this.filterText);
-    if (this.filterStatus != undefined && this.filterStatus != null && this.filterStatus != 0) {
+    if (this.filterStatus !== undefined && this.filterStatus != null && this.filterStatus !== 0) {
       observations = this.store.searchStatus(this.filterStatus, observations);
     }
-    if (this.filterChurch != undefined && this.filterChurch != null && this.filterChurch != 0) {
+    if (this.filterChurch !== undefined && this.filterChurch != null && this.filterChurch !== 0) {
       observations = this.store.searchChurches(this.filterChurch, observations);
     }
-    if (this.filterAnalyst != undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
+    if (this.filterAnalyst !== undefined && this.filterAnalyst != null && this.filterAnalyst !== 0) {
       observations = this.store.searchAnalysts(this.filterAnalyst, observations);
     }
-    if (this.filterResponsible != undefined && this.filterResponsible != null && this.filterResponsible != 0) {
+    if (this.filterResponsible !== undefined && this.filterResponsible != null && this.filterResponsible !== 0) {
       observations = this.store.searchResponsibles(this.filterResponsible, observations);
     }
     observations = this.store.searchInDates(this.filterPeriodStart, this.filterPeriodEnd, observations);

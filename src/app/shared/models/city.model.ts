@@ -1,4 +1,4 @@
-import { State } from "./state.model";
+import { State } from './state.model';
 
 export class City {
   id: number;

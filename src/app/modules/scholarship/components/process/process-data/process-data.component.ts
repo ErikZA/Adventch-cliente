@@ -4,7 +4,8 @@ import { Location } from '@angular/common';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-import { Subscription } from 'rxjs';
+
+import { Subscription } from 'rxjs/Subscription';
 
 import { AuthService } from '../../../../../shared/auth.service';
 import { ScholarshipService } from '../../../scholarship.service';
@@ -388,11 +389,6 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
           this.store.removeProcess(process.id, auth.getCurrentUser().id);
         }
       });
-  }
-
-  checkUserRemoved() {
-    const { id } = auth.getCurrentUser();
-    return id == 160 || id == 2702 || id == 2704 || id == 2705 || id == 2743? true :false;
   }
 
   public generateNewPasswordResponsible(process: Process): void {

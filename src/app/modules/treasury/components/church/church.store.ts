@@ -35,7 +35,6 @@ export class ChurchStore {
 
   constructor(
     private service: TreasuryService,
-    private authService: AuthService,
     private snackBar: MatSnackBar,
     private sidenavService: SidenavService
   ) {
@@ -75,7 +74,7 @@ export class ChurchStore {
           || data.district.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
           || data.district.analyst.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
           || data.city.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
-          || data.city.state.acronym.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          || data.city.state.acronym.toLowerCase().indexOf(search.toLowerCase()) !== -1;
       });
     }
   }
@@ -99,7 +98,7 @@ export class ChurchStore {
   }
   private loadCities() {
     this.dataStore.cities = new Array<City>();
-    if (this.dataStore.churches != null) {
+    if (!this.dataStore.churches) {
       this.dataStore.churches.forEach(church => {
         if (this.dataStore.cities.map(x => x.id).indexOf(church.city.id) === -1) {
           this.dataStore.cities.push(church.city);
@@ -112,9 +111,9 @@ export class ChurchStore {
 
   private loadAnalysts() {
     this.dataStore.analysts = new Array<User>();
-    if (this.dataStore.churches != null) {
+    if (!this.dataStore.churches) {
       this.dataStore.churches.forEach(church => {
-        if (church.district.id != 0 && this.dataStore.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
+        if (church.district.id !== 0 && this.dataStore.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
           this.dataStore.analysts.push(church.district.analyst);
         }
       });

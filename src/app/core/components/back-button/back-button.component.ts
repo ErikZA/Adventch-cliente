@@ -9,7 +9,7 @@ import { Location } from '@angular/common';
 export class BackButtonComponent implements OnInit {
 
   @Input() color: string;
-  @Input() value: string = 'CANCELAR';
+  @Input() value = 'CANCELAR';
 
   constructor(
     private location: Location

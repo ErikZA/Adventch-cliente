@@ -4,7 +4,7 @@ import { MatSidenav, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { map } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 
 import { Districts } from '../../../models/districts';
 import { State } from '../../../../../shared/models/state.model';
@@ -90,7 +90,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
         id: this.store.church.id,
         unit: unit.id,
         ...this.form.value
-      }
+      };
       this.service.saveChurch(data).subscribe((church: Church) => {
         this.store.update(church);
         this.reset();
@@ -108,8 +108,8 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
   }
 
-  public edit(id){
-    if (id == this.store.church.id) {
+  public edit(id) {
+    if (id === this.store.church.id) {
       this.loadCities(true);
     }
   }

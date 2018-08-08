@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
-import { Subscription } from 'rxjs';
+
+import { Subscription } from 'rxjs/Subscription';
+
 import { TreasuryService } from '../../treasury.service';
-import { AuthService } from '../../../../shared/auth.service';
 import { auth } from '../../../../auth/auth';
 
 @Component({
@@ -46,14 +47,13 @@ export class DashboardTreasuryComponent implements OnInit {
   };
 
   constructor(
-    private authService: AuthService,
     private media: ObservableMedia,
     private service: TreasuryService,
     private changeDetector: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
-    const unit = this.authService.getCurrentUnit();
+    const unit = auth.getCurrentUnit();
     this.mediaSubscription = this.media.subscribe((change: MediaChange) => setTimeout(() => this.isMobile = change.mqAlias === 'xs'));
     this.getDataSubscription = this.getDashboardData(0);
     this.service.getUsers(unit.id).subscribe((data) => {
