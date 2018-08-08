@@ -1,7 +1,7 @@
-import { Church } from "./church";
-import { User } from "../../../shared/models/user.model";
-import { EObservationStatus } from "./Enums";
-import { Treasurer } from "./treasurer";
+import { Church } from './church';
+import { User } from '../../../shared/models/user.model';
+import { EObservationStatus } from './Enums';
+import { Treasurer } from './treasurer';
 
 export class Observation {
   id: number;

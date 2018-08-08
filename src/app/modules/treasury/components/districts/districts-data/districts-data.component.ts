@@ -1,15 +1,19 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { Observable, Subject, Subscription } from 'rxjs';
+
+
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
+import { distinctUntilChanged } from 'rxjs/operators';
+
 import { Districts } from '../../../models/districts';
 import { DistrictsStore } from '../districts.store';
-import { AuthService } from '../../../../../shared/auth.service';
 import { Router } from '@angular/router';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { MatSidenav, MatSnackBar } from '@angular/material';
 import { TreasuryService } from '../../../treasury.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { auth } from '../../../../../auth/auth';
-import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-districts-data',

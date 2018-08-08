@@ -105,7 +105,7 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
     const responsible = auth.getCurrentUser();
 
     this.values = {
-      id: this.params == undefined ? 0 : this.params,
+      id: this.params === undefined ? 0 : this.params,
       responsible: responsible.id,
       unit: unit.id,
       status: EObservationStatus.Open,
@@ -136,7 +136,7 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
     this.editChurch = Number(observation['0'].church.id);
     const unit = auth.getCurrentUnit();
     this.service.loadChurches(unit.id).subscribe((data) => {
-      this.editChurchName = data.find(x => x.id == observation['0'].church.id).name;
+      this.editChurchName = data.find(x => x.id === observation['0'].church.id).name;
     });
   }
 
