@@ -83,7 +83,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {debugger;
+  ngOnInit() {
     this.getAllDatas();
     this.isScholarship = auth.getCurrentUser().isScholarship;
     this.schoolIsVisible();
