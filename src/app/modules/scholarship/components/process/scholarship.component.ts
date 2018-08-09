@@ -46,7 +46,6 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
     this.sidenavService.setSidenav(this.sidenavRight);
 
     this.subscribeUnit = auth.currentUnit.subscribe(() => {
-      this.getAllDatas();
       this.setSchoolInitial();
     });
   }

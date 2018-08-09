@@ -109,8 +109,14 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   }
 
   public edit(id) {
-    if (id === this.store.church.id) {
-      this.loadCities(true);
+    if (id == this.store.church.id) {
+      if (this.states == null || this.states.length == undefined) {
+        this.loadStates();
+      }
+      if (this.cities == null || this.cities.length == undefined) {
+        this.loadCities(this.store.church.city.state.id);
+      }
+      this.setValues();
     }
   }
 

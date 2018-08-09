@@ -83,10 +83,10 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
+  ngOnInit() {debugger;
+    this.getAllDatas();
     this.isScholarship = auth.getCurrentUser().isScholarship;
     this.schoolIsVisible();
-    this.getAllDatas();
     this.processes$.subscribe(x => { this.processes = x; });
     this.search$.subscribe(search => {
       this.searchProcess(search);
@@ -96,7 +96,6 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     });
     this.sidenavService.setSidenav(this.sidenavRight);
     this.subscribeUnit = auth.currentUnit.subscribe(() => {
-      this.getAllDatas();
       this.scholarshipService.updateSchool(auth.getCurrentUser().idSchool);
     });
     this.router.navigate([this.router.url.replace(/.*/, 'bolsas/processos')]);
