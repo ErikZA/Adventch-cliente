@@ -124,7 +124,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     } else if (this.showSchool && this.scholarshipService.schoolSelected === -1) {
       this.schools$.subscribe(data => {
         data.forEach(school => {
-          if (!this.schoolsFilters.some(x => x === school.id)) {
+          if (!this.schoolsFilters.some(x => x == school.id)) {
             this.schoolsFilters.push(school.id);
           }
         });
