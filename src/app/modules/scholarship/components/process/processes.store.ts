@@ -228,7 +228,6 @@ export class ProcessesStore {
     }
     const filtersSchoolsProcesses = this.filterSchools(schoolsId, this.processesFilters);
     const filtersStatusProcesses = this.filterStatus(statusId, filtersSchoolsProcesses);
-
     return Observable.of(filtersStatusProcesses);
   }
 
