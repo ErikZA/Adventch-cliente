@@ -94,6 +94,8 @@ export class DistrictsDataComponent implements OnInit, OnDestroy {
     }
     this.store.openDistrict(district);
     this.router.navigate(['tesouraria/distritos/' + district.id + '/editar']);
+    this.searchButton = false;
+    this.districts$ = this.store.districts$;
     this.sidenavRight.open();
   }
 }
