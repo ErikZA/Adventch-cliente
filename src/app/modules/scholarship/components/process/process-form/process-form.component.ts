@@ -405,8 +405,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       const data = this.setProcessValues(studentSelected, idScholSelected, status, this.checkIsEdit());
       this.store.saveProcess(data);
       setTimeout(() => {
-        this.formProcess.reset();
-        this.formCheckDocuments.reset();
+        // this.formProcess.reset();
+        // this.formCheckDocuments.reset();
         this.isSending = false;
       }, 5000);
     } else {
