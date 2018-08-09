@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { RecoverStore } from './../recover.store';
+import { RecoverStore } from '../recover.store';
 import { MatSnackBar } from '@angular/material';
 
 @Component({

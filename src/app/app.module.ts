@@ -1,7 +1,7 @@
 import { AuthModule } from './auth/auth.module';
 import { AdminGuard } from './shared/admin.guard';
 // angular
-import { NgModule, LOCALE_ID } from '@angular/core';
+import { NgModule, LOCALE_ID, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -45,6 +45,7 @@ import { ModuleGuard } from './shared/module.guard';
 import { AuthMainGuard } from './shared/guards/auth-main.guard';
 import { AuthResponsibleGuard } from './shared/guards/auth-responsible.guard';
 import { NgProgressModule } from '@ngx-progressbar/core';
+import { provideErrorHandler } from './shared/error/raven-error-handler';
 registerLocaleData(ptBr);
 
 @NgModule({
@@ -110,7 +111,8 @@ registerLocaleData(ptBr);
     ReleaseNotesStore,
     ProfileStore,
     ModuleGuard,
-    AdminGuard
+    AdminGuard,
+    { provide: ErrorHandler, useFactory: provideErrorHandler }
   ],
   bootstrap: [AppComponent]
 })
