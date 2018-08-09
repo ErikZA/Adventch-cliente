@@ -11,6 +11,7 @@ import { User } from './shared/models/user.model';
 import { AuthService } from './shared/auth.service';
 import { MatIconRegistry } from '@angular/material';
 import { Responsible } from './modules/scholarship/models/responsible';
+import * as Raven from 'raven-js';
 
 @Component({
   selector: 'app-root',
@@ -41,10 +42,16 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscribe1 = auth.currentUser.subscribe(currentUser => this.currentUser = currentUser, err => { console.log(err); });
+    this.subscribe1 = auth.currentUser.subscribe(currentUser => {
+      this.currentUser = currentUser;
+      Raven.setUserContext(currentUser);
+    }, err => { console.log(err); });
     this.subscribe2 = auth.showApp.subscribe(showApp => this.showApp = showApp, err => { console.log(err); });
     this.subscribe3 = auth.currentResponsible
-      .subscribe(currentResponsible => this.currentResponsible = currentResponsible, err => console.log(err));
+      .subscribe(currentResponsible => {
+        this.currentResponsible = currentResponsible;
+        Raven.setUserContext(currentResponsible);
+      }, err => console.log(err));
     if (!this.showApp && this.currentUser) {
       auth.loggedInMain();
       if (!this.showApp) {

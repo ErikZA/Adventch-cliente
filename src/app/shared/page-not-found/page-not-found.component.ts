@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { MatDialogRef, MatDialog } from '@angular/material';
-import { auth } from './../../auth/auth';
+import { auth } from '../../auth/auth';
 
 @Component({
   selector: 'app-page-not-found',

@@ -5,6 +5,8 @@ import { EventEmitter } from '@angular/core';
 import { User } from '../shared/models/user.model';
 import { Responsible } from '../modules/scholarship/models/responsible';
 
+import * as Raven from 'raven-js';
+
 const showApp: EventEmitter<boolean> = new EventEmitter<boolean>();
 const currentUser: EventEmitter<User> = new EventEmitter<User>();
 const currentUnit: EventEmitter<Unit> = new EventEmitter<Unit>();
@@ -98,6 +100,7 @@ const logoffMain = () => {
   localStorage.removeItem('currentUser');
   localStorage.removeItem('token');
   localStorage.removeItem('currentUnit');
+  Raven.setUserContext();
   const user: User = new User();
   user.email = getLastLogin();
   currentUser.emit(user);
@@ -107,6 +110,7 @@ const logoffMain = () => {
 const logoffResponsible = () => {
   localStorage.removeItem('currentResponsible');
   localStorage.removeItem('tokenResponsible');
+  Raven.setUserContext();
   const responsible: Responsible = new Responsible();
   responsible.cpf = getLastLogin();
   currentResponsible.emit(responsible);
