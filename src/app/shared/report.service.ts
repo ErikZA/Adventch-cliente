@@ -35,6 +35,7 @@ export class ReportService {
   private viewReport(reportName: string, moduleId: number, params: any): Observable<any> {
     const currentUserId = auth.getCurrentUser().id;
     const currentUnit = auth.getCurrentUnit();
+    // tslint:disable-next-line:max-line-length
     const url = `${environment.apiUrlReport}/reports/view/${reportName}?userId=${currentUserId}&module=${moduleId}&values=${params}&unitId=${currentUnit.id}&unitName=${currentUnit.name}`;
     return this.http
       .get(url, { responseType: 'blob' })
