@@ -64,7 +64,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
 
   initForm(): void {
     this.formDistrict = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^(\w+\s?)*$/)]],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
       analyst: [null]
     });
   }
