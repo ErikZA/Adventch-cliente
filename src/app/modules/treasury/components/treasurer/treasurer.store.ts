@@ -112,14 +112,17 @@ export class TreasurerStore {
   }
 
   public searchAnalyst(idAnalyst: number, treasurers: Treasurer[]): Treasurer[] {
-    return treasurers.filter(x => x.church.district.analyst.id === idAnalyst);
+    // tslint:disable-next-line:triple-equals
+    return treasurers.filter(x => x.church.district.analyst.id == idAnalyst);
   }
 
   public searchDistricts(idDistrict: number, treasurers: Treasurer[]): Treasurer[] {
-    return treasurers.filter(x => x.church.district.id === idDistrict);
+    // tslint:disable-next-line:triple-equals
+    return treasurers.filter(x => x.church.district.id == idDistrict);
   }
 
   public searchFunction(idFunction: number, treasurers: Treasurer[]): Treasurer[] {
-    return treasurers.filter(x => x.function === idFunction);
+    // tslint:disable-next-line:triple-equals
+    return treasurers.filter(x => x.function == idFunction);
   }
 }

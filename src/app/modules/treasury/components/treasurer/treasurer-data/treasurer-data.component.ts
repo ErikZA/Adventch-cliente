@@ -164,13 +164,16 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
   public search() {
     let treasurersFilttered = this.store.searchTreasurers(this.filterText);
 
-    if (this.filterDistrict !== undefined && this.filterDistrict != null && this.filterDistrict !== 0) {
+    // tslint:disable-next-line:triple-equals
+    if (this.filterDistrict !== undefined && this.filterDistrict != null && this.filterDistrict != 0) {
       treasurersFilttered = this.store.searchDistricts(this.filterDistrict, treasurersFilttered);
     }
-    if (this.filterAnalyst !== undefined && this.filterAnalyst != null && this.filterAnalyst !== 0) {
+    // tslint:disable-next-line:triple-equals
+    if (this.filterAnalyst !== undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
       treasurersFilttered = this.store.searchAnalyst(this.filterAnalyst, treasurersFilttered);
     }
-    if (this.filterFunction !== undefined && this.filterFunction != null && this.filterFunction !== 0) {
+    // tslint:disable-next-line:triple-equals
+    if (this.filterFunction !== undefined && this.filterFunction != null && this.filterFunction != 0) {
       treasurersFilttered = this.store.searchFunction(this.filterFunction, treasurersFilttered);
     }
     this.treasurers$ = Observable.of(treasurersFilttered);
