@@ -232,7 +232,6 @@ export class ProcessesStore {
   }
 
   private filterSchools(schoolsId: Array<Number>, processes: Process[]): Process[] {
-    console.log(processes);
     if (processes !== undefined && processes !== null) {
       return processes.filter(process => {
         return schoolsId.some(x => x === process.idSchool);
