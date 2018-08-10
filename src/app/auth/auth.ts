@@ -50,7 +50,7 @@ const getCurrentUnit = () => {
 };
 
 const setCurrentResponsible = (responsible: Responsible) => {
-  setLocalStorage('currentresponsible', responsible);
+  setLocalStorage('currentResponsible', responsible);
   currentResponsible.emit(responsible);
 };
 

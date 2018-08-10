@@ -357,7 +357,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   public generateReportToProcess(process: Process): void {
-    this.store.generateReport(process.id);
+    this.store.generateReport(process.id, 'Relatório gerado!');
   }
 
   public generateGeneralProcessReport(): void {
