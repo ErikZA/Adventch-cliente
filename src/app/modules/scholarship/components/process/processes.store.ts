@@ -228,14 +228,13 @@ export class ProcessesStore {
     }
     const filtersSchoolsProcesses = this.filterSchools(schoolsId, this.processesFilters);
     const filtersStatusProcesses = this.filterStatus(statusId, filtersSchoolsProcesses);
-
     return Observable.of(filtersStatusProcesses);
   }
 
   private filterSchools(schoolsId: Array<Number>, processes: Process[]): Process[] {
     if (processes !== undefined && processes != null) {
       return processes.filter(process => {
-        return schoolsId.some(x => x === process.student.school.id);
+        return schoolsId.filter(x => x === process.student.school.id);
       });
     }
   }

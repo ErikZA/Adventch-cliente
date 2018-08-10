@@ -85,6 +85,8 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
     this.store.editTreasurer(treasurer);
     this.router.navigate(['tesouraria/tesoureiros/editar']);
     this.sidenavRight.open();
+    this.searchButton = false;
+    this.treasurers$ = this.store.treasurers$;
   }
 
   removeTreasurer(treasurer: Treasurer) {

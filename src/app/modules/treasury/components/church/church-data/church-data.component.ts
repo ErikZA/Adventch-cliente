@@ -131,6 +131,8 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     this.store.church = church;
     this.router.navigate([church.id, 'editar'], { relativeTo: this.route });
     this.openSidenav();
+    this.searchButton = false;
+    this.churches$ = this.store.churches$;
   }
 
   public expandPanel(matExpansionPanel): void {

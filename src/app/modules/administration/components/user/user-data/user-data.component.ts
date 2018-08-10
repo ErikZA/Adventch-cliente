@@ -119,6 +119,8 @@ export class UserDataComponent implements OnInit {
 
   public editUser(user: User): void {
     this.router.navigate([user.id, 'editar'], { relativeTo: this.route });
+    this.searchButton = false;
+    this.users$ = this.store.users$;
     this.sidenavService.open();
   }
 

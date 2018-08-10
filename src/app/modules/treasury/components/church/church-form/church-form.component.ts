@@ -62,7 +62,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     this.form = this.formBuilder.group({
       name: [null, Validators.required],
       code: [null, Validators.required],
-      district: [null, Validators.required],
+      district: [null, Validators.required, Validators.min(1)],
       state: [null, Validators.required],
       city: [{value: null, disabled: true}, Validators.required],
       address: [null, Validators.required],
@@ -108,12 +108,17 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
   }
 
-  public edit(id) {
-    if (id == this.store.church.id) {
-      if (this.states == null || this.states.length == undefined) {
+  public edit(id: string) {
+    const idParsed = parseInt(id, 10);
+
+    if (!idParsed) {
+      throw new Error('error on set id edit cruch');
+    }
+    if (idParsed === this.store.church.id) {
+      if (!this.states) {
         this.loadStates();
       }
-      if (this.cities == null || this.cities.length == undefined) {
+      if (!this.cities) {
         this.loadCities(this.store.church.city.state.id);
       }
       this.setValues();
@@ -140,7 +145,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     this.form = new FormGroup({
       name: new FormControl({value: church.name, disabled: false}, Validators.required),
       code: new FormControl({value: church.code, disabled: false}, Validators.required),
-      district: new FormControl({value: church.district.id, disabled: false}, Validators.required),
+      district: new FormControl({value: church.district.id, disabled: false}, [Validators.required, Validators.min(1)]),
       state: new FormControl({value: church.city.state.id, disabled: false}, Validators.required),
       city: new FormControl({value: church.city.id, disabled: false}, Validators.required),
       address: new FormControl({value: church.address, disabled: false}, Validators.required),
