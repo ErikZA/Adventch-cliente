@@ -122,7 +122,7 @@ export class ObservationStore {
     this.loadResponsibles();
   }
   private loadChurches() {
-    if (this.dataStore.observations != null) {
+    if (!this.dataStore.observations) {
       this.dataStore.observations.forEach(observation => {
         if (this.churches.map(x => x.id).indexOf(observation.church.id) === -1) {
           this.churches.push(observation.church);
