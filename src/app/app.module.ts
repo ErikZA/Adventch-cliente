@@ -78,6 +78,7 @@ registerLocaleData(ptBr);
       thick: true,
       meteor: false,
       spinner: false,
+      debounceTime: 200
     }),
 
     // deixar AppRouting sempre por último
