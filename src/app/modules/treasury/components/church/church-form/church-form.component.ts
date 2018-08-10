@@ -62,7 +62,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     this.form = this.formBuilder.group({
       name: [null, Validators.required],
       code: [null, Validators.required],
-      district: [null, Validators.required, Validators.min(1)],
+      district: [null, Validators.required],
       state: [null, Validators.required],
       city: [{value: null, disabled: true}, Validators.required],
       address: [null, Validators.required],
@@ -110,10 +110,6 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
 
   public edit(id: string) {
     const idParsed = parseInt(id, 10);
-
-    if (!idParsed) {
-      throw new Error('error on set id edit cruch');
-    }
     if (idParsed === this.store.church.id) {
       if (!this.states) {
         this.loadStates();
@@ -122,7 +118,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
         this.loadCities(this.store.church.city.state.id);
       }
       this.setValues();
-    }
+      }
   }
 
   private loadDistricts() {
