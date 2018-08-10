@@ -122,12 +122,14 @@ export class ObservationStore {
     this.loadResponsibles();
   }
   private loadChurches() {
-    this.dataStore.observations.forEach(observation => {
-      if (this.churches.map(x => x.id).indexOf(observation.church.id) === -1) {
-        this.churches.push(observation.church);
-      }
-    });
-    this.churches.sort((a, b) => a.name.localeCompare(b.name));
+    if (this.dataStore.observations != null) {
+      this.dataStore.observations.forEach(observation => {
+        if (this.churches.map(x => x.id).indexOf(observation.church.id) === -1) {
+          this.churches.push(observation.church);
+        }
+      });
+      this.churches.sort((a, b) => a.name.localeCompare(b.name));
+    }
   }
 
   private loadAnalysts() {
