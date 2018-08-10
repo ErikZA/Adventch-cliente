@@ -1,6 +1,7 @@
-import { Student } from './student';
-import { EStatus } from './enums';
 import { ProcessDocument } from './processDocument';
+import { EStatus } from './enums';
+import { Student } from './student';
+import { School } from './school';
 export class Process {
   id: number;
   identity: string;
@@ -20,5 +21,6 @@ export class Process {
   motiveReject: string;
   processDocuments: Array<ProcessDocument>;
   bagPorcentage: Number;
+  idSchool: number;
   constructor() { }
 }

@@ -74,7 +74,7 @@
                     <mat-list-item>
                         <h3 matLine fxLayout="row">
                             <div fxLayout="row" fxLayoutAlign="start center" fxFlex>
-                                <span *ngIf="showSchool" fxFlex="26%" fxHide.lt-sm>Escola</span>
+                                <span *ngIf="showSchool && schoolsFilters.length !== 1" fxFlex="26%" fxHide.lt-sm>Escola</span>
                                 <span fxFlex>Aluno</span>
                                 <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">Protocolo</span>
                                 <span fxFlex="16%" fxHide.lt-sm>Status</span>
@@ -89,22 +89,19 @@
                     <div *ngFor="let process of (processes$ | async ); index as i">
                         <mat-expansion-panel hideToggle *ngIf="i <= showList">
                             <mat-expansion-panel-header>
-                                <!-- <mat-panel-title *ngIf="showSchool" fxFlex="38%">
-                                    {{ process.student.school.name }}
-                                </mat-panel-title> -->
                                 <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2px" fxFlex>
-                                    <span *ngIf="showSchool" fxFlex="26%" style="white-space: nowrap;" fxHide.lt-sm>
+                                    <p *ngIf="showSchool && schoolsFilters.length !== 1" fxFlex="26%" fxHide.lt-sm>
                                         {{ process.student.school.name }}
-                                    </span>
-                                    <span fxFlex style="white-space: pre-line; text-overflow: ellipsis;">
-                                      {{ process.student.name }}
-                                    </span>
-                                    <span fxFlex="20%" fxHide.lt-sm>
-                                      {{ process.protocol }}
-                                    </span>
-                                    <span fxFlex="15%" fxHide.lt-sm>
-                                      {{ process.statusString }}
-                                    </span>
+                                    </p>
+                                    <p fxFlex>
+                                        {{ process.student.name }}
+                                    </p>
+                                    <p fxFlex="20%" fxHide.lt-sm>
+                                        {{ process.protocol }}
+                                    </p>
+                                    <p fxFlex="15%" fxHide.lt-sm>
+                                        {{ process.statusString }}
+                                    </p>
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-list>

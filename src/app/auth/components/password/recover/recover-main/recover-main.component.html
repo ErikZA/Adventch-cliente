@@ -11,7 +11,7 @@
                     <mat-error *ngIf="formEmail.get('email').hasError('required')">Digite um email</mat-error>
                     <mat-error *ngIf="formEmail.get('email').hasError('email') && !formEmail.get('email').hasError('required')">Digite um email válido</mat-error>
                 </mat-form-field>
-                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="gappx">
+                <div fxLayout="row" fxLayoutAlign="center">
                     <button mat-flat-button color="primary" type="submit" [disabled]="isSendEmail" (click)="sendEmailRequest()">ENVIAR EMAIL DE RECUPERAÇÃO</button>
                 </div>
             </form>
@@ -19,8 +19,8 @@
         </mat-card-content>
     </ng-container>
     <ng-template #mensageSuccess>
-        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="gappx">
-            <mat-card-header fxLayoutAlign="center">
+        <div fxLayout="column" fxLayoutAlign="center center">
+            <mat-card-header>
                 <mat-icon class="icon-email">email</mat-icon>
             </mat-card-header>
             <mat-card-content fxLayout="column" fxLayoutAlign="center center" class="margin-top-20" fxLayoutGap="20px">
@@ -28,7 +28,7 @@
                     <h2 class="title mensageSuccessTitle">Email enviado!</h2>
                     <p class="title mensageSuccess">Um e-mail de recuperação de senha foi enviado para {{ formEmail.value.email }}.</p>
                     <p class="title mensageSuccess">
-                        Verifique sua caixa de entrada e clique no link "Resetar senha" para alterar a senha da sua conta.
+                        Verifique sua caixa de entrada e clique no botão "Alterar senha" para alterar a senha da sua conta.
                     </p>
                 </div>
                 <a class="link" fxLayoutAlign="center" style="margin: 20px 0" (click)="goBackLogin()">Voltar ao login</a>
