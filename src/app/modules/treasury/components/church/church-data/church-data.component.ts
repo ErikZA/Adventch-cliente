@@ -142,15 +142,18 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   public search() {
     let churchesFilttered = this.store.searchText(this.filterText);
 
-    if (this.filterDistrict !== undefined && this.filterDistrict !== null && this.filterDistrict !== 0) {
+    // tslint:disable-next-line:triple-equals
+    if (this.filterDistrict !== undefined && this.filterDistrict !== null && this.filterDistrict != 0) {
       churchesFilttered = this.store.searchDistricts(this.filterDistrict, churchesFilttered);
     }
 
-    if (this.filterCity !== undefined && this.filterCity !== null && this.filterCity !== 0) {
+    // tslint:disable-next-line:triple-equals
+    if (this.filterCity !== undefined && this.filterCity !== null && this.filterCity != 0) {
       churchesFilttered = this.store.searchCities(this.filterCity, churchesFilttered);
     }
 
-    if (this.filterAnalyst !== undefined && this.filterAnalyst !== null && this.filterAnalyst !== 0) {
+    // tslint:disable-next-line:triple-equals
+    if (this.filterAnalyst !== undefined && this.filterAnalyst !== null && this.filterAnalyst != 0) {
       churchesFilttered = this.store.searchAnalysts(this.filterAnalyst, churchesFilttered);
     }
     this.churches$ = Observable.of(churchesFilttered);
