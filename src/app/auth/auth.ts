@@ -84,7 +84,7 @@ const getResponsibleToken = () => {
 };
 
 const loggedInMain = () => {
-  const user: User = this.getCurrentUser();
+  const user: User = getCurrentUser();
     if (user) {
       currentUser.emit(user);
       showApp.emit(true);
@@ -92,7 +92,7 @@ const loggedInMain = () => {
 };
 
 const loggedInResponsible = () => {
-  const responsible: Responsible = this.getCurrentResponsible();
+  const responsible: Responsible = getCurrentResponsible();
     if (responsible) {
       currentResponsible.emit(responsible);
       showApp.emit(true);
