@@ -23,6 +23,8 @@ export class MainComponent implements OnInit {
   public submitForm(loginForm: { login: string, password: string, remember: boolean}): void {
     if (loginForm.remember) {
       auth.setLastLogin(loginForm.login);
+    } else {
+      auth.setLastLogin('');
     }
     this.store.loginMain({ email: loginForm.login, password: loginForm.password });
   }

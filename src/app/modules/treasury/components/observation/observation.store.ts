@@ -109,6 +109,8 @@ export class ObservationStore {
 
   /* Carregar */
   private load() {
+    const { observations } = this.dataStore;
+    if (!observations) { return; }
     this.loadChurches();
     this.loadAnalysts();
     this.loadResponsibles();
