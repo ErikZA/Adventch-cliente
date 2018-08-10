@@ -144,16 +144,20 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
 
   public search() {
     let observations = this.store.searchText(this.filterText);
-    if (this.filterStatus !== undefined && this.filterStatus != null && this.filterStatus !== 0) {
+    // tslint:disable-next-line:triple-equals
+    if (this.filterStatus !== undefined && this.filterStatus != null && this.filterStatus != 0) {
       observations = this.store.searchStatus(this.filterStatus, observations);
     }
-    if (this.filterChurch !== undefined && this.filterChurch != null && this.filterChurch !== 0) {
+    // tslint:disable-next-line:triple-equals
+    if (this.filterChurch !== undefined && this.filterChurch != null && this.filterChurch != 0) {
       observations = this.store.searchChurches(this.filterChurch, observations);
     }
-    if (this.filterAnalyst !== undefined && this.filterAnalyst != null && this.filterAnalyst !== 0) {
+    // tslint:disable-next-line:triple-equals
+    if (this.filterAnalyst !== undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
       observations = this.store.searchAnalysts(this.filterAnalyst, observations);
     }
-    if (this.filterResponsible !== undefined && this.filterResponsible != null && this.filterResponsible !== 0) {
+    // tslint:disable-next-line:triple-equals
+    if (this.filterResponsible !== undefined && this.filterResponsible != null && this.filterResponsible != 0) {
       observations = this.store.searchResponsibles(this.filterResponsible, observations);
     }
     observations = this.store.searchInDates(this.filterPeriodStart, this.filterPeriodEnd, observations);
