@@ -106,7 +106,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     if (this.formDistrict.valid) {
       this.treasuryService.saveDistricts(this.values).subscribe((data) => {
         this.store.updateDistricts(this.values);
-        this.snackBar.open('Distrito armazenado com sucesso!', 'OK', { duration: 5000 });
+        this.snackBar.open('Distrito salvo com sucesso!', 'OK', { duration: 5000 });
         this.formDistrict.markAsUntouched();
         this.close();
       }, err => {
@@ -126,7 +126,6 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     });
     this.editAnalyst = Number(district.analyst.id);
   }
-
 
   close() {
     this.store.openDistrict(new Districts());
