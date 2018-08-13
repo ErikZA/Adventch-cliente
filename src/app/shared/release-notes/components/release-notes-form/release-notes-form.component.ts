@@ -11,6 +11,7 @@ import { SidenavService } from '../../../../core/services/sidenav.service';
 export class ReleaseNotesFormComponent implements OnInit {
   form: FormGroup;
   formNotes: FormArray;
+  loading = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -27,6 +28,7 @@ export class ReleaseNotesFormComponent implements OnInit {
       version: [null, [Validators.required, Validators.minLength, Validators.maxLength]]
     });
     this.formNotes = this.formBuilder.array([this.returnNote()]);
+    this.loading = !this.loading;
   }
 
   private returnNote() {

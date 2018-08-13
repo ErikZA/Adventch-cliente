@@ -1,58 +1,38 @@
-<form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px">
-    <div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}" [ngStyle.xs]="{'width.vw': 100}">
-        <div fxLayout="column" fxLayoutAlign="start" class="container beautiful-scroll-x">
-            <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
-                <div fxFlex>
-                    <h2 class="title">Cadastrar Release Notes</h2>
-                    <mat-divider></mat-divider>
-                </div>
-            </div>
-            <div fxLayout="row" fxLayout.lt-md="column" fxFlex fxLayoutGap="60px" fxLayoutGap.gt-sm="80px" class="margin-bottom-30">
-                <div fxLayout="column" fxLayoutGap="20px" fxFlex>
-                    <div class="padding-form card">
-                        <div fxLayout="column" fxLayoutGap="20px" fxLayoutGap.gt-sm="20px" fxFlex>
-                            <mat-form-field fxFlex>
-                                <input matInput type="text" formControlName="version" placeholder="Versão (v0.0.0)" required minlength="6" maxlength="50">
-                                <mat-error *ngIf="form.get('version').hasError('required')">Este campo é obrigatório</mat-error>
-                                <mat-error *ngIf="form.get('version').hasError('minlength')">Formato errado, utilize ao menos 6 dígitos (v0.0.0)</mat-error>
-                                <mat-error *ngIf="form.get('version').hasError('maxlenght')">Formato errado, utilize ao máximo 50 dígitos</mat-error>
-                                <mat-error *ngIf="form.get('version').hasError('pattern')">Digite uma versão válida.</mat-error>
-                            </mat-form-field>
-                        </div>
-
-                        <div fxLayout="row" *ngFor="let note of formNotes.controls; let i = index" fxLayoutGap="15px">
-                            <div [formGroup]="note" fxLayout="column" fxLayoutAlign="space-between" fxFlex>
-                                <div fxLayout="column" fxLayoutGap="20px" fxLayoutGap.gt-sm="20px" fxFlex>
-                                    <mat-form-field fxFlex>
-                                        <textarea formControlName="description" matInput placeholder="Nota" maxlength="200"></textarea>
-                                        <mat-error *ngIf="note.get('description').hasError('required')">Este campo é obrigatório</mat-error>
-                                        <mat-error *ngIf="note.get('description').hasError('maxlenght')">Utilize ao máximo 200 dígitos</mat-error>
-                                        <mat-error *ngIf="note.get('description').hasError('pattern')">Digite uma descrição válida.</mat-error>
-                                    </mat-form-field>
-                                </div>
-                                <div fxLayout="column" fxLayoutGap="20px" fxLayoutGap.gt-sm="20px" fxFlex>
-
-                                    <div fxLayout="row" fxLayoutAlign="space-between">
-                                        <div>
-                                            <mat-slide-toggle color="warn" formControlName="isBug">Bug?</mat-slide-toggle>
-                                        </div>
-                                        <div>
-                                            <button mat-icon-button type="button" *ngIf="formNotes.controls.length > 1 || i !== 0" (click)="removeNote(i)">
-                                              <mat-icon aria-label="Remover nota">close</mat-icon>
-                                            </button>
-                                            <button fxAlignFlex="end" *ngIf="i + 1 >= formNotes.controls.length" mat-icon-button type="button" color="primary" (click)="addNote()">
-                                                <mat-icon aria-label="Adicionar nota">add</mat-icon>
-                                              </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+<form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="loading">
+    <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
+        <div fxFlex>
+            <h2 class="title">Cadastrar Release Notes</h2>
+            <mat-divider></mat-divider>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center" fxLayout.lt-md="column" fxFlex class="margin-bottom-30">
+        <div fxLayout="column" fxFlex="50%">
+            <mat-form-field fxFlex>
+                <input matInput type="text" formControlName="version" placeholder="Versão (v0.0.0)" required minlength="6" maxlength="50">
+                <mat-error *ngIf="form.get('version').hasError('required')">Este campo é obrigatório</mat-error>
+                <mat-error *ngIf="form.get('version').hasError('minlength')">Formato errado, utilize ao menos 6 dígitos (v0.0.0)</mat-error>
+                <mat-error *ngIf="form.get('version').hasError('maxlenght')">Formato errado, utilize ao máximo 50 dígitos</mat-error>
+                <mat-error *ngIf="form.get('version').hasError('pattern')">Digite uma versão válida.</mat-error>
+            </mat-form-field>
+            <div fxLayout="row" *ngFor="let note of formNotes.controls; let i = index" fxLayoutGap="15px">
+                <div [formGroup]="note" fxLayout="column" fxLayoutAlign="space-between" fxFlex>
+                    <mat-form-field fxFlex>
+                        <textarea formControlName="description" matInput placeholder="Nota" maxlength="200"></textarea>
+                        <mat-error *ngIf="note.get('description').hasError('required')">Este campo é obrigatório</mat-error>
+                        <mat-error *ngIf="note.get('description').hasError('maxlenght')">Utilize ao máximo 200 dígitos</mat-error>
+                    </mat-form-field>
+                    <div fxLayout="row" fxLayoutAlign="space-between">
+                        <mat-slide-toggle color="warn" formControlName="isBug">Bug?</mat-slide-toggle>
+                        <div>
+                            <button mat-icon-button type="button" *ngIf="formNotes.controls.length > 1 || i !== 0" (click)="removeNote(i)">
+                                  <mat-icon aria-label="Remover nota">close</mat-icon></button>
+                            <button fxAlignFlex="end" *ngIf="i + 1 >= formNotes.controls.length" mat-icon-button type="button" color="primary" (click)="addNote()">
+                                  <mat-icon aria-label="Adicionar nota">add</mat-icon></button>
                         </div>
                     </div>
                 </div>
             </div>
-            <br />
-            <div fxLayout="row" fxLayoutAlign="space-between">
+            <div fxLayout="row" fxFlex fxFlexOffset="50px" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
                 <a (click)="closeSidenav()">
                     <back-button></back-button>
                 </a>
