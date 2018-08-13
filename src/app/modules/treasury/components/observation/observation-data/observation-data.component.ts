@@ -36,7 +36,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   responsibles$: Observable<User[]>;
 
   filterText: string;
-  filterStatus: number;
+  filterStatus = 1;
   filterChurch: number;
   filterAnalyst: number;
   filterResponsible: number;
@@ -70,16 +70,32 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
-
+  private getIdCurrentUserIsAnalyst() {
+    const user = this.authService.getCurrentUser();
+    return this.store.analysts.map(a => a.id).includes(user.id) ? user.id : 0;
+  }
   private getData() {
-    this.observations$ = this.store.observations$;
+    this.observations$ = this.store.observations$.map(o => o.sort(this.sortByDate));
     this.store.loadAll();
     this.observations$.subscribe(() => {
       this.setObservables();
       this.store.loadFilters();
+      setTimeout(() => {
+        this.filterAnalyst = this.getIdCurrentUserIsAnalyst();
+        this.search();
+      }, 200);
     });
   }
-
+  private sortByDate(a: Observation, b: Observation) {
+    if (a.date === b.date) {
+      return 0;
+    }
+    if (a.date > b.date) {
+      return 1;
+    } else {
+      return -1;
+    }
+  }
   private setObservables() {
     this.churches$ = Observable.of(this.store.churches);
     this.analysts$ = Observable.of(this.store.analysts);
