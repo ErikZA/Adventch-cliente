@@ -26,6 +26,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   values: any;
   users: any;
   editAnalyst: any;
+  district: Districts;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -62,6 +63,14 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
 
+  private checkIsEdit(): boolean {
+    return this.district !== undefined && this.district !== null;
+  }
+
+  public labelTitle(): string {
+    return this.checkIsEdit() ? 'Editar' : 'Novo';
+  }
+
   initForm(): void {
     this.formDistrict = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
@@ -72,7 +81,6 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   closeSidenav() {
     this.treasureService.setDistrict(new Districts());
     this.sidenavService.close();
-    this.router.navigate(['tesouraria/distritos']);
   }
 
   saveDistrict() {
@@ -84,7 +92,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     });
     const unit = auth.getCurrentUnit();
     // modificar para id, caso de conflito
-    const valor = this.users.filter( x => x.id === this.formDistrict.value.analyst);
+    const valor = this.users.filter(x => x.id === this.formDistrict.value.analyst);
     this.values = {
       id: this.params,
       name: this.formDistrict.value.name,
@@ -98,7 +106,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     if (this.formDistrict.valid) {
       this.treasuryService.saveDistricts(this.values).subscribe((data) => {
         this.store.updateDistricts(this.values);
-        this.snackBar.open('Distrito armazenado com sucesso!', 'OK', { duration: 5000 });
+        this.snackBar.open('Distrito salvo com sucesso!', 'OK', { duration: 5000 });
         this.formDistrict.markAsUntouched();
         this.close();
       }, err => {
@@ -111,13 +119,13 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   }
 
   editDistrict(district) {
+    this.district = district;
     this.formDistrict.setValue({
       name: district.name,
       analyst: district.analyst,
     });
     this.editAnalyst = Number(district.analyst.id);
   }
-
 
   close() {
     this.store.openDistrict(new Districts());

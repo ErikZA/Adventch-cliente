@@ -1,44 +1,77 @@
 .page-container {
-    height: calc(100vh - 92px);
-  }
-  
-  .title {
+    height: calc(100vh - 110px);
+}
+
+.title {
     color: gray;
-  }
-  
-  .conteiner {
+}
+
+.conteiner {
     overflow: auto;
     max-height: calc(100vh - 250px);
-  }
-  
-  .margin-top-small {
-    margin-top: 1%;
-  }
+}
 
-  .margin-search {
-    margin: 10px;
-  }
-  
-  .mat-fab-right {
+.margin-top-small {
+    margin-top: 1%;
+}
+
+.mat-fab-right {
     position: fixed;
     bottom: 45px;
     right: 24px;
-    z-index: 1;
-  }
-  
-  .sidenav-right {
+}
+
+.sidenav-right {
     width: 99%;
-  }
-  
-  .text-bold {
+}
+
+.text-bold {
     font-weight: bold;
-  }
-  
-  .margin-minus-20 {
-    margin-left: -20px;
-  }
-  
-  .style-text {
+}
+
+.margin-search {
+    margin: 5px;
+}
+
+.prevent-overflow {
+    white-space: normal;
+}
+
+.padding-left-medium {
+    padding-left: 30px;
+}
+
+.mat-button {
+    margin: 5px;
+}
+
+.mat-action-row {
+    padding: 16px;
+}
+
+.style-text {
     white-space: pre-line;
     padding-left: 30px;
-  }
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.page-container {
+    height: calc(100vh - 92px);
+}
+
+.auto {
+    height: auto;
+}
+
+.conteiner {
+    overflow: auto;
+    max-height: calc(100vh - 240px);
+}
+
+.text-color-item {
+    color: #959595;
+}
+
+.break-line {
+    white-space: normal;
+}

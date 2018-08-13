@@ -38,7 +38,6 @@ export class ProfileFormComponent implements OnInit {
   constructor(
     private store: ProfileStore,
     private formBuilder: FormBuilder,
-    private authService: AuthService,
     private route: ActivatedRoute,
     private sidenavService: SidenavService
   ) { }
