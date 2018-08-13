@@ -98,7 +98,7 @@ export class ChurchStore {
   }
   private loadCities() {
     this.dataStore.cities = new Array<City>();
-    if (!this.dataStore.churches) {
+    if (!this.dataStore.churches && Array.isArray(this.dataStore.churches)) {
       this.dataStore.churches.forEach(church => {
         if (this.dataStore.cities.map(x => x.id).indexOf(church.city.id) === -1) {
           this.dataStore.cities.push(church.city);
@@ -111,7 +111,7 @@ export class ChurchStore {
 
   private loadAnalysts() {
     this.dataStore.analysts = new Array<User>();
-    if (!this.dataStore.churches) {
+    if (!this.dataStore.churches && Array.isArray(this.dataStore.churches)) {
       this.dataStore.churches.forEach(church => {
         if (church.district.id !== 0 && this.dataStore.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
           this.dataStore.analysts.push(church.district.analyst);

@@ -111,9 +111,6 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   public edit(id: string) {
     const idParsed = parseInt(id, 10);
 
-    if (!idParsed) {
-      throw new Error('error on set id edit cruch');
-    }
     if (idParsed === this.store.church.id) {
       if (!this.states) {
         this.loadStates();
