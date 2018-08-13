@@ -49,7 +49,6 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private router: Router,
     private store: TreasurerStore,
-    private treasurerDataComponent: TreasurerDataComponent,
     private sidenavService: SidenavService,
   ) { }
 
