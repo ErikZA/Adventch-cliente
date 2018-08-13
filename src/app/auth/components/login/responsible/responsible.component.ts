@@ -14,12 +14,14 @@ export class ResponsibleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    auth.loggedInResponsible();
+    auth.logoffResponsible();
   }
 
   public submitForm(loginForm: { login: string, password: string, remember: boolean}): void {
     if (loginForm.remember) {
       auth.setLastLogin(loginForm.login);
+    } else {
+      auth.setLastLogin('');
     }
     this.store.loginResponsible({ cpf: loginForm.login, password: loginForm.password });
   }

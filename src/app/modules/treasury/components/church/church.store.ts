@@ -58,7 +58,7 @@ export class ChurchStore {
   /* Listagem */
   public loadAll(): void {
     const unit = auth.getCurrentUnit();
-    this.service.getChurches(unit.id).subscribe((data: Church[]) => {
+    this.service.getChurches(unit.id).subscribe((data: any[]) => {
       this.dataStore.churches = data;
       this._churches.next(Object.assign({}, this.dataStore).churches);
     });
@@ -80,15 +80,18 @@ export class ChurchStore {
   }
 
   public searchDistricts(idDistrict: number, churches: Church[]): Church[] {
-    return churches.filter(x => x.district.id === idDistrict);
+    // tslint:disable-next-line:triple-equals
+    return churches.filter(x => x.district.id == idDistrict);
   }
 
   public searchCities(idCity: number, churches: Church[]): Church[] {
-    return churches.filter(x => x.city.id === idCity);
+    // tslint:disable-next-line:triple-equals
+    return churches.filter(x => x.city.id == idCity);
   }
 
   public searchAnalysts(idAnalyst: number, churches: Church[]): Church[] {
-    return churches.filter(x => x.district.analyst.id === idAnalyst);
+    // tslint:disable-next-line:triple-equals
+    return churches.filter(x => x.district.analyst.id == idAnalyst);
   }
 
   /* Carregar */

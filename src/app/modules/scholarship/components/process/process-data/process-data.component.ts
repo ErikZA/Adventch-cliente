@@ -84,9 +84,9 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.schoolIsVisible();
     this.getAllDatas();
     this.isScholarship = auth.getCurrentUser().isScholarship;
-    this.schoolIsVisible();
     this.processes$.subscribe(x => { this.processes = x; });
     this.search$.subscribe(search => {
       this.searchProcess(search);
@@ -124,8 +124,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     } else if (this.showSchool && this.scholarshipService.schoolSelected === -1) {
       this.schools$.subscribe(data => {
         data.forEach(school => {
-          // tslint:disable-next-line:triple-equals
-          if (!this.schoolsFilters.some(x => x == school.id)) {
+          if (!this.schoolsFilters.some(x => x === school.id)) {
             this.schoolsFilters.push(school.id);
           }
         });
@@ -186,7 +185,8 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   public schoolIsVisible(): void {
-    this.showSchool = auth.getCurrentUser().idSchool === 0 ? true : false;
+    const { idSchool } = auth.getCurrentUser();
+    this.showSchool = idSchool === 0 ? true : false;
   }
 
   public toWaiting(process: Process): void {
@@ -357,7 +357,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   public generateReportToProcess(process: Process): void {
-    this.store.generateReport(process.id);
+    this.store.generateReport(process.id, 'Relatório gerado!');
   }
 
   public generateGeneralProcessReport(): void {
@@ -381,7 +381,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeProcess(process: Process) {
+  public removeProcess(process: Process): void {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este processo?', 'REMOVER')
       .subscribe(res => {

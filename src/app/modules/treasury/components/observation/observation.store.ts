@@ -78,29 +78,35 @@ export class ObservationStore {
   }
 
   private filterStatus(search: string, status: number): boolean {
-    if (status === 1) {
+    // tslint:disable-next-line:triple-equals
+    if (status == 1) {
       return 'aberta'.indexOf(search) !== -1;
     }
-    if (status === 2) {
+    // tslint:disable-next-line:triple-equals
+    if (status == 2) {
       return 'finalizada'.indexOf(search) !== -1;
     }
     return false;
   }
 
   public searchStatus(status: number, observations: Observation[]): Observation[] {
-    return observations.filter(f => f.status === status);
+    // tslint:disable-next-line:triple-equals
+    return observations.filter(f => f.status == status);
   }
 
   public searchChurches(church: number, observations: Observation[]): Observation[] {
-    return observations.filter(f => f.church.id === church);
+    // tslint:disable-next-line:triple-equals
+    return observations.filter(f => f.church.id == church);
   }
 
   public searchAnalysts(analyst: number, observations: Observation[]): Observation[] {
-    return observations.filter(f => f.church.district.analyst.id === analyst);
+    // tslint:disable-next-line:triple-equals
+    return observations.filter(f => f.church.district.analyst.id == analyst);
   }
 
   public searchResponsibles(responsible: number, observations: Observation[]): Observation[] {
-    return observations.filter(f => f.responsible.id === responsible);
+    // tslint:disable-next-line:triple-equals
+    return observations.filter(f => f.responsible.id == responsible);
   }
 
   public searchInDates(startDate: Date, endDate: Date, observations: Observation[]) {
@@ -109,17 +115,21 @@ export class ObservationStore {
 
   /* Carregar */
   private load() {
+    const { observations } = this.dataStore;
+    if (!observations) { return; }
     this.loadChurches();
     this.loadAnalysts();
     this.loadResponsibles();
   }
   private loadChurches() {
-    this.dataStore.observations.forEach(observation => {
-      if (this.churches.map(x => x.id).indexOf(observation.church.id) === -1) {
-        this.churches.push(observation.church);
-      }
-    });
-    this.churches.sort((a, b) => a.name.localeCompare(b.name));
+    if (this.dataStore.observations != null) {
+      this.dataStore.observations.forEach(observation => {
+        if (this.churches.map(x => x.id).indexOf(observation.church.id) === -1) {
+          this.churches.push(observation.church);
+        }
+      });
+      this.churches.sort((a, b) => a.name.localeCompare(b.name));
+    }
   }
 
   private loadAnalysts() {

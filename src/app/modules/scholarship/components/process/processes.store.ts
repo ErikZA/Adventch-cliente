@@ -152,7 +152,7 @@ export class ProcessesStore {
   public saveProcess(processData: any): void {
     this.service.postProcess(processData).subscribe((process: Process) => {
       this.loadProcess(process.id);
-      this.generateReport(process.id);
+      this.generateReport(process.id, 'Processo salvo com sucesso!');
       setTimeout(() => {
         this.location.back();
         this.sidenavService.close();
@@ -232,9 +232,9 @@ export class ProcessesStore {
   }
 
   private filterSchools(schoolsId: Array<Number>, processes: Process[]): Process[] {
-    if (processes !== undefined && processes != null) {
+    if (processes !== undefined && processes !== null) {
       return processes.filter(process => {
-        return schoolsId.filter(x => x === process.student.school.id);
+        return schoolsId.some(x => x === process.idSchool);
       });
     }
   }
@@ -355,7 +355,7 @@ export class ProcessesStore {
     });
   }
 
-  public generateReport(id: number): void {
+  public generateReport(id: number, message: string): void {
     this.service.getPasswordResponsible(id).subscribe(data => {
       const password = data.password;
       this.reportService.reportProcess(id, password).subscribe(dataURL => {
@@ -365,8 +365,11 @@ export class ProcessesStore {
         element.download = 'processo.pdf';
         element.target = '_blank';
         element.click();
-      }, err => console.log(err));
-      this.snackBar.open('Processo salvo com sucesso!', 'OK', { duration: 5000 });
+      }, err => {
+          console.log(err);
+          this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
+      });
+      this.snackBar.open(message, 'OK', { duration: 5000 });
     });
   }
 

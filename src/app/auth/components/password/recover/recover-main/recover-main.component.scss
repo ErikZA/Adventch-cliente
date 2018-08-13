@@ -27,6 +27,7 @@
     size: 20%;
     width: 40%;
     height: 40%;
+    text-align: center;
 }
 
 @mixin md-icon-size($size: 120px) {
@@ -41,9 +42,11 @@
 
 .mensageSuccessTitle {
     font-size: 20px;
+    text-align: center;
 }
 
 .mensageSuccess {
     color: rgba(0, 0, 0, .54);
     font-size: 15px;
+    text-align: center;
 }
