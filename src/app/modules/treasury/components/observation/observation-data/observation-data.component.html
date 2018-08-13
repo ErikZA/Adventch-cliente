@@ -32,9 +32,9 @@
                     <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
                         <mat-form-field>
                             <mat-select placeholder="Status" (change)="search()" [(ngModel)]="filterStatus">
-                                <mat-option value="0">TODOS</mat-option>
-                                <mat-option value="1">Aberta</mat-option>
-                                <mat-option value="2">Finalizada</mat-option>
+                                <mat-option [value]="0">TODOS</mat-option>
+                                <mat-option [value]="1">Aberta</mat-option>
+                                <mat-option [value]="2">Finalizada</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </mat-list>
@@ -53,7 +53,7 @@
                     <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
                         <mat-form-field>
                             <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
-                                <mat-option value="0">TODOS</mat-option>
+                                <mat-option [value]="0">TODOS</mat-option>
                                 <mat-option *ngFor="let analyst of (analysts$ | async )" [value]="analyst.id">
                                     {{ analyst.name }}
                                 </mat-option>

@@ -61,7 +61,6 @@ export class ObservationStore {
       this._observations.next(Object.assign({}, this.dataStore).observations);
     });
   }
-
   /* Filtro */
   public searchText(search: string): Observation[] {
     if (search === '' || search === undefined || search === null) {
