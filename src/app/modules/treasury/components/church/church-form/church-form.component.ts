@@ -30,6 +30,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   districts: Districts[];
   states: State[];
   cities: City[];
+  church: Church;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -108,6 +109,18 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
   }
 
+  public closeSidenav(): void {
+    this.sidenavService.close();
+  }
+
+  public labelTitle(): string {
+    return this.checkIsEdit() ? 'Editar' : 'Nova';
+  }
+
+  private checkIsEdit(): boolean {
+    return this.church !== undefined && this.church !== null;
+  }
+
   public edit(id: string) {
     const idParsed = parseInt(id, 10);
     if (idParsed === this.store.church.id) {
@@ -137,16 +150,16 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   }
 
   private setValues(): void {
-    const church = this.store.church;
+    this.church = this.store.church;
     this.form = new FormGroup({
-      name: new FormControl({value: church.name, disabled: false}, Validators.required),
-      code: new FormControl({value: church.code, disabled: false}, Validators.required),
-      district: new FormControl({value: church.district.id, disabled: false}, [Validators.required, Validators.min(1)]),
-      state: new FormControl({value: church.city.state.id, disabled: false}, Validators.required),
-      city: new FormControl({value: church.city.id, disabled: false}, Validators.required),
-      address: new FormControl({value: church.address, disabled: false}, Validators.required),
-      complement: new FormControl({value: church.complement, disabled: false}),
-      cep: new FormControl({value: church.cep, disabled: false}, Validators.required),
+      name: new FormControl({value: this.church.name, disabled: false}, Validators.required),
+      code: new FormControl({value: this.church.code, disabled: false}, Validators.required),
+      district: new FormControl({value: this.church.district.id, disabled: false}, [Validators.required, Validators.min(1)]),
+      state: new FormControl({value: this.church.city.state.id, disabled: false}, Validators.required),
+      city: new FormControl({value: this.church.city.id, disabled: false}, Validators.required),
+      address: new FormControl({value: this.church.address, disabled: false}, Validators.required),
+      complement: new FormControl({value: this.church.complement, disabled: false}),
+      cep: new FormControl({value: this.church.cep, disabled: false}, Validators.required),
     });
   }
 }

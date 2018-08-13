@@ -10,8 +10,8 @@
             <mat-form-field fxFlex>
                 <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
                 <mat-error *ngIf="formDistrict.get('name').hasError('required')">Este campo é obrigatório</mat-error>
-                <mat-error *ngIf="formDistrict.get('name').hasError('minlength')">Nome do papel pequeno, digite um nome com mais de 3 dígitos</mat-error>
-                <mat-error *ngIf="formDistrict.get('name').hasError('maxlenght')">Nome do papel grande, digite um nome com menos de 200 dígitos</mat-error>
+                <mat-error *ngIf="formDistrict.get('name').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
+                <mat-error *ngIf="formDistrict.get('name').hasError('maxlenght')">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
                 <mat-error *ngIf="formDistrict.get('name').hasError('pattern')">Digite um nome válido.</mat-error>
             </mat-form-field>
             <mat-form-field>
