@@ -269,8 +269,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
   private resetAll() {
     this.closeSidenav();
-    this.formProcess.reset();
-    this.formCheckDocuments.reset();
   }
 
   ngOnDestroy() {
