@@ -8,9 +8,6 @@ import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators';
 
 import { UserStore } from '../user.store';
-import { AuthService } from '../../../../../shared/auth.service';
-
-import { Role } from '../../../models/role.model';
 import { EModules, Module } from '../../../../../shared/models/modules.enum';
 import { User } from '../../../../../shared/models/user.model';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
@@ -49,7 +46,6 @@ export class UserFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private store: UserStore,
-    private authService: AuthService,
     private route: ActivatedRoute,
     private sidenavService: SidenavService,
     private profileStore: ProfileStore,
@@ -72,11 +68,9 @@ export class UserFormComponent implements OnInit {
           this.user = user;
           if (this.user) {
             this.editUser();
-            // this.setValidatorsSelectsProfiles();
           }
         });
       } else {
-        // this.setValidatorsSelectsProfiles();
         this.loading = true;
       }
     });
@@ -147,7 +141,6 @@ export class UserFormComponent implements OnInit {
   }
 
   public enableSchoolSelected(module: EModules) {
-    console.log(module);
     if (module === EModules.Scholarship) {
       const formProfileScholarship = this.formProfiles.controls.find(group => group.value.module === EModules.Scholarship);
       if (formProfileScholarship) {
@@ -158,35 +151,6 @@ export class UserFormComponent implements OnInit {
         }
       }
     }
-  }
-
-  private setValidatorsSelectsProfiles(): void {
-    if (!this.formProfiles.controls || this.formProfiles.controls === undefined || this.formProfiles.controls === null) {
-      return;
-    }
-    const formProfileScholarship = this.formProfiles.controls.find(group => group.value.module === EModules.Scholarship);
-    if (formProfileScholarship) {
-      if (formProfileScholarship.value.id !== null && formProfileScholarship.value.id !== undefined) {
-        this.setValidatorsRequiredSelectGeneric(this.form, 'school');
-      } else {
-        this.unsetValidatorsRequiredSelectGeneric(this.form, 'school');
-      }
-    }
-    // this.formProfiles.controls.forEach((group: FormGroup) => {
-    //   // if (group.value.access && group.value.module !== EModules.Scholarship) {
-    //   //   this.setValidatorsRequiredSelectGeneric(group, 'id');
-    //   // } else if (!group.value.access && group.value.module !== EModules.Scholarship) {
-    //   //   this.unsetValidatorsRequiredSelectGeneric(group, 'id');
-    //   // } else
-
-    //   if (group.value.id !== null && group.value.id !== undefined && group.value.module === EModules.Scholarship) {
-    //     // this.setValidatorsRequiredSelectGeneric(group, 'id');
-    //     this.setValidatorsRequiredSelectGeneric(this.form, 'school');
-    //   } else if ((group.value.id === null || group.value.id === undefined) && group.value.module === EModules.Scholarship) {
-    //     // this.unsetValidatorsRequiredSelectGeneric(group, 'id');
-    //     this.unsetValidatorsRequiredSelectGeneric(this.form, 'school');
-    //   }
-    // });
   }
 
   private setValidatorsRequiredSelectGeneric(group: FormGroup, field: string): void {
