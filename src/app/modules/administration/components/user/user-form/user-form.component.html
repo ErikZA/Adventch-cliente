@@ -42,11 +42,10 @@
             </mat-form-field>
             <ng-template #thenSchools>
                 <mat-form-field fxFlex>
-                    <mat-select formControlName="school" placeholder="Escola" required>
+                    <mat-select formControlName="school" placeholder="Escola">
+                        <mat-option selected>Nenhum</mat-option>
                         <mat-option [value]="0">Todas Escolas</mat-option>
-                        <span *ngFor="let school of (schools$ | async)">
-                    <mat-option [value]="school.id">{{ school.name }}</mat-option>
-                  </span>
+                        <span *ngFor="let school of (schools$ | async)"><mat-option [value]="school.id">{{ school.name }}</mat-option></span>
                     </mat-select>
                     <mat-error *ngIf="form.get('school').hasError('required')">Selecione uma escola</mat-error>
                 </mat-form-field>
@@ -57,12 +56,12 @@
                     <div [formGroup]="formProfile" fxLayout="row" fxLayoutGap="20px" fxLayoutGap.gt-sm="20px" fxFlex>
                         <p>{{ getModuleName(modules[i]) }}</p>
                         <mat-form-field>
-                            <mat-select formControlName="id" placeholder="Papel" required>
+                            <mat-select (change)="enableSchoolSelected(modules[i])" formControlName="id" placeholder="Papel">
+                                <mat-option>Nenhum</mat-option>
                                 <span *ngFor="let profile of (profiles$ | async)">
                                   <mat-option *ngIf="profile.software === modules[i]" [value]="profile.id">{{ profile.name }}</mat-option>
                                 </span>
                             </mat-select>
-                            <mat-error *ngIf="formProfile.get('id').hasError('required')">Selecione um papel</mat-error>
                         </mat-form-field>
                         <ng-container *ngIf="modules[i] === 7; then thenSchools"></ng-container>
                     </div>
