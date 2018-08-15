@@ -55,7 +55,7 @@
             <div *ngIf="!!modules">
                 <div *ngFor="let formProfile of formProfiles.controls; let i = index">
                     <div [formGroup]="formProfile" fxLayout="row" fxLayoutGap="20px" fxLayoutGap.gt-sm="20px" fxFlex>
-                        <mat-checkbox formControlName="access" class="margin-check" (change)="setValidatorsSelectsProfiles()">{{ getModuleName(modules[i]) }}</mat-checkbox>
+                        <p>{{ getModuleName(modules[i]) }}</p>
                         <mat-form-field>
                             <mat-select formControlName="id" placeholder="Papel" required>
                                 <span *ngFor="let profile of (profiles$ | async)">

@@ -126,23 +126,22 @@ export class UserFormComponent implements OnInit {
       isAdmin: [false],
       school: null
     });
-    this.initFormRoles();
+    this.initFormProfiles();
   }
 
-  private initFormRoles(): void {
+  private initFormProfiles(): void {
     this.formProfiles = this.formBuilder.array([]);
     const { modules } = auth.getCurrentUnit();
     this.modules = modules;
     if (!modules) { return; }
     modules.forEach(module => {
-      this.formProfiles.push(this.roleModuleForm(module));
+      this.formProfiles.push(this.profileModuleForm(module));
     });
   }
 
-  private roleModuleForm(module: EModules): FormGroup {
+  private profileModuleForm(module: EModules): FormGroup {
     return this.formBuilder.group({
       id: null,
-      access: false,
       module: module
     });
   }
@@ -151,19 +150,29 @@ export class UserFormComponent implements OnInit {
     if (!this.formProfiles.controls || this.formProfiles.controls === undefined || this.formProfiles.controls === null) {
       return;
     }
-    this.formProfiles.controls.forEach((group: FormGroup) => {
-      if (group.value.access && group.value.module !== EModules.Scholarship) {
-        this.setValidatorsRequiredSelectGeneric(group, 'id');
-      } else if (!group.value.access && group.value.module !== EModules.Scholarship) {
-        this.unsetValidatorsRequiredSelectGeneric(group, 'id');
-      } else if (group.value.access && group.value.module === EModules.Scholarship) {
-        this.setValidatorsRequiredSelectGeneric(group, 'id');
+    const formProfileScholarship = this.formProfiles.controls.find(group => group.value.module === EModules.Scholarship);
+    if (formProfileScholarship) {
+      if (group.value.id !== null && group.value.id !== undefined) {
         this.setValidatorsRequiredSelectGeneric(this.form, 'school');
-      } else if (!group.value.access && group.value.module === EModules.Scholarship) {
-        this.unsetValidatorsRequiredSelectGeneric(group, 'id');
+      } else {
         this.unsetValidatorsRequiredSelectGeneric(this.form, 'school');
       }
-    });
+    }
+    // this.formProfiles.controls.forEach((group: FormGroup) => {
+    //   // if (group.value.access && group.value.module !== EModules.Scholarship) {
+    //   //   this.setValidatorsRequiredSelectGeneric(group, 'id');
+    //   // } else if (!group.value.access && group.value.module !== EModules.Scholarship) {
+    //   //   this.unsetValidatorsRequiredSelectGeneric(group, 'id');
+    //   // } else
+
+    //   if (group.value.id !== null && group.value.id !== undefined && group.value.module === EModules.Scholarship) {
+    //     // this.setValidatorsRequiredSelectGeneric(group, 'id');
+    //     this.setValidatorsRequiredSelectGeneric(this.form, 'school');
+    //   } else if ((group.value.id === null || group.value.id === undefined) && group.value.module === EModules.Scholarship) {
+    //     // this.unsetValidatorsRequiredSelectGeneric(group, 'id');
+    //     this.unsetValidatorsRequiredSelectGeneric(this.form, 'school');
+    //   }
+    // });
   }
 
   private setValidatorsRequiredSelectGeneric(group: FormGroup, field: string): void {
@@ -185,19 +194,18 @@ export class UserFormComponent implements OnInit {
 
   private editUser(): void {
     this.setValuesUserEdit();
-    this.setValuesUserRoles();
+    this.setValuesUserProfiles();
     this.loading = true;
   }
 
-  private setValuesUserRoles(): void {
+  private setValuesUserProfiles(): void {
     const { profiles } = this.user;
     if (!profiles) { return; }
     this.formProfiles.controls.forEach((control: FormGroup) => {
       const profile = profiles.find(data => data.software === control.value.module);
       if (profile) {
         control.patchValue({
-          id: profile.id,
-          access: true
+          id: profile.id
         });
       }
     });
@@ -213,7 +221,6 @@ export class UserFormComponent implements OnInit {
       school: this.user.idSchool
     });
   }
-
 
   public closeSidenav(): void {
     this.sidenavService.close();
