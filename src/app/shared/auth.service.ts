@@ -1,3 +1,4 @@
+import { JwtHelper } from 'angular2-jwt';
 import { auth } from '../auth/auth';
 import { SharedService } from './shared.service';
 import { Injectable, EventEmitter } from '@angular/core';
@@ -66,16 +67,20 @@ export class AuthService {
   }
 
   private setPermissionsUser(unitId: number) {
-    const user = auth.getCurrentUser();
-    this.sharedService.getProfilesUser(user.id, unitId).subscribe(profiles => {
-      if (profiles) {
-        user.profiles = profiles;
-        auth.setCurrentUser(user);
+    const helper = new JwtHelper();
+    const token = auth.getMainToken();
+
+    if (!!token) {
+      const decoded = helper.decodeToken(token);
+      const unitIdClaim = decoded['user-unit'];
+      if (parseInt(unitIdClaim, 10) === unitId) {
+        return;
       }
-    }, err => {
-      user.profiles = [];
-      auth.setCurrentUser(user);
-    });
+      this.http.get(`/auth/token/renew/${unitId}`).subscribe((t: any) => {
+        auth.setMainToken(t.token);
+        window.location.reload();
+      });
+    }
   }
   redirectToHome(): void {
     this.router.navigate(['/']);

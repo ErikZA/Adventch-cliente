@@ -4,7 +4,7 @@ import { Profile } from '../../../../modules/administration/models/profile/profi
 import { User } from '../../../../shared/models/user.model';
 import { Feature } from '../../../../modules/administration/models/feature.model';
 import { auth } from '../../../../auth/auth';
-
+import { JwtHelper } from 'angular2-jwt';
 @Injectable()
 export class PermissionService {
 
@@ -49,10 +49,14 @@ export class PermissionService {
   }
 
   public getProfilesUser(): Profile[] {
-    if (!this.user) { return null; }
-    const { profiles } = this.user;
-    if (!profiles || !Array.isArray(profiles) || profiles.length === 0) { return []; }
-    return profiles;
+    const token = auth.getMainToken();
+    if (!!token) {
+      const helper = new JwtHelper();
+      const decoded = helper.decodeToken(token);
+      const profiles = JSON.parse(decoded['user-profiles']) as Profile[];
+      return Array.isArray(profiles) ? profiles : [];
+    }
+    return [];
   }
 
   public checkFeatureAccess(feature: number): boolean {
