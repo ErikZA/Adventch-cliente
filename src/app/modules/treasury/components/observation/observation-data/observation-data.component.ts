@@ -75,7 +75,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
     return this.store.analysts.map(a => a.id).includes(user.id) ? user.id : 0;
   }
   private getData() {
-    this.observations$ = this.store.observations$.map(o => o.sort(this.sortByDate));
+    this.observations$ = this.store.observations$.map(o => Array.isArray(o) ? o.sort(this.sortByDate) : []);
     this.store.loadAll();
     this.observations$.subscribe(() => {
       this.setObservables();
