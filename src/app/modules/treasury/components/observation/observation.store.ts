@@ -90,26 +90,26 @@ export class ObservationStore {
 
   public searchStatus(status: number, observations: Observation[]): Observation[] {
     // tslint:disable-next-line:triple-equals
-    return observations.filter(f => f.status == status);
+    return Array.isArray(observations) ? observations.filter(f => f.status == status) : [];
   }
 
   public searchChurches(church: number, observations: Observation[]): Observation[] {
     // tslint:disable-next-line:triple-equals
-    return observations.filter(f => f.church.id == church);
+    return Array.isArray(observations) ? observations.filter(f => f.church.id == church) : [];
   }
 
   public searchAnalysts(analyst: number, observations: Observation[]): Observation[] {
     // tslint:disable-next-line:triple-equals
-    return observations.filter(f => f.church.district.analyst.id == analyst);
+    return Array.isArray(observations) ? observations.filter(f => f.church.district.analyst.id == analyst) : [];
   }
 
   public searchResponsibles(responsible: number, observations: Observation[]): Observation[] {
     // tslint:disable-next-line:triple-equals
-    return observations.filter(f => f.responsible.id == responsible);
+    return Array.isArray(observations) ? observations.filter(f => f.responsible.id == responsible) : [];
   }
 
   public searchInDates(startDate: Date, endDate: Date, observations: Observation[]) {
-    return observations.filter(f => new Date(f.date) > startDate && new Date(f.date) < endDate);
+    return Array.isArray(observations) ? observations.filter(f => new Date(f.date) > startDate && new Date(f.date) < endDate) : [];
   }
 
   /* Carregar */
