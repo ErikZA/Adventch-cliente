@@ -23,6 +23,8 @@ import { ObservationFormComponent } from './components/observation/observation-f
 import { ObservationStore } from './components/observation/observation.store';
 import { DashboardTreasuryComponent } from './components/dashboard/dashboard-treasury-component';
 import { ChartsModule } from 'ng2-charts';
+import { AvaliationDataComponent } from './components/avaliation/avaliation-data/avaliation-data.component';
+import { AvaliationFormComponent } from './components/avaliation/avaliation-form/avaliation-form.component';
 
 @NgModule({
   imports: [
@@ -42,7 +44,9 @@ import { ChartsModule } from 'ng2-charts';
     DistrictsFormComponent,
     ObservationDataComponent,
     ObservationFormComponent,
-    DashboardTreasuryComponent
+    DashboardTreasuryComponent,
+    AvaliationDataComponent,
+    AvaliationFormComponent
   ],
   providers: [
     TreasuryService,
