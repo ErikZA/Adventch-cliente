@@ -75,6 +75,9 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   }
 
   mensal(avaliation: Avaliation) {
+    this.store.avaliation = avaliation;
+    this.router.navigate([avaliation.id, 'avaliar'], { relativeTo: this.route });
+    this.openSidenav();
     /*this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover a igreja?', 'REMOVER')
       .subscribe(res => {

@@ -14,6 +14,7 @@ export class AvaliationStore {
 
     avaliations$: Observable<AvaliationList[]>;
     private _avaliations: BehaviorSubject<AvaliationList[]>;
+    public avaliation: Avaliation;
 
     private dataStore: {
         avaliations: AvaliationList[]

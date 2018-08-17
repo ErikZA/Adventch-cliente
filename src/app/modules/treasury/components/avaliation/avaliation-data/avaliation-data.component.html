@@ -116,7 +116,7 @@
               </mat-list>
               <mat-action-row>
                 <!-- <ng-template [Feature]="48" permission="4"> -->
-                  <button mat-button style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal" (click)="mensal(avaliation)">AVALIAR</button>
+                  <button *ngIf="avaliation.status != 3" mat-button style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal" (click)="mensal(avaliation)">AVALIAR</button>
                 <!-- </ng-template>
                 <ng-template [Feature]="48" permission="3"> -->
                   <button mat-button style="background-color: #314762!important; color: #fff" matTooltip="Avaliação anual" (click)="anual(avaliation)">ANUAL</button>
@@ -129,8 +129,3 @@
     </div>
   </div>
 </div>
-<ng-template [Feature]="48" permission="1">
-  <button mat-fab color="primary" class="mat-fab-right" routerLink="./novo" (click)="openSidenav()">
-    <mat-icon aria-label="Adicionar">add</mat-icon>
-  </button>
-</ng-template>
