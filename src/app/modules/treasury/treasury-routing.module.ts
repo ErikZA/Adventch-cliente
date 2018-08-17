@@ -18,6 +18,9 @@ import { AvaliationFormComponent } from './components/avaliation/avaliation-form
 import { FeatureGuard } from '../../shared/feature.guard';
 import { EFeatures } from '../../shared/models/EFeatures.enum';
 import { EPermissions } from '../../shared/models/permissions.enum';
+import { RequirementDataComponent } from './components/requirements/requirements-data/requirements-data.component';
+import { RequirementFormComponent } from './components/requirements/requirements-form/requirements-form.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard' },
@@ -122,7 +125,20 @@ const routes: Routes = [
         feature: EFeatures.DASHBOARDTESOURARIA
       } }
     ]
-  }
+  },
+  {
+    path: 'requisitos', component: LayoutComponent, children: [
+      { path: '', component: RequirementDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children:
+        [
+          { path: 'novo', component:  RequirementFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard] },
+          { path: ':id/editar', component: RequirementFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard] }
+        ],
+        data: {
+          feature: EFeatures.REQUISITOS
+        }
+      }
+    ]
+  },
 ];
 
 @NgModule({
