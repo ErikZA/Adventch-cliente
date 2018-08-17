@@ -74,7 +74,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
     this.sidenavService.open();
   }
 
-  remove(avaliation: Avaliation) {
+  mensal(avaliation: Avaliation) {
     /*this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover a igreja?', 'REMOVER')
       .subscribe(res => {
@@ -84,7 +84,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
       });*/
   }
 
-  edit(avaliation: Avaliation) {
+  anual(avaliation: Avaliation) {
     /*this.store.church = church;
     this.router.navigate([church.id, 'editar'], { relativeTo: this.route });
     this.openSidenav();
