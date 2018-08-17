@@ -12,6 +12,8 @@ import { DistrictsFormComponent } from './components/districts/districts-form/di
 import { ObservationDataComponent } from './components/observation/observation-data/observation-data.component';
 import { ObservationFormComponent } from './components/observation/observation-form/observation-form.component';
 import { DashboardTreasuryComponent } from './components/dashboard/dashboard-treasury-component';
+import { AvaliationDataComponent } from './components/avaliation/avaliation-data/avaliation-data.component';
+import { AvaliationFormComponent } from './components/avaliation/avaliation-form/avaliation-form.component';
 
 import { FeatureGuard } from '../../shared/feature.guard';
 import { EFeatures } from '../../shared/models/EFeatures.enum';
@@ -91,6 +93,23 @@ const routes: Routes = [
           permission: EPermissions.CRIAR
         } },
         { path: ':id/editar', component: ObservationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
+          feature: EFeatures.OBSERVACOES,
+          permission: EPermissions.EDITAR
+        } }
+      ],
+      data: {
+        feature: EFeatures.OBSERVACOES
+      }
+    }]
+  },
+  {
+    path: 'avaliacoes', component: LayoutComponent, children: [
+      { path: '', component: AvaliationDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
+        { path: 'novo', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
+          feature: EFeatures.OBSERVACOES,
+          permission: EPermissions.CRIAR
+        } },
+        { path: ':id/editar', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
           feature: EFeatures.OBSERVACOES,
           permission: EPermissions.EDITAR
         } }

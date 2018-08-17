@@ -26,6 +26,8 @@ import { ChartsModule } from 'ng2-charts';
 import { RequirementDataComponent } from './components/requirements/requirements-data/requirements-data.component';
 import { RequirementFormComponent } from './components/requirements/requirements-form/requirements-form.component';
 import { RequirementStore } from './components/requirements/requirements.store';
+import { AvaliationDataComponent } from './components/avaliation/avaliation-data/avaliation-data.component';
+import { AvaliationFormComponent } from './components/avaliation/avaliation-form/avaliation-form.component';
 
 @NgModule({
   imports: [
@@ -48,6 +50,8 @@ import { RequirementStore } from './components/requirements/requirements.store';
     DashboardTreasuryComponent,
     RequirementDataComponent,
     RequirementFormComponent,
+    AvaliationDataComponent,
+    AvaliationFormComponent
   ],
   providers: [
     TreasuryService,
