@@ -11,6 +11,7 @@ import { auth } from '../../../../../auth/auth';
 import { Observable } from 'rxjs/Observable';
 import { AvaliationStore } from '../avaliation.store';
 import { AvaliationRequirement } from '../../../models/avaliationRequirement';
+import { EAvaliationStatus } from '../../../models/Enums';
 @Component({
   selector: 'app-avaliation-data',
   templateUrl: './avaliation-data.component.html',
@@ -99,15 +100,14 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
 
   }
 
-  public sumTotal(avaliationsRequirement: Array<AvaliationRequirement>): number {
-    if (avaliationsRequirement == null) {
-      return 0;
+  public getStatusString(status: EAvaliationStatus): string {
+    switch (status) {
+      case EAvaliationStatus.Valued:
+        return "Avaliado";
+      case EAvaliationStatus.Finished:
+        return "Finalizado";
+      default:
+        return "Aguardando";
     }
-
-    let total = 0;
-    avaliationsRequirement.forEach(element => {
-      total += element.note;
-    });
-    return total;
   }
 }

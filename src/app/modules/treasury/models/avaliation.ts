@@ -16,10 +16,12 @@ export class Avaliation {
   constructor() { }
 }
 
-//Usado para listar avaliações
+//Mapeado conforme viewModel
 export class AvaliationList {
+  id: number;
+  total: number;
+  status: number;
   church: Church;
-  avaliation: Avaliation;
   treasurers: Array<Treasurer>;
   constructor() { }
 }
