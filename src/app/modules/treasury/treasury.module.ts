@@ -23,6 +23,9 @@ import { ObservationFormComponent } from './components/observation/observation-f
 import { ObservationStore } from './components/observation/observation.store';
 import { DashboardTreasuryComponent } from './components/dashboard/dashboard-treasury-component';
 import { ChartsModule } from 'ng2-charts';
+import { RequirementDataComponent } from './components/requirements/requirements-data/requirements-data.component';
+import { RequirementFormComponent } from './components/requirements/requirements-form/requirements-form.component';
+import { RequirementStore } from './components/requirements/requirements.store';
 
 @NgModule({
   imports: [
@@ -42,7 +45,9 @@ import { ChartsModule } from 'ng2-charts';
     DistrictsFormComponent,
     ObservationDataComponent,
     ObservationFormComponent,
-    DashboardTreasuryComponent
+    DashboardTreasuryComponent,
+    RequirementDataComponent,
+    RequirementFormComponent,
   ],
   providers: [
     TreasuryService,
@@ -52,6 +57,7 @@ import { ChartsModule } from 'ng2-charts';
     ChurchStore,
     DistrictsStore,
     ObservationStore,
+    RequirementStore
   ]
 })
 export class TreasuryModule { }

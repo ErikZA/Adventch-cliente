@@ -12,4 +12,5 @@ export enum EFeatures {
   DISTRITOS = 47,
   IGREJAS = 48,
   OBSERVACOES = 49,
+  REQUISITOS = 50
 }
