@@ -103,4 +103,9 @@ export class AvaliationStore {
   public searchAnalysts(idAnalyst: number, avaliations: AvaliationList[]): AvaliationList[] {
     return avaliations.filter(x => x.church.district.analyst.id == idAnalyst);
   }
+
+  public searchPeriods(period: string, avaliations: AvaliationList[]): AvaliationList[] {
+      const year = new Date(period).getFullYear();
+      return avaliations.filter(x => new Date(x.date).getFullYear() === year);
+  }
 }

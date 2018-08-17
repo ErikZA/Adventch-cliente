@@ -9,6 +9,7 @@ export class Requirement {
   isAnual: boolean;
   removed: boolean;
   unit: Unit;
+  date: Date;
   constructor() { }
 }
 

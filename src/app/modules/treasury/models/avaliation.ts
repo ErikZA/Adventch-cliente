@@ -21,6 +21,7 @@ export class AvaliationList {
   id: number;
   total: number;
   status: number;
+  date: Date;
   church: Church;
   treasurers: Array<Treasurer>;
   constructor() { }

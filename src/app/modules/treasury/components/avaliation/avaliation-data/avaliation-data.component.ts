@@ -15,6 +15,7 @@ import { EAvaliationStatus } from '../../../models/Enums';
 import { TreasuryService } from '../../../treasury.service';
 import { Districts } from '../../../models/districts';
 import { User } from '../../../../../shared/models/user.model';
+import { Requirement } from '../../../models/requirement';
 @Component({
   selector: 'app-avaliation-data',
   templateUrl: './avaliation-data.component.html',
@@ -33,9 +34,11 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   filterStatus = 0;
   filterAnalyst = 0;
   filterDistrict = 0;
+  filterPeriod = 0;
 
   districts: Districts[] = new Array<Districts>();
   analysts: User[] = new Array<User>();
+  requirements: Date[] = new Array<Date>();
   
   avaliations$: Observable<AvaliationList[]>;
   avaliations: AvaliationList[] = new Array<AvaliationList>();
@@ -76,6 +79,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   private loadFilters() {
     this.loadDistricts();
     this.loadAnalysts();
+    this.loadPeriods();
   }
 
   private loadDistricts() {
@@ -87,6 +91,16 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   private loadAnalysts() {
     this.service.loadAnalysts(auth.getCurrentUnit().id).subscribe((data: User[]) => {
       this.analysts = data;
+    });
+  }
+
+  private loadPeriods() {
+    this.service.getRequirements(auth.getCurrentUnit().id).subscribe((data: Requirement[]) => {
+      let years = new Array<Date>();
+      data.forEach(element => {
+        years.push(element.date);
+      });
+      this.requirements = Array.from(new Set(years));
     });
   }
 
@@ -138,6 +152,10 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
 
     if (this.filterAnalyst !== undefined && this.filterAnalyst !== null && this.filterAnalyst != 0) {
       avaliations = this.store.searchAnalysts(this.filterAnalyst, avaliations);
+    }
+
+    if (this.filterPeriod !== undefined && this.filterPeriod !== null && this.filterPeriod != 0) {
+      avaliations = this.store.searchPeriods(this.filterPeriod, avaliations);
     }
     this.avaliations$ = Observable.of(avaliations);
   }
