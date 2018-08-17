@@ -25,6 +25,7 @@ import { DashboardTreasuryComponent } from './components/dashboard/dashboard-tre
 import { ChartsModule } from 'ng2-charts';
 import { AvaliationDataComponent } from './components/avaliation/avaliation-data/avaliation-data.component';
 import { AvaliationFormComponent } from './components/avaliation/avaliation-form/avaliation-form.component';
+import { AvaliationStore } from './components/avaliation/avaliation.store';
 
 @NgModule({
   imports: [
@@ -56,6 +57,7 @@ import { AvaliationFormComponent } from './components/avaliation/avaliation-form
     ChurchStore,
     DistrictsStore,
     ObservationStore,
+    AvaliationStore,
   ]
 })
 export class TreasuryModule { }

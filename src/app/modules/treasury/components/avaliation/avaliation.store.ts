@@ -5,6 +5,6 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/of';
 @Injectable()
-export class ChurchStore {
+export class AvaliationStore {
 
 }
