@@ -12,6 +12,9 @@ import { Observable } from 'rxjs/Observable';
 import { AvaliationStore } from '../avaliation.store';
 import { AvaliationRequirement } from '../../../models/avaliationRequirement';
 import { EAvaliationStatus } from '../../../models/Enums';
+import { TreasuryService } from '../../../treasury.service';
+import { Districts } from '../../../models/districts';
+import { User } from '../../../../../shared/models/user.model';
 @Component({
   selector: 'app-avaliation-data',
   templateUrl: './avaliation-data.component.html',
@@ -25,11 +28,20 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   search$ = new Subject<string>();
   subscribeUnit: Subscription;
   layout: String = 'row';
+
+  filterText: string;
+  filterStatus = 0;
+  filterAnalyst = 0;
+  filterDistrict = 0;
+
+  districts: Districts[] = new Array<Districts>();
+  analysts: User[] = new Array<User>();
   
   avaliations$: Observable<AvaliationList[]>;
   avaliations: AvaliationList[] = new Array<AvaliationList>();
 
   constructor(
+    private service: TreasuryService,
     private authService: AuthService,
     private sidenavService: SidenavService,
     private router: Router,
@@ -41,7 +53,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
     this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/avaliacoes')]);
     this.search$.subscribe(search => {
-      //this.filterText = search;
+      this.filterText = search;
       this.search();
     });
     this.subscribeUnit = auth.currentUnit.subscribe(() => {
@@ -58,6 +70,24 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   getData() {
     this.avaliations$ = this.store.avaliations$;
     this.store.loadAll();
+    this.loadFilters();
+  }
+
+  private loadFilters() {
+    this.loadDistricts();
+    this.loadAnalysts();
+  }
+
+  private loadDistricts() {
+    this.service.getDistricts(auth.getCurrentUnit().id).subscribe((data: Districts[]) => {
+      this.districts = data;
+    });
+  }
+
+  private loadAnalysts() {
+    this.service.loadAnalysts(auth.getCurrentUnit().id).subscribe((data: User[]) => {
+      this.analysts = data;
+    });
   }
 
   /* Usados pelo component */
@@ -100,7 +130,16 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   }
 
   public search() {
+    let avaliations = this.store.searchText(this.filterText);
 
+    if (this.filterDistrict !== undefined && this.filterDistrict !== null && this.filterDistrict != 0) {
+      avaliations = this.store.searchDistricts(this.filterDistrict, avaliations);
+    }
+
+    if (this.filterAnalyst !== undefined && this.filterAnalyst !== null && this.filterAnalyst != 0) {
+      avaliations = this.store.searchAnalysts(this.filterAnalyst, avaliations);
+    }
+    this.avaliations$ = Observable.of(avaliations);
   }
 
   public getStatusString(status: EAvaliationStatus): string {

@@ -25,38 +25,38 @@
     </div>
     <mat-accordion class="example-headers-align" #matExpansionPanel>
       <mat-expansion-panel #matExpansionPanel hideToggle="true">
-        <!-- <div fxLayout="row wrap" style="flex-wrap: wrap;">
-                  <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-                      <mat-form-field>
-                          <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
-                              <mat-option value="0">TODOS</mat-option>
-                              <mat-option *ngFor="let district of districts" [value]="district.id">
-                                  {{ district.name }}
-                              </mat-option>
-                          </mat-select>
-                      </mat-form-field>
-                  </mat-list>
-                  <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-                      <mat-form-field>
-                          <mat-select placeholder="Cidade" (change)="search()" [(ngModel)]="filterCity">
-                              <mat-option value="0">TODOS</mat-option>
-                              <mat-option *ngFor="let city of (cities$ | async ); index as i" [value]="city.id">
-                                  {{ city.name }}
-                              </mat-option>
-                          </mat-select>
-                      </mat-form-field>
-                  </mat-list>
-                  <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-                      <mat-form-field>
-                          <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
-                              <mat-option value="0">TODOS</mat-option>
-                              <mat-option *ngFor="let analyst of (analysts$ | async ); index as i" [value]="analyst.id">
-                                  {{ analyst.name }}
-                              </mat-option>
-                          </mat-select>
-                      </mat-form-field>
-                  </mat-list>
-              </div> -->
+        <div fxLayout="row wrap" style="flex-wrap: wrap;">
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+            <mat-form-field>
+              <mat-select placeholder="Status" (change)="search()" [(ngModel)]="filterStatus">
+                <mat-option [value]="0">TODOS</mat-option>
+                <mat-option [value]="1">Aguardando</mat-option>
+                <mat-option [value]="2">Avaliado</mat-option>
+                <mat-option [value]="3">Finalizado</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list>
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+              <mat-form-field>
+                  <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
+                      <mat-option value="0">TODOS</mat-option>
+                      <mat-option *ngFor="let district of districts" [value]="district.id">
+                          {{ district.name }}
+                      </mat-option>
+                  </mat-select>
+              </mat-form-field>
+          </mat-list>
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+              <mat-form-field>
+                  <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
+                      <mat-option value="0">TODOS</mat-option>
+                      <mat-option *ngFor="let district of analysts" [value]="district.id">
+                          {{ district.name }}
+                      </mat-option>
+                  </mat-select>
+              </mat-form-field>
+          </mat-list>
+        </div>
       </mat-expansion-panel>
     </mat-accordion>
     <mat-divider></mat-divider>
@@ -116,10 +116,11 @@
               </mat-list>
               <mat-action-row>
                 <!-- <ng-template [Feature]="48" permission="4"> -->
-                  <button *ngIf="avaliation.status != 3" mat-button style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal" (click)="mensal(avaliation)">AVALIAR</button>
+                <button *ngIf="avaliation.status != 3" mat-button style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal"
+                  (click)="mensal(avaliation)">AVALIAR</button>
                 <!-- </ng-template>
                 <ng-template [Feature]="48" permission="3"> -->
-                  <button mat-button style="background-color: #314762!important; color: #fff" matTooltip="Avaliação anual" (click)="anual(avaliation)">ANUAL</button>
+                <button mat-button style="background-color: #314762!important; color: #fff" matTooltip="Avaliação anual" (click)="anual(avaliation)">ANUAL</button>
                 <!-- </ng-template> -->
               </mat-action-row>
             </mat-expansion-panel>
