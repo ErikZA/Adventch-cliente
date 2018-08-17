@@ -2,6 +2,8 @@ import { EAvaliationStatus } from './Enums';
 import { User } from '../../../shared/models/user.model';
 import { Church } from './church';
 import { Unit } from '../../../shared/models/unit.model';
+import { Treasurer } from './treasurer';
+import { AvaliationRequirement } from './avaliationRequirement';
 
 export class Avaliation {
   id: number;
@@ -10,6 +12,14 @@ export class Avaliation {
   user: User;
   unit: Unit;
   church: Church;
+  avaliationsRequirements: Array<AvaliationRequirement>
   constructor() { }
 }
 
+//Usado para listar avaliações
+export class AvaliationList {
+  church: Church;
+  avaliation: Avaliation;
+  treasurers: Array<Treasurer>;
+  constructor() { }
+}

@@ -64,10 +64,11 @@
               <mat-list>
                   <mat-list-item>
                       <h3 matLine fxLayout="row">
-                          <span fxFlex fxFlex.gt-sm="25%">Igreja</span>
-                          <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Distrito</span>
-                          <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Analista</span>
-                          <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Cidade</span>
+                          <span fxFlex fxFlex.gt-sm="20%">Código</span>
+                          <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Igreja</span>
+                          <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Distrito</span>
+                          <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Nota</span>
+                          <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Status</span>
                       </h3>
                   </mat-list-item>
               </mat-list>
@@ -75,49 +76,40 @@
           </div>
           <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
               <mat-accordion>
-                  <div *ngFor="let church of (churches$ | async ); index as i">
+                  <div *ngFor="let avaliation of (avaliations$ | async ); index as i">
                       <mat-expansion-panel hideToggle *ngIf="i <= showList">
                           <mat-expansion-panel-header>
                               <mat-panel-description fxLayout="row" fxFlex>
-                                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
-                  {{ church.name }}
-                </span>
-                                  <span *ngIf="!church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
-                  <i>Não Informado</i>
-                </span>
-                                  <span *ngIf="church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
-                  {{ church.district.name }}
-                </span>
-                                  <span *ngIf="!church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
-                  <i>Não Informado</i>
-                </span>
-                                  <span *ngIf="church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
-                  {{ church.district?.analyst?.name }}
-                </span>
-                                  <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
-                  {{ church.city.name }} - {{ church.city.state.acronym }}
-                </span>
+                                  <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+                                    {{ avaliation.church.code }}
+                                    </span>
+                                    <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+                                      {{ avaliation.church.name }}
+                                      </span>
+                                      <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+                                        {{ avaliation.church.district.name }}
+                                        </span>
+                                        <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+                                          {{ sumTotal(avaliation.avaliation?.avaliationsRequirements) }}
+                                          </span>
+                                        <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+                                          {{ avaliation.avaliation?.status }}
+                                          </span>
                               </mat-panel-description>
                           </mat-expansion-panel-header>
                           <mat-list>
                               <h3 matSubheader>Informações da igreja</h3>
                               <mat-list-item fxLayout="row" style="height: auto">
                                   <div fxLayout="column" fxFlex matLine>
-                                      <span *ngIf="church.district.name" class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px"><b>Distrito: </b> {{ church.district.name }}</span>
-                                      <span *ngIf="church.district.analyst.name" class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px"><b>Analista: </b> {{ church.district?.analyst?.name }}</span>
-                                      <span *ngIf="church.city.name" class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px"><b>Cidade: </b> {{ church.city.name }} - {{ church.city.state.acronym }}</span>
-                                      <span *ngIf="church.code" class="details-title" fxLayout.lt-sm="column"><b>Código:&ensp;</b> {{ church.code }}</span>
-                                      <span *ngIf="church.address" class="details-title" fxLayout.lt-sm="column" style="white-space: pre-line; text-overflow: ellipsis;"><b>Endereço:&ensp;</b> {{ church.address }} ({{ church.complement == '' ? 'Sem complemento' : church.complement }})</span>
-                                      <span *ngIf="church.cep" class="details-title" fxLayout.lt-sm="column"><b>CEP:&ensp;</b>{{ church.cep }}</span>
                                   </div>
                               </mat-list-item>
                           </mat-list>
                           <mat-action-row>
                               <ng-template [Feature]="48" permission="4">
-                                  <button mat-button color="warn" matTooltip="Excluir" (click)="remove(church)">REMOVER</button>
+                                  <button mat-button color="warn" matTooltip="Excluir" (click)="remove(avaliation)">REMOVER</button>
                               </ng-template>
                               <ng-template [Feature]="48" permission="3">
-                                  <button mat-button color="primary" matTooltip="Editar" (click)="edit(church)">EDITAR</button>
+                                  <button mat-button color="primary" matTooltip="Editar" (click)="edit(avaliation)">EDITAR</button>
                               </ng-template>
                           </mat-action-row>
                       </mat-expansion-panel>

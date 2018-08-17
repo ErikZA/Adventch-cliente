@@ -6,8 +6,11 @@ import { Subject, Subscription } from 'rxjs';
 
 import { AuthService } from '../../../../../shared/auth.service';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
-import { Avaliation } from '../../../models/avaliation';
+import { Avaliation, AvaliationList } from '../../../models/avaliation';
 import { auth } from '../../../../../auth/auth';
+import { Observable } from 'rxjs/Observable';
+import { AvaliationStore } from '../avaliation.store';
+import { AvaliationRequirement } from '../../../models/avaliationRequirement';
 @Component({
   selector: 'app-avaliation-data',
   templateUrl: './avaliation-data.component.html',
@@ -22,11 +25,15 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   subscribeUnit: Subscription;
   layout: String = 'row';
   
+  avaliations$: Observable<AvaliationList[]>;
+  avaliations: AvaliationList[] = new Array<AvaliationList>();
+
   constructor(
     private authService: AuthService,
     private sidenavService: SidenavService,
     private router: Router,
     private route: ActivatedRoute,
+    private store: AvaliationStore
   ) { }
 
   ngOnInit() {
@@ -48,7 +55,8 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   }
 
   getData() {
-
+    this.avaliations$ = this.store.avaliations$;
+    this.store.loadAll();
   }
 
   /* Usados pelo component */
@@ -89,5 +97,17 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
 
   public search() {
 
+  }
+
+  public sumTotal(avaliationsRequirement: Array<AvaliationRequirement>): number {
+    if (avaliationsRequirement == null) {
+      return 0;
+    }
+
+    let total = 0;
+    avaliationsRequirement.forEach(element => {
+      total += element.note;
+    });
+    return total;
   }
 }

@@ -10,6 +10,7 @@ import { State } from '../../shared/models/state.model';
 import { City } from '../../shared/models/city.model';
 import { Observation } from './models/observation';
 import { User } from '../../shared/models/user.model';
+import { Avaliation, AvaliationList } from './models/avaliation';
 
 @Injectable()
 export class TreasuryService {
@@ -197,5 +198,14 @@ export class TreasuryService {
       .get(url)
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
+  /* Avaliações */
+  getAvaliations(unitId): Observable<AvaliationList[]> {
+    const url = '/treasury/avaliation/getAvaliations/' + unitId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }
