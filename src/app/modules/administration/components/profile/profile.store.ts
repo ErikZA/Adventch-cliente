@@ -73,8 +73,8 @@ export class ProfileStore {
     });
   }
 
-  public newProfile(newProfile: NewProfile): void {
-    this.service.postProfile(newProfile).subscribe((profile: Profile) => {
+  public newProfile(newProfile: NewProfile) {
+    return this.service.postProfile(newProfile).do((profile: Profile) => {
       this.loadAllProfiles();
       setTimeout(() => {
         this.location.back();
@@ -86,8 +86,8 @@ export class ProfileStore {
     });
   }
 
-  public editProfile(dataProfile: EditProfile): void {
-    this.service.putProfile(dataProfile).subscribe(() => {
+  public editProfile(dataProfile: EditProfile) {
+    return this.service.putProfile(dataProfile).do(() => {
       this.loadAllProfiles();
       setTimeout(() => {
         this.location.back();
