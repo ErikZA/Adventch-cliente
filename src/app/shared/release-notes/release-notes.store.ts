@@ -93,10 +93,12 @@ export class ReleaseNotesStore {
   }
 
   public getVersion() {
-    this.service.getCurrentRelease().subscribe((data: Release) => {
-      if (data != null || data !== undefined) {
-        this.currentVersion = data.version;
-      }
-    });
+    if (!this.currentVersion) {
+      return this.service.getCurrentRelease().subscribe((data: Release) => {
+        if (data != null || data !== undefined) {
+          this.currentVersion = data.version;
+        }
+      });
+    }
   }
 }

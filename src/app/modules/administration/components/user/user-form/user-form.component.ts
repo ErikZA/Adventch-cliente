@@ -1,3 +1,4 @@
+import { AuthService } from './../../../../../shared/auth.service';
 import { ProfileStore } from '../../profile/profile.store';
 import { School } from '../../../../scholarship/models/school';
 import { Component, OnInit } from '@angular/core';
@@ -49,7 +50,8 @@ export class UserFormComponent implements OnInit {
     private route: ActivatedRoute,
     private sidenavService: SidenavService,
     private profileStore: ProfileStore,
-    private schoolarshipStore: ProcessesStore
+    private schoolarshipStore: ProcessesStore,
+    private authService: AuthService
   ) {
     this.valFn = StrongPasswordValidator(this.level, this.user_inputs);
   }
@@ -216,7 +218,10 @@ export class UserFormComponent implements OnInit {
     this.isSending = true;
     const user = this.setUserData();
     if (this.form.valid) {
-      this.store.saveUser(user);
+      this.store.saveUser(user).subscribe(() => {
+        this.authService.renewUserToken();
+      });
+
     }
     this.isSending = false;
   }

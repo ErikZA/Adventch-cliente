@@ -79,6 +79,18 @@ export class AuthService {
         });
     }
   }
+  renewUserToken(): void {
+    const token = auth.getMainToken();
+    const unitId = auth.decodeToken(token).userUnitId;
+    if (typeof unitId === 'undefined') {
+      return;
+    }
+    this.http.get(`/auth/token/renew/${unitId}`)
+    .pipe(tap(() => window.location.reload()))
+    .subscribe((t: any) => {
+      auth.setMainToken(t.token);
+    });
+  }
   redirectToHome(): void {
     this.router.navigate(['/']);
   }

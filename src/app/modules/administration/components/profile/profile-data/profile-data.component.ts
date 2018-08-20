@@ -14,7 +14,6 @@ import { Module } from '../../../../../shared/models/modules.enum';
 import { EModules } from '../../../../../shared/models/modules.enum';
 import { utils } from '../../../../../shared/utils';
 import { Profile } from '../../../models/profile/profile.model';
-import { auth } from '../../../../../auth/auth';
 
 @Component({
   selector: 'app-profile-data',
@@ -43,15 +42,10 @@ export class ProfileDataComponent implements OnInit {
 
   ngOnInit() {
     this.profiles$ = this.store.profiles$;
-    this.store.loadAllProfiles();
     this.search$.subscribe(search => {
       this.searchProfile(search);
     });
-    auth.currentUnit.subscribe(unit => {
-      if (unit) {
-        this.updateUnit();
-      }
-    });
+    this.updateUnit();
     this.sidenavService.setSidenav(this.sidenavRight);
     utils.checkRouteUrl(this.router, '/administracao/papeis', () => this.sidenavRight.close());
   }
