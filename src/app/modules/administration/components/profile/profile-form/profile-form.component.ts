@@ -39,7 +39,8 @@ export class ProfileFormComponent implements OnInit {
     private store: ProfileStore,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private sidenavService: SidenavService
+    private sidenavService: SidenavService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -185,6 +186,7 @@ export class ProfileFormComponent implements OnInit {
     this.formSubmittedOnce = true;
     if (this.formProfile.valid && this.checkIfHaveMarkedFeatureAndPermission()) {
       this.sendData();
+      this.authService.renewUserToken();
     }
     this.isSending = false;
   }

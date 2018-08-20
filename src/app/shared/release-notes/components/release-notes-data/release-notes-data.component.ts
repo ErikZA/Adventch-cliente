@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatSidenav } from '@angular/material';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
@@ -15,13 +15,15 @@ import { AuthService } from '../../../auth.service';
 
 import * as moment from 'moment';
 import { auth } from '../../../../auth/auth';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-release-notes-data',
   templateUrl: './release-notes-data.component.html',
   styleUrls: ['./release-notes-data.component.scss']
 })
-export class ReleaseNotesDataComponent implements OnInit {
+export class ReleaseNotesDataComponent implements OnInit, OnDestroy {
+
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
   searchButton = false;
   showList = 15;
@@ -29,6 +31,8 @@ export class ReleaseNotesDataComponent implements OnInit {
   releases: Release[] = new Array<Release>();
   releases$: Observable<Release[]>;
   private _releases: BehaviorSubject<Release[]>;
+
+  private releaseSub: Subscription;
 
   constructor(
     private service: SharedService,
@@ -49,7 +53,9 @@ export class ReleaseNotesDataComponent implements OnInit {
     moment.locale('pt');
   }
 
-
+  ngOnDestroy(): void {
+    if (this.releaseSub) { this.releaseSub.unsubscribe(); }
+  }
   private search(search: string) {
     this.releases$ = this.store.search(search);
   }
@@ -66,7 +72,7 @@ export class ReleaseNotesDataComponent implements OnInit {
   private loadAllReleaseNotes(): void {
     this.releases$ = this.store.releases$;
     this.store.loadAll();
-    this.releases$.subscribe(x => { this.releases = x; });
+    this.releaseSub = this.releases$.subscribe(x => { this.releases = x; });
   }
 
   public getDateFormatted(date): string {

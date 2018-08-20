@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatSidenav } from '@angular/material';
@@ -22,7 +23,8 @@ import { auth } from '../../../../../auth/auth';
   templateUrl: './user-data.component.html',
   styleUrls: ['./user-data.component.scss']
 })
-export class UserDataComponent implements OnInit {
+export class UserDataComponent implements OnInit, OnDestroy {
+
   @ViewChild('sidenavRight') sidenavRight: MatSidenav;
 
   searchButton = false;
@@ -33,6 +35,8 @@ export class UserDataComponent implements OnInit {
   search = '';
 
   users$: Observable<User[]>;
+
+  authStoreSub: Subscription;
   constructor(
     private store: UserStore,
     private sidenavService: SidenavService,
@@ -50,14 +54,16 @@ export class UserDataComponent implements OnInit {
     });
     this.loadAllDatas();
     this.sidenavService.setSidenav(this.sidenavRight);
-    auth.currentUnit.subscribe(unit => {
+    this.authStoreSub = auth.currentUnit.subscribe(unit => {
       if (unit) {
         this.updateUnit();
       }
     });
     utils.checkRouteUrl(this.router, '/administracao/usuarios', () => this.sidenavRight.close());
   }
-
+  ngOnDestroy(): void {
+    if (this.authStoreSub) { this.authStoreSub.unsubscribe(); }
+  }
   private loadAllDatas(): void {
     this.users$ = this.store.users$;
     this.store.loadAllUsers();
