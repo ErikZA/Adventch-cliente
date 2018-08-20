@@ -38,7 +38,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
 
   districts: Districts[] = new Array<Districts>();
   analysts: User[] = new Array<User>();
-  requirements: Date[] = new Array<Date>();
+  requirements: number[] = new Array<number>();
   
   avaliations$: Observable<AvaliationList[]>;
   avaliations: AvaliationList[] = new Array<AvaliationList>();
@@ -96,12 +96,21 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
 
   private loadPeriods() {
     this.service.getRequirements(auth.getCurrentUnit().id).subscribe((data: Requirement[]) => {
-      let years = new Array<Date>();
+      let years = new Array<number>();
       data.forEach(element => {
-        years.push(element.date);
+        years.push(new Date(element.date).getFullYear());
       });
       this.requirements = Array.from(new Set(years));
+      this.setPeriod();
     });
+  }
+
+  private setPeriod() {
+    if (this.requirements.length === 1) {
+      this.filterPeriod = this.requirements[0];
+    } else if (this.requirements.length > 1) {
+      this.filterPeriod = this.requirements.sort(function(a, b){return (b > a ? 1 : -1)})[0];
+    }
   }
 
   /* Usados pelo component */

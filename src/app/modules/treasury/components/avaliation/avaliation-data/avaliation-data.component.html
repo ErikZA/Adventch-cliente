@@ -59,9 +59,9 @@
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
               <mat-form-field>
                   <mat-select placeholder="Período" (change)="search()" [(ngModel)]="filterPeriod">
-                      <mat-option value="0">TODOS</mat-option>
+                      <!-- <mat-option value="0">TODOS</mat-option> -->
                       <mat-option *ngFor="let requirement of requirements" [value]="requirement">
-                          {{ requirement | date: 'yyyy' }}
+                          {{ requirement }}
                       </mat-option>
                   </mat-select>
               </mat-form-field>
