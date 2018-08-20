@@ -155,7 +155,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
     }
 
     if (this.filterPeriod !== undefined && this.filterPeriod !== null && this.filterPeriod != 0) {
-      avaliations = this.store.searchPeriods(this.filterPeriod, avaliations);
+      avaliations = this.store.searchPeriods(this.filterPeriod.toString(), avaliations);
     }
     this.avaliations$ = Observable.of(avaliations);
   }
