@@ -8,6 +8,8 @@ import { Avaliation } from '../../../models/avaliation';
 import { TreasuryService } from '../../../treasury.service';
 import { Requirement } from '../../../models/requirement';
 import { auth } from '../../../../../auth/auth';
+import { AvaliationRequirement } from '../../../models/avaliationRequirement';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-avaliation-form',
@@ -22,6 +24,8 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   
   public avaliation: Avaliation;  
   public requirements: Requirement[] = new Array<Requirement>();
+  public checks: boolean[] = new Array<boolean>();
+  public avaliationRequirements: AvaliationRequirement[] = new Array<AvaliationRequirement>();
   
   constructor(
     private store: AvaliationStore,
@@ -47,26 +51,45 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
 
   private loadRequirements() {
     this.service.getRequirements(auth.getCurrentUnit().id).subscribe((data: Requirement[]) => {
-      let years = new Array<number>();
-      const year = new Date(this.avaliation.date).getFullYear();
+      let years = new Array<number>();      
+      const year = ((!this.avaliation || this.avaliation.id) == 0 ? new Date().getFullYear() : new Date(this.avaliation.date).getFullYear());
       data.forEach(element => {
         if (new Date(element.date).getFullYear() === year) {
-          this.requirements.push(element);
+          this.requirements.push(element); //carregando os requisitos
         }
+      });
+      this.loadAvaliationRequirements();
+    });
+  }
+
+  private loadAvaliationRequirements() {
+    this.service.getAvaliationRequirements(this.avaliation.id).subscribe((data: AvaliationRequirement[]) => {
+      this.requirements.forEach(requirement => {
+        var avaliationRequirement = data.filter(f => f.id === requirement.id)[0]; //carregando os requisitos já avaliados
+        this.setAvalitionRequirement(requirement, avaliationRequirement);
       });
     });
   }
 
-  private createIRequirement(requirement: Requirement) {
-    return {
-      name: requirement.name,
-      score: requirement.score,
-      note: 0
+  private setAvalitionRequirement(requirement: Requirement, avaliationRequirement: AvaliationRequirement) {
+    if (avaliationRequirement.id === 0) {
+      avaliationRequirement = new AvaliationRequirement();
     }
+
+    avaliationRequirement.avaliation = this.avaliation;
+    avaliationRequirement.requirement = requirement;
+    avaliationRequirement.note = (requirement.id === 0 ? 0 : requirement.score);
+    avaliationRequirement.check = requirement.id != 0;
+
+    this.avaliationRequirements.push(avaliationRequirement);
+  }
+
+  updateCheck(avaliationRequirement){
+    avaliationRequirement.check = !avaliationRequirement.check;
   }
 
   saveAvaliation() {
-
+    console.log(this.avaliationRequirements);
   }
 
   closeSidenav() {

@@ -6,6 +6,9 @@ export class AvaliationRequirement {
   avaliation: Avaliation;
   requirement: Requirement;
   note: number;
+
+  //Não mapeado
+  check: boolean;
   constructor() { }
 }
 

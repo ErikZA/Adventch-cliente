@@ -12,6 +12,7 @@ import { Observation } from './models/observation';
 import { User } from '../../shared/models/user.model';
 import { Avaliation, AvaliationList } from './models/avaliation';
 import { Requirement } from './models/requirement';
+import { AvaliationRequirement } from './models/avaliationRequirement';
 
 @Injectable()
 export class TreasuryService {
@@ -211,6 +212,13 @@ export class TreasuryService {
   }
   getRequirements(unitId): Observable<Requirement[]> {
     const url = '/treasury/requirement/getRequirements/' + unitId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+  getAvaliationRequirements(avaliationId): Observable<AvaliationRequirement[]> {
+    const url = '/treasury/avaliation/getAvaliationRequirements/' + avaliationId;
     return this.http
       .get(url)
       .map((res: Response) => res)
