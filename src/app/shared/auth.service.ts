@@ -1,11 +1,10 @@
-import { JwtHelper } from 'angular2-jwt';
+
 import { auth } from '../auth/auth';
 import { SharedService } from './shared.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/retry';
 import 'rxjs/add/operator/catch';
 
@@ -15,8 +14,7 @@ import { Permission } from './models/permission.model';
 import { Responsible } from '../modules/scholarship/models/responsible';
 
 import { User } from './models/user.model';
-import { Profile } from '../modules/administration/models/profile/profile.model';
-import { Feature } from '../modules/administration/models/feature.model';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
@@ -67,19 +65,18 @@ export class AuthService {
   }
 
   private setPermissionsUser(unitId: number) {
-    const helper = new JwtHelper();
     const token = auth.getMainToken();
 
     if (!!token) {
-      const decoded = helper.decodeToken(token);
-      const unitIdClaim = decoded['user-unit'];
-      if (parseInt(unitIdClaim, 10) === unitId) {
+      const unitIdClaim = auth.decodeToken(token).userUnitId;
+      if (unitIdClaim === unitId) {
         return;
       }
-      this.http.get(`/auth/token/renew/${unitId}`).subscribe((t: any) => {
-        auth.setMainToken(t.token);
-        window.location.reload();
-      });
+      this.http.get(`/auth/token/renew/${unitId}`)
+        .pipe(tap(() => window.location.reload()))
+        .subscribe((t: any) => {
+          auth.setMainToken(t.token);
+        });
     }
   }
   redirectToHome(): void {

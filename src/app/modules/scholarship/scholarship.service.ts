@@ -175,7 +175,7 @@ export class ScholarshipService {
         if (responsible) {
           // user.photoUrl = `${environment.apiUrl}/users/photo/${user.identifier}/${user.photoDate}`;
           localStorage.setItem('currentResponsible', JSON.stringify(responsible));
-          localStorage.setItem('tokenResponsible', data.token);
+          localStorage.setItem('token', data.token);
           this.currentResponsible.emit(responsible);
           this.showApp.emit(true);
         } else {

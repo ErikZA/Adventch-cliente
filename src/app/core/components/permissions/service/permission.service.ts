@@ -60,7 +60,7 @@ export class PermissionService {
   }
 
   public checkFeatureAccess(feature: number): boolean {
-    this.getUser();
+    // this.getUser();
     const features = this.getFeaturesArrayUser();
     if (!features || !Array.isArray(features) || features.length === 0) {
       return false;
@@ -69,7 +69,7 @@ export class PermissionService {
   }
 
   public checkPermissionAccess(feature: number, permission: number): boolean {
-    this.getUser();
+    // this.getUser();
     const _feature = this.findFeature(feature);
     if (!_feature || _feature === null || _feature === undefined) { return false; }
     const _permission = this.findPermission(_feature, permission);
