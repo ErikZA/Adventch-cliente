@@ -23,7 +23,7 @@ export class AuthResponsibleGuard implements CanActivate {
   }
 
   private checkAccess() {
-    if (tokenNotExpired('tokenResponsible')) {
+    if (tokenNotExpired('token')) {
       const responsible: Responsible = auth.getCurrentResponsible();
       if (responsible === null || responsible === undefined) {
         this.router.navigate(['/educacao']);
