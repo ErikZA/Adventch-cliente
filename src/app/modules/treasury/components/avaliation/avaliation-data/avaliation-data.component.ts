@@ -129,6 +129,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
 
   mensal(avaliation: Avaliation) {
     this.store.avaliation = avaliation;
+    this.store.isMensal = true;
     this.router.navigate([avaliation.id, 'avaliar'], { relativeTo: this.route });
     this.openSidenav();
     /*this.confirmDialogService

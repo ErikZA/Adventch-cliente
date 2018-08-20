@@ -16,6 +16,7 @@ export class AvaliationStore {
     avaliations$: Observable<AvaliationList[]>;
     private _avaliations: BehaviorSubject<AvaliationList[]>;
     public avaliation: Avaliation;
+    public isMensal: boolean;
     
     districts$: Observable<Districts[]>;
     private _districts: BehaviorSubject<Districts[]>;

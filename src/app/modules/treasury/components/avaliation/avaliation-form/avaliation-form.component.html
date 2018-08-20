@@ -1,23 +1,26 @@
 <form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px">
-    <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
-        <div fxFlex>
-            <h2 class="title">Avaliação Mensal</h2>
-            <mat-divider></mat-divider>
-        </div>
+  <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
+    <div fxFlex>
+      <h2 class="title">{{ avaliation?.church?.name }} - {{ getTitleLabel() }}</h2>
+      <mat-divider></mat-divider>
     </div>
-    <div fxLayout="row" fxLayoutAlign="center" fxLayout.lt-md="column" fxFlex class="margin-bottom-30">
-        <div fxLayout="column" fxFlex="50%">
-            <mat-form-field fxFlex>
-                <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
-            </mat-form-field>
-            <div fxFlex="100%" fxFlexOffset="40px">
-                <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
-                    <a (click)="closeSidenav()">
-                        <back-button></back-button>
-                    </a>
-                    <button mat-raised-button type="submit" (click)="saveAvaliation()" color="primary">SALVAR</button>
-                </div>
-            </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="center" fxLayout.lt-md="column" fxFlex class="margin-bottom-30">
+    <div fxLayout="column" fxFlex="50%">
+      <mat-form-field fxFlex>
+        <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
+      </mat-form-field>
+      <div *ngFor="let requirement of requirements">
+        <mat-slide-toggle>{{ requirement.name }}</mat-slide-toggle>
+      </div>
+      <div fxFlex="100%" fxFlexOffset="40px">
+        <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
+          <a (click)="closeSidenav()">
+            <back-button></back-button>
+          </a>
+          <button mat-raised-button type="submit" (click)="saveAvaliation()" color="primary">SALVAR</button>
         </div>
+      </div>
     </div>
+  </div>
 </form>
