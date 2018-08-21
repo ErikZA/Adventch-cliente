@@ -3,12 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatSidenav } from '@angular/material';
 
 import { Subject, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 import { AuthService } from '../../../../../shared/auth.service';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { Avaliation, AvaliationList } from '../../../models/avaliation';
 import { auth } from '../../../../../auth/auth';
-import { Observable } from 'rxjs/Observable';
 import { AvaliationStore } from '../avaliation.store';
 import { AvaliationRequirement } from '../../../models/avaliationRequirement';
 import { EAvaliationStatus } from '../../../models/Enums';
@@ -16,6 +16,7 @@ import { TreasuryService } from '../../../treasury.service';
 import { Districts } from '../../../models/districts';
 import { User } from '../../../../../shared/models/user.model';
 import { Requirement } from '../../../models/requirement';
+import { ReportService } from '../../../../../shared/report.service';
 @Component({
   selector: 'app-avaliation-data',
   templateUrl: './avaliation-data.component.html',
@@ -49,7 +50,8 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
     private sidenavService: SidenavService,
     private router: Router,
     private route: ActivatedRoute,
-    private store: AvaliationStore
+    private store: AvaliationStore,
+    private reportService: ReportService
   ) { }
 
   ngOnInit() {
@@ -178,5 +180,37 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
       default:
         return "Aguardando";
     }
+  }
+
+  public generateGeneralReport(): void {
+    const data = this.getDataParams();
+    this.reportService.reportAvaliationsGeral(data).subscribe(urlData => {
+      const fileUrl = URL.createObjectURL(urlData);
+        let element;
+        element = document.createElement('a');
+        element.href = fileUrl;
+        element.download = 'avaliacoes-relatorio_geral.pdf';
+        element.target = '_blank';
+        element.click();
+        //this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+    }, err => {
+      console.log(err);
+        //this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+    });
+  }
+
+  private getDataParams(): any {
+    const district = this.districts.find(f => f.id === this.filterDistrict);
+    const analyst = this.analysts.find(f => f.id === this.filterAnalyst);
+    const period = this.filterPeriod;
+    return {
+      statusId: this.filterStatus,
+      statusName: this.getStatusString(this.filterStatus),
+      districtId: this.filterDistrict,
+      districtName: district === undefined ? 'TODOS' : district.name,
+      analystId: this.filterAnalyst,
+      analystName: analyst === undefined ? 'TODOS' : analyst.name,
+      period: period,
+    };
   }
 }
