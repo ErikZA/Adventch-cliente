@@ -8,6 +8,7 @@ import { AvaliationRequirement } from './avaliationRequirement';
 export class Avaliation {
   id: number;
   date: Date;
+  dateArrival: Date;
   status: EAvaliationStatus;
   user: User;
   unit: Unit;
@@ -22,6 +23,7 @@ export class AvaliationList {
   total: number;
   status: number;
   date: Date;
+  dateArrival: Date;
   church: Church;
   treasurers: Array<Treasurer>;
   constructor() { }

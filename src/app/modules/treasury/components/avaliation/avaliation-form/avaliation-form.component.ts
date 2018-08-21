@@ -38,8 +38,8 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.initForm();
     this.loadAvaliation();
+    this.initForm();
   }
 
   ngOnDestroy() {
@@ -47,8 +47,9 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   }
 
   initForm(): void {
+    let date = ((!this.avaliation || this.avaliation.id === 0) ? new Date() : this.avaliation.dateArrival);
     this.form = this.formBuilder.group({
-      date: [new Date(), Validators.required]
+      date: [date, Validators.required]
     });
   }
 
@@ -163,7 +164,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   }
 
   closeSidenav() {
-    //this.treasureService.setDistrict(new Districts());
+    this.store.avaliation = new Avaliation();
     this.sidenavService.close();
   }
 
