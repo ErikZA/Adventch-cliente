@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
+import { Location } from '@angular/common';
 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -30,7 +31,8 @@ export class AvaliationStore {
     constructor(
         private service: TreasuryService,
         private snackBar: MatSnackBar,
-        private sidenavService: SidenavService
+        private sidenavService: SidenavService,
+        private location: Location,
     ) {
         this.dataStore = {
             avaliations: [],
@@ -116,7 +118,7 @@ export class AvaliationStore {
     this.service.postAvaliation(data).subscribe((profile: Avaliation) => {
       this.loadAll();
       setTimeout(() => {
-        //this.location.back();
+        this.location.back();
         this.sidenavService.close();
         this.avaliation = new Avaliation();
       }, 1000);

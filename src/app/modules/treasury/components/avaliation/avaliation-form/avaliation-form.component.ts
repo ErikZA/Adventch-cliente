@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
 
@@ -11,6 +11,7 @@ import { Requirement } from '../../../models/requirement';
 import { auth } from '../../../../../auth/auth';
 import { AvaliationRequirement } from '../../../models/avaliationRequirement';
 import { forEach } from '@angular/router/src/utils/collection';
+import { Church } from '../../../models/church';
 
 @Component({
   selector: 'app-avaliation-form',
@@ -38,8 +39,9 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.loadAvaliation();
+    this.reset();
     this.initForm();
+    this.loadAvaliation();
   }
 
   ngOnDestroy() {
@@ -47,20 +49,43 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   }
 
   initForm(): void {
-    let date = ((!this.avaliation || this.avaliation.id === 0) ? new Date() : this.avaliation.dateArrival);
     this.form = this.formBuilder.group({
-      date: [date, Validators.required]
+      date: [new Date(), Validators.required]
     });
+  }
+
+  reset(): void {
+    this.avaliation = new Avaliation();
+    this.requirements = new Array<Requirement>();
+    this.checks = new Array<boolean>();
+    this.avaliationRequirements = new Array<AvaliationRequirement>();
   }
 
   private loadAvaliation(): void {
     if (this.store.isMensal) {
       this.avaliation = this.store.avaliation;
       this.loadRequirements();
+      this.setValue();
     } else {
-      this.service.getAnualAvaliation(this.store.avaliation.church.id, new Date().getFullYear()).subscribe((data: Avaliation) => {
+      var churchId = (!this.store.avaliation ? 0 : this.store.avaliation.church.id);
+      this.service.getAnualAvaliation(churchId, new Date().getFullYear()).subscribe((data: Avaliation) => {
+        console.log(data);
         this.avaliation = data;
+        if (!this.avaliation) {
+          this.avaliation = new Avaliation();
+          this.avaliation.id = 0;
+          this.avaliation.church = !this.store.avaliation ? new Church() : this.store.avaliation.church;
+        }
         this.loadRequirements();
+        this.setValue();
+      });
+    }
+  }
+
+  private setValue(){
+    if (this.avaliation.id != 0) {
+      this.form = new FormGroup({
+        date: new FormControl({value: this.avaliation.dateArrival, disabled: false}, Validators.required),
       });
     }
   }
@@ -68,7 +93,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   private loadRequirements() {
     this.service.getRequirements(auth.getCurrentUnit().id).subscribe((data: Requirement[]) => {
       let year = new Date().getFullYear();
-      if (this.avaliation) {
+      if (this.avaliation.id != 0) {
         year = new Date(this.avaliation.date).getFullYear();
       }
       data.forEach(element => {
@@ -99,9 +124,9 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   }
 
   private loadAvaliationRequirements() {
-    this.service.getAvaliationRequirements(!this.avaliation ? 0 : this.avaliation.id).subscribe((data: AvaliationRequirement[]) => {
+    this.service.getAvaliationRequirements(this.avaliation.id === 0 ? 0 : this.avaliation.id).subscribe((data: AvaliationRequirement[]) => {
       this.requirements.forEach(requirement => {
-        var avaliationRequirement = data.filter(f => f.id === requirement.id)[0]; //carregando os requisitos já avaliados
+        var avaliationRequirement = data.filter(f => f.requirement.id === requirement.id)[0]; //carregando os requisitos já avaliados
         this.setAvalitionRequirement(requirement, avaliationRequirement);
       });
     });
@@ -110,15 +135,15 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   private setAvalitionRequirement(requirement: Requirement, avaliationRequirement: AvaliationRequirement) {
     if (avaliationRequirement == undefined || avaliationRequirement.id === 0) {
       avaliationRequirement = new AvaliationRequirement();
+      avaliationRequirement.note = requirement.score;
     }
 
     avaliationRequirement.avaliation = this.avaliation;
     avaliationRequirement.requirement = requirement;
-    avaliationRequirement.note = (requirement.id === 0 ? 0 : requirement.score);
-    avaliationRequirement.check = requirement.id != 0;
+    avaliationRequirement.check = avaliationRequirement.note != 0;
 
     this.avaliationRequirements.push(avaliationRequirement);
-    this.updateTotal(avaliationRequirement.check, requirement.score);
+    this.updateTotal(avaliationRequirement.check, avaliationRequirement.note);
   }
 
   private updateTotal(check: boolean, note: number): void {
@@ -150,10 +175,10 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
 
   private sendData(): void {
     const data = {
-      id: !this.avaliation ? 0 : this.store.avaliation.id,
+      id: this.avaliation.id,
       date: new Date(),
       dateArrival: new Date(this.form.get('date').value),
-      idChurch: this.store.avaliation.church.id,
+      idChurch: this.avaliation.church.id,
       IdStatus: 1,
       IdUnit: auth.getCurrentUnit().id,
       IdUser: auth.getCurrentUser().id,
