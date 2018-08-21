@@ -98,6 +98,11 @@ const decodeToken = (token: string): {
   };
 };
 
+const getCurrentDecodedToken = () => {
+  const token = getMainToken();
+  return decodeToken(token);
+};
+
 const loggedInMain = () => {
   const user: User = getCurrentUser();
     if (user) {
@@ -156,5 +161,6 @@ export const auth = {
   loggedInResponsible,
   logoffMain,
   logoffResponsible,
-  decodeToken
+  decodeToken,
+  getCurrentDecodedToken
 };
