@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
 
+import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { AvaliationStore } from '../avaliation.store';
 import { Avaliation } from '../../../models/avaliation';
 import { TreasuryService } from '../../../treasury.service';
@@ -32,7 +33,8 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   constructor(
     public store: AvaliationStore,
     private service: TreasuryService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private sidenavService: SidenavService
   ) { }
 
   ngOnInit() {
@@ -162,7 +164,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
 
   closeSidenav() {
     //this.treasureService.setDistrict(new Districts());
-    //this.sidenavService.close();
+    this.sidenavService.close();
   }
 
   public getTitleLabel() {
