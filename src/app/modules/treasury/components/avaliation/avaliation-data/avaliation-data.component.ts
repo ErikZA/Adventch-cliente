@@ -155,6 +155,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   }
 
   public search() {
+    debugger;
     let avaliations = this.store.searchText(this.filterText);
 
     if (this.filterDistrict !== undefined && this.filterDistrict !== null && this.filterDistrict != 0) {
@@ -166,7 +167,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
     }
 
     if (this.filterPeriod !== undefined && this.filterPeriod !== null && this.filterPeriod != 0) {
-      avaliations = this.store.searchPeriods(this.filterPeriod.toString(), avaliations);
+      avaliations = this.store.searchPeriods(this.filterPeriod, avaliations);
     }
     this.avaliations$ = Observable.of(avaliations);
   }

@@ -108,8 +108,8 @@ export class AvaliationStore {
     return avaliations.filter(x => x.church.district.analyst.id == idAnalyst);
   }
 
-  public searchPeriods(period: string, avaliations: AvaliationList[]): AvaliationList[] {
-      const year = new Date(period).getFullYear();
+  public searchPeriods(period: number, avaliations: AvaliationList[]): AvaliationList[] {
+      const year = period;
       return avaliations.filter(x => new Date(x.date).getFullYear() === year);
   }
 
