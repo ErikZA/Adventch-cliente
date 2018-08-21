@@ -10,7 +10,9 @@ import { State } from '../../shared/models/state.model';
 import { City } from '../../shared/models/city.model';
 import { Observation } from './models/observation';
 import { User } from '../../shared/models/user.model';
+import { Avaliation, AvaliationList } from './models/avaliation';
 import { Requirement } from './models/requirement';
+import { AvaliationRequirement } from './models/avaliationRequirement';
 
 @Injectable()
 export class TreasuryService {
@@ -199,8 +201,25 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
-  // Requisitos
-  getRequirements(unitId) {
+
+  /* Avaliações */
+  getAvaliations(unitId): Observable<AvaliationList[]> {
+    const url = '/treasury/avaliation/getAvaliations/' + unitId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+  getAnualAvaliation(churchId, year): Observable<Avaliation> {
+    const url = '/treasury/avaliation/getAnualAvaliation/' + churchId + '/' + year;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  // Avaliações
+  getRequirements(unitId): Observable<Requirement[]> {
     const url = '/treasury/requirement/getRequirements/' + unitId;
     return this.http
       .get(url)
@@ -217,6 +236,20 @@ export class TreasuryService {
 
   deleteRequirement(data): Observable<Requirement> {
     const url = '/treasury/requirement/RemoveRequirement/' + data;
+    return this.http
+      .post(url, data)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  getAvaliationRequirements(avaliationId): Observable<AvaliationRequirement[]> {
+    const url = '/treasury/avaliation/getAvaliationRequirements/' + avaliationId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+  postAvaliation(data): Observable<any> {
+    const url = '/treasury/avaliation/postAvaliation';
     return this.http
       .post(url, data)
       .catch((error: any) => Observable.throw(error || 'Server error'));

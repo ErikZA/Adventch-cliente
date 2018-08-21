@@ -105,17 +105,17 @@ const routes: Routes = [
   {
     path: 'avaliacoes', component: LayoutComponent, children: [
       { path: '', component: AvaliationDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
-        { path: 'novo', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.OBSERVACOES,
+        { path: 'avaliar', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
+          feature: EFeatures.AVALIACOES,
           permission: EPermissions.CRIAR
         } },
-        { path: ':id/editar', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.OBSERVACOES,
+        { path: ':id/avaliar', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
+          feature: EFeatures.AVALIACOES,
           permission: EPermissions.EDITAR
         } }
       ],
       data: {
-        feature: EFeatures.OBSERVACOES
+        feature: EFeatures.AVALIACOES
       }
     }]
   },

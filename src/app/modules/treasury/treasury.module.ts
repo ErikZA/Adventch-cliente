@@ -28,6 +28,7 @@ import { RequirementFormComponent } from './components/requirements/requirements
 import { RequirementStore } from './components/requirements/requirements.store';
 import { AvaliationDataComponent } from './components/avaliation/avaliation-data/avaliation-data.component';
 import { AvaliationFormComponent } from './components/avaliation/avaliation-form/avaliation-form.component';
+import { AvaliationStore } from './components/avaliation/avaliation.store';
 
 @NgModule({
   imports: [
@@ -61,7 +62,8 @@ import { AvaliationFormComponent } from './components/avaliation/avaliation-form
     ChurchStore,
     DistrictsStore,
     ObservationStore,
-    RequirementStore
+    RequirementStore,
+    AvaliationStore
   ]
 })
 export class TreasuryModule { }

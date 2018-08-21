@@ -10,6 +10,7 @@ export class Requirement {
   removed: boolean;
   unitid: number;
 
+  unit: Unit;
   date: Date;
   constructor() { }
 }

@@ -13,3 +13,9 @@ export enum EObservationStatus {
   Open = 1,
   Closed = 2
 }
+
+export enum EAvaliationStatus {
+  Waiting = 1,
+  Valued = 2,
+  Finished = 3 
+}
