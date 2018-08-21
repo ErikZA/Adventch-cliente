@@ -119,8 +119,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.user = auth.getCurrentUser();
     this.unit = auth.getCurrentUnit();
     const localUnits = this.getUnitFromLocalStorage();
-    if (!Array.isArray(localUnits)) {
-      this.subscribe1 = this.sharedService.getUnits(this.user.id).subscribe((data: Unit[]) => {
+    const userId = auth.getCurrentDecodedToken().userId;
+    if (!Array.isArray(localUnits) && typeof userId === 'number') {
+      this.subscribe1 = this.sharedService.getUnits(userId).subscribe((data: Unit[]) => {
         this.setUnitsToLocalStorage(data);
         this.lstUnits = data;
         if (data) {
