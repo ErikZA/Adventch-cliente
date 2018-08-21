@@ -142,11 +142,10 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   }
 
   anual(avaliation: Avaliation) {
-    /*this.store.church = church;
-    this.router.navigate([church.id, 'editar'], { relativeTo: this.route });
+    this.store.avaliation = avaliation;
+    this.store.isMensal = false;
+    this.router.navigate([avaliation.id, 'avaliar'], { relativeTo: this.route });
     this.openSidenav();
-    this.searchButton = false;
-    this.churches$ = this.store.churches$;*/
   }
 
   public expandPanel(matExpansionPanel): void {

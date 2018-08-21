@@ -1,15 +1,18 @@
 <form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px">
   <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
     <div fxFlex>
-      <h2 class="title">{{ avaliation?.church?.name }} - {{ getTitleLabel() }}</h2>
+      <h2 class="title">{{ store.avaliation?.church?.name }} - {{ getTitleLabel() }}</h2>
       <mat-divider></mat-divider>
     </div>
   </div>
   <div fxLayout="row" fxLayoutAlign="center" fxLayout.lt-md="column" fxFlex class="margin-bottom-30">
     <div fxLayout="column" fxFlex="50%">
       <br/>
+      <a mat-button routerLink=".">Observações</a>
+      <br/>
       <mat-form-field>
-        <input matInput [matDatepicker]="picker" placeholder="Data da chegada">
+        <input matInput [matDatepicker]="picker" placeholder="Data da chegada"  formControlName="date">
+        <mat-error *ngIf="form.get('date').hasError('required')">Este campo é obrigatório</mat-error>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
@@ -33,7 +36,7 @@
               <b>TOTAL</b>
             </span>
             <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
-              <b></b>
+              <b>{{ total }}</b>
             </span>
           </mat-panel-description>
         </div>

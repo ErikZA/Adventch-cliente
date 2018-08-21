@@ -10,6 +10,7 @@ import { TreasuryService } from '../../treasury.service';
 import { SidenavService } from '../../../../core/services/sidenav.service';
 import { auth } from '../../../../auth/auth';
 import { Districts } from '../../models/districts';
+import { AvaliationRequirement } from '../../models/avaliationRequirement';
 @Injectable()
 export class AvaliationStore {
 
@@ -108,5 +109,20 @@ export class AvaliationStore {
   public searchPeriods(period: string, avaliations: AvaliationList[]): AvaliationList[] {
       const year = new Date(period).getFullYear();
       return avaliations.filter(x => new Date(x.date).getFullYear() === year);
+  }
+
+  /*Salvar*/    
+  public save(data): void {
+    this.service.postAvaliation(data).subscribe((profile: Avaliation) => {
+      this.loadAll();
+      setTimeout(() => {
+        //this.location.back();
+        this.sidenavService.close();
+        this.avaliation = new Avaliation();
+      }, 1000);
+    }, err => {
+      console.log(err);
+      this.snackBar.open('Erro ao salvar avaliação, tente novamente.', 'OK', { duration: 5000 });
+    });
   }
 }
