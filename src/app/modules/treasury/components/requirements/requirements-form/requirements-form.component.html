@@ -1,1 +1,43 @@
-requirements form works
+<div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"  [ngStyle.xs]="{'width.vw': 80}"
+  [ngStyle.xs]="{'width.vw': 100}">
+<form [formGroup]="formRequirement" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px">
+        <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
+            <div fxFlex>
+                <h2 class="title"> {{ labelTitle() }} Requisito</h2>
+                <mat-divider></mat-divider>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center" fxLayout.lt-md="column" fxFlex class="margin-bottom-30">
+            <div fxLayout="column" fxFlex>
+                <mat-form-field fxFlex>
+                        <input matInput type="number" formControlName="position" placeholder="Posição" required minlength="1" maxlength="200">
+                </mat-form-field>
+                <mat-form-field fxFlex>
+                    <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
+                    <mat-error *ngIf="formRequirement.get('name').hasError('required')">Este campo é obrigatório</mat-error>
+                    <mat-error *ngIf="formRequirement.get('name').hasError('minlength')">Nome pequeno, digite um nome com mais de 3 dígitos</mat-error>
+                    <mat-error *ngIf="formRequirement.get('name').hasError('maxlenght')">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
+                    <mat-error *ngIf="formRequirement.get('name').hasError('pattern')">Digite um nome válido.</mat-error>
+                </mat-form-field>
+                <mat-form-field fxFlex>
+                        <input matInput type="text" formControlName="description" placeholder="Descrição" required minlength="3" maxlength="200">
+                </mat-form-field>
+                <mat-form-field fxFlex>
+                        <input matInput type="number" formControlName="score" placeholder="Nota" required minlength="1" maxlength="200">
+                </mat-form-field>
+                <mat-form-field fxFlex>
+                    <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerBirth" placeholder="Data" formControlName="date">
+                    <mat-datepicker-toggle matSuffix [for]="pickerBirth"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerBirth></mat-datepicker>
+                </mat-form-field>
+                <div fxFlex="100%" fxFlexOffset="40px">
+                    <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
+                        <a (click)="closeSidenav()">
+                            <back-button></back-button>
+                        </a>
+                        <button mat-raised-button type="submit" (click)="saveRequirement()" color="primary">SALVAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>

@@ -130,7 +130,7 @@ export class ObservationStore {
       this.churches.sort((a, b) => a.name.localeCompare(b.name));
     }
   }
-  
+
 
   private loadAnalysts() {
     this.dataStore.observations.forEach(observation => {

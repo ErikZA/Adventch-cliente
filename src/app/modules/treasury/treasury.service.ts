@@ -211,19 +211,36 @@ export class TreasuryService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
   getAnualAvaliation(churchId, year): Observable<Avaliation> {
-    const url = '/treasury/avaliation/getAnualAvaliation/' + churchId + "/" + year;
+    const url = '/treasury/avaliation/getAnualAvaliation/' + churchId + '/' + year;
     return this.http
       .get(url)
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+
+  // Avaliações
   getRequirements(unitId): Observable<Requirement[]> {
     const url = '/treasury/requirement/getRequirements/' + unitId;
     return this.http
       .get(url)
       .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
+  saveRequirements(data): Observable<Requirement> {
+    const url = '/treasury/requirement/AddRequirement/' + data;
+    return this.http
+      .post(url, data)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+
+  deleteRequirement(data): Observable<Requirement> {
+    const url = '/treasury/requirement/RemoveRequirement/' + data;
+    return this.http
+      .post(url, data)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
   getAvaliationRequirements(avaliationId): Observable<AvaliationRequirement[]> {
     const url = '/treasury/avaliation/getAvaliationRequirements/' + avaliationId;
     return this.http

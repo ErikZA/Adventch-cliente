@@ -130,8 +130,8 @@ const routes: Routes = [
     path: 'requisitos', component: LayoutComponent, children: [
       { path: '', component: RequirementDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children:
         [
-          { path: 'novo', component:  RequirementFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard] },
-          { path: ':id/editar', component: RequirementFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard] }
+          { path: 'novo', component:  RequirementFormComponent/*, canActivate: [FeatureGuard], canLoad: [FeatureGuard] */},
+          { path: ':id/editar', component: RequirementFormComponent /*, canActivate: [FeatureGuard], canLoad: [FeatureGuard] */}
         ],
         data: {
           feature: EFeatures.REQUISITOS
