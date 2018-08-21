@@ -8,7 +8,9 @@ export class Requirement {
   score: number;
   isAnual: boolean;
   removed: boolean;
-  unit: Unit;
+  unitid: number;
+
+  date: Date;
   constructor() { }
 }
 

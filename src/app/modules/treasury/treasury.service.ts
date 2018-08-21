@@ -10,6 +10,7 @@ import { State } from '../../shared/models/state.model';
 import { City } from '../../shared/models/city.model';
 import { Observation } from './models/observation';
 import { User } from '../../shared/models/user.model';
+import { Requirement } from './models/requirement';
 
 @Injectable()
 export class TreasuryService {
@@ -197,5 +198,27 @@ export class TreasuryService {
       .get(url)
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+  // Requisitos
+  getRequirements(unitId) {
+    const url = '/treasury/requirement/getRequirements/' + unitId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
+  saveRequirements(data): Observable<Requirement> {
+    const url = '/treasury/requirement/AddRequirement/' + data;
+    return this.http
+      .post(url, data)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  deleteRequirement(data): Observable<Requirement> {
+    const url = '/treasury/requirement/RemoveRequirement/' + data;
+    return this.http
+      .post(url, data)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }
