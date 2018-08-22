@@ -122,25 +122,15 @@ export class AvaliationStore {
   }
 
   public searchMonth(month: number, churchAvaliations: ChurchAvaliation[]): ChurchAvaliation[] {
-    churchAvaliations.forEach(churchAvaliation => {
-      var avaliations = new Array<Avaliation>();
-      churchAvaliation.avaliations.forEach(avaliation => {
-        if (new Date(avaliation.date).getMonth() != month) {
-          avaliations.push(new Avaliation());
-        } else {
-          avaliations.push(avaliation);
-        }
-        churchAvaliation.avaliations = avaliations;
-      });
+    return churchAvaliations.filter(f1 => {
+      return f1.avaliations.filter(f2 => new Date(f2.date).getMonth() === month)
     });
-    return churchAvaliations;
   }
 
   public searchYear(year: number, churchAvaliations: ChurchAvaliation[]): ChurchAvaliation[] {
-    churchAvaliations.forEach(churchAvaliation => {
-      churchAvaliation.avaliations = churchAvaliation.avaliations.filter(f => new Date(f.date).getFullYear() === year);
+    return churchAvaliations.filter(f1 => {
+      return f1.avaliations.filter(f2 => new Date(f2.date).getFullYear() === year)
     });
-    return churchAvaliations;
   }
 
   /*Salvar*/    
