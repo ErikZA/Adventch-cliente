@@ -128,7 +128,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
 
   anual(churchAvaliation: ChurchAvaliation) {
     this.setStoreValues(churchAvaliation);
-    this.store.period = new Date(this.filterYear, this.filterMonth - 1);
+    this.store.isMensal = false;
     this.router.navigate([churchAvaliation.church.id, 'avaliar'], { relativeTo: this.route });
     this.openSidenav();
   }

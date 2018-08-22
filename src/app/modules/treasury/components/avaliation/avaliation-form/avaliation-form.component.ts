@@ -67,7 +67,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
       this.loadRequirements();
       this.setValue();
     } else {
-      var churchId = (!this.store.avaliation ? 0 : this.store.avaliation.church.id);
+      var churchId = this.store.churchAvaliation.church.id;
       this.service.getAnualAvaliation(churchId, new Date().getFullYear()).subscribe((data: Avaliation) => {
         this.avaliation = data;
         if (!this.avaliation) {
