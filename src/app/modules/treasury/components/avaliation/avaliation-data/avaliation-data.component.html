@@ -100,7 +100,7 @@
               <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Igreja</span>
               <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Distrito</span>
               <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Nota</span>
-              <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Avaliação Mensal</span>
+              <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Status</span>
             </h3>
           </mat-list-item>
         </mat-list>
@@ -126,7 +126,7 @@
                     {{ avaliation.total }}
                   </span>
                   <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
-                    {{ getStatusString(avaliation.status) }}
+                    {{ getStatusString(avaliation) }}
                   </span>
                 </mat-panel-description>
               </mat-expansion-panel-header>
@@ -147,7 +147,7 @@
               </mat-list>
               <mat-action-row>
                 <!-- <ng-template [Feature]="48" permission="4"> -->
-                <button *ngIf="avaliation.status != 3" mat-button style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal"
+                <button mat-button style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal"
                   (click)="mensal(avaliation)">AVALIAR</button>
                 <!-- </ng-template>
                 <ng-template [Feature]="48" permission="3"> -->

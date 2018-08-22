@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/of';
 
-import { Avaliation, AvaliationList } from '../../models/avaliation';
+import { Avaliation, ChurchAvaliation } from '../../models/avaliation';
 import { TreasuryService } from '../../treasury.service';
 import { SidenavService } from '../../../../core/services/sidenav.service';
 import { auth } from '../../../../auth/auth';
@@ -15,8 +15,8 @@ import { AvaliationRequirement } from '../../models/avaliationRequirement';
 @Injectable()
 export class AvaliationStore {
 
-    avaliations$: Observable<AvaliationList[]>;
-    private _avaliations: BehaviorSubject<AvaliationList[]>;
+    avaliations$: Observable<ChurchAvaliation[]>;
+    private _avaliations: BehaviorSubject<ChurchAvaliation[]>;
     public avaliation: Avaliation;
     public isMensal: boolean;
     
@@ -24,7 +24,7 @@ export class AvaliationStore {
     private _districts: BehaviorSubject<Districts[]>;
 
     private dataStore: {
-        avaliations: AvaliationList[],
+        avaliations: ChurchAvaliation[],
         districts: Districts[]
     };
 
@@ -38,7 +38,7 @@ export class AvaliationStore {
             avaliations: [],
             districts: []
         };
-        this._avaliations = <BehaviorSubject<AvaliationList[]>>new BehaviorSubject([]);
+        this._avaliations = <BehaviorSubject<ChurchAvaliation[]>>new BehaviorSubject([]);
         this.avaliations$ = this._avaliations.asObservable();  
 
         this._districts = <BehaviorSubject<Districts[]>>new BehaviorSubject([]);
@@ -69,7 +69,7 @@ export class AvaliationStore {
     }
   }
   /* Filtro */
-  public searchText(search: string): AvaliationList[] {
+  public searchText(search: string): ChurchAvaliation[] {
     if (search === '' || search === undefined || search === null) {
       return this.dataStore.avaliations;
     } else {
@@ -77,8 +77,8 @@ export class AvaliationStore {
         return this.testFilter(data.church.code, search)
         || this.testFilter(data.church.name, search)
         || this.testFilter(data.church.district.name, search)
-        || this.testFilter(data.total.toString(), search)
-        || this.filterStatus(search, data.status)
+        /*|| this.testFilter(data.total.toString(), search)
+        || this.filterStatus(search, data.status)*/
       });
     }
   }
@@ -100,17 +100,34 @@ export class AvaliationStore {
     return false;
   }
 
-  public searchDistricts(idDistrict: number, avaliations: AvaliationList[]): AvaliationList[] {
+  public searchDistricts(idDistrict: number, avaliations: ChurchAvaliation[]): ChurchAvaliation[] {
     return avaliations.filter(x => x.church.district.id == idDistrict);
   }
 
-  public searchAnalysts(idAnalyst: number, avaliations: AvaliationList[]): AvaliationList[] {
+  public searchAnalysts(idAnalyst: number, avaliations: ChurchAvaliation[]): ChurchAvaliation[] {
     return avaliations.filter(x => x.church.district.analyst.id == idAnalyst);
   }
 
-  public searchPeriods(period: number, avaliations: AvaliationList[]): AvaliationList[] {
-      const year = period;
-      return avaliations.filter(x => new Date(x.date).getFullYear() === year);
+  public searchMonth(month: number, churchAvaliations: ChurchAvaliation[]): ChurchAvaliation[] {
+    churchAvaliations.forEach(churchAvaliation => {
+      var avaliations = new Array<Avaliation>();
+      churchAvaliation.avaliations.forEach(avaliation => {
+        if (new Date(avaliation.date).getMonth() != month) {
+          avaliations.push(new Avaliation());
+        } else {
+          avaliations.push(avaliation);
+        }
+        churchAvaliation.avaliations = avaliations;
+      });
+    });
+    return churchAvaliations;
+  }
+
+  public searchYear(year: number, churchAvaliations: ChurchAvaliation[]): ChurchAvaliation[] {
+    churchAvaliations.forEach(churchAvaliation => {
+      churchAvaliation.avaliations = churchAvaliation.avaliations.filter(f => new Date(f.date).getFullYear() === year);
+    });
+    return churchAvaliations;
   }
 
   /*Salvar*/    
