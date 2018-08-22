@@ -91,39 +91,35 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
 
   private loadRequirements() {
     this.service.getRequirements(auth.getCurrentUnit().id).subscribe((data: Requirement[]) => {
-      let year = new Date().getFullYear();
-      if (this.avaliation.id != 0) {
-        year = new Date(this.avaliation.date).getFullYear();
-      }
       data.forEach(element => {
         if (this.store.isMensal) {
-          this.loadMensalRequirements(element, year);
+          this.loadMensalRequirements(element);
         } else {
-          this.loadAnualRequirements(element, year);
+          this.loadAnualRequirements(element);
         }
       });
       this.loadAvaliationRequirements();
     });
   }
 
-  private loadMensalRequirements(requirement: Requirement, year: number) {
+  private loadMensalRequirements(requirement: Requirement) {
     if (!requirement.isAnual) {
-      if (new Date(requirement.date).getFullYear() === year) {
+      if (new Date(requirement.date).getFullYear() === this.store.period.getFullYear()) {
         this.requirements.push(requirement);
       }
     }
   }
 
-  private loadAnualRequirements(requirement: Requirement, year: number) {
+  private loadAnualRequirements(requirement: Requirement) {
     if (requirement.isAnual) {
-      if (new Date(requirement.date).getFullYear() === year) {
+      if (new Date(requirement.date).getFullYear() === this.store.period.getFullYear()) {
         this.requirements.push(requirement);
       }
     }
   }
 
   private loadAvaliationRequirements() {
-    this.service.getAvaliationRequirements(this.avaliation.id === 0 ? 0 : this.avaliation.id).subscribe((data: AvaliationRequirement[]) => {
+    this.service.getAvaliationRequirements(!this.avaliation.id ? 0 : this.avaliation.id).subscribe((data: AvaliationRequirement[]) => {
       this.requirements.forEach(requirement => {
         var avaliationRequirement = data.filter(f => f.requirement.id === requirement.id)[0]; //carregando os requisitos já avaliados
         this.setAvalitionRequirement(requirement, avaliationRequirement);
