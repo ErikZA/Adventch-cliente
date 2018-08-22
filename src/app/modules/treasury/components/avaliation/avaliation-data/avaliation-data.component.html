@@ -147,10 +147,10 @@
               </mat-list>
               <mat-action-row>
                 <!-- <ng-template [Feature]="48" permission="4"> -->
-                <button mat-button style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal" (click)="mensal(avaliation)">AVALIAR</button>
+                <button mat-button *ngIf="checkChurchHasAvaliation(avaliation, true)" style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal" (click)="mensal(avaliation)">AVALIAR</button>
                 <!-- </ng-template>
                 <ng-template [Feature]="48" permission="3"> -->
-                <button mat-button style="background-color: #314762!important; color: #fff" matTooltip="Avaliação anual" (click)="anual(avaliation)">ANUAL</button>
+                <button mat-button *ngIf="checkChurchHasAvaliation(avaliation, false)" style="background-color: #314762!important; color: #fff" matTooltip="Avaliação anual" (click)="anual(avaliation)">ANUAL</button>
                 <!-- </ng-template> -->
                 <!-- <ng-template [Feature]="43"> -->
                 <button mat-button style="background-color: #0D2139!important; color: #fff" matTooltip="Finalizar avaliação da igre" [matMenuTriggerFor]="menu">
