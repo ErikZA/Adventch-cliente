@@ -82,7 +82,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   }
 
   private setValue(){
-    if (this.avaliation.id != 0) {
+    if (this.avaliation.id) {
       this.form = new FormGroup({
         date: new FormControl({value: this.avaliation.dateArrival, disabled: false}, Validators.required),
       });
@@ -171,9 +171,9 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   private sendData(): void {
     const data = {
       id: this.avaliation.id,
-      date: new Date(),
+      date: this.store.period,
       dateArrival: new Date(this.form.get('date').value),
-      idChurch: this.avaliation.church.id,
+      idChurch: this.store.churchAvaliation.church.id,
       IdStatus: 1,
       IdUnit: auth.getCurrentUnit().id,
       IdUser: auth.getCurrentUser().id,
