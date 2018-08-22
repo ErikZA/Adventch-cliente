@@ -119,18 +119,24 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
     this.sidenavService.open();
   }
 
-  mensal(avaliation: Avaliation) {
-    this.store.avaliation = avaliation;
+  mensal(churchAvaliation: ChurchAvaliation) {
+    this.setStoreValues(churchAvaliation);
     this.store.isMensal = true;
-    this.router.navigate([avaliation.church.id, 'avaliar'], { relativeTo: this.route });
+    this.router.navigate([churchAvaliation.church.id, 'avaliar'], { relativeTo: this.route });
     this.openSidenav();
   }
 
-  anual(avaliation: Avaliation) {
-    this.store.avaliation = avaliation;
-    this.store.isMensal = false;
-    this.router.navigate([avaliation.church.id, 'avaliar'], { relativeTo: this.route });
+  anual(churchAvaliation: ChurchAvaliation) {
+    this.setStoreValues(churchAvaliation);
+    this.store.period = new Date(this.filterYear, this.filterMonth - 1);
+    this.router.navigate([churchAvaliation.church.id, 'avaliar'], { relativeTo: this.route });
     this.openSidenav();
+  }
+
+  private setStoreValues(churchAvaliation: ChurchAvaliation) {
+    this.store.churchAvaliation = churchAvaliation;
+    this.store.period = new Date(this.filterYear, this.filterMonth - 1);
+    this.store.avaliation = this.store.getAvaliationByPeriod(churchAvaliation, this.store.period);
   }
 
   public expandPanel(matExpansionPanel): void {

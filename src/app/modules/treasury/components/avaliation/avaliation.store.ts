@@ -18,7 +18,9 @@ export class AvaliationStore {
     avaliations$: Observable<ChurchAvaliation[]>;
     private _avaliations: BehaviorSubject<ChurchAvaliation[]>;
     public avaliation: Avaliation;
+    public churchAvaliation: ChurchAvaliation;
     public isMensal: boolean;
+    public period: Date = new Date();
     
     districts$: Observable<Districts[]>;
     private _districts: BehaviorSubject<Districts[]>;
@@ -69,6 +71,16 @@ export class AvaliationStore {
     }
   }
   /* Filtro */
+  public getAvaliationByPeriod(churchAvaliations: ChurchAvaliation, period: Date): Avaliation {
+    var avaliation = new Avaliation();
+    churchAvaliations.avaliations.forEach(f => {
+      var date = new Date(f.date);
+      if (date.getMonth() === period.getMonth() && date.getFullYear() === period.getFullYear()) {
+        avaliation = f;
+      }
+    });
+    return avaliation;
+  }
   public searchText(search: string): ChurchAvaliation[] {
     if (search === '' || search === undefined || search === null) {
       return this.dataStore.avaliations;

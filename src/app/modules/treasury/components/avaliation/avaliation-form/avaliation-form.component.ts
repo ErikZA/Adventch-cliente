@@ -69,7 +69,6 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
     } else {
       var churchId = (!this.store.avaliation ? 0 : this.store.avaliation.church.id);
       this.service.getAnualAvaliation(churchId, new Date().getFullYear()).subscribe((data: Avaliation) => {
-        console.log(data);
         this.avaliation = data;
         if (!this.avaliation) {
           this.avaliation = new Avaliation();
@@ -198,11 +197,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
       return "ANUAL";
     }
 
-    let date = new Date(this.avaliation.date);
-    if (this.avaliation.id === 0) {
-      date = new Date();
-      this.avaliation.date = date;
-    }
-    return date.getMonth() + "/" + date.getFullYear();
+    let date = new Date(this.store.period);  
+    return date.getMonth() + 1 + "/" + date.getFullYear();
   }
 }
