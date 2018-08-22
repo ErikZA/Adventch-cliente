@@ -47,4 +47,15 @@
       </div>
     </div>
   </div>
+  <br /><br />
+  <div fxLayout="row" fxLayoutAlign="center center">
+      <div *ngIf="checkEmpty(chartAvaliationsData)">
+          <h4 fxLayoutAlign="center center">Ranking por notas</h4>
+          <div class="wrapper">
+            <!-- <div class="text">{{chartObservationTotal}}</div> -->
+            <canvas style="width: 400px!important" fxLayoutAlign="center center" baseChart [datasets]="chartAvaliationsDatasets"
+              chartType="bar" [options]="pieChartOptions" [colors]="chartColors"></canvas>
+          </div>
+        </div>
+  </div>
 </div>

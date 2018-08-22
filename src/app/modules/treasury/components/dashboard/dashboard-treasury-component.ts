@@ -31,6 +31,10 @@ export class DashboardTreasuryComponent implements OnInit {
   chartTreasurersTotal = 0;
   chartTreasurersData: number[] = [];
   chartTreasurersLabels: string[] = [];
+  // Avaliações
+  chartAvaliationsData: number[] = [];
+  chartAvaliationsLabels: string[] = [];
+  chartAvaliationsDatasets: [{}];
   // Subscription
   getDataSubscription: Subscription;
   mediaSubscription: Subscription;
@@ -69,6 +73,7 @@ export class DashboardTreasuryComponent implements OnInit {
         this.getChartTreasurersData(data.chartTreasurersData);
         this.getCardChurchesData(data.cardChurchesData);
         this.getCardDistrictsData(data.cardDistrictsData);
+        this.getCardAvaliationsData(data.cardAvaliationData);
       }
     });
   }
@@ -124,6 +129,23 @@ export class DashboardTreasuryComponent implements OnInit {
         }
       }
     });
+  }
+
+  getCardAvaliationsData(array) {
+    this.chartAvaliationsData = [];
+    this.chartAvaliationsLabels = [];
+
+    const labels = [
+      'Aberta',
+      'Fechada',
+    ];
+    array.forEach((f, i) => {
+      if (f !== 0) {
+        this.chartAvaliationsData.push(f.ranking);
+        this.chartAvaliationsLabels.push(f.notes);
+      }
+    });
+    this.chartAvaliationsDatasets = [{data: this.chartAvaliationsData, label: 'ranking'}];
   }
 
   checkEmpty(array) {
