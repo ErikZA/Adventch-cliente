@@ -35,11 +35,12 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   filterStatus = 0;
   filterAnalyst = 0;
   filterDistrict = 0;
-  filterPeriod = 0;
+  filterMonth = 1;
+  filterYear = 2018;
 
   districts: Districts[] = new Array<Districts>();
   analysts: User[] = new Array<User>();
-  requirements: number[] = new Array<number>();
+  years: number[] = new Array<number>();
   
   avaliations$: Observable<AvaliationList[]>;
   avaliations: AvaliationList[] = new Array<AvaliationList>();
@@ -55,7 +56,6 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/avaliacoes')]);
     this.search$.subscribe(search => {
       this.filterText = search;
@@ -97,22 +97,12 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   }
 
   private loadPeriods() {
-    this.service.getRequirements(auth.getCurrentUnit().id).subscribe((data: Requirement[]) => {
-      let years = new Array<number>();
-      data.forEach(element => {
-        years.push(new Date(element.date).getFullYear());
-      });
-      this.requirements = Array.from(new Set(years));
-      this.setPeriod();
-    });
-  }
-
-  private setPeriod() {
-    if (this.requirements.length === 1) {
-      this.filterPeriod = this.requirements[0];
-    } else if (this.requirements.length > 1) {
-      this.filterPeriod = this.requirements.sort(function(a, b){return (b > a ? 1 : -1)})[0];
+    var currentYear = new Date().getFullYear();
+    for (var i = this.filterYear; i <= currentYear; i++) {
+      this.years.push(i);
     }
+    this.filterMonth = new Date().getMonth() + 1;
+    this.filterYear = new Date().getFullYear();
   }
 
   /* Usados pelo component */
@@ -155,7 +145,6 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   }
 
   public search() {
-    debugger;
     let avaliations = this.store.searchText(this.filterText);
 
     if (this.filterDistrict !== undefined && this.filterDistrict !== null && this.filterDistrict != 0) {
@@ -166,9 +155,9 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
       avaliations = this.store.searchAnalysts(this.filterAnalyst, avaliations);
     }
 
-    if (this.filterPeriod !== undefined && this.filterPeriod !== null && this.filterPeriod != 0) {
+    /*if (this.filterPeriod !== undefined && this.filterPeriod !== null && this.filterPeriod != 0) {
       avaliations = this.store.searchPeriods(this.filterPeriod, avaliations);
-    }
+    }*/
     this.avaliations$ = Observable.of(avaliations);
   }
 
@@ -203,7 +192,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   private getDataParams(): any {
     const district = this.districts.find(f => f.id === this.filterDistrict);
     const analyst = this.analysts.find(f => f.id === this.filterAnalyst);
-    const period = this.filterPeriod;
+    //const period = this.filterPeriod;
     return {
       statusId: this.filterStatus,
       statusName: this.getStatusString(this.filterStatus),
@@ -211,7 +200,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
       districtName: district === undefined ? 'TODOS' : district.name,
       analystId: this.filterAnalyst,
       analystName: analyst === undefined ? 'TODOS' : analyst.name,
-      period: period,
+      //period: period,
     };
   }
 }

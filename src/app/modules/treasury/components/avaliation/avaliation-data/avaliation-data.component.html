@@ -60,11 +60,29 @@
               </mat-form-field>
           </mat-list>
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+            <mat-form-field>
+              <mat-select placeholder="Mês" (change)="search()" [(ngModel)]="filterMonth">
+                <mat-option [value]="1">Janeiro</mat-option>
+                <mat-option [value]="2">Fevereiro</mat-option>
+                <mat-option [value]="3">Março</mat-option>
+                <mat-option [value]="4">Abril</mat-option>
+                <mat-option [value]="5">Maio</mat-option>
+                <mat-option [value]="6">Junho</mat-option>
+                <mat-option [value]="7">Julho</mat-option>
+                <mat-option [value]="8">Agosto</mat-option>
+                <mat-option [value]="9">Setembro</mat-option>
+                <mat-option [value]="10">Outubro</mat-option>
+                <mat-option [value]="11">Novembro</mat-option>
+                <mat-option [value]="12">Dezembro</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list>
+          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
               <mat-form-field>
-                  <mat-select placeholder="Período" (change)="search()" [(ngModel)]="filterPeriod">
+                  <mat-select placeholder="Ano" (change)="search()" [(ngModel)]="filterYear">
                       <!-- <mat-option value="0">TODOS</mat-option> -->
-                      <mat-option *ngFor="let requirement of requirements" [value]="requirement">
-                          {{ requirement }}
+                      <mat-option *ngFor="let year of years" [value]="year">
+                          {{ year }}
                       </mat-option>
                   </mat-select>
               </mat-form-field>
@@ -82,7 +100,7 @@
               <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Igreja</span>
               <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Distrito</span>
               <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Nota</span>
-              <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Status</span>
+              <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Avaliação Mensal</span>
             </h3>
           </mat-list-item>
         </mat-list>
