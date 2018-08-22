@@ -254,4 +254,10 @@ export class TreasuryService {
       .post(url, data)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+  finalizeAvaliation(data): Observable<any> {
+    const url = '/treasury/avaliation/finalizeAvaliation/';
+    return this.http
+      .put(url, data)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 }

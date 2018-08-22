@@ -12,6 +12,7 @@ export class Avaliation {
   status: EAvaliationStatus;
   user: User;
   unit: Unit;
+  isMensal: boolean;
   church: Church;
   avaliationsRequirements: Array<AvaliationRequirement>
   constructor() { }

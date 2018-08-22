@@ -217,4 +217,25 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
       //period: period,
     };
   }
+
+  public finalize(churchAvaliation: ChurchAvaliation, isMensal: boolean): void {
+    let data = {
+      churchId: churchAvaliation.church.id,
+      date: new Date(this.filterYear, this.filterMonth + 1),
+      isMensal: isMensal,
+    }
+    this.service.finalizeAvaliation(data).subscribe((data: AvaliationRequirement[]) => {
+      this.getData();
+    });
+  }
+
+  public checkChurchHasAvaliation(churchAvaliation: ChurchAvaliation, isMensal: boolean): boolean {
+    var has = false;
+    churchAvaliation.avaliations.forEach(avaliation =>{
+      if (this.getMonth(avaliation.date) === this.filterMonth && this.getYear(avaliation.date) === this.filterYear) {
+        has = avaliation.isMensal === isMensal;
+      }
+    });
+    return has;
+  }
 }

@@ -40,24 +40,24 @@
             </mat-form-field>
           </mat-list>
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-              <mat-form-field>
-                  <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
-                      <mat-option value="0">TODOS</mat-option>
-                      <mat-option *ngFor="let district of districts" [value]="district.id">
-                          {{ district.name }}
-                      </mat-option>
-                  </mat-select>
-              </mat-form-field>
+            <mat-form-field>
+              <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
+                <mat-option value="0">TODOS</mat-option>
+                <mat-option *ngFor="let district of districts" [value]="district.id">
+                  {{ district.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
           </mat-list>
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-              <mat-form-field>
-                  <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
-                      <mat-option value="0">TODOS</mat-option>
-                      <mat-option *ngFor="let analyst of analysts" [value]="analyst.id">
-                          {{ analyst.name }}
-                      </mat-option>
-                  </mat-select>
-              </mat-form-field>
+            <mat-form-field>
+              <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
+                <mat-option value="0">TODOS</mat-option>
+                <mat-option *ngFor="let analyst of analysts" [value]="analyst.id">
+                  {{ analyst.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
           </mat-list>
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
@@ -78,14 +78,14 @@
             </mat-form-field>
           </mat-list>
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-              <mat-form-field>
-                  <mat-select placeholder="Ano" (change)="search()" [(ngModel)]="filterYear">
-                      <!-- <mat-option value="0">TODOS</mat-option> -->
-                      <mat-option *ngFor="let year of years" [value]="year">
-                          {{ year }}
-                      </mat-option>
-                  </mat-select>
-              </mat-form-field>
+            <mat-form-field>
+              <mat-select placeholder="Ano" (change)="search()" [(ngModel)]="filterYear">
+                <!-- <mat-option value="0">TODOS</mat-option> -->
+                <mat-option *ngFor="let year of years" [value]="year">
+                  {{ year }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
           </mat-list>
         </div>
       </mat-expansion-panel>
@@ -147,11 +147,18 @@
               </mat-list>
               <mat-action-row>
                 <!-- <ng-template [Feature]="48" permission="4"> -->
-                <button mat-button style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal"
-                  (click)="mensal(avaliation)">AVALIAR</button>
+                <button mat-button style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal" (click)="mensal(avaliation)">AVALIAR</button>
                 <!-- </ng-template>
                 <ng-template [Feature]="48" permission="3"> -->
                 <button mat-button style="background-color: #314762!important; color: #fff" matTooltip="Avaliação anual" (click)="anual(avaliation)">ANUAL</button>
+                <!-- </ng-template> -->
+                <!-- <ng-template [Feature]="43"> -->
+                <button mat-button style="background-color: #0D2139!important; color: #fff" matTooltip="Finalizar avaliação da igre" [matMenuTriggerFor]="menu">
+                  <mat-icon>list</mat-icon>FINALIZAR</button>
+                <mat-menu #menu="matMenu">
+                  <button *ngIf="checkChurchHasAvaliation(avaliation, true)" (click)="finalize(avaliation, true)" mat-menu-item matTooltip="Finaliza apenas a avaliação mensal da igreja">Mensal</button>
+                  <button *ngIf="checkChurchHasAvaliation(avaliation, false)" (click)="finalize(avaliation, false)" mat-menu-item matTooltip="Finaliza apenas a avaliação anual da igreja">Anual</button>
+                </mat-menu>
                 <!-- </ng-template> -->
               </mat-action-row>
             </mat-expansion-panel>
