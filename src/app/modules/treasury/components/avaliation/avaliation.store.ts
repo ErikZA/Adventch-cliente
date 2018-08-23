@@ -135,6 +135,27 @@ export class AvaliationStore {
     return false;
   }
 
+  public searchStatus(idStatus: number, churchAvaliations: ChurchAvaliation[], period: Date): ChurchAvaliation[] {
+    var churchAvaliationsFiltered = new Array<ChurchAvaliation>();
+    for (let churchAvaliation of churchAvaliations) {
+      if (this.searchStatusInAvaliations(idStatus, churchAvaliation, period)) {
+        churchAvaliationsFiltered.push(churchAvaliation);
+      }
+    }
+    return churchAvaliationsFiltered;
+  }
+
+  private searchStatusInAvaliations(idStatus: number, churchAvaliation: ChurchAvaliation, period: Date): boolean {
+    if (idStatus === 1 && churchAvaliation.avaliations.length === 0) {
+      return true;
+    }
+    var obj = this.getMensalAvaliation(churchAvaliation, period);
+    if (obj.status === idStatus) {
+        return true;
+    }
+    return false;
+  }
+
   public searchDistricts(idDistrict: number, avaliations: ChurchAvaliation[]): ChurchAvaliation[] {
     return avaliations.filter(x => x.church.district.id == idDistrict);
   }
@@ -145,13 +166,13 @@ export class AvaliationStore {
 
   public searchMonth(month: number, churchAvaliations: ChurchAvaliation[]): ChurchAvaliation[] {
     return churchAvaliations.filter(f1 => {
-      return f1.avaliations.filter(f2 => new Date(f2.date).getMonth() === month)
+      return f1.avaliations.filter(f2 => new Date(f2.date).getMonth() === month && f2.isMensal)
     });
   }
 
   public searchYear(year: number, churchAvaliations: ChurchAvaliation[]): ChurchAvaliation[] {
     return churchAvaliations.filter(f1 => {
-      return f1.avaliations.filter(f2 => new Date(f2.date).getFullYear() === year)
+      return f1.avaliations.filter(f2 => new Date(f2.date).getFullYear() === year && f2.isMensal)
     });
   }
 

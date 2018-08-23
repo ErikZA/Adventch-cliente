@@ -145,6 +145,19 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
 
   public search() {
     let churchAvaliationsFiltered = this.store.searchText(this.filterText);
+    
+    if (this.filterMonth !== undefined && this.filterMonth !== null && this.filterMonth != 0) {
+      churchAvaliationsFiltered = this.store.searchMonth(this.filterMonth, churchAvaliationsFiltered);
+    }
+
+    if (this.filterYear !== undefined && this.filterYear !== null && this.filterYear != 0) {
+      churchAvaliationsFiltered = this.store.searchYear(this.filterYear, churchAvaliationsFiltered);
+    }
+
+    if (this.filterStatus !== undefined && this.filterStatus !== null && this.filterStatus != 0) {
+      churchAvaliationsFiltered = this.store.searchStatus(this.filterStatus, churchAvaliationsFiltered, new Date(this.filterYear, this.filterMonth - 1));
+    }
+
     if (this.filterDistrict !== undefined && this.filterDistrict !== null && this.filterDistrict != 0) {
       churchAvaliationsFiltered = this.store.searchDistricts(this.filterDistrict, churchAvaliationsFiltered);
     }
@@ -153,19 +166,11 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
       churchAvaliationsFiltered = this.store.searchAnalysts(this.filterAnalyst, churchAvaliationsFiltered);
     }
 
-    if (this.filterMonth !== undefined && this.filterMonth !== null && this.filterMonth != 0) {
-      console.log(this.store.avaliations$);
-      churchAvaliationsFiltered = this.store.searchMonth(this.filterMonth, churchAvaliationsFiltered);
-    }
-
-    if (this.filterYear !== undefined && this.filterYear !== null && this.filterYear != 0) {
-      churchAvaliationsFiltered = this.store.searchYear(this.filterYear, churchAvaliationsFiltered);
-    }
     this.avaliations$ = Observable.of(churchAvaliationsFiltered);
   }
 
   public getStatusString(churchAvaliation: ChurchAvaliation): string {
-    var avaliation = churchAvaliation.avaliations.filter(f => this.getMonth(f.date) === this.filterMonth && this.getYear(f.date) === this.filterYear)[0];
+    var avaliation = churchAvaliation.avaliations.filter(f => this.getMonth(f.date) === this.filterMonth && this.getYear(f.date) === this.filterYear && f.isMensal)[0];
     if (!avaliation) {
       return "Aguardando";
     }
@@ -215,7 +220,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
       districtName: district === undefined ? 'TODOS' : district.name,
       analystId: this.filterAnalyst,
       analystName: analyst === undefined ? 'TODOS' : analyst.name,
-      //period: period,
+      period: this.filterYear,
     };
   }
 
