@@ -12,6 +12,7 @@ import { Student } from './models/student';
 import { Process } from './models/process';
 import { Responsible } from './models/responsible';
 import { StudentSerie } from './models/studentSerie';
+import { ProcessDocument } from './models/processDocument';
 
 @Injectable()
 export class ScholarshipService {
@@ -76,8 +77,8 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getResponsible(schoolId: number, responsibleCPF: string): Observable<Responsible> {
-    const url = `/scholarship/process/getResponsible?schoolId=${schoolId}&responsibleCPF=${responsibleCPF}`;
+  public getResponsible(responsibleCPF: string): Observable<Responsible> {
+    const url = `/scholarship/responsible/cpf/${responsibleCPF}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
@@ -147,7 +148,7 @@ export class ScholarshipService {
   }
 
   getStudentSeries(): Observable<StudentSerie[]> {
-    const url = '/scholarship/process/getAllStudentsSeries';
+    const url = '/scholarship/process/series';
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
@@ -159,7 +160,12 @@ export class ScholarshipService {
       .post(url, submittedDocuments)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
-
+  getAllDocuments(): Observable<ProcessDocument[]> {
+    const url = '/scholarship/process/documents';
+    return this.http
+      .get(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
   /*
   Consult
    */
