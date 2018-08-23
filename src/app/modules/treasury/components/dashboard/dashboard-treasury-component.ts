@@ -17,8 +17,7 @@ export class DashboardTreasuryComponent implements OnInit {
   users: any;
   // Chart Configurations
   // Adicione novas cores aqui, caso o gráfico fique com cor cinza
-  chartColors = [{ backgroundColor: ['#03a9f4', '#76d275', '#ffc947', '#f44336'] }];
-
+  chartColors = [{ backgroundColor: ['#03a9f4', '#76d275', '#ffc947', '#f44336', '#6a5acd', '#ff0000'] }];
   // Igrejas
   cardChurchesData: number;
   // Distritos
@@ -32,9 +31,9 @@ export class DashboardTreasuryComponent implements OnInit {
   chartTreasurersData: number[] = [];
   chartTreasurersLabels: string[] = [];
   // Avaliações
-  chartAvaliationsData: number[] = [];
-  chartAvaliationsLabels: string[] = [];
-  chartAvaliationsDatasets: [{}];
+  chartAvaliationsData: any[] = [];
+  chartAvaliationsLabels: any[] = [];
+  chartAvaliationsDatasets: any[];
   // Subscription
   getDataSubscription: Subscription;
   mediaSubscription: Subscription;
@@ -49,6 +48,39 @@ export class DashboardTreasuryComponent implements OnInit {
       position: 'bottom'
     },
   };
+
+  barChartOptions: any = {
+    scaleShowVerticalLines: false,
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        xAxes: [{
+            stacked: true,
+            ticks: {
+                autoSkip: false
+            }
+        }],
+        yAxes: [{
+            stacked: true
+        }]
+    },
+    title: {
+        display: true,
+    },
+    plugins: {
+        datalabels: {
+            color: 'black',
+            display: function (context) {
+                return context.dataset.data[context.dataIndex] > 0;
+            },
+            font: {
+                weight: 'bold'
+            },
+            formatter: Math.round
+        }
+    }
+};
+
 
   constructor(
     private media: ObservableMedia,
@@ -135,17 +167,20 @@ export class DashboardTreasuryComponent implements OnInit {
     this.chartAvaliationsData = [];
     this.chartAvaliationsLabels = [];
 
-    const labels = [
-      'Aberta',
-      'Fechada',
-    ];
+    const value = [];
+    const data = [];
+    const labels = [];
     array.forEach((f, i) => {
       if (f !== 0) {
-        this.chartAvaliationsData.push(f.ranking);
-        this.chartAvaliationsLabels.push(f.notes);
+        data.push(f.ranking);
+        labels.push(f.notes);
       }
+
     });
-    this.chartAvaliationsDatasets = [{data: this.chartAvaliationsData, label: 'ranking'}];
+    value.push({data: data});
+    this.chartAvaliationsData =  value;
+    this.chartAvaliationsLabels = labels;
+    console.log(this.chartAvaliationsData);
   }
 
   checkEmpty(array) {
