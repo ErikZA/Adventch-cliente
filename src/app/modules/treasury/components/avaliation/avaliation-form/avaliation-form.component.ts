@@ -67,9 +67,8 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
       this.loadRequirements();
       this.setValue();
     } else {
-      var churchId = (!this.store.avaliation ? 0 : this.store.avaliation.church.id);
+      var churchId = this.store.churchAvaliation.church.id;
       this.service.getAnualAvaliation(churchId, new Date().getFullYear()).subscribe((data: Avaliation) => {
-        console.log(data);
         this.avaliation = data;
         if (!this.avaliation) {
           this.avaliation = new Avaliation();
@@ -83,7 +82,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   }
 
   private setValue(){
-    if (this.avaliation.id != 0) {
+    if (this.avaliation.id) {
       this.form = new FormGroup({
         date: new FormControl({value: this.avaliation.dateArrival, disabled: false}, Validators.required),
       });
@@ -92,39 +91,35 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
 
   private loadRequirements() {
     this.service.getRequirements(auth.getCurrentUnit().id).subscribe((data: Requirement[]) => {
-      let year = new Date().getFullYear();
-      if (this.avaliation.id != 0) {
-        year = new Date(this.avaliation.date).getFullYear();
-      }
       data.forEach(element => {
         if (this.store.isMensal) {
-          this.loadMensalRequirements(element, year);
+          this.loadMensalRequirements(element);
         } else {
-          this.loadAnualRequirements(element, year);
+          this.loadAnualRequirements(element);
         }
       });
       this.loadAvaliationRequirements();
     });
   }
 
-  private loadMensalRequirements(requirement: Requirement, year: number) {
+  private loadMensalRequirements(requirement: Requirement) {
     if (!requirement.isAnual) {
-      if (new Date(requirement.date).getFullYear() === year) {
+      if (new Date(requirement.date).getFullYear() === this.store.period.getFullYear()) {
         this.requirements.push(requirement);
       }
     }
   }
 
-  private loadAnualRequirements(requirement: Requirement, year: number) {
+  private loadAnualRequirements(requirement: Requirement) {
     if (requirement.isAnual) {
-      if (new Date(requirement.date).getFullYear() === year) {
+      if (new Date(requirement.date).getFullYear() === this.store.period.getFullYear()) {
         this.requirements.push(requirement);
       }
     }
   }
 
   private loadAvaliationRequirements() {
-    this.service.getAvaliationRequirements(this.avaliation.id === 0 ? 0 : this.avaliation.id).subscribe((data: AvaliationRequirement[]) => {
+    this.service.getAvaliationRequirements(!this.avaliation.id ? 0 : this.avaliation.id).subscribe((data: AvaliationRequirement[]) => {
       this.requirements.forEach(requirement => {
         var avaliationRequirement = data.filter(f => f.requirement.id === requirement.id)[0]; //carregando os requisitos já avaliados
         this.setAvalitionRequirement(requirement, avaliationRequirement);
@@ -176,9 +171,9 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   private sendData(): void {
     const data = {
       id: this.avaliation.id,
-      date: new Date(),
+      date: this.store.period,
       dateArrival: new Date(this.form.get('date').value),
-      idChurch: this.avaliation.church.id,
+      idChurch: this.store.churchAvaliation.church.id,
       IdStatus: 1,
       IdUnit: auth.getCurrentUnit().id,
       IdUser: auth.getCurrentUser().id,
@@ -198,11 +193,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
       return "ANUAL";
     }
 
-    let date = new Date(this.avaliation.date);
-    if (this.avaliation.id === 0) {
-      date = new Date();
-      this.avaliation.date = date;
-    }
-    return date.getMonth() + "/" + date.getFullYear();
+    let date = new Date(this.store.period);  
+    return date.getMonth() + 1 + "/" + date.getFullYear();
   }
 }

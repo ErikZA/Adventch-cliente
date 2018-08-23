@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { AuthService } from '../../../../../shared/auth.service';
 import { SidenavService } from '../../../../../core/services/sidenav.service';
-import { Avaliation, AvaliationList } from '../../../models/avaliation';
+import { Avaliation, ChurchAvaliation } from '../../../models/avaliation';
 import { auth } from '../../../../../auth/auth';
 import { AvaliationStore } from '../avaliation.store';
 import { AvaliationRequirement } from '../../../models/avaliationRequirement';
@@ -35,14 +35,15 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   filterStatus = 0;
   filterAnalyst = 0;
   filterDistrict = 0;
-  filterPeriod = 0;
+  filterMonth = 1;
+  filterYear = 2018;
 
   districts: Districts[] = new Array<Districts>();
   analysts: User[] = new Array<User>();
-  requirements: number[] = new Array<number>();
+  years: number[] = new Array<number>();
   
-  avaliations$: Observable<AvaliationList[]>;
-  avaliations: AvaliationList[] = new Array<AvaliationList>();
+  avaliations$: Observable<ChurchAvaliation[]>;
+  avaliations: ChurchAvaliation[] = new Array<ChurchAvaliation>();
 
   constructor(
     private service: TreasuryService,
@@ -55,7 +56,6 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/avaliacoes')]);
     this.search$.subscribe(search => {
       this.filterText = search;
@@ -97,22 +97,12 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   }
 
   private loadPeriods() {
-    this.service.getRequirements(auth.getCurrentUnit().id).subscribe((data: Requirement[]) => {
-      let years = new Array<number>();
-      data.forEach(element => {
-        years.push(new Date(element.date).getFullYear());
-      });
-      this.requirements = Array.from(new Set(years));
-      this.setPeriod();
-    });
-  }
-
-  private setPeriod() {
-    if (this.requirements.length === 1) {
-      this.filterPeriod = this.requirements[0];
-    } else if (this.requirements.length > 1) {
-      this.filterPeriod = this.requirements.sort(function(a, b){return (b > a ? 1 : -1)})[0];
+    var currentYear = new Date().getFullYear();
+    for (var i = this.filterYear; i <= currentYear; i++) {
+      this.years.push(i);
     }
+    this.filterMonth = new Date().getMonth() + 1;
+    this.filterYear = new Date().getFullYear();
   }
 
   /* Usados pelo component */
@@ -129,25 +119,24 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
     this.sidenavService.open();
   }
 
-  mensal(avaliation: Avaliation) {
-    this.store.avaliation = avaliation;
+  mensal(churchAvaliation: ChurchAvaliation) {
+    this.setStoreValues(churchAvaliation);
     this.store.isMensal = true;
-    this.router.navigate([avaliation.id, 'avaliar'], { relativeTo: this.route });
+    this.router.navigate([churchAvaliation.church.id, 'avaliar'], { relativeTo: this.route });
     this.openSidenav();
-    /*this.confirmDialogService
-      .confirm('Remover', 'Você deseja realmente remover a igreja?', 'REMOVER')
-      .subscribe(res => {
-        if (res) {
-          this.store.remove(church.id);
-        }
-      });*/
   }
 
-  anual(avaliation: Avaliation) {
-    this.store.avaliation = avaliation;
+  anual(churchAvaliation: ChurchAvaliation) {
+    this.setStoreValues(churchAvaliation);
     this.store.isMensal = false;
-    this.router.navigate([avaliation.id, 'avaliar'], { relativeTo: this.route });
+    this.router.navigate([churchAvaliation.church.id, 'avaliar'], { relativeTo: this.route });
     this.openSidenav();
+  }
+
+  private setStoreValues(churchAvaliation: ChurchAvaliation) {
+    this.store.churchAvaliation = churchAvaliation;
+    this.store.period = new Date(this.filterYear, this.filterMonth - 1);
+    this.store.avaliation = this.store.getAvaliationByPeriod(churchAvaliation, this.store.period);
   }
 
   public expandPanel(matExpansionPanel): void {
@@ -155,25 +144,37 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   }
 
   public search() {
-    debugger;
-    let avaliations = this.store.searchText(this.filterText);
+    let churchAvaliationsFiltered = this.store.searchText(this.filterText);
+    
+    if (this.filterMonth !== undefined && this.filterMonth !== null && this.filterMonth != 0) {
+      churchAvaliationsFiltered = this.store.searchMonth(this.filterMonth, churchAvaliationsFiltered);
+    }
+
+    if (this.filterYear !== undefined && this.filterYear !== null && this.filterYear != 0) {
+      churchAvaliationsFiltered = this.store.searchYear(this.filterYear, churchAvaliationsFiltered);
+    }
+
+    if (this.filterStatus !== undefined && this.filterStatus !== null && this.filterStatus != 0) {
+      churchAvaliationsFiltered = this.store.searchStatus(this.filterStatus, churchAvaliationsFiltered, new Date(this.filterYear, this.filterMonth - 1));
+    }
 
     if (this.filterDistrict !== undefined && this.filterDistrict !== null && this.filterDistrict != 0) {
-      avaliations = this.store.searchDistricts(this.filterDistrict, avaliations);
+      churchAvaliationsFiltered = this.store.searchDistricts(this.filterDistrict, churchAvaliationsFiltered);
     }
 
     if (this.filterAnalyst !== undefined && this.filterAnalyst !== null && this.filterAnalyst != 0) {
-      avaliations = this.store.searchAnalysts(this.filterAnalyst, avaliations);
+      churchAvaliationsFiltered = this.store.searchAnalysts(this.filterAnalyst, churchAvaliationsFiltered);
     }
 
-    if (this.filterPeriod !== undefined && this.filterPeriod !== null && this.filterPeriod != 0) {
-      avaliations = this.store.searchPeriods(this.filterPeriod, avaliations);
-    }
-    this.avaliations$ = Observable.of(avaliations);
+    this.avaliations$ = Observable.of(churchAvaliationsFiltered);
   }
 
-  public getStatusString(status: EAvaliationStatus): string {
-    switch (status) {
+  public getStatusString(churchAvaliation: ChurchAvaliation): string {
+    var avaliation = churchAvaliation.avaliations.filter(f => this.getMonth(f.date) === this.filterMonth && this.getYear(f.date) === this.filterYear && f.isMensal)[0];
+    if (!avaliation) {
+      return "Aguardando";
+    }
+    switch (avaliation.status) {
       case EAvaliationStatus.Valued:
         return "Avaliado";
       case EAvaliationStatus.Finished:
@@ -181,6 +182,14 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
       default:
         return "Aguardando";
     }
+  }
+
+  private getYear(date: Date): number {
+    return new Date(date).getFullYear();
+  }
+
+  private getMonth(date: Date): number {
+    return new Date(date).getMonth() + 1;
   }
 
   public generateGeneralReport(): void {
@@ -203,15 +212,51 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   private getDataParams(): any {
     const district = this.districts.find(f => f.id === this.filterDistrict);
     const analyst = this.analysts.find(f => f.id === this.filterAnalyst);
-    const period = this.filterPeriod;
+    //const period = this.filterPeriod;
     return {
       statusId: this.filterStatus,
-      statusName: this.getStatusString(this.filterStatus),
+      //statusName: this.getStatusString(this.filterStatus),
       districtId: this.filterDistrict,
       districtName: district === undefined ? 'TODOS' : district.name,
       analystId: this.filterAnalyst,
       analystName: analyst === undefined ? 'TODOS' : analyst.name,
-      period: period,
+      period: this.filterYear,
     };
+  }
+
+  public finalize(churchAvaliation: ChurchAvaliation, isMensal: boolean): void {
+    let data = {
+      churchId: churchAvaliation.church.id,
+      date: new Date(this.filterYear, this.filterMonth - 1),
+      isMensal: isMensal,
+    }
+    this.service.finalizeAvaliation(data).subscribe((data: AvaliationRequirement[]) => {
+      this.getData();
+    });
+  }
+
+  public checkChurchHasAvaliation(churchAvaliation: ChurchAvaliation, isMensal: boolean): boolean {
+    var has = false;
+    churchAvaliation.avaliations.forEach(avaliation =>{
+      if (this.getMonth(avaliation.date) === this.filterMonth && this.getYear(avaliation.date) === this.filterYear) {
+        has = avaliation.isMensal === isMensal;
+      }
+    });
+    return has;
+  }
+
+  public checkFinalized(churchAvaliation: ChurchAvaliation, isMensal: boolean): boolean {
+    var obj = this.store.getMensalAvaliation(churchAvaliation, new Date(this.filterYear, this.filterMonth - 1));
+    if (!isMensal) {
+      var obj = this.store.getAnualAvaliation(churchAvaliation, this.filterYear);
+    }
+    return this.checkAvaliationFinalized(obj);
+  }
+
+  private checkAvaliationFinalized(obj): boolean {
+    if (!obj) {
+      return true;
+    }
+    return obj.status !== 3;
   }
 }

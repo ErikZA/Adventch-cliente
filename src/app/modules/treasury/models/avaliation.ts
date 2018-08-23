@@ -12,19 +12,16 @@ export class Avaliation {
   status: EAvaliationStatus;
   user: User;
   unit: Unit;
+  isMensal: boolean;
   church: Church;
   avaliationsRequirements: Array<AvaliationRequirement>
   constructor() { }
 }
 
 //Mapeado conforme viewModel
-export class AvaliationList {
-  id: number;
+export class ChurchAvaliation {
   total: number;
-  status: number;
-  date: Date;
-  dateArrival: Date;
   church: Church;
+  avaliations: Array<Avaliation>;
   treasurers: Array<Treasurer>;
-  constructor() { }
 }

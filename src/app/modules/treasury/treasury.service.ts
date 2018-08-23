@@ -10,7 +10,7 @@ import { State } from '../../shared/models/state.model';
 import { City } from '../../shared/models/city.model';
 import { Observation } from './models/observation';
 import { User } from '../../shared/models/user.model';
-import { Avaliation, AvaliationList } from './models/avaliation';
+import { Avaliation, ChurchAvaliation } from './models/avaliation';
 import { Requirement } from './models/requirement';
 import { AvaliationRequirement } from './models/avaliationRequirement';
 
@@ -203,7 +203,7 @@ export class TreasuryService {
   }
 
   /* Avaliações */
-  getAvaliations(unitId): Observable<AvaliationList[]> {
+  getAvaliations(unitId): Observable<ChurchAvaliation[]> {
     const url = '/treasury/avaliation/getAvaliations/' + unitId;
     return this.http
       .get(url)
@@ -252,6 +252,12 @@ export class TreasuryService {
     const url = '/treasury/avaliation/postAvaliation';
     return this.http
       .post(url, data)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+  finalizeAvaliation(data): Observable<any> {
+    const url = '/treasury/avaliation/finalizeAvaliation/';
+    return this.http
+      .put(url, data)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }
