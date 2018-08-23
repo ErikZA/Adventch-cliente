@@ -51,7 +51,6 @@ export class AvaliationStore {
   public loadAll(): void {
     const unit = auth.getCurrentUnit();
     this.service.getAvaliations(unit.id).subscribe((data: any[]) => {
-      console.log(data[0].total);
       this.dataStore.avaliations = data;
       this._avaliations.next(Object.assign({}, this.dataStore).avaliations);
       this.loadDistricts()
@@ -82,6 +81,29 @@ export class AvaliationStore {
     });
     return avaliation;
   }
+
+  public getMensalAvaliation(churchAvaliations: ChurchAvaliation, period: Date): Avaliation {
+    var avaliation = new Avaliation();
+    churchAvaliations.avaliations.forEach(f => {
+      var date = new Date(f.date);
+      if (f.isMensal && date.getMonth() === period.getMonth() && date.getFullYear() === period.getFullYear()) {
+        avaliation = f;
+      }
+    });
+    return avaliation;
+  }
+
+  public getAnualAvaliation(churchAvaliations: ChurchAvaliation, year: number): Avaliation {
+    var avaliation = new Avaliation();
+    churchAvaliations.avaliations.forEach(f => {
+      var date = new Date(f.date);
+      if (!f.isMensal && date.getFullYear() === year) {
+        avaliation = f;
+      }
+    });
+    return avaliation;
+  }
+
   public searchText(search: string): ChurchAvaliation[] {
     if (search === '' || search === undefined || search === null) {
       return this.dataStore.avaliations;
@@ -135,8 +157,10 @@ export class AvaliationStore {
 
   /*Salvar*/    
   public save(data): void {
+    debugger;
     this.service.postAvaliation(data).subscribe((profile: Avaliation) => {
       setTimeout(() => {
+        debugger;
         this.location.back();
         this.sidenavService.close();
         this.avaliation = new Avaliation();

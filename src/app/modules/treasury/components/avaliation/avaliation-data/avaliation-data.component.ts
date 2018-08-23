@@ -154,6 +154,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
     }
 
     if (this.filterMonth !== undefined && this.filterMonth !== null && this.filterMonth != 0) {
+      console.log(this.store.avaliations$);
       churchAvaliationsFiltered = this.store.searchMonth(this.filterMonth, churchAvaliationsFiltered);
     }
 
@@ -221,7 +222,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   public finalize(churchAvaliation: ChurchAvaliation, isMensal: boolean): void {
     let data = {
       churchId: churchAvaliation.church.id,
-      date: new Date(this.filterYear, this.filterMonth + 1),
+      date: new Date(this.filterYear, this.filterMonth - 1),
       isMensal: isMensal,
     }
     this.service.finalizeAvaliation(data).subscribe((data: AvaliationRequirement[]) => {
@@ -237,5 +238,20 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
       }
     });
     return has;
+  }
+
+  public checkFinalized(churchAvaliation: ChurchAvaliation, isMensal: boolean): boolean {
+    var obj = this.store.getMensalAvaliation(churchAvaliation, new Date(this.filterYear, this.filterMonth - 1));
+    if (!isMensal) {
+      var obj = this.store.getAnualAvaliation(churchAvaliation, this.filterYear);
+    }
+    return this.checkAvaliationFinalized(obj);
+  }
+
+  private checkAvaliationFinalized(obj): boolean {
+    if (!obj) {
+      return true;
+    }
+    return obj.status !== 3;
   }
 }
