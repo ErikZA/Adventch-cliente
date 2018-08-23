@@ -66,7 +66,6 @@ export class DashboardTreasuryComponent implements OnInit {
     },
     title: {
         display: true,
-        text: 'Atendimento'
     },
     plugins: {
         datalabels: {
