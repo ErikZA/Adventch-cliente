@@ -18,6 +18,7 @@ import { VacancyComponent } from './components/process/vacancy/vacancy.component
 import { ScholarshipService } from './scholarship.service';
 import { ProcessesStore } from './components/process/processes.store';
 import { FeatureGuard } from '../../shared/feature.guard';
+import { ProcessFormDocumentInfoComponent } from './components/process/process-form-document-info/process-form-document-info.component';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { FeatureGuard } from '../../shared/feature.guard';
     PendencyComponent,
     VacancyComponent,
     ResponsibleLoginComponent,
-    ResponsibleDataComponent
+    ResponsibleDataComponent,
+    ProcessFormDocumentInfoComponent
   ],
   entryComponents: [
     PendencyComponent,
