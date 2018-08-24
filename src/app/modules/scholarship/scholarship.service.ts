@@ -15,6 +15,7 @@ import { ProcessDocument } from './models/processDocument';
 import { ProcessResponsibleInterface } from './interfaces/process-responsible-interface';
 import { ProcessCountStatusInterface } from './interfaces/process-count-status-interface';
 import { SchoolProcessInterface } from './interfaces/school-process-interface';
+import { EditProcessViewModel, NewProcessViewModel } from './interfaces/process-view-models';
 
 @Injectable()
 export class ScholarshipService {
@@ -101,20 +102,20 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public saveProcess(process: any): Observable<any> {
+  public saveProcess(process: NewProcessViewModel): Observable<any> {
     const url = '/scholarship/process/';
     return this.http
       .post(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
-  public editProcess(processId: number, process: any): Observable<any> {
+  public editProcess(processId: number, process: NewProcessViewModel): Observable<any> {
     const url = `/scholarship/process/${processId}`;
     return this.http
       .put(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcessById(id: number): Observable<Process> {
+  public getProcessById(id: number): Observable<EditProcessViewModel> {
     const url = `/scholarship/process/getProcess/${id}`;
     return this.http
       .get(url)
