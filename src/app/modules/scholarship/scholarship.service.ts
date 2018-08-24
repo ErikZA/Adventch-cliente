@@ -116,7 +116,7 @@ export class ScholarshipService {
   }
 
   public getProcessById(id: number): Observable<EditProcessViewModel> {
-    const url = `/scholarship/process/getProcess/${id}`;
+    const url = `/scholarship/process/${id}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
