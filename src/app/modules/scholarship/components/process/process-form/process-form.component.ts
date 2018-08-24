@@ -24,6 +24,7 @@ import { auth } from '../../../../../auth/auth';
 import { ProcessDocument } from '../../../models/processDocument';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { School } from '../../../models/school';
+import { NewProcessViewModel, EditProcessViewModel } from '../../../interfaces/process-view-models';
 
 @Component({
   selector: 'app-process-form',
@@ -287,43 +288,4 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   public maskPhone(phone): string {
     return phone.value.length <= 14 ? '(99) 9999-9999' : '(99) 99999-9999';
   }
-}
-interface NewProcessViewModel {
-    bagPorcentage: number;
-    serieId: number;
-    schoolId: number;
-    userId: number;
-    responsible: ResponsibleProcessViewModel;
-    student: StudentProcessViewModel;
-    documents: number[];
-}
-
-interface ResponsibleProcessViewModel extends NewResponsibleViewModel {
-    id: number;
-}
-
-interface NewResponsibleViewModel {
-    cpf: string;
-    name: string;
-    email: string;
-    phone: string;
-}
-
-interface StudentProcessViewModel extends StudentProcessDataViewModel {
-    id: number;
-}
-
-interface StudentProcessDataViewModel {
-    name: string;
-    rc?: number;
-}
-
-interface EditProcessViewModel {
-    id: number;
-    protocol: string;
-    bagPorcentage: number;
-    serieId: number;
-    documents: number[];
-    student: StudentProcessViewModel;
-    responsible: ResponsibleProcessViewModel;
 }
