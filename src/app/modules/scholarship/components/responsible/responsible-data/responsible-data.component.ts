@@ -31,42 +31,17 @@ export class ResponsibleDataComponent implements OnInit {
   ngOnInit() {
     this.loadCurrentResponsible();
     this.loadProcesses();
-    this.getResponsible();
   }
 
-  loadCurrentResponsible() {
+  private loadCurrentResponsible(): void {
     this.responsible = auth.getCurrentResponsible();
   }
 
-  loadProcesses() {
+  private loadProcesses(): void {
     this.processes$ = this.scholarshipService.getProcessesResponsible(this.responsible.id);
   }
 
-  getStatusToString(status) {
-    if (status === 1) {
-      return 'Aguardando Análise';
-    }
-    if (status === 2) {
-      return 'Em análise';
-    }
-    if (status === 3) {
-      return 'Pendente';
-    }
-    if (status === 4) {
-      return 'Aguardando Vaga de Bolsa';
-    }
-    if (status === 5) {
-      return 'Vaga liberada (50%)';
-    }
-    if (status === 6) {
-      return 'Vaga liberada (100%)';
-    }
-    if (status === 7) {
-      return 'Bolsa Indeferida';
-    }
-  }
-
-  getMotiveToReject(motive) {
+  public getMotiveToReject(motive): string {
     if (motive === 'Acadêmico') {
       return 'O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.';
     }
@@ -82,7 +57,7 @@ export class ResponsibleDataComponent implements OnInit {
     return 'Indeferido pela apresentação da documentação inconsistente à análise correspondente.';
   }
 
-  logoff() {
+  public logoff(): void {
     this.router.navigate(['/educacao']);
     auth.logoffResponsible();
   }
@@ -90,13 +65,7 @@ export class ResponsibleDataComponent implements OnInit {
   /*
   AutoScroll
    */
-  onScroll() {
+  public onScroll(): void {
     this.showList += 15;
-  }
-
-  getResponsible(): void {
-    this.scholarshipService.currentResponsible.subscribe(data => {
-      this.responsible = data;
-    });
   }
 }
