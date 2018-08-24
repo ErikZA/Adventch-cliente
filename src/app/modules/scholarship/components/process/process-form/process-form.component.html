@@ -27,7 +27,7 @@
                     </mat-form-field>
                     <mat-form-field fxFlex>
                         <input matInput placeholder="Email" formControlName="email" maxlength="200">
-                        <mat-error *ngIf="formProcess.get('email').hasError('pattern')">
+                        <mat-error *ngIf="formProcess.get('email').hasError('email')">
                             Digite um email válido
                         </mat-error>
                     </mat-form-field>
