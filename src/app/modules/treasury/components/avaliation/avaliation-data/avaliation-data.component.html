@@ -34,7 +34,7 @@
               <mat-select placeholder="Status" (change)="search()" [(ngModel)]="filterStatus">
                 <mat-option [value]="0">TODOS</mat-option>
                 <mat-option [value]="1">Aguardando</mat-option>
-                <mat-option [value]="2">Avaliado</mat-option>
+                <mat-option [value]="2">Avaliando</mat-option>
                 <mat-option [value]="3">Finalizado</mat-option>
               </mat-select>
             </mat-form-field>
@@ -42,7 +42,7 @@
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
               <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
-                <mat-option value="0">TODOS</mat-option>
+                <mat-option [value]="0">TODOS</mat-option>
                 <mat-option *ngFor="let district of districts" [value]="district.id">
                   {{ district.name }}
                 </mat-option>
@@ -52,7 +52,7 @@
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
               <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
-                <mat-option value="0">TODOS</mat-option>
+                <mat-option [value]="0">TODOS</mat-option>
                 <mat-option *ngFor="let analyst of analysts" [value]="analyst.id">
                   {{ analyst.name }}
                 </mat-option>
@@ -96,37 +96,36 @@
         <mat-list>
           <mat-list-item>
             <h3 matLine fxLayout="row">
-              <span fxFlex fxFlex.gt-sm="20%">Código</span>
-              <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Igreja</span>
-              <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Distrito</span>
-              <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Nota</span>
-              <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Status</span>
+              <span fxFlex fxFlex.gt-sm="10%" style="text-align: center">Código</span>
+              <span fxFlex fxFlex.gt-sm="29%">Igreja</span>
+              <span fxFlex fxFlex.gt-sm="29%" fxHide.lt-sm>Distrito</span>
+              <span fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm style="text-align: center">Pontuação</span>
+              <span fxFlex fxFlex.gt-sm="19%" fxHide.lt-sm>Status</span>
             </h3>
           </mat-list-item>
         </mat-list>
         <mat-divider></mat-divider>
       </div>
-      <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()"
-        [scrollWindow]="false">
+      <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
         <mat-accordion>
           <div *ngFor="let avaliation of (avaliations$ | async ); index as i">
             <mat-expansion-panel hideToggle *ngIf="i <= showList">
               <mat-expansion-panel-header>
                 <mat-panel-description fxLayout="row" fxFlex>
-                  <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+                  <span fxFlex fxFlex.gt-sm="10%" style="white-space: line-wrap;" style="text-align: center">
                     {{ avaliation.church.code }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+                  <span fxFlex fxFlex.gt-sm="30%" style="white-space: line-wrap">
                     {{ avaliation.church.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+                  <span fxFlex.gt-sm="30%" fxHide.lt-sm style="white-space: line-wrap">
                     {{ avaliation.church?.district.name }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+                  <span fxFlex.gt-sm="10%" fxHide.lt-sm style="white-space: line-wrap; text-align: center">
                     {{ avaliation.total }}
                   </span>
-                  <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
-                    {{ getStatusString(avaliation) }}
+                  <span fxFlex.gt-sm="20%" fxHide.lt-sm>
+                    <div style="white-space: line-wrap; text-align: center; color: white; font-size: 11px;  padding: 5px; width: 100px;" [ngStyle]="getStatusColor(avaliation)">{{ getStatusString(avaliation) }}</div>
                   </span>
                 </mat-panel-description>
               </mat-expansion-panel-header>
@@ -134,6 +133,15 @@
                 <h3 matSubheader>Informações da avaliação</h3>
                 <mat-list-item fxLayout="row" style="height: auto">
                   <div fxLayout="column" fxFlex matLine>
+                    <span *ngIf="avaliation.church?.district" class="details-title" fxLayout.lt-sm="row" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                      <b>Distrito:&ensp;</b> {{ avaliation.church?.district.name }}
+                    </span>
+                    <span class="details-title" fxLayout.lt-sm="row" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                      <b>Pontuação:&ensp;</b> {{ avaliation.total }}
+                    </span>
+                    <span class="details-title" fxLayout.lt-sm="row" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                      <b>Status:&ensp;</b> <div style="white-space: line-wrap; text-align: center; color: white; font-size: 11px;  padding: 5px; width: 100px;" [ngStyle]="getStatusColor(avaliation)">{{ getStatusString(avaliation) }}</div>
+                    </span>
                     <span class="details-title" fxLayout.lt-sm="column">
                       <b>Tesoureiro(s)</b>
                     </span>
