@@ -30,8 +30,8 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
 
   filterText: string;
   filterIsAnual: number;
-  filterPeriodStart: Date = new Date(new Date().getFullYear(), 0, 1);
-  filterPeriodEnd: Date = new Date(new Date().getFullYear(), 11, 31);
+  years: number[] = new Array<number>();
+  filterYear = 2018;
 
   constructor(
     private authService: AuthService,
@@ -44,7 +44,6 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/requisitos')]);
     this.sidenavService.setSidenav(this.sidenavRight);
     this.subscribeUnit = auth.currentUnit.subscribe(() => {
@@ -55,7 +54,6 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
       this.search();
     });
   }
-
 
   public onScroll() {
     this.showList += 15;
@@ -68,6 +66,7 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
   private getData() {
     this.requirements$ = this.store.requirements$;
     this.store.loadAll();
+    this.loadPeriods();
     // VERIFICAR
     // this.requirements = this.store.dataStore.requirements;
     // this.requirements$.subscribe(() => {
@@ -77,6 +76,14 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
     //     this.search();
     //   }, 200);
     // });
+  }
+
+  private loadPeriods() {
+    var currentYear = new Date().getFullYear();
+    for (var i = this.filterYear; i <= currentYear; i++) {
+      this.years.push(i);
+    }
+    this.filterYear = new Date().getFullYear();
   }
 
   /* Usados pelo component */
@@ -117,7 +124,7 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
       const filter = this.filterIsAnual === 1 ? true : false;
       requirements = this.store.searchStatus(filter, requirements);
     }
-    requirements = this.store.searchInDates(this.filterPeriodStart, this.filterPeriodEnd, requirements);
+    requirements = this.store.searchInPeriod(this.filterYear, requirements);
     this.requirements$ = Observable.of(requirements);
   }
 
@@ -147,7 +154,7 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
   private getDataParams(): any {
     return {
       isAnual: this.filterIsAnual,
-      period: new Date(this.filterPeriodStart).getFullYear(),
+      period: this.filterYear,
       typeName: this.getTypeName()
     };
   }
