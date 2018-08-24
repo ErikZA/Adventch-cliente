@@ -1,18 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/distinctUntilChanged';
 
-
 import { MatSnackBar } from '@angular/material';
 
 import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { ScholarshipService } from '../../../scholarship.service';
-import { ReportService } from '../../../../../shared/report.service';
 
 import { Student } from '../../../models/student';
 import { Process } from '../../../models/process';
@@ -33,13 +30,8 @@ import { NewProcessViewModel, EditProcessViewModel } from '../../../interfaces/p
 })
 export class ProcessFormComponent implements OnInit, OnDestroy {
   formProcess: FormGroup;
-  // formCheckDocuments: FormGroup;
   responsible: Responsible;
-  // student: Student = new Student();
-  // studentsChildren: Student[] = new Array<Student>();
   filterStudentsChildren$: Observable<Student[]>;
-  // formSave = false;
-  // informations = false;
   isSending = false;
   // New
   process: Process;
@@ -52,7 +44,12 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   studentSeries: StudentSerie[] = [];
   processDocuments: ProcessDocument[] = [];
   processDocumentsForm: FormGroup;
-
+  // 1	Documentos Pessoais
+  // 2	Imposto de Renda
+  // 3	Carteira de Trabalho
+  // 4	Comprovantes de Rendimentos
+  // 5	Comprovantes de Despesas
+  // 6	Rendimento Acadêmico
   types = [
     { id: 1, description: 'Documentos Pessoais', controlName: 'doc1', },
     { id: 2, description: 'Imposto de Renda', controlName: 'doc2', },
@@ -69,24 +66,12 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     private scholarshipService: ScholarshipService,
     private sidenavService: SidenavService,
     private route: ActivatedRoute,
-    // private router: Router,s
-    // private authService: AuthService,
     public snackBar: MatSnackBar,
-    private reportService: ReportService,
-    // private store: ProcessesStore,
-    private location: Location,
   ) { }
-
   ngOnInit() {
     this.loading = false;
     this.initForm();
     this.checkCpf();
-// 1	Documentos Pessoais
-// 2	Imposto de Renda
-// 3	Carteira de Trabalho
-// 4	Comprovantes de Rendimentos
-// 5	Comprovantes de Despesas
-// 6	Rendimento Acadêmico
     this.scholarshipService.getStudentSeries().subscribe(series => {
       this.studentSeries = series;
     });
@@ -102,13 +87,11 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
     this.processDocumentsForm = this.formBuilder.group(obj);
     this.route.params.subscribe(({ identifyProcess }) => {
-      console.log('route params', identifyProcess);
       const parsed = parseInt(identifyProcess, 10);
       if (Number.isInteger(parsed)) {
         this.scholarshipService.getProcessById(identifyProcess).subscribe((process: EditProcessViewModel) => {
-          console.log(process);
-          this.setValuesToFormProcess(process);
-          this.setValuesToFormDocuments(process.documents);
+          setTimeout(() => this.setValuesToFormProcess(process), 100);
+          setTimeout(() => this.setValuesToFormDocuments(process.documents), 100);
           this.processId = parsed;
         });
       }
@@ -179,8 +162,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   private setValuesToFormDocuments(documents: number[]) {
     documents.forEach(d => {
       const doc = this.processDocuments.find(pd => pd.id === d);
-
-      console.log('DOC ===>', doc);
       const type = this.types.find(t => t.id === doc.type);
       const control = this.processDocumentsForm.get(type.controlName);
       control.setValue([
@@ -201,18 +182,15 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       bagPorcentage: [null, Validators.required]
     });
   }
-
   public labelTitleProcess(): string {
     return this.process !== undefined && this.process.id !== undefined ? 'Editar' : 'Novo';
   }
-
   public setStudent(student: Student): void {
     if (Number.isInteger(student.rc)) {
       this.formProcess.patchValue({ rc: student.rc });
     }
     this.selectStudent = student;
   }
-
   public closeSidenav(): void {
     this.sidenavService.close();
   }
@@ -261,17 +239,14 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       }
     };
   }
-
   public saveProcess(): void {
     if (!this.processDocumentsForm.valid || !this.formProcess.valid) {
       this.markAstouched();
       return;
     }
     const data = this.mapFormToViewModel();
-    console.log(data);
 
     if (Number.isInteger(this.processId)) {
-      console.log('edit', this.processId);
       this.scholarshipService.editProcess(this.processId, data).subscribe(res => {
         this.handleSaveSuccess();
       });
