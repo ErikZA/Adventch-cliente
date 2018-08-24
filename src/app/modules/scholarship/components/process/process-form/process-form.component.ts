@@ -64,6 +64,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     { id: 6, description: 'Rendimento Acadêmico', controlName: 'doc6' },
   ];
   documentTypes = new BehaviorSubject([]);
+  selectStudent: Student;
   constructor(
     private formBuilder: FormBuilder,
     private scholarshipService: ScholarshipService,
@@ -122,9 +123,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       //   this.store.loadProcessByIdentity(params['identifyProcess']);
       // }
     });
-    // this.subscribeUnit = auth.currentUnit.subscribe(() => {
-    //   this.resetAll();
-    // });
   }
 
   private checkCpf(): void {
@@ -134,39 +132,15 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         this.scholarshipService.getResponsible(cpf).subscribe(responsible => {
           this.students = Array.isArray(responsible.students) ? responsible.students : [];
           this.setFormValuesResponsible(responsible);
+          this.responsible = responsible;
         });
       }
     });
   }
-  // public getDocumnets(): Observable<ProcessDocument[]> {
-  //   return this.processDocuments;
-  // }
+
   public getDocumentsByType(type: number): ProcessDocument[] {
     return this.processDocuments.filter(d => d.type === type);
   }
-  // private loadResponsibles(cpf): void {
-  //   let idSchool = this.scholarshipService.schoolSelected;
-  //   if (idSchool === -1 && this.checkIsEdit()) {
-  //     idSchool = this.process.student.school.id;
-  //   }
-
-  //   this.scholarshipService.getResponsible(idSchool, cpf).subscribe(responsible => {
-  //     this.responsible = Object.assign(this.responsible, responsible as Responsible);
-  //     this.setpatchValuesResponsible();
-  //     if (responsible) {
-  //       this.loadStudentChildres(responsible);
-  //     }
-  //   });
-  // }
-
-  private loadStudentChildres(responsible): void {
-    this.scholarshipService.getChildrenStudents(responsible.id).subscribe((data: Student[]) => {
-      this.studentsChildren = Object.assign(this.studentsChildren, data as Student[]);
-      this.filterStudentsChildren$ = Observable.of(this.studentsChildren);
-    });
-
-  }
-
   private resetAll() {
     this.closeSidenav();
   }
@@ -180,7 +154,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     if (this.studentsChildren) {
       return [];
     }
-
     return this.studentsChildren.filter(student => {
           return student.name.toLowerCase().indexOf(val) !== -1;
       });
@@ -203,7 +176,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       rc: [null],
       nameStudent: [null, Validators.required],
       studentSerieId: [null, Validators.required],
-      bagPorcentage: [50]
+      bagPorcentage: [null, Validators.required]
     });
     this.formCheckDocuments = this.formBuilder.group({
       isPersonalDocuments: [null, Validators.required],
@@ -225,80 +198,61 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     return this.process !== undefined && this.process.id !== undefined ? 'Editar' : 'Novo';
   }
 
-  public setRC(rc: number): void {
-    if (Number.isInteger(rc)) {
-      this.formProcess.patchValue({rc: rc});
+  public setStudent(student: Student): void {
+    if (Number.isInteger(student.rc)) {
+      this.formProcess.patchValue({ rc: student.rc });
     }
-  }
-
-  private editProcess(): void {
-    if (this.process !== undefined && this.process.id !== undefined) {
-      this.formProcess = new FormGroup({
-        cpf: new FormControl({value: this.process.student.responsible.cpf, disabled: true}, Validators.required),
-        name: new FormControl({value: this.process.student.responsible.name, disabled: false}, Validators.required),
-        email: new FormControl({value: this.process.student.responsible.email, disabled: false}),
-        phone: new FormControl({value: this.process.student.responsible.phone, disabled: false}),
-        rc: new FormControl({value: this.process.student.rc || null, disabled: this.process.student.rc ? true : false}),
-        nameStudent: new FormControl({value: this.process.student.name, disabled: false}, Validators.required),
-        studentSerieId: new FormControl({value: this.process.student.studentSerie.id, disabled: false}, Validators.required),
-        bagPorcentage: new FormControl()
-      });
-      this.formProcess.controls['bagPorcentage'].setValue(this.process.bagPorcentage.toString());
-      this.formCheckDocuments = new FormGroup({
-        isPersonalDocuments: new FormControl({value: 'true', disabled: true}, Validators.required),
-        personalOptions: new FormControl(),
-        isIR: new FormControl({value: 'true', disabled: true}, Validators.required),
-        irOptions: new FormControl(),
-        isCTPS: new FormControl({value: 'true', disabled: true}, Validators.required),
-        ctpsOptions: new FormControl(),
-        isIncome: new FormControl({value: 'true', disabled: true}, Validators.required),
-        incomeOptions: new FormControl(),
-        isExpenses: new FormControl({value: 'true', disabled: true}, Validators.required),
-        expensesOptions: new FormControl(),
-        isAcademic: new FormControl({value: 'true', disabled: true}, Validators.required),
-        academicOptions: new FormControl()
-      });
-      this.setDocumentsSelectes(this.process.processDocuments);
-      this.loadStudentChildres(this.process.student.responsible);
-    }
-  }
-
-  private setDocumentsSelectes(documents): void {
-    const docs1 = documents.filter(doc => doc.typeDocument === 1);
-    this.formCheckDocuments.controls['personalOptions'].setValue(docs1.map(s => s.name));
-    const docs2 = documents.filter(doc => doc.typeDocument === 2);
-    this.formCheckDocuments.controls['irOptions'].setValue(docs2.map(s => s.name));
-    const docs3 = documents.filter(doc => doc.typeDocument === 3);
-    this.formCheckDocuments.controls['ctpsOptions'].setValue(docs3.map(s => s.name));
-    const docs4 = documents.filter(doc => doc.typeDocument === 4);
-    this.formCheckDocuments.controls['incomeOptions'].setValue(docs4.map(s => s.name));
-    const docs5 = documents.filter(doc => doc.typeDocument === 5);
-    this.formCheckDocuments.controls['expensesOptions'].setValue(docs5.map(s => s.name));
-    const docs6 = documents.filter(doc => doc.typeDocument === 6);
-    this.formCheckDocuments.controls['academicOptions'].setValue(docs6.map(s => s.name));
+    this.selectStudent = student;
   }
 
   public closeSidenav(): void {
     this.sidenavService.close();
   }
+  private markAstouched() {
+    this.types.forEach(t => {
+      this.processDocumentsForm.get(t.controlName).markAsTouched();
+    });
+
+    this.formProcess.markAsTouched();
+  }
   private getAllDocumentsFromTypes(): number[] {
     const formControls = this.types.map(t => t.controlName);
-
     let result = [];
-
     formControls.forEach(c => {
       const value = this.processDocumentsForm.get(c).value;
       const ar = Array.isArray(value) ? value : [];
-
       result = [
         ...result,
         ...ar
       ];
     });
-
     return result;
   }
-
+  private mapFormToViewModel(): NewProcessViewModel {
+    const user = auth.getCurrentUser();
+    if (!Number.isInteger(user.idSchool) || !Number.isInteger(user.id)) {
+      throw new Error('user id and use schol id is invalid');
+    }
+    return {
+      responsible: {
+        cpf: this.formProcess.value.cpf,
+        email: this.formProcess.value.email,
+        id: this.responsible.id,
+        name: this.formProcess.value.name,
+        phone: this.formProcess.value.phone
+      },
+      bagPorcentage: this.formProcess.value.bagPorcentage,
+      schoolId: user.idSchool,
+      userId: user.id,
+      serieId: this.formProcess.value.studentSerieId,
+      documents: this.getAllDocumentsFromTypes(),
+      student: {
+        id: Number.isInteger(this.selectStudent.id) ? this.selectStudent.id : null,
+        rc: this.formProcess.value.rc,
+        name: this.formProcess.value.nameStudent,
+      }
+    };
+  }
   public saveProcess(): void {
 
 
@@ -306,6 +260,19 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     // console.log(this.formCheckDocuments.valid, this.formCheckDocuments.value);
     console.log(this.processDocumentsForm.valid, this.processDocumentsForm.value);
     console.log('DOCUMENTS', this.getAllDocumentsFromTypes());
+
+    if (!this.processDocumentsForm.valid || !this.formProcess.valid) {
+      this.markAstouched();
+      return;
+    }
+    const data = this.mapFormToViewModel();
+    console.log(data);
+
+    this.scholarshipService.saveProcess(data).subscribe(res => {
+      console.log('SUCESS', res);
+      this.snackBar.open('Processo salvo com sucesso', ' OK', { duration: 2000 });
+      this.closeSidenav();
+    });
     // this.isSending = true;
     // this.formSave = true;
 
@@ -333,20 +300,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     // } else {
     //   this.isSending = false;
     // }
-  }
-
-  private setProcessValues(studentSelected: Student[], idScholSelected: number, status: any, isEdit: boolean): any {
-    return {
-      responsibleId: this.responsible === undefined || this.responsible.id === undefined ? 0 : this.responsible.id,
-      studentId: studentSelected === undefined || studentSelected.length === 0 ? 0 : studentSelected[0].id,
-      schoolId: idScholSelected,
-      unitId: auth.getCurrentUnit().id,
-      status: status,
-      id: isEdit ? this.process.id : 0,
-      userId: auth.getCurrentUser().id,
-      ...this.formProcess.value,
-      ...this.formCheckDocuments.value,
-    };
   }
 
   public checkIsEdit(): boolean {

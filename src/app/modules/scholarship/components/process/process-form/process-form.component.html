@@ -51,7 +51,7 @@
                         <input type="text" placeholder="Aluno" aria-label="Nome do Estudante" required matInput formControlName="nameStudent" [matAutocomplete]="auto"
                             minlength="3">
                         <mat-autocomplete #auto="matAutocomplete">
-                            <mat-option *ngFor="let student of students" (onSelectionChange)="setRC(student.rc)" [value]="student.name">
+                            <mat-option *ngFor="let student of students" (onSelectionChange)="setStudent(student)" [value]="student.name">
                                 ({{ student.rc }}) {{ student.name }}
                             </mat-option>
                         </mat-autocomplete>
@@ -68,12 +68,12 @@
                         </mat-select>
                         <mat-error *ngIf="formProcess.get('studentSerieId').hasError('required')">Este campo é obrigatório</mat-error>
                     </mat-form-field>
-                    <div fxLayout="row" fxLayoutGap="20px">
-                        <label>Porcentagem da Bolsa: </label>
-                        <mat-radio-group formControlName="bagPorcentage">
+                    <div fxLayout="row" fxLayoutGap="20px" style="margin-top: 10px">
+                        <label [ngStyle]="{ 'color': formProcess.get('bagPorcentage').hasError('required') && this.formProcess.touched ? '#d32f2f' : 'rgba(0, 0, 0, 0.42)' }">Porcentagem da Bolsa: </label>
+                        <mat-radio-group formControlName="bagPorcentage" fxLayout="row">
                             <mat-radio-button color="primary" value="50">50%</mat-radio-button>
-                            <mat-radio-button color="primary" value="100">100%</mat-radio-button>
-                            <mat-error class="mat-error-font" *ngIf="formProcess.get('bagPorcentage').hasError('required') && formSave">Este
+                            <mat-radio-button color="primary" value="100" style="margin-left: 5px">100%</mat-radio-button>
+                            <mat-error class="mat-error-font mat-error-right" *ngIf="formProcess.get('bagPorcentage').hasError('required') && this.formProcess.touched">Este
                                 campo é obrigatório</mat-error>
                         </mat-radio-group>
                     </div>
@@ -117,6 +117,7 @@
                             {{ item.name }}
                         </mat-option>
                     </mat-select>
+                    <mat-error class="mat-error-font" align="start" *ngIf="processDocumentsForm.get(documentType.controlName).hasError('required')">Este campo é obrigatório</mat-error>
                 </mat-form-field>
             </div>
         </div>

@@ -94,8 +94,8 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public postProcess(process: Process): Observable<any> {
-    const url = '/scholarship/process/saveProcess';
+  public saveProcess(process: any): Observable<any> {
+    const url = '/scholarship/process/';
     return this.http
       .post(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
