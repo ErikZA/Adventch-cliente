@@ -1,4 +1,3 @@
-import { ProcessResponsibleInterface } from './interfaces/process-responsible-interface';
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
@@ -8,13 +7,14 @@ import 'rxjs/add/operator/catch';
 
 import { AuthService } from '../../shared/auth.service';
 
-import { School } from './models/school';
 import { Student } from './models/student';
 import { Process } from './models/process';
 import { Responsible } from './models/responsible';
 import { StudentSerie } from './models/studentSerie';
 import { ProcessDocument } from './models/processDocument';
+import { ProcessResponsibleInterface } from './interfaces/process-responsible-interface';
 import { ProcessCountStatusInterface } from './interfaces/process-count-status-interface';
+import { SchoolProcessInterface } from './interfaces/school-process-interface';
 
 @Injectable()
 export class ScholarshipService {
@@ -28,8 +28,7 @@ export class ScholarshipService {
 
 
   constructor(
-    private http: HttpClient,
-    private auth: AuthService
+    private http: HttpClient
   ) {
     this.refresh = new Subject<boolean>();
     this.refresh$ = this.refresh.asObservable();
@@ -66,8 +65,16 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getSchools(unitId: number): Observable<School[]> {
+  public getSchools(unitId: number): Observable<SchoolProcessInterface[]> {
     const url = `/scholarship/school/unit/${unitId}`;
+    return this.http
+      .get<SchoolProcessInterface[]>(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public getProcesses(schoolId: number[], unitId: number): Observable<Process[]> {
+    const url = `/scholarship/process/${unitId}`;
+    const params = new HttpParams().set('schools', schoolId.toString());
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
@@ -107,15 +114,8 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcesses(schoolId: number, unitId: number): Observable<Process[]> {
-    const url = `/scholarship/process/getProcesses/${schoolId}/${unitId}`;
-    return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
-  }
-
-  public getProcessById(id: number): Observable<any> {
-    const url = `/scholarship/process/${id}`;
+  public getProcessById(id: number): Observable<Process> {
+    const url = `/scholarship/process/getProcess/${id}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
