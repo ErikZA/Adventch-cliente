@@ -124,17 +124,18 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.subscribe1 = this.sharedService.getUnits(userId).subscribe((data: Unit[]) => {
         this.setUnitsToLocalStorage(data);
         this.lstUnits = data;
-        if (data) {
-          if (!this.unit || this.unit === null || this.unit === undefined) {
-            this.unit = data[0];
-            this.updateUnit(this.unit);
-          } else {
-            this.updateUnit(this.unit);
-          }
-        }
       });
     } else {
       this.lstUnits = localUnits;
+    }
+
+    if (Array.isArray(this.lstUnits)) {
+      if (!this.unit || this.unit === null || this.unit === undefined) {
+        this.unit = this.lstUnits[0];
+        this.updateUnit(this.unit);
+      } else {
+        this.updateUnit(this.unit);
+      }
     }
   }
   public redirectToHome() {
