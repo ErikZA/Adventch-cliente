@@ -11,6 +11,7 @@ import { AuthService } from '../../../../../shared/auth.service';
 import { Observation } from '../../../models/observation';
 import { auth } from '../../../../../auth/auth';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
+import { ReportService } from '../../../../../shared/report.service';
 
 
 @Component({
@@ -39,6 +40,7 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
     private sidenavService: SidenavService,
     public store: RequirementStore,
     private confirmDialogService: ConfirmDialogService,
+    private reportService: ReportService
   ) { }
 
   ngOnInit() {
@@ -121,5 +123,42 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
 
+  }
+
+
+
+  public generateGeneralReport(): void {
+    const data = this.getDataParams();
+    this.reportService.reportRequirementsGeral(data).subscribe(urlData => {
+      const fileUrl = URL.createObjectURL(urlData);
+        let element;
+        element = document.createElement('a');
+        element.href = fileUrl;
+        element.download = 'requisitos-relatorio_geral.pdf';
+        element.target = '_blank';
+        element.click();
+        //this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+    }, err => {
+      console.log(err);
+        //this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+    });
+  }
+
+  private getDataParams(): any {
+    return {
+      isAnual: this.filterIsAnual,
+      period: new Date(this.filterPeriodStart).getFullYear(),
+      typeName: this.getTypeName()
+    };
+  }
+
+  private getTypeName(): string {
+    if (this.filterIsAnual === 0) {
+      return "TODOS";
+    }
+    if (this.filterIsAnual === 1) {
+      return "Anual";
+    }
+    return "Mensal";
   }
 }
