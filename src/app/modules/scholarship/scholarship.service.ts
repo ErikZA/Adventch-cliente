@@ -107,6 +107,12 @@ export class ScholarshipService {
       .post(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+  public editProcess(processId: number, process: any): Observable<any> {
+    const url = `/scholarship/process/${processId}`;
+    return this.http
+      .put(url, process)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 
   public getProcessById(id: number): Observable<Process> {
     const url = `/scholarship/process/getProcess/${id}`;
