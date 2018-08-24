@@ -105,17 +105,15 @@ const routes: Routes = [
   {
     path: 'avaliacoes', component: LayoutComponent, children: [
       { path: '', component: AvaliationDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
-        { path: 'avaliar', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.AVALIACOES,
-          permission: EPermissions.CRIAR
+        { path: ':id/mensal', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
+          feature: EFeatures.AVALIARMENSALMENTE
         } },
-        { path: ':id/avaliar', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.AVALIACOES,
-          permission: EPermissions.EDITAR
+        { path: ':id/anual', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
+          feature: EFeatures.AVALIARANUALMENTE
         } }
       ],
       data: {
-        feature: EFeatures.AVALIACOES
+        feature: EFeatures.LISTARAVALIACOES
       }
     }]
   },
@@ -130,8 +128,18 @@ const routes: Routes = [
     path: 'requisitos', component: LayoutComponent, children: [
       { path: '', component: RequirementDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children:
         [
-          { path: 'novo', component:  RequirementFormComponent/*, canActivate: [FeatureGuard], canLoad: [FeatureGuard] */},
-          { path: ':id/editar', component: RequirementFormComponent /*, canActivate: [FeatureGuard], canLoad: [FeatureGuard] */}
+          { path: 'novo', component:  RequirementFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], 
+            data: { 
+              feature: EFeatures.REQUISITOS,
+              permission: EPermissions.CRIAR
+            }
+          },
+          { path: ':id/editar', component: RequirementFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard],
+            data: {
+              feature: EFeatures.REQUISITOS,
+              permission: EPermissions.EDITAR
+            }
+          }
         ],
         data: {
           feature: EFeatures.REQUISITOS
