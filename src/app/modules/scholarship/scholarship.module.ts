@@ -11,7 +11,6 @@ import { ScholarshipComponent } from './components/process/scholarship.component
 import { ProcessFormComponent } from './components/process/process-form/process-form.component';
 import { ProcessDataComponent } from './components/process/process-data/process-data.component';
 import { ResponsibleDataComponent } from './components/responsible/responsible-data/responsible-data.component';
-import { ResponsibleLoginComponent } from './components/responsible/responsible-login/responsible-login.component';
 import { PendencyComponent } from './components/process/pendency/pendency.component';
 import { VacancyComponent } from './components/process/vacancy/vacancy.component';
 
@@ -39,7 +38,6 @@ import { ProcessFormDocumentInfoComponent } from './components/process/process-f
     ProcessFormComponent,
     PendencyComponent,
     VacancyComponent,
-    ResponsibleLoginComponent,
     ResponsibleDataComponent,
     ProcessFormDocumentInfoComponent
   ],

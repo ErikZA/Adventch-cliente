@@ -1,5 +1,6 @@
+import { ProcessResponsibleInterface } from './interfaces/process-responsible-interface';
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -13,6 +14,7 @@ import { Process } from './models/process';
 import { Responsible } from './models/responsible';
 import { StudentSerie } from './models/studentSerie';
 import { ProcessDocument } from './models/processDocument';
+import { ProcessCountStatusInterface } from './interfaces/process-count-status-interface';
 
 @Injectable()
 export class ScholarshipService {
@@ -56,8 +58,16 @@ export class ScholarshipService {
 
 
   // New
+  public getProcessCountStatus(unitId: number): Observable<ProcessCountStatusInterface> {
+    const url = `/scholarship/process/status/unit/${unitId}/count`;
+    const params = new HttpParams().set('schoolId', this.schoolSelected.toString());
+    return this.http
+      .get<ProcessCountStatusInterface>(url, { params: params })
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
   public getSchools(unitId: number): Observable<School[]> {
-    const url = '/scholarship/Process/getAllSchools/' + unitId;
+    const url = `/scholarship/school/unit/${unitId}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
@@ -169,32 +179,6 @@ export class ScholarshipService {
   /*
   Consult
    */
-
-  login(cpf: string, password: string) {
-    const body = JSON.stringify({ cpf: cpf, password: password });
-    return this.http
-      .post<any>('/scholarship/responsible/login', body)
-      .retry(3)
-      .toPromise()
-      .then(data => {
-        let responsible = data.responsible as Responsible;
-        if (responsible) {
-          // user.photoUrl = `${environment.apiUrl}/users/photo/${user.identifier}/${user.photoDate}`;
-          localStorage.setItem('currentResponsible', JSON.stringify(responsible));
-          localStorage.setItem('token', data.token);
-          this.currentResponsible.emit(responsible);
-          this.showApp.emit(true);
-        } else {
-          responsible = new Responsible();
-          this.currentResponsible.emit(responsible);
-          this.showApp.emit(false);
-        }
-        return responsible;
-      }).catch((error: any) => {
-        Promise.reject(error);
-      });
-  }
-
   public getPasswordResponsible(processId: number): Observable<Responsible> {
     const url = `/scholarship/responsible/getPasswordByProcess/${processId}`;
     return this.http
@@ -209,10 +193,10 @@ export class ScholarshipService {
     .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcessesResponsible(responsibleId): Observable<Process[]> {
-    const url = `/scholarship/responsible/getAllProcesses/${responsibleId}`;
+  public getProcessesResponsible(responsibleId): Observable<ProcessResponsibleInterface[]> {
+    const url = `/scholarship/responsible/${responsibleId}/processes`;
     return this.http
-      .get(url)
+      .get<ProcessResponsibleInterface[]>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }
