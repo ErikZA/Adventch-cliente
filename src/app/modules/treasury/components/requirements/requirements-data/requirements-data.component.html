@@ -62,7 +62,7 @@
               <span fxFlex fxFlex.gt-sm="15%">Posição</span>
               <span fxFlex fxFlex.gt-sm="35%">Nome</span>
               <span fxFlex fxFlex.gt-sm="35%" fxHide.lt-sm>Nota</span>
-              <span fxFlex fxFlex.gt-sm="15%" fxHide.lt-sm>Data</span>
+              <span fxFlex fxFlex.gt-sm="15%" fxHide.lt-sm>Período</span>
             </h3>
           </mat-list-item>
         </mat-list>
@@ -78,7 +78,7 @@
                   <span fxFlex fxFlex.gt-sm="15%" style="white-space: line-wrap;">{{ requirement.position }}</span>
                   <span fxFlex fxFlex.gt-sm="35%" style="white-space: line-wrap;">{{ requirement.name }}</span>
                   <span fxFlex fxFlex.gt-sm="35%" style="white-space: line-wrap;">{{ requirement.score }}</span>
-                  <span fxFlex fxFlex.gt-sm="15%" style="white-space: line-wrap;">{{ requirement.date | date: "dd/MM/yyyy" }}</span>
+                  <span fxFlex fxFlex.gt-sm="15%" style="white-space: line-wrap;">{{ requirement.date | date: "yyyy" }}</span>
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <mat-list>
