@@ -5,7 +5,6 @@
     <div fxLayout="row" fxLayoutAlign="end">
         <button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
         <mat-icon>account_circle</mat-icon>
-            <!-- <img class="material-icons mat-36 circle-18" src="{{app.currentUser.photoUrl}}?size=36" *ngIf="app.currentUser.photoDate !== ''">-->
       </button>
         <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
         <table style="line-height: normal; text-align: right;">
@@ -47,12 +46,12 @@
                 </div>
                 <div layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
                     <mat-accordion>
-                        <div *ngFor="let process of processes; index as i">
+                        <div *ngFor="let process of (processes$ | async); index as i">
                             <mat-expansion-panel hideToggle *ngIf="i <= showList">
                                 <mat-expansion-panel-header>
                                     <mat-panel-description fxLayout="row" fxFlex>
                                         <span fxFlex="40%" style="white-space: nowrap;">
-                                            {{ process.student.name }}
+                                            {{ process.nameStudent }}
                                         </span>
                                         <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">
                                             {{ process.protocol }}
@@ -61,7 +60,7 @@
                                             {{ process.dateRegistration | date: 'dd/MM/yyyy' }}
                                         </span>
                                         <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">
-                                            {{ process.statusString }}
+                                            {{ process.status.name }}
                                         </span>
                                     </mat-panel-description>
                                 </mat-expansion-panel-header>
@@ -70,18 +69,18 @@
                                         <span class="text-bold" class="details-title"><b>Protocolo:</b> {{ process.protocol }}</span>
                                     </div>
                                     <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
-                                        <span class="text-bold" class="details-title"><b>Status:</b> {{ process.statusString }}</span>
+                                        <span class="text-bold" class="details-title"><b>Status:</b> {{ process.status.name }}</span>
                                     </div>
                                     <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
                                         <span *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title"><b>Matrícula até:</b> {{ process.dateRegistration | date: 'dd/MM/yyyy' }}</span>
                                     </div>
                                     <div *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title">
-                                      <b>Pendência: (Documento(s) <span *ngIf="!process.isSendDocument">Não</span> Enviado(s))</b>
-                                      <div class="style-text">{{ process.pendency }}</div>
+                                        <b>Pendência: (Documento(s) <span *ngIf="!process.isSendDocument">Não</span> Enviado(s))</b>
+                                        <div class="style-text">{{ process.pendency }}</div>
                                     </div>
                                     <div *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title">
-                                      <b>{{ process.motiveReject }}: </b>
-                                      <div class="style-text">{{ getMotiveToReject(process.motiveReject) }}</div>
+                                        <b>{{ process.motiveReject }}: </b>
+                                        <div class="style-text">{{ getMotiveToReject(process.motiveReject) }}</div>
                                     </div>
                                 </mat-list>
                             </mat-expansion-panel>

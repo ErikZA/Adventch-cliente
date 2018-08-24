@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs/Observable';
+import { ProcessResponsibleInterface } from './../../../interfaces/process-responsible-interface';
 import { Component, OnInit } from '@angular/core';
 
 import { AuthService } from '../../../../../shared/auth.service';
@@ -16,12 +18,12 @@ import { Router } from '@angular/router';
 export class ResponsibleDataComponent implements OnInit {
   responsible: Responsible;
   processes: Process[] = new Array<Process>();
+  processes$: Observable<ProcessResponsibleInterface[]>;
 
   get year(): number { return new Date().getFullYear(); }
   showList = 15;
 
   constructor(
-    private authService: AuthService,
     private scholarshipService: ScholarshipService,
     private router: Router
   ) { }
@@ -37,14 +39,7 @@ export class ResponsibleDataComponent implements OnInit {
   }
 
   loadProcesses() {
-    this.scholarshipService.getProcessesResponsible(this.responsible.id).subscribe((data: Process[]) => {
-      this.processes = Object.assign(this.processes, data as Process[]);
-      this.processes.forEach(
-        item => {
-          item.statusString = this.getStatusToString(item.status);
-        }
-      );
-    });
+    this.processes$ = this.scholarshipService.getProcessesResponsible(this.responsible.id);
   }
 
   getStatusToString(status) {
