@@ -53,8 +53,7 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
   }
 
   private getAllDatas(): void {
-    const unit = auth.getCurrentUnit();
-    this.schools$ = this.scholarshipService.getSchools(unit.id);
+    this.schools$ = this.scholarshipService.getSchools();
     this.getCountProcesses();
   }
 

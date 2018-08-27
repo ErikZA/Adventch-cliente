@@ -1,0 +1,26 @@
+<div fxLayout="column" *ngIf="loading">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <p class="text-bold">{{ getNameTypeDocument() }}:</p>
+        <mat-chip-list>
+            <mat-chip>Enviado(s)</mat-chip>
+        </mat-chip-list>
+    </div>
+    <div *ngFor="let document of documents">
+        <div class="text-description" *ngIf="document.type === type">{{ document.name }}</div>
+    </div>
+</div>
+
+<!-- <div *ngIf="process.pendency != null && process.status.id === 3" class="text-bold" class="details-title break-line">
+    <b>Pendência:
+        <mat-slide-toggle class="padding-left-medium" [checked]="process.isSendDocument" (change)="sendDocuments($event, process)" color="primary">Documento(s) Enviado(s)</mat-slide-toggle>
+    </b>
+    <div class="style-text">{{ process.pendency }}</div>
+</div>
+<div *ngIf="process.dateRegistration != null && (process.status.id == 5 || process.status.id ==6)" class="text-bold" class="details-title">
+    <b>Matrícula: </b>
+    <div class="style-text">até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</div>
+</div>
+<div *ngIf="process.motiveReject != null && (process.status.id === 7)" class="text-bold" class="details-title">
+    <b>{{ process.motiveReject }}: </b>
+    <div class="style-text">{{ getMotiveToReject(process.motiveReject) }}</div>
+</div> -->
