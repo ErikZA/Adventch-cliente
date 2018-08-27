@@ -88,15 +88,15 @@ export class ProcessesStore {
   }
 
   private loadAllProcesses(): void {
-    let idSchool;
-    idSchool = auth.getCurrentUser().idSchool === 0 ? -1 : auth.getCurrentUser().idSchool;
-    const { id } = auth.getCurrentUnit();
-    this.service.getProcesses(idSchool, id).subscribe(data => {
-      this.setStatus(data);
-      this.setStudentsSerie(data);
-      this.dataStore.processes = data;
-      this._processes.next(Object.assign({}, this.dataStore).processes);
-    }, error => console.log('Could not load todos processes.'));
+    // let idSchool;
+    // idSchool = auth.getCurrentUser().idSchool === 0 ? -1 : auth.getCurrentUser().idSchool;
+    // const { id } = auth.getCurrentUnit();
+    // this.service.getProcesses(idSchool, id).subscribe(data => {
+    //   this.setStatus(data);
+    //   this.setStudentsSerie(data);
+    //   this.dataStore.processes = data;
+    //   this._processes.next(Object.assign({}, this.dataStore).processes);
+    // }, error => console.log('Could not load todos processes.'));
   }
 
   private loadSeriesStudents(): void {
