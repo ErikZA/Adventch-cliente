@@ -35,10 +35,8 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   churches$: Observable<Church[]>;
   churches: Church[] = new Array<Church>();
 
-  cities$: Observable<City[]>;
   cities: City[] = new Array<City>();
-
-  analysts$: Observable<User[]>;
+  analysts: User[] = new Array<User>();
   districts: Districts[] = new Array<Districts>();
 
   filterDistrict: number;
@@ -57,7 +55,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.getData();
+    //this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
     this.search$.subscribe(search => {
       this.filterText = search;
@@ -77,30 +75,35 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   private getData() {
     this.churches$ = this.store.churches$;
     this.store.loadAll();
-    this.loadAll();
-    this.churches$.subscribe(() => {
-      this.store.loadFilters();
+    //this.loadAll();
+    this.churches$.subscribe(x => {
+      this.loadAll(x);
     });
   }
 
-  private loadAll() {
-    this.loadDistricts();
-    this.loadCities();
-    this.loadAnalysts();
+  private loadAll(x: Church[]): void {
+    this.loadCities(x);
+    this.loadAnalysts(x);
   }
 
-  private loadDistricts() {
-    this.service.getDistricts(auth.getCurrentUnit().id).subscribe((data: Districts[]) => {
-      this.districts = data;
+  private loadCities(x: Church[]): void {
+    this.churches = new Array<Church>();
+    x.forEach(church => {
+      if (this.cities.map(x => x.id).indexOf(church.city.id) === -1) {
+        this.cities.push(church.city);
+      }
     });
+    this.cities.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  private loadCities() {
-    this.cities$ = this.store.cities$;
-  }
-
-  private loadAnalysts() {
-    this.analysts$ = this.store.analysts$;
+  private loadAnalysts(x: Church[]): void {
+    this.analysts = new Array<User>();
+    x.forEach(church => {
+      if (church.district.id !== 0 && this.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
+        this.analysts.push(church.district.analyst);
+      }
+    });
+    this.analysts.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   /* Usados pelo component */

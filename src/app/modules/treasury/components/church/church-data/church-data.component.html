@@ -39,7 +39,7 @@
                         <mat-form-field>
                             <mat-select placeholder="Cidade" (change)="search()" [(ngModel)]="filterCity">
                                 <mat-option value="0">TODOS</mat-option>
-                                <mat-option *ngFor="let city of (cities$ | async ); index as i" [value]="city.id">
+                                <mat-option *ngFor="let city of cities" [value]="city.id">
                                     {{ city.name }}
                                 </mat-option>
                             </mat-select>
@@ -49,7 +49,7 @@
                         <mat-form-field>
                             <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
                                 <mat-option value="0">TODOS</mat-option>
-                                <mat-option *ngFor="let analyst of (analysts$ | async ); index as i" [value]="analyst.id">
+                                <mat-option *ngFor="let analyst of analysts" [value]="analyst.id">
                                     {{ analyst.name }}
                                 </mat-option>
                             </mat-select>
