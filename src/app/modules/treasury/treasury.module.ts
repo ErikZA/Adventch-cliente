@@ -29,6 +29,7 @@ import { RequirementStore } from './components/requirements/requirements.store';
 import { AvaliationDataComponent } from './components/avaliation/avaliation-data/avaliation-data.component';
 import { AvaliationFormComponent } from './components/avaliation/avaliation-form/avaliation-form.component';
 import { AvaliationStore } from './components/avaliation/avaliation.store';
+import { AvaliationReportComponent } from './components/dashboard/avaliation-report/avaliation-report-component';
 
 @NgModule({
   imports: [
@@ -52,7 +53,8 @@ import { AvaliationStore } from './components/avaliation/avaliation.store';
     RequirementDataComponent,
     RequirementFormComponent,
     AvaliationDataComponent,
-    AvaliationFormComponent
+    AvaliationFormComponent,
+    AvaliationReportComponent
   ],
   providers: [
     TreasuryService,
@@ -63,7 +65,10 @@ import { AvaliationStore } from './components/avaliation/avaliation.store';
     DistrictsStore,
     ObservationStore,
     RequirementStore,
-    AvaliationStore
+    AvaliationStore,
+  ],
+  entryComponents: [
+    AvaliationReportComponent
   ]
 })
 export class TreasuryModule { }

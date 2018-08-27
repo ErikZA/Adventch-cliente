@@ -1,0 +1,49 @@
+<div fxLayout="row" fxLayoutAlign="end center">
+    <button mat-icon-button type="button" matTooltip="Fechar" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+
+<div fxFlex.gt-sm="95%" fxFlex="97%">
+    <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
+        <h2 style="color: gray;" *ngIf="!searchButton">Lista de tesoureiros avaliados</h2>
+        <mat-form-field *ngIf="searchButton" fxFlex>
+            <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
+        </mat-form-field>
+        <div class="buttons" fxLayoutAlign="start center">
+            <button mat-icon-button matTooltip="Pesquisar papel" (click)="searchButton = !searchButton">
+                <mat-icon aria-label="Pesquisar Papel">search</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>
+<mat-divider></mat-divider>
+
+<div fxFlex>
+    <div class="header">
+        <mat-list>
+            <mat-list-item>
+                <h3 matLine fxLayout="row">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex>
+                        <span fxFlex="30%">Posição</span>
+                        <span fxFlex="50%">Nome</span>
+                        <span fxFlex="40%">Nota</span>
+                        <span fxFlex></span>
+                    </div>
+                </h3>
+            </mat-list-item>
+        </mat-list>
+        <mat-divider></mat-divider>
+    </div>
+    <mat-list class="conteiner" layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()"
+        [scrollWindow]="false">
+        <div>
+            <mat-list-item class="break-line" *ngFor="let data of avaliationReport; index as i" fxFlex>
+                <span class="text-color-item" fxFlex="30%">{{ data.position }}º</span>
+                <span class="text-color-item" fxFlex="50%">{{ data.name }}</span>
+                <span class="text-color-item" fxFlex="40%">{{ data.notes }}</span>
+                <mat-divider></mat-divider>
+            </mat-list-item>
+        </div>
+    </mat-list>
+</div>

@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { TreasuryService } from '../../treasury.service';
 import { auth } from '../../../../auth/auth';
+import { MatDialog } from '@angular/material';
+import { AvaliationReportComponent } from './avaliation-report/avaliation-report-component';
 
 @Component({
   selector: 'app-dashboard-treasury',
@@ -86,6 +88,7 @@ export class DashboardTreasuryComponent implements OnInit {
     private media: ObservableMedia,
     private service: TreasuryService,
     private changeDetector: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -108,6 +111,18 @@ export class DashboardTreasuryComponent implements OnInit {
         this.getCardAvaliationsData(data.cardAvaliationData);
       }
     });
+  }
+
+  openDialog() {
+  const dialogRef = this.dialog.open(AvaliationReportComponent, {
+    height: '500px',
+    width: '600px',
+  });
+  dialogRef.afterClosed().subscribe(result => {
+    if (!result) {
+      return;
+    }
+  });
   }
 
   getCardChurchesData(array) {
@@ -180,7 +195,6 @@ export class DashboardTreasuryComponent implements OnInit {
     value.push({data: data});
     this.chartAvaliationsData =  value;
     this.chartAvaliationsLabels = labels;
-    console.log(this.chartAvaliationsData);
   }
 
   checkEmpty(array) {
