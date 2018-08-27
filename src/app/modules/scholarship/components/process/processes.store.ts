@@ -106,27 +106,27 @@ export class ProcessesStore {
     });
   }
 
-  public loadProcess(id: number) {
-    this.service.getProcessById(id).subscribe(data => {
-      let notFound = true;
-      data.statusString = this.getStatusToString(data.status);
-      data = this.setStudentSerieName(data);
-      if (this.dataStore.processes != null) {
-        this.dataStore.processes.forEach((item, index) => {
-          if (item.id === data.id) {
-            this.dataStore.processes[index] = data;
-            notFound = false;
-          }
-        });
-      } else {
-        this.dataStore.processes = new Array<Process>();
-      }
-      if (notFound) {
-        this.dataStore.processes.push(data);
-      }
-      this._processes.next(Object.assign({}, this.dataStore).processes);
-    }, error => console.log('Could not load todo.'));
-  }
+  // public loadProcess(id: number) {
+  //   this.service.getProcessById(id).subscribe(data => {
+  //     let notFound = true;
+  //     data.statusString = this.getStatusToString(data.status);
+  //     data = this.setStudentSerieName(data);
+  //     if (this.dataStore.processes != null) {
+  //       this.dataStore.processes.forEach((item, index) => {
+  //         if (item.id === data.id) {
+  //           this.dataStore.processes[index] = data;
+  //           notFound = false;
+  //         }
+  //       });
+  //     } else {
+  //       this.dataStore.processes = new Array<Process>();
+  //     }
+  //     if (notFound) {
+  //       this.dataStore.processes.push(data);
+  //     }
+  //     this._processes.next(Object.assign({}, this.dataStore).processes);
+  //   }, error => console.log('Could not load todo.'));
+  // }
 
   public loadProcessByIdentity(identity: string) {
     this.service.getProcessByIdentity(identity).subscribe((data: Process) => {
