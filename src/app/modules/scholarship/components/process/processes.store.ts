@@ -69,7 +69,7 @@ export class ProcessesStore {
 
   public loadSchools(): void {
     const { id } = auth.getCurrentUnit();
-    this.service.getSchools(id).subscribe((data: School[]) => {
+    this.service.getSchools().subscribe((data: School[]) => {
       this.dataStore.schools = data;
       this._schools.next(Object.assign({}, this.dataStore).schools);
     }, error => console.log('Could not load todos schools.'));
@@ -77,7 +77,7 @@ export class ProcessesStore {
 
   public loadAllSchools(): void {
     const { id } = auth.getCurrentUnit();
-    this.service.getSchools(id).subscribe((data: School[]) => {
+    this.service.getSchools().subscribe((data: School[]) => {
       if (auth.getCurrentUser().idSchool === 0) {
         this.dataStore.schools = data;
       } else {
