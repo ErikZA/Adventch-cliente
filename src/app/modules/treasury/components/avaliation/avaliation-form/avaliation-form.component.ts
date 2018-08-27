@@ -12,6 +12,7 @@ import { auth } from '../../../../../auth/auth';
 import { AvaliationRequirement } from '../../../models/avaliationRequirement';
 import { forEach } from '@angular/router/src/utils/collection';
 import { Church } from '../../../models/church';
+import { Observation } from '../../../models/observation';
 
 @Component({
   selector: 'app-avaliation-form',
@@ -30,6 +31,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   public requirements: Requirement[] = new Array<Requirement>();
   public checks: boolean[] = new Array<boolean>();
   public avaliationRequirements: AvaliationRequirement[] = new Array<AvaliationRequirement>();
+  public observations: Observation[] = new Array<Observation>();
 
   constructor(
     public store: AvaliationStore,
@@ -79,6 +81,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
         this.setValue();
       });
     }
+    this.loadObservations();
   }
 
   private setValue(){
@@ -149,6 +152,12 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  private loadObservations(): void {
+    this.service.getObservationByChurch(this.store.churchAvaliation.church.id, new Date(this.store.period).getFullYear()).subscribe((data: Observation[]) => {
+      this.observations = data;
+    });
+  }
+
   updateCheck(avaliationRequirement: AvaliationRequirement): void {
     avaliationRequirement.check = !avaliationRequirement.check;
     this.updateNote(avaliationRequirement);
@@ -195,5 +204,9 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
 
     let date = new Date(this.store.period);  
     return date.getMonth() + 1 + "/" + date.getFullYear();
+  }
+
+  public expandPanel(matExpansionPanel): void {
+    matExpansionPanel.toggle();
   }
 }

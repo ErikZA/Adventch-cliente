@@ -51,7 +51,7 @@ export class AvaliationStore {
   public loadAll(): void {
     const unit = auth.getCurrentUnit();
     this.service.getAvaliations(unit.id).subscribe((data: any[]) => {
-      this.dataStore.avaliations = data;
+      this.dataStore.avaliations = data;      
       this._avaliations.next(Object.assign({}, this.dataStore).avaliations);
       this.loadDistricts()
     });
@@ -178,10 +178,8 @@ export class AvaliationStore {
 
   /*Salvar*/    
   public save(data): void {
-    debugger;
     this.service.postAvaliation(data).subscribe((profile: Avaliation) => {
       setTimeout(() => {
-        debugger;
         this.location.back();
         this.sidenavService.close();
         this.avaliation = new Avaliation();

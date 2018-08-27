@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav, MatSnackBar } from '@angular/material';
 
 import { Subject, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -52,7 +52,8 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private store: AvaliationStore,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -73,7 +74,10 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   }
 
   getData() {
-    this.avaliations$ = this.store.avaliations$;
+    //this.avaliations$ = this.store.avaliations$;
+    this.store.avaliations$.subscribe(x => {
+      this.avaliations$ = Observable.of(x);
+    });
     this.store.loadAll();
     this.loadFilters();
   }
@@ -122,14 +126,14 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   mensal(churchAvaliation: ChurchAvaliation) {
     this.setStoreValues(churchAvaliation);
     this.store.isMensal = true;
-    this.router.navigate([churchAvaliation.church.id, 'avaliar'], { relativeTo: this.route });
+    this.router.navigate([churchAvaliation.church.id, 'mensal'], { relativeTo: this.route });
     this.openSidenav();
   }
 
   anual(churchAvaliation: ChurchAvaliation) {
     this.setStoreValues(churchAvaliation);
     this.store.isMensal = false;
-    this.router.navigate([churchAvaliation.church.id, 'avaliar'], { relativeTo: this.route });
+    this.router.navigate([churchAvaliation.church.id, 'anual'], { relativeTo: this.route });
     this.openSidenav();
   }
 
@@ -174,10 +178,29 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
     if (!avaliation) {
       return "Aguardando";
     }
+    return this.getLabel(avaliation.status);
+  }
+
+  public getStatusColor(churchAvaliation: ChurchAvaliation): any {
+    var avaliation = churchAvaliation.avaliations.filter(f => this.getMonth(f.date) === this.filterMonth && this.getYear(f.date) === this.filterYear && f.isMensal)[0];
+    if (!avaliation) {
+      return { "background-color": "#F93434" };
+    }
     switch (avaliation.status) {
       case EAvaliationStatus.Valued:
-        return "Avaliado";
+        return { "background-color": "#f1aa40" };
       case EAvaliationStatus.Finished:
+        return { "background-color": "#91c957" };
+      default:
+        return { "background-color": "#F93434" };
+    }
+  }
+
+  private getLabel(id): string {
+    switch (id) {
+      case 2:
+        return "Avaliando";
+      case 3:
         return "Finalizado";
       default:
         return "Aguardando";
@@ -202,25 +225,24 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
         element.download = 'avaliacoes-relatorio_geral.pdf';
         element.target = '_blank';
         element.click();
-        //this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+        this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
     }, err => {
       console.log(err);
-        //this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+        this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
     });
   }
 
   private getDataParams(): any {
     const district = this.districts.find(f => f.id === this.filterDistrict);
     const analyst = this.analysts.find(f => f.id === this.filterAnalyst);
-    //const period = this.filterPeriod;
     return {
       statusId: this.filterStatus,
-      //statusName: this.getStatusString(this.filterStatus),
+      statusName: this.getLabel(this.filterStatus),
       districtId: this.filterDistrict,
       districtName: district === undefined ? 'TODOS' : district.name,
       analystId: this.filterAnalyst,
       analystName: analyst === undefined ? 'TODOS' : analyst.name,
-      period: this.filterYear,
+      year: this.filterYear,
     };
   }
 

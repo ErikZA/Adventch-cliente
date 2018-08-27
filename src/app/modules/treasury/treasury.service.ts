@@ -258,16 +258,26 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+  
   postAvaliation(data): Observable<any> {
     const url = '/treasury/avaliation/postAvaliation';
     return this.http
       .post(url, data)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+
   finalizeAvaliation(data): Observable<any> {
     const url = '/treasury/avaliation/finalizeAvaliation/';
     return this.http
       .put(url, data)
       .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  getObservationByChurch(churchId, year): Observable<Observation[]> {
+    const url = `/treasury/avaliation/getObservations/${churchId}/${year}`;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
 }

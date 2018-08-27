@@ -11,6 +11,7 @@ import { AuthService } from '../../../../../shared/auth.service';
 import { Observation } from '../../../models/observation';
 import { auth } from '../../../../../auth/auth';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
+import { ReportService } from '../../../../../shared/report.service';
 
 
 @Component({
@@ -29,8 +30,8 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
 
   filterText: string;
   filterIsAnual: number;
-  filterPeriodStart: Date = new Date(new Date().getFullYear(), 0, 1);
-  filterPeriodEnd: Date = new Date(new Date().getFullYear(), 11, 31);
+  years: number[] = new Array<number>();
+  filterYear = 2018;
 
   constructor(
     private authService: AuthService,
@@ -39,10 +40,10 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
     private sidenavService: SidenavService,
     public store: RequirementStore,
     private confirmDialogService: ConfirmDialogService,
+    private reportService: ReportService
   ) { }
 
   ngOnInit() {
-    this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/requisitos')]);
     this.sidenavService.setSidenav(this.sidenavRight);
     this.subscribeUnit = auth.currentUnit.subscribe(() => {
@@ -53,7 +54,6 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
       this.search();
     });
   }
-
 
   public onScroll() {
     this.showList += 15;
@@ -66,6 +66,7 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
   private getData() {
     this.requirements$ = this.store.requirements$;
     this.store.loadAll();
+    this.loadPeriods();
     // VERIFICAR
     // this.requirements = this.store.dataStore.requirements;
     // this.requirements$.subscribe(() => {
@@ -75,6 +76,14 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
     //     this.search();
     //   }, 200);
     // });
+  }
+
+  private loadPeriods() {
+    var currentYear = new Date().getFullYear();
+    for (var i = this.filterYear; i <= currentYear; i++) {
+      this.years.push(i);
+    }
+    this.filterYear = new Date().getFullYear();
   }
 
   /* Usados pelo component */
@@ -115,11 +124,48 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
       const filter = this.filterIsAnual === 1 ? true : false;
       requirements = this.store.searchStatus(filter, requirements);
     }
-    requirements = this.store.searchInDates(this.filterPeriodStart, this.filterPeriodEnd, requirements);
+    requirements = this.store.searchInPeriod(this.filterYear, requirements);
     this.requirements$ = Observable.of(requirements);
   }
 
   ngOnDestroy() {
 
+  }
+
+
+
+  public generateGeneralReport(): void {
+    const data = this.getDataParams();
+    this.reportService.reportRequirementsGeral(data).subscribe(urlData => {
+      const fileUrl = URL.createObjectURL(urlData);
+        let element;
+        element = document.createElement('a');
+        element.href = fileUrl;
+        element.download = 'requisitos-relatorio_geral.pdf';
+        element.target = '_blank';
+        element.click();
+        //this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+    }, err => {
+      console.log(err);
+        //this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+    });
+  }
+
+  private getDataParams(): any {
+    return {
+      isAnual: this.filterIsAnual,
+      period: this.filterYear,
+      typeName: this.getTypeName()
+    };
+  }
+
+  private getTypeName(): string {
+    if (this.filterIsAnual === 0) {
+      return "TODOS";
+    }
+    if (this.filterIsAnual === 1) {
+      return "Anual";
+    }
+    return "Mensal";
   }
 }

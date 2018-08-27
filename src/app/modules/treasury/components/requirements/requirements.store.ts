@@ -120,8 +120,8 @@ export class RequirementStore {
         // tslint:disable-next-line:triple-equals
         return requirement.filter(f => f.isAnual == isAnual);
     }
-    public searchInDates(startDate: Date, endDate: Date, requirement: Requirement[]) {
-        return requirement.filter(f => new Date(f.date) > startDate && new Date(f.date) < endDate);
+    public searchInPeriod(year: number, requirement: Requirement[]) {
+        return requirement.filter(f => new Date(f.date).getFullYear() === year);
     }
 
 }
