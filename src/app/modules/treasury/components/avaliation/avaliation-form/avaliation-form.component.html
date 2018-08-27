@@ -28,6 +28,11 @@
             <mat-divider></mat-divider>
           </div>
           <div>
+            <div *ngIf="observations.length === 0">
+              <span fxFlex fxFlex.gt-sm="80%" style="white-space: line-wrap; text-align: justify; padding: 5px;">
+                Não existem observações cadastradas nesta igreja!
+              </span>
+            </div>
             <div *ngFor="let observation of observations" fxLayout="row">
               <span fxFlex fxFlex.gt-sm="80%" style="white-space: line-wrap; text-align: justify; padding: 5px;">
                 {{ observation.description }}

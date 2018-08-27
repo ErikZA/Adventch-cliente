@@ -166,8 +166,8 @@
                   <button mat-button style="background-color: #0D2139!important; color: #fff" matTooltip="Finalizar avaliação da igre" [matMenuTriggerFor]="menu">
                     <mat-icon>list</mat-icon>FINALIZAR</button>
                   <mat-menu #menu="matMenu">
-                    <button *ngIf="checkChurchHasAvaliation(avaliation, true)" (click)="finalize(avaliation, true)" mat-menu-item matTooltip="Finaliza apenas a avaliação mensal da igreja">Mensal</button>
-                    <button *ngIf="checkChurchHasAvaliation(avaliation, false)" (click)="finalize(avaliation, false)" mat-menu-item matTooltip="Finaliza apenas a avaliação anual da igreja">Anual</button>
+                    <button *ngIf="checkChurchHasAvaliation(avaliation, true)" (click)="finalize(avaliation, true)" mat-menu-item matTooltip="Finaliza apenas a avaliação mensal da igreja">Avaliação Mensal</button>
+                    <button *ngIf="checkChurchHasAvaliation(avaliation, false)" (click)="finalize(avaliation, false)" mat-menu-item matTooltip="Finaliza apenas a avaliação anual da igreja">Avaliação Anual</button>
                   </mat-menu>
                 </ng-template>
               </mat-action-row>

@@ -74,7 +74,10 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   }
 
   getData() {
-    this.avaliations$ = this.store.avaliations$;
+    //this.avaliations$ = this.store.avaliations$;
+    this.store.avaliations$.subscribe(x => {
+      this.avaliations$ = Observable.of(x);
+    });
     this.store.loadAll();
     this.loadFilters();
   }
