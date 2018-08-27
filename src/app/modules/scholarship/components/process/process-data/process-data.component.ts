@@ -21,14 +21,15 @@ import { School } from '../../../models/school';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { MatDialogRef,
-        MatDialog,
-        MatSnackBar,
-        MatSidenav,
-        MatSlideToggleChange,
-        MatDialogConfig } from '@angular/material';
+  MatDialog,
+  MatSnackBar,
+  MatSidenav,
+  MatSlideToggleChange,
+  MatDialogConfig } from '@angular/material';
 
+import { auth } from './../../../../../auth/auth';
 import { ProcessesStore } from '../processes.store';
-import { auth } from '../../../../../auth/auth';
+import { ProcessDataInterface } from '../../../interfaces/process-data-interface';
 
 @Component({
   selector: 'app-process-data',
@@ -53,9 +54,9 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
 
   // New
   processes: Process[] = new Array<Process>();
-  processes$: Observable<Process[]>;
+  processes$: Observable<ProcessDataInterface[]>;
   schools$: Observable<School[]>;
-  schoolsFilters: Number[];
+  schoolsFilters: number[];
   statusFilters: Number[];
   valueSearch: string;
   inSearch: boolean;
@@ -87,18 +88,18 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     this.schoolIsVisible();
     this.getAllDatas();
     this.isScholarship = auth.getCurrentUser().isScholarship;
-    this.processes$.subscribe(x => { this.processes = x; });
-    this.search$.subscribe(search => {
-      this.searchProcess(search);
-    });
-    this.scholarshipService.refresh$.subscribe((refresh: boolean) => {
-      this.searchProcess('');
-    });
-    this.sidenavService.setSidenav(this.sidenavRight);
-    this.subscribeUnit = auth.currentUnit.subscribe(() => {
-      this.scholarshipService.updateSchool(auth.getCurrentUser().idSchool);
-    });
-    this.router.navigate([this.router.url.replace(/.*/, 'bolsas/processos')]);
+    // this.processes$.subscribe(x => { this.processes = x; });
+    // this.search$.subscribe(search => {
+    //   this.searchProcess(search);
+    // });
+    // this.scholarshipService.refresh$.subscribe((refresh: boolean) => {
+    //   this.searchProcess('');
+    // });
+    // this.sidenavService.setSidenav(this.sidenavRight);
+    // this.subscribeUnit = auth.currentUnit.subscribe(() => {
+    //   this.scholarshipService.updateSchool(auth.getCurrentUser().idSchool);
+    // });
+    // this.router.navigate([this.router.url.replace(/.*/, 'bolsas/processos')]);
   }
 
   ngOnDestroy() {
@@ -106,19 +107,19 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   private getAllDatas(): void {
-    this.processes$ = this.store.filterProcessesSchool(this.scholarshipService.schoolSelected);
-    this.schools$ = this.store.schools$;
-    this.store.loadAll();
+    const unit = auth.getCurrentUnit();
+    this.schools$ = this.scholarshipService.getSchools(unit.id);
     this.setAllFilters();
+    this.processes$ = this.scholarshipService.getProcesses(this.schoolsFilters);
   }
 
   private setAllFilters(): void {
     this.setSchoolsFilters();
-    this.setStatusFilters();
+    // this.setStatusFilters();
   }
 
   private setSchoolsFilters(): void {
-    this.schoolsFilters = new Array<Number>();
+    this.schoolsFilters = new Array<number>();
     if (this.showSchool && this.scholarshipService.schoolSelected !== -1) {
       this.schoolsFilters.push(this.scholarshipService.schoolSelected);
     } else if (this.showSchool && this.scholarshipService.schoolSelected === -1) {
@@ -134,17 +135,17 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setStatusFilters(): void {
-    this.statusFilters = new Array<Number>();
-    if (this.scholarshipService.statusSelected === 0) {
-      for (let i = 1; i <= 8; i++) {
-        this.statusFilters.push(i);
-      }
-    } else {
-      this.statusFilters.push(this.scholarshipService.statusSelected);
-      this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters);
-    }
-  }
+  // private setStatusFilters(): void {
+  //   this.statusFilters = new Array<Number>();
+  //   if (this.scholarshipService.statusSelected === 0) {
+  //     for (let i = 1; i <= 8; i++) {
+  //       this.statusFilters.push(i);
+  //     }
+  //   } else {
+  //     this.statusFilters.push(this.scholarshipService.statusSelected);
+  //     this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters);
+  //   }
+  // }
 
   public filterSchools(id: number, checked: boolean): void {
     if (checked && !this.schoolsFilters.some(x => x === id) && this.showSchool) {
@@ -153,31 +154,31 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       const index = this.schoolsFilters.indexOf(id);
       this.schoolsFilters.splice(index, 1);
     }
-    this.callFilters();
+    // this.callFilters();
   }
 
-  private callFilters(): void {
-    this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters);
-  }
+  // private callFilters(): void {
+  //   this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters);
+  // }
 
-  public filterStatus(id: number, checked: boolean): void {
-    if (checked && !this.statusFilters.some(x => x === id)) {
-      this.statusFilters.push(id);
-    } else if (!checked && this.statusFilters.some(x => x === id)) {
-      this.statusFilters.splice(this.statusFilters.indexOf(id), 1);
-    }
-    this.callFilters();
-  }
+  // public filterStatus(id: number, checked: boolean): void {
+  //   if (checked && !this.statusFilters.some(x => x === id)) {
+  //     this.statusFilters.push(id);
+  //   } else if (!checked && this.statusFilters.some(x => x === id)) {
+  //     this.statusFilters.splice(this.statusFilters.indexOf(id), 1);
+  //   }
+  //   this.callFilters();
+  // }
 
-  public searchProcess(search: string): void {
-    this.inSearch = search !== '' ? true : false;
-    if (!this.processes) {
-      return;
-    }
-    this.callFilters();
-    const processes = this.store.filterSearch(search);
-    this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters, processes);
-  }
+  // public searchProcess(search: string): void {
+  //   this.inSearch = search !== '' ? true : false;
+  //   if (!this.processes) {
+  //     return;
+  //   }
+  //   this.callFilters();
+  //   const processes = this.store.filterSearch(search);
+  //   this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters, processes);
+  // }
 
   public closeSidenav(): void {
     this.location.back();

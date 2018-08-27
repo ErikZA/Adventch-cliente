@@ -15,6 +15,7 @@ import { ProcessDocument } from './models/processDocument';
 import { ProcessResponsibleInterface } from './interfaces/process-responsible-interface';
 import { ProcessCountStatusInterface } from './interfaces/process-count-status-interface';
 import { SchoolProcessInterface } from './interfaces/school-process-interface';
+import { ProcessDataInterface } from './interfaces/process-data-interface';
 import { EditProcessViewModel, NewProcessViewModel } from './interfaces/process-view-models';
 
 @Injectable()
@@ -73,9 +74,9 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcesses(schoolId: number[], unitId: number): Observable<Process[]> {
-    const url = `/scholarship/process/${unitId}`;
-    const params = new HttpParams().set('schools', schoolId.toString());
+  public getProcesses(schoolId: number[]): Observable<ProcessDataInterface[]> {
+    const url = `/scholarship/process/schools`;
+    const params = new HttpParams().set('ids', JSON.stringify(schoolId));
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));

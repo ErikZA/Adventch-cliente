@@ -91,7 +91,7 @@
                             <mat-expansion-panel-header>
                                 <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2px" fxFlex>
                                     <p *ngIf="showSchool && schoolsFilters.length !== 1" fxFlex="26%" fxHide.lt-sm>
-                                        {{ process.student.school.name }}
+                                        {{ process.school }}
                                     </p>
                                     <p fxFlex>
                                         {{ process.student.name }}
@@ -100,7 +100,7 @@
                                         {{ process.protocol }}
                                     </p>
                                     <p fxFlex="15%" fxHide.lt-sm>
-                                        {{ process.statusString }}
+                                        {{ process.status.name }}
                                     </p>
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
@@ -118,61 +118,61 @@
                                 <mat-list-item fxLayout="row" style="height: auto">
                                     <div fxLayout="column" fxFlex matLine>
                                         <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
-                                            <span class="text-bold" class="details-title"><b>Escola:</b> {{ process.student.school.name }}</span>
+                                            <span class="text-bold" class="details-title"><b>Escola:</b> {{ process.school }}</span>
                                         </div>
                                         <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
                                             <span class="text-bold" class="details-title"><b>Protocolo:</b> {{ process.protocol }}</span>
                                         </div>
                                         <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
-                                            <span class="text-bold" class="details-title"><b>Status:</b> {{ process.statusString }}</span>
+                                            <span class="text-bold" class="details-title"><b>Status:</b> {{ process.status.name }}</span>
                                         </div>
                                         <!--Nome do Pai, RC do aluno, % bolsa pretendida, Série Pretendida-->
 
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Nome do responsável:&ensp;</b> {{ process.student.responsible.name }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Nome do responsável:&ensp;</b> {{ process.nameResponsible }}</span>
                                         <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>RC do aluno:&ensp;</b> {{ process.student.rc }}</span>
                                         <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Bolsa Pretendida:&ensp;</b> {{ process.bagPorcentage }}%</span>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Série pretendida:&ensp;</b> {{ process.student.studentSerie.name }}</span>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Documentos pessoais:&ensp;</b> {{ process.isPersonalDocuments ? "Enviado" : "Não Enviado" }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Série pretendida:&ensp;</b> {{ process.serie }}</span>
+                                        <!-- <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Documentos pessoais:&ensp;</b>Enviado</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
-                                                    {{ (document.typeDocument == 1 ? document.name : '') }}
+                                                    {{ (document.typeDocument === 1 ? document.name : '') }}
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Declaração do imposto de renda:&ensp;</b> {{ process.isIR ? "Enviado" : "Não Enviado" }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Declaração do imposto de renda:&ensp;</b>Enviado</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
-                                                    {{ (document.typeDocument == 2 ? document.name : '') }}
+                                                    {{ (document.typeDocument === 2 ? document.name : '') }}
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Carteira de trabalho:&ensp;</b> {{ process.isCTPS ? "Enviado" : "Não Enviado" }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Carteira de trabalho:&ensp;</b>Enviado</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
-                                                    {{ (document.typeDocument == 3 ? document.name : '') }}
+                                                    {{ (document.typeDocument === 3 ? document.name : '') }}
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante de rendimentos:&ensp;</b> {{ process.isIncome ? "Enviado" : "Não Enviado" }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante de rendimentos:&ensp;</b>Enviado</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
-                                                    {{ (document.typeDocument == 4 ? document.name : '') }}
+                                                    {{ (document.typeDocument === 4 ? document.name : '') }}
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante de despesas:&ensp;</b> {{ process.isExpenses ? "Enviado" : "Não Enviado" }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante de despesas:&ensp;</b>Enviado</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
-                                                    {{ (document.typeDocument == 5 ? document.name : '') }}
+                                                    {{ (document.typeDocument === 5 ? document.name : '') }}
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante acadêmico:&ensp;</b> {{ process.isAcademic ? "Enviado" : "Não Enviado" }}</span>
+                                        <span class="text-bold" class="details-title" fxLayout.lt-sm="column"><b>Comprovante acadêmico:&ensp;</b>Enviado</span>
                                         <div *ngFor="let document of process.processDocuments">
                                             <mat-panel-description fxLayout="row" fxFlex>
                                                 <span fxFlex="100%" style="white-space: normal; padding: 0 30px 0 30px; font-family: Roboto, 'Helvetica Neue', sans-serif;">
@@ -180,32 +180,32 @@
                                                 </span>
                                             </mat-panel-description>
                                         </div>
-                                        <div *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title break-line">
+                                        <div *ngIf="process.pendency != null && process.status.id === 3" class="text-bold" class="details-title break-line">
                                             <b>Pendência:
                                                 <mat-slide-toggle class="padding-left-medium" [checked]="process.isSendDocument" (change)="sendDocuments($event, process)" color="primary">Documento(s) Enviado(s)</mat-slide-toggle>
                                             </b>
                                             <div class="style-text">{{ process.pendency }}</div>
                                         </div>
-                                        <div *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title">
+                                        <div *ngIf="process.dateRegistration != null && (process.status.id == 5 || process.status.id ==6)" class="text-bold" class="details-title">
                                             <b>Matrícula: </b>
                                             <div class="style-text">até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</div>
                                         </div>
-                                        <div *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title">
+                                        <div *ngIf="process.motiveReject != null && (process.status.id === 7)" class="text-bold" class="details-title">
                                             <b>{{ process.motiveReject }}: </b>
                                             <div class="style-text">{{ getMotiveToReject(process.motiveReject) }}</div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </mat-list-item>
                             </mat-list>
                             <mat-action-row fxLayout="row" fxLayout.xs="column">
                                 <ng-template [Feature]="41">
-                                    <button *ngIf="process.status == 1 && authService.getCurrentUser().idSchool === 0" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="toWaiting(process)">INICIAR</button>
+                                    <button *ngIf="process.status.id === 1 && authService.getCurrentUser().idSchool === 0" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="toWaiting(process)">INICIAR</button>
                                 </ng-template>
                                 <ng-template [Feature]="42">
-                                    <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status === 2 || process.status === 3)" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency(process)">PENDÊNCIA</button>
+                                    <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status.id === 2 || process.status.id === 3)" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency(process)">PENDÊNCIA</button>
                                 </ng-template>
                                 <ng-template [Feature]="43">
-                                    <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status > 1 && process.status < 7)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu"><mat-icon>list</mat-icon>INDEFERIR</button>
+                                    <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status.id > 1 && process.status.id < 7)" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu"><mat-icon>list</mat-icon>INDEFERIR</button>
                                     <mat-menu #menu="matMenu">
                                         <button (click)="toReject(process, 1)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.">Acadêmico</button>
                                         <button (click)="toReject(process, 2)" mat-menu-item matTooltip="Indeferido em virtude de pendências junto ao setor financeiro.">Financeiro</button>
@@ -215,10 +215,10 @@
                                     </mat-menu>
                                 </ng-template>
                                 <ng-template [Feature]="45">
-                                    <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status === 5 || process.status === 6)" mat-button style="background-color: #a30000!important; color: #fff" matTooltip="Não Matriculou" (click)="toNotEnroll(process)">NÃO MATRICULOU</button>
+                                    <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status.id === 5 || process.status.id === 6)" mat-button style="background-color: #a30000!important; color: #fff" matTooltip="Não Matriculou" (click)="toNotEnroll(process)">NÃO MATRICULOU</button>
                                 </ng-template>
                                 <ng-template [Feature]="44">
-                                    <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status > 1)" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove(process)">APROVAR</button>
+                                    <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status.id > 1)" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove(process)">APROVAR</button>
                                 </ng-template>
                                 <ng-template [Feature]="40" permission="4">
                                     <button mat-button color="warn" matTooltip="Excluir" (click)="removeProcess(process)">REMOVER</button>
