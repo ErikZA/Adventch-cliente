@@ -206,7 +206,7 @@ export class ScholarshipService {
   }
 
   public getProcessesResponsible(responsibleId): Observable<ProcessResponsibleInterface[]> {
-    const url = `/scholarship/responsible/${responsibleId}/processes`;
+    const url = `/scholarship/process/responsible/${responsibleId}`;
     return this.http
       .get<ProcessResponsibleInterface[]>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
