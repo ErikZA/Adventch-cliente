@@ -5,7 +5,6 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/catch';
 
-import { AuthService } from '../../shared/auth.service';
 
 import { Student } from './models/student';
 import { Process } from './models/process';
@@ -16,6 +15,7 @@ import { ProcessResponsibleInterface } from './interfaces/process-responsible-in
 import { ProcessCountStatusInterface } from './interfaces/process-count-status-interface';
 import { SchoolProcessInterface } from './interfaces/school-process-interface';
 import { EditProcessViewModel, NewProcessViewModel } from './interfaces/process-view-models';
+import { ProcessDataInterface } from './interfaces/process-data-interface';
 
 @Injectable()
 export class ScholarshipService {
@@ -73,9 +73,9 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcesses(schoolId: number[], unitId: number): Observable<Process[]> {
-    const url = `/scholarship/process/${unitId}`;
-    const params = new HttpParams().set('schools', schoolId.toString());
+  public getProcesses(schoolId: number[]): Observable<ProcessDataInterface[]> {
+    const url = `/scholarship/process/schools`;
+    const params = new HttpParams().set('ids', JSON.stringify(schoolId));
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
