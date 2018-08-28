@@ -115,8 +115,8 @@ export class DashboardTreasuryComponent implements OnInit {
 
   openDialog() {
   const dialogRef = this.dialog.open(AvaliationReportComponent, {
-    height: '500px',
-    width: '600px',
+    height: '90%',
+    width: '90%',
   });
   dialogRef.afterClosed().subscribe(result => {
     if (!result) {

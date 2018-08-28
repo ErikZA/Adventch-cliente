@@ -14,6 +14,9 @@
             <button mat-icon-button matTooltip="Pesquisar papel" (click)="searchButton = !searchButton">
                 <mat-icon aria-label="Pesquisar Papel">search</mat-icon>
             </button>
+            <button mat-icon-button matTooltip="Imprimir observações" (click)="generateGeneralReport()">
+                <mat-icon aria-label="Imprimir relatório geral">print</mat-icon>
+            </button>
         </div>
     </div>
 </div>
@@ -25,9 +28,9 @@
             <mat-list-item>
                 <h3 matLine fxLayout="row">
                     <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex>
-                        <span fxFlex="30%">Posição</span>
-                        <span fxFlex="50%">Nome</span>
-                        <span fxFlex="40%">Nota</span>
+                        <span fxFlex="30">Posição</span>
+                        <span fxFlex="45">Nome</span>
+                        <span fxFlex="30">Nota</span>
                         <span fxFlex></span>
                     </div>
                 </h3>
@@ -39,9 +42,9 @@
         [scrollWindow]="false">
         <div>
             <mat-list-item class="break-line" *ngFor="let data of avaliationReport; index as i" fxFlex>
-                <span class="text-color-item" fxFlex="30%">{{ data.position }}º</span>
-                <span class="text-color-item" fxFlex="50%">{{ data.name }}</span>
-                <span class="text-color-item" fxFlex="40%">{{ data.notes }}</span>
+                <span class="text-color-item" fxFlex="30">{{ data.position }}º</span>
+                <span class="text-color-item" fxFlex="45">{{ data.name }}</span>
+                <span class="text-color-item" fxFlex="30">{{ data.notes }}</span>
                 <mat-divider></mat-divider>
             </mat-list-item>
         </div>
