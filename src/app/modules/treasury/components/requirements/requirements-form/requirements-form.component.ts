@@ -73,8 +73,8 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
       score:  ['', [Validators.required]],
-      date: ['', [Validators.required]]
-      // analyst: [null]
+      date: ['', [Validators.required]],
+      isAnual: ['', [Validators.required]]
     });
   }
 

@@ -22,6 +22,12 @@
                 <mat-form-field fxFlex>
                         <input matInput type="text" formControlName="description" placeholder="Descrição" required minlength="3" maxlength="200">
                 </mat-form-field>
+                <mat-form-field>
+                    <mat-select placeholder="Tipo" formControlName="isAnual" required>
+                        <mat-option value="false">Mensal</mat-option>
+                        <mat-option value="true">Anual</mat-option>
+                    </mat-select>
+                </mat-form-field>
                 <mat-form-field fxFlex>
                         <input matInput type="number" formControlName="score" placeholder="Nota" required minlength="1" maxlength="200">
                 </mat-form-field>
