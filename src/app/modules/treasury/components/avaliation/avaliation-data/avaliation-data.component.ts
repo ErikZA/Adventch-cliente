@@ -261,7 +261,12 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
     var has = false;
     churchAvaliation.avaliations.forEach(avaliation =>{
       if (this.getMonth(avaliation.date) === this.filterMonth && this.getYear(avaliation.date) === this.filterYear) {
-        has = avaliation.isMensal === isMensal;
+        if (isMensal && avaliation.isMensal && avaliation.status != 3) {
+          has = true;
+        } 
+        if (!isMensal && !avaliation.isMensal && avaliation.status != 3) {
+          has = true;
+        }
       }
     });
     return has;
