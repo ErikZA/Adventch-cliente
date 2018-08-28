@@ -18,6 +18,7 @@ export class AvaliationReportComponent implements OnInit {
 
     getrankingReportData: Subscription;
     avaliationReport: any;
+    dataAvaliationReport: any;
     search$ = new Subject<string>();
 
     constructor(
@@ -44,6 +45,7 @@ export class AvaliationReportComponent implements OnInit {
                 previousNote = element.notes;
             });
             this.avaliationReport = data;
+            this.dataAvaliationReport = this.avaliationReport;
         });
 
         this.search$.subscribe(search => {
@@ -61,7 +63,7 @@ export class AvaliationReportComponent implements OnInit {
 
     public search(search: string): any[] {
         if (search === '' || search === undefined || search === null) {
-            return this.avaliationReport;
+            return this.dataAvaliationReport;
         } else {
             return this.avaliationReport.filter(data => {
                 return data.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
