@@ -211,8 +211,19 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     }
   }
 
-  public generateReportToProcess(process: Process): void {
-    this.store.generateReport(process.id, 'Relatório gerado!');
+  public generateReportToProcess(process: ProcessDataInterface): void {
+    this.reportService.reportProcess(process.id).subscribe(dataURL => {
+      const fileUrl = URL.createObjectURL(dataURL);
+      const element = document.createElement('a');
+      element.href = fileUrl;
+      element.download = 'processo.pdf';
+      element.target = '_blank';
+      element.click();
+      this.snackBar.open('Relatório gerado com sucesso.', 'OK', { duration: 5000 });
+    }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
+    });
   }
 
   public generateGeneralProcessReport(): void {
@@ -241,6 +252,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     const user = auth.getCurrentUser();
     this.scholarshipService
     .changeProcessStatus(process.id, status, { userId: user.id }).subscribe(() => {
+      this.getProcesses();
     }, err => this.snackBar.open('Erro ao alterar o status do processo, tente novamente.', 'OK', { duration: 5000 }));
   }
 
@@ -258,6 +270,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
           this.scholarshipService
             .saveVacancy(process.id, { userId: id, status: vacancy.idStatus, dataRegistration: vacancy.dataRegistration })
             .subscribe(() => {
+              this.getProcesses();
               this.snackBar.open('Processo aprovado com sucesso.', 'OK', { duration: 5000 });
             }, err => this.snackBar.open('Erro ao salvar a aprovação do processo, tente novamente.', 'OK', { duration: 5000 }));
         }
@@ -287,6 +300,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
         this.scholarshipService
           .savePendency(process.id, { userId: id, pendency: data.pendency })
           .subscribe(() => {
+            this.getProcesses();
             this.snackBar.open('Pendência salva com sucesso.', 'OK', { duration: 5000 });
           }, err => this.snackBar.open('Erro ao salvar pendência do processo, tente novamente.', 'OK', { duration: 5000 }));
       }
@@ -310,7 +324,9 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       this.scholarshipService.saveReject(process.id, {
         userId: id,
         motiveReject: this.setReasonForRejection(idMotive)
-      }).subscribe(() => {}, err => this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 }));
+      }).subscribe(() => {
+        this.getProcesses();
+      }, err => this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 }));
     }
   }
 
@@ -333,8 +349,9 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       const { id } = auth.getCurrentUser();
       this.scholarshipService
         .sentDocuments(process.id, { userId: id })
-        .subscribe(() => {},
-        err => {
+        .subscribe(() => {
+          this.getProcesses();
+        }, err => {
           this.snackBar.open('Erro ao marcar os documentos como enviados, tente novamente.', 'OK', { duration: 5000 });
         });
     }
@@ -346,6 +363,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         if (res === true) {
           this.scholarshipService.deleteProcess(process.id).subscribe(() => {
+            this.getProcesses();
             this.snackBar.open('Processo removido!', 'OK', { duration: 5000 });
           }, err => {
             console.log(err);

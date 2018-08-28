@@ -19,9 +19,9 @@ export class ReportService {
     private authService: AuthService
   ) { }
 
-  public reportProcess(processId, password): Observable<any> {
+  public reportProcess(processId): Observable<any> {
     const urlConsult = document.location.origin + '/educacao';
-    const params = JSON.stringify({ processId: processId, url: urlConsult, password: password });
+    const params = JSON.stringify({ processId: processId, url: urlConsult });
     return this.viewReport('process', EModules.Scholarship, params);
   }
 

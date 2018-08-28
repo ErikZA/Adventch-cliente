@@ -357,7 +357,7 @@ export class ProcessesStore {
 
   public generateReport(id: number, message: string): void {
     const password = '';
-    this.reportService.reportProcess(id, password).subscribe(dataURL => {
+    this.reportService.reportProcess(id).subscribe(dataURL => {
       const fileUrl = URL.createObjectURL(dataURL);
       const element = document.createElement('a');
       element.href = fileUrl;
