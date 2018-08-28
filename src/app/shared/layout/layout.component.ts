@@ -128,16 +128,18 @@ export class LayoutComponent implements OnInit, OnDestroy {
       });
       return;
     }
-
     this.lstUnits = localUnits;
-    this.updateUnit(this.lstUnits[0]);
+    if (typeof this.unit === 'undefined') {
+      this.updateUnit(this.lstUnits[0]);
+    }
   }
   public redirectToHome() {
     if (this.router.url !== '/') {
       this.router.navigate(['/']);
     }
   }
-  public updateUnit(unit): void {
+  public updateUnit(unit: Unit): void {
+    console.log('SET UNIT', unit, this.unit);
     this.unit = unit;
     this.authService.setCurrentUnit(unit);
   }
