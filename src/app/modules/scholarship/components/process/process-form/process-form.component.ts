@@ -1,14 +1,13 @@
+import { ProcessDataComponent } from './../process-data/process-data.component';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/distinctUntilChanged';
 
 import { MatSnackBar } from '@angular/material';
-
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { ScholarshipService } from '../../../scholarship.service';
 
 import { Student } from '../../../models/student';
@@ -39,6 +38,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   studentsSeries$: Observable<StudentSerie[]>;
 
   subscribeUnit: Subscription;
+  subscribeParam: Subscription;
 
   students: Student[] = [];
   studentSeries: StudentSerie[] = [];
@@ -64,9 +64,10 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private scholarshipService: ScholarshipService,
-    private sidenavService: SidenavService,
     private route: ActivatedRoute,
     public snackBar: MatSnackBar,
+    private processDataComponent: ProcessDataComponent,
+    private router: Router
   ) { }
   ngOnInit() {
     this.loading = false;
@@ -79,14 +80,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       this.processDocuments = documents;
       this.documentTypes.next(this.types);
     });
-    const obj = {};
-
-    this.types.forEach(t => {
-      obj[t.controlName] = [[], Validators.required];
-    });
-
-    this.processDocumentsForm = this.formBuilder.group(obj);
-    this.route.params.subscribe(({ identifyProcess }) => {
+    this.processDocumentsForm = this.createFormGroupForTypes(this.types);
+    this.subscribeParam = this.route.params.subscribe(({ identifyProcess }) => {
       const parsed = parseInt(identifyProcess, 10);
       if (Number.isInteger(parsed)) {
         this.scholarshipService.getProcessById(identifyProcess).subscribe((process: EditProcessViewModel) => {
@@ -95,6 +90,32 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
           this.processId = parsed;
         });
       }
+    });
+
+    this.processDataComponent.sidenavRight.open();
+  }
+  ngOnDestroy() {
+    this.closeSidenav();
+    if (this.subscribeParam) { this.subscribeParam.unsubscribe(); }
+    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
+  }
+  private createFormGroupForTypes(types: any[]): FormGroup {
+    const obj = {};
+    types.forEach(t => {
+      obj[t.controlName] = [[], Validators.required];
+    });
+    return this.formBuilder.group(obj);
+  }
+  private initForm(): void {
+    this.formProcess = this.formBuilder.group({
+      cpf: [null, [Validators.required, CustomValidators.cpfCnpjValidator]],
+      name: [null, Validators.required],
+      email: [null],
+      phone: [null],
+      rc: [null],
+      nameStudent: [null, Validators.required],
+      studentSerieId: [null, Validators.required],
+      bagPorcentage: [null, Validators.required]
     });
   }
   private checkCpf(): void {
@@ -107,21 +128,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
           this.responsible = responsible;
         });
       }
-    });
-  }
-  public getDocumentsByType(type: number): ProcessDocument[] {
-    return this.processDocuments.filter(d => d.type === type);
-  }
-  ngOnDestroy() {
-    this.closeSidenav();
-    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
-  }
-  public filter(val: string): Student[] {
-    if (!Array.isArray(this.students)) {
-      return [];
-    }
-    return this.students.filter(student => {
-      return student.name.toLowerCase().indexOf(val) !== -1;
     });
   }
   private setFormValuesResponsible(values: Responsible): void {
@@ -170,37 +176,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       ]);
     });
   }
-  private initForm(): void {
-    this.formProcess = this.formBuilder.group({
-      cpf: [null, [Validators.required, CustomValidators.cpfCnpjValidator]],
-      name: [null, Validators.required],
-      email: [null],
-      phone: [null],
-      rc: [null],
-      nameStudent: [null, Validators.required],
-      studentSerieId: [null, Validators.required],
-      bagPorcentage: [null, Validators.required]
-    });
-  }
-  public labelTitleProcess(): string {
-    return this.process !== undefined && this.process.id !== undefined ? 'Editar' : 'Novo';
-  }
-  public setStudent(student: Student): void {
-    if (Number.isInteger(student.rc)) {
-      this.formProcess.patchValue({ rc: student.rc });
-    }
-    this.selectStudent = student;
-  }
-  public closeSidenav(): void {
-    this.sidenavService.close();
-  }
-  private markAstouched() {
-    this.types.forEach(t => {
-      this.processDocumentsForm.get(t.controlName).markAsTouched();
-    });
-
-    this.formProcess.markAsTouched();
-  }
   private getAllDocumentsFromTypes(): number[] {
     const formControls = this.types.map(t => t.controlName);
     let result = [];
@@ -239,6 +214,40 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       }
     };
   }
+  private markAstouched() {
+    this.types.forEach(t => {
+      this.processDocumentsForm.get(t.controlName).markAsTouched();
+    });
+    this.formProcess.markAsTouched();
+  }
+  private handleSaveSuccess() {
+    this.snackBar.open('Processo salvo com sucesso', ' OK', { duration: 2000 });
+    this.closeSidenav();
+  }
+  public getDocumentsByType(type: number): ProcessDocument[] {
+    return this.processDocuments.filter(d => d.type === type);
+  }
+  public filter(val: string): Student[] {
+    if (!Array.isArray(this.students)) {
+      return [];
+    }
+    return this.students.filter(student => {
+      return student.name.toLowerCase().indexOf(val) !== -1;
+    });
+  }
+  public labelTitleProcess(): string {
+    return this.process !== undefined && this.process.id !== undefined ? 'Editar' : 'Novo';
+  }
+  public setStudent(student: Student): void {
+    if (Number.isInteger(student.rc)) {
+      this.formProcess.patchValue({ rc: student.rc });
+    }
+    this.selectStudent = student;
+  }
+  public closeSidenav(): void {
+    this.processDataComponent.sidenavRight.close();
+    this.router.navigate(['/bolsas/processos']);
+  }
   public saveProcess(): void {
     if (!this.processDocumentsForm.valid || !this.formProcess.valid) {
       this.markAstouched();
@@ -255,10 +264,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     this.scholarshipService.saveProcess(data).subscribe(res => {
       this.handleSaveSuccess();
     });
-  }
-  private handleSaveSuccess() {
-    this.snackBar.open('Processo salvo com sucesso', ' OK', { duration: 2000 });
-    this.closeSidenav();
   }
   public maskPhone(phone): string {
     return phone.value.length <= 14 ? '(99) 9999-9999' : '(99) 99999-9999';

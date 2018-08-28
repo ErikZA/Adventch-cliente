@@ -354,8 +354,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   public editProcess(process: Process) {
-    this.router.navigate([process.identity.toLocaleUpperCase(), 'editar'], { relativeTo: this.route });
-    this.sidenavService.open();
+    this.router.navigate([process.id, 'editar'], { relativeTo: this.route });
   }
 
   public expandPanel(matExpansionPanel): void {
