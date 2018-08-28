@@ -302,7 +302,6 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
                 process.dateRegistration = vacancy.dataRegistration;
                 this.snackBar.open('Processo aprovado com sucesso.', 'OK', { duration: 5000 });
               }
-              this.getProcesses();
             }, err => this.snackBar.open('Erro ao salvar a aprovação do processo, tente novamente.', 'OK', { duration: 5000 }));
         }
       });
