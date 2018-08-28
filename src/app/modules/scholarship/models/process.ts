@@ -4,7 +4,7 @@ import { Student } from './student';
 import { School } from './school';
 export class Process {
   id: number;
-  identity: string;
+  // identity: string;
   student: Student;
   protocol: string;
   isPersonalDocuments = false;

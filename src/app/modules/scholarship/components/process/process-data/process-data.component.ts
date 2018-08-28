@@ -4,6 +4,7 @@ import { Location } from '@angular/common';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/debounceTime';
 
 import { Subscription } from 'rxjs/Subscription';
 
@@ -30,6 +31,7 @@ import { MatDialogRef,
 import { auth } from './../../../../../auth/auth';
 import { ProcessesStore } from '../processes.store';
 import { ProcessDataInterface } from '../../../interfaces/process-data-interface';
+import { EStatus } from '../../../models/enums';
 
 @Component({
   selector: 'app-process-data',
@@ -53,12 +55,11 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   layout: String = 'row';
 
   // New
-  processes: Process[] = new Array<Process>();
   processes$: Observable<ProcessDataInterface[]>;
   schools$: Observable<School[]>;
-  schoolsFilters: number[];
-  statusFilters: Number[];
-  valueSearch: string;
+  schoolsFilters: number[] = new Array<number>();
+  statusFilters: number[] = new Array<number>();
+  private query = '';
   inSearch: boolean;
 
   subscribeUnit: Subscription;
@@ -75,7 +76,6 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     private sidenavService: SidenavService,
     private router: Router,
     private route: ActivatedRoute,
-    private store: ProcessesStore,
     private reportService: ReportService,
     private location: Location,
     private confirmDialogService: ConfirmDialogService
@@ -87,17 +87,21 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getAllDatas();
-    // this.schoolIsVisible();
-    // this.getAllDatas();
-    // this.isScholarship = auth.getCurrentUser().isScholarship;
-    // this.processes$.subscribe(x => { this.processes = x; });
-    // this.search$.subscribe(search => {
-    //   this.searchProcess(search);
-    // });
+    this.schoolIsVisible();
+    this.isScholarship = auth.getCurrentUser().isScholarship;
+    this.search$
+      .debounceTime(1000)
+      .distinctUntilChanged()
+      .subscribe(search => {
+        if (search) {
+          this.query = search;
+          this.getProcesses();
+        }
+      });
+    this.sidenavService.setSidenav(this.sidenavRight);
     // this.scholarshipService.refresh$.subscribe((refresh: boolean) => {
     //   this.searchProcess('');
     // });
-    // this.sidenavService.setSidenav(this.sidenavRight);
     // this.subscribeUnit = auth.currentUnit.subscribe(() => {
     //   this.scholarshipService.updateSchool(auth.getCurrentUser().idSchool);
     // });
@@ -121,78 +125,43 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     const user = auth.getCurrentUser();
     if (user.idSchool === 0) {
       this.getAllSchools();
-      this.processes$ = this.scholarshipService.getProcessesByUnit();
+    }
+    this.getProcesses();
+  }
+
+  private getProcesses(): void {
+    const user = auth.getCurrentUser();
+    if (user.idSchool === 0) {
+      this.processes$ = this.scholarshipService
+        .getProcessesByUnit(this.schoolsFilters, this.statusFilters, this.query)
+        .debounceTime(1000)
+        .distinctUntilChanged();
     } else {
-      this.processes$ = this.scholarshipService.getProcessesBySchool(user.idSchool);
+      this.processes$ = this.scholarshipService
+        .getProcessesBySchool(user.idSchool, this.statusFilters, this.query)
+        .debounceTime(1000)
+        .distinctUntilChanged();
     }
   }
 
-  // private setAllFilters(): void {
-  //   // this.setSchoolsFilters();
-  //   // this.setStatusFilters();
-  // }
+  public filterStatus(id: number, checked: boolean): void {
+    if (checked && !this.statusFilters.some(x => x === id)) {
+      this.statusFilters.push(id);
+    } else if (!checked && this.statusFilters.some(x => x === id)) {
+      this.statusFilters.splice(this.statusFilters.indexOf(id), 1);
+    }
+    this.getProcesses();
+  }
 
-  // private setSchoolsFilters(): void {
-  //   this.schoolsFilters = new Array<number>();
-  //   if (this.showSchool && this.scholarshipService.schoolSelected !== -1) {
-  //     this.schoolsFilters.push(this.scholarshipService.schoolSelected);
-  //   } else if (this.showSchool && this.scholarshipService.schoolSelected === -1) {
-  //     this.schools$.subscribe(data => {
-  //       data.forEach(school => {
-  //         if (!this.schoolsFilters.some(x => x === school.id)) {
-  //           this.schoolsFilters.push(school.id);
-  //         }
-  //       });
-  //     });
-  //   } else {
-  //     this.schoolsFilters.push(auth.getCurrentUser().idSchool);
-  //   }
-  // }
-
-  // private setStatusFilters(): void {
-  //   this.statusFilters = new Array<Number>();
-  //   if (this.scholarshipService.statusSelected === 0) {
-  //     for (let i = 1; i <= 8; i++) {
-  //       this.statusFilters.push(i);
-  //     }
-  //   } else {
-  //     this.statusFilters.push(this.scholarshipService.statusSelected);
-  //     this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters);
-  //   }
-  // }
-
-  // public filterSchools(id: number, checked: boolean): void {
-  //   if (checked && !this.schoolsFilters.some(x => x === id) && this.showSchool) {
-  //     this.schoolsFilters.push(id);
-  //   } else if (!checked && this.schoolsFilters.some(x => x === id) && this.showSchool) {
-  //     const index = this.schoolsFilters.indexOf(id);
-  //     this.schoolsFilters.splice(index, 1);
-  //   }
-  //   // this.callFilters();
-  // }
-
-  // private callFilters(): void {
-  //   this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters);
-  // }
-
-  // public filterStatus(id: number, checked: boolean): void {
-  //   if (checked && !this.statusFilters.some(x => x === id)) {
-  //     this.statusFilters.push(id);
-  //   } else if (!checked && this.statusFilters.some(x => x === id)) {
-  //     this.statusFilters.splice(this.statusFilters.indexOf(id), 1);
-  //   }
-  //   this.callFilters();
-  // }
-
-  // public searchProcess(search: string): void {
-  //   this.inSearch = search !== '' ? true : false;
-  //   if (!this.processes) {
-  //     return;
-  //   }
-  //   this.callFilters();
-  //   const processes = this.store.filterSearch(search);
-  //   this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters, processes);
-  // }
+  public filterSchools(id: number, checked: boolean): void {
+    if (checked && !this.schoolsFilters.some(x => x === id) && this.showSchool) {
+      this.schoolsFilters.push(id);
+    } else if (!checked && this.schoolsFilters.some(x => x === id) && this.showSchool) {
+      const index = this.schoolsFilters.indexOf(id);
+      this.schoolsFilters.splice(index, 1);
+    }
+    this.getProcesses();
+  }
 
   public closeSidenav(): void {
     this.location.back();
@@ -204,98 +173,8 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     this.showSchool = idSchool === 0 ? true : false;
   }
 
-  public toWaiting(process: Process): void {
-    if (auth.getCurrentUser().idSchool === 0 && process.status === 1) {
-      this.store.changeStatus(this.setStatusChangeProcess(process, 2, 'Iniciado'));
-    }
-  }
-
-  public toReject(process, idMotive: number): void {
-    if (auth.getCurrentUser().idSchool === 0 && (process.status > 1 && process.status < 7)) {
-      this.store.sendRejection(this.setDataRejection(process), idMotive);
-    }
-  }
-
-  private setDataRejection(process: Process): any {
-    return {
-      id: process.id,
-      status: 7,
-      description: 'Indeferido',
-      user: auth.getCurrentUser().id,
-      process: process
-    };
-  }
-
-  public toNotEnroll(process: Process): void {
-    if (auth.getCurrentUser().idSchool === 0 && (process.status === 5 || process.status === 6)) {
-      this.store.changeStatus(this.setStatusChangeProcess(process, 8, 'Não Matriculou'));
-    }
-  }
-
-  private setStatusChangeProcess(process: Process, status: number, description: string): any {
-    return {
-      id: process.id,
-      status: status,
-      description: description,
-      user: auth.getCurrentUser().id,
-      process: process
-    };
-  }
-
-  public sendDocuments(event: MatSlideToggleChange, process: Process): void {
-    if (process.status === 3) {
-      this.store.sendDocuments(this.setProcessSendDocuments(process, event.checked));
-    }
-  }
-
-  private setProcessSendDocuments(process: Process, checked: boolean): any {
-    return {
-      id: process.id,
-      user: auth.getCurrentUser().id,
-      isSendDocument: checked,
-      description: checked ? 'Documentos Pendentes Enviados' : 'Documentos Pendentes Não Enviados',
-      process: process
-    };
-  }
-
   public onScroll(): void {
     this.showList += 15;
-  }
-
-  public toPendency(process: Process): void {
-    const dialogConfig = new MatDialogConfig();
-
-    this.setDialogPendecy(dialogConfig, process);
-    const dialogRef = this.dialog.open(PendencyComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(pendency => {
-      if (pendency) {
-        const processPendency: any = this.setDataPendency(process, pendency);
-        this.store.savePendecy(processPendency);
-      }
-    });
-  }
-
-  private setDialogPendecy(dialogConfig: MatDialogConfig<any>, process: Process) {
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    if (this.layout === 'row') {
-        dialogConfig.width = '60%';
-    }
-    dialogConfig.data = {
-        process: process
-    };
-  }
-
-  private setDataPendency(process: Process, data: any): any {
-    return {
-        id: process.id,
-        pendency: data.pendency,
-        user: auth.getCurrentUser().id,
-        status: 3,
-        isSendDocument: false,
-        description: 'Adicionando Pendência',
-        process: process
-    };
   }
 
   public getMotiveToReject(motive): string {
@@ -314,47 +193,9 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     return 'Indeferido pela apresentação da documentação inconsistente à análise correspondente.';
   }
 
-  public toApprove(process: Process): void {
-    if (process.status === 2 || process.status === 3 || process.status === 7) {
-      this.store.changeStatus(this.setStatusChangeProcess(process, 4, 'Aguardando Vaga de Bolsa'));
-    } else {
-      const dialogConfig = new MatDialogConfig();
-
-      this.setDialogAprove(dialogConfig, process);
-      const dialogRef = this.dialog.open(VacancyComponent, dialogConfig);
-      dialogRef.afterClosed().subscribe(vacancy => {
-        if (vacancy) {
-          const processVacancy: any = this.setDataVacancy(process, vacancy);
-          this.store.saveVacancy(processVacancy);
-        }
-      });
-    }
-  }
-
-  private setDataVacancy(process: Process, data: any): any {
-    return {
-      id: process.id,
-      status: data.idStatus,
-      description: data.description,
-      dateRegistration: data.dateRegistration,
-      user: auth.getCurrentUser().id,
-      process: process
-    };
-  }
-
-  private setDialogAprove(dialogConfig: MatDialogConfig<any>, process: Process): void {
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    if (this.layout === 'row') {
-        dialogConfig.width = '400px';
-    }
-    dialogConfig.data = {
-        process: process
-    };
-  }
-
-  public editProcess(process: Process) {
+  public editProcess(process: ProcessDataInterface): void {
     this.router.navigate([process.id, 'editar'], { relativeTo: this.route });
+    this.sidenavService.open();
   }
 
   public expandPanel(matExpansionPanel): void {
@@ -370,8 +211,19 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     }
   }
 
-  public generateReportToProcess(process: Process): void {
-    this.store.generateReport(process.id, 'Relatório gerado!');
+  public generateReportToProcess(process: ProcessDataInterface): void {
+    this.reportService.reportProcess(process.id).subscribe(dataURL => {
+      const fileUrl = URL.createObjectURL(dataURL);
+      const element = document.createElement('a');
+      element.href = fileUrl;
+      element.download = 'processo.pdf';
+      element.target = '_blank';
+      element.click();
+      this.snackBar.open('Relatório gerado com sucesso.', 'OK', { duration: 5000 });
+    }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
+    });
   }
 
   public generateGeneralProcessReport(): void {
@@ -395,25 +247,180 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     });
   }
 
-  public removeProcess(process: Process): void {
+
+  public changeStatusToProcess(process: ProcessDataInterface, status: number): void {
+    const user = auth.getCurrentUser();
+    this.scholarshipService
+    .changeProcessStatus(process.id, status, { userId: user.id }).subscribe(res => {
+      if (res) {
+        process.status.id = status;
+        process.status.name = this.getNameStatus(status);
+      }
+    }, err => this.snackBar.open('Erro ao alterar o status do processo, tente novamente.', 'OK', { duration: 5000 }));
+  }
+
+  private getNameStatus(status: number): string {
+    switch (status) {
+      case 1:
+        return 'Aguardando Análise';
+      case 2:
+        return 'Em Análise';
+      case 3:
+        return 'Pendência';
+      case 4:
+        return 'Aguardando Vaga de Bolsa';
+      case 5:
+        return 'Vaga Liberada (50%)';
+      case 6:
+        return 'Vaga Liberada (100%)';
+      case 7:
+        return 'Bolsa Indeferida';
+      case 8:
+        return 'Não Matriculado';
+      default:
+        break;
+    }
+  }
+
+  public toApprove(process: ProcessDataInterface): void {
+    if (process.status.id === 2 || process.status.id === 3 || process.status.id === 7) {
+      this.changeStatusToProcess(process, 4);
+    } else {
+      const dialogConfig = new MatDialogConfig();
+
+      this.setDialogAprove(dialogConfig, process);
+      const dialogRef = this.dialog.open(VacancyComponent, dialogConfig);
+      dialogRef.afterClosed().subscribe(vacancy => {
+        if (vacancy) {
+          const { id } = auth.getCurrentUser();
+          this.scholarshipService
+            .saveVacancy(process.id, { userId: id, status: vacancy.idStatus, dataRegistration: vacancy.dataRegistration })
+            .subscribe(res => {
+              if (res) {
+                process.status.id = vacancy.idStatus;
+                process.status.name = this.getNameStatus(vacancy.idStatus);
+                process.dateRegistration = vacancy.dataRegistration;
+                this.snackBar.open('Processo aprovado com sucesso.', 'OK', { duration: 5000 });
+              }
+            }, err => this.snackBar.open('Erro ao salvar a aprovação do processo, tente novamente.', 'OK', { duration: 5000 }));
+        }
+      });
+    }
+  }
+
+  private setDialogAprove(dialogConfig: MatDialogConfig<any>, process: ProcessDataInterface): void {
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    if (this.layout === 'row') {
+        dialogConfig.width = '400px';
+    }
+    dialogConfig.data = {
+        process: process
+    };
+  }
+
+  public toPendency(process: ProcessDataInterface): void {
+    const dialogConfig = new MatDialogConfig();
+
+    this.setDialogPendecy(dialogConfig, process);
+    const dialogRef = this.dialog.open(PendencyComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        const { id } = auth.getCurrentUser();
+        this.scholarshipService
+          .savePendency(process.id, { userId: id, pendency: data.pendency })
+          .subscribe(res => {
+            if (res) {
+              process.status.id = EStatus.Pendency;
+              process.status.name = this.getNameStatus(EStatus.Pendency);
+              process.pendency = data.pendency;
+              process.isSendDocument = false;
+              this.snackBar.open('Pendência salva com sucesso.', 'OK', { duration: 5000 });
+            }
+          }, err => this.snackBar.open('Erro ao salvar pendência do processo, tente novamente.', 'OK', { duration: 5000 }));
+      }
+    });
+  }
+
+  private setDialogPendecy(dialogConfig: MatDialogConfig<any>, process: ProcessDataInterface) {
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    if (this.layout === 'row') {
+        dialogConfig.width = '60%';
+    }
+    dialogConfig.data = {
+        process: process
+    };
+  }
+
+  public toReject(process: ProcessDataInterface, idMotive: number): void {
+    const user = auth.getCurrentUser();
+    if (user.idSchool === 0 && (process.status.id > 1 && process.status.id < 7)) {
+      this.scholarshipService.saveReject(process.id, {
+        userId: user.id,
+        motiveReject: this.setReasonForRejection(idMotive)
+      }).subscribe(res => {
+        if (res) {
+          process.status.id = EStatus.Dismissed;
+          process.status.name = this.getNameStatus(EStatus.Dismissed);
+          process.motiveReject = this.setReasonForRejection(idMotive);
+          this.snackBar.open('Pendência salva com sucesso.', 'OK', { duration: 5000 });
+        }
+      }, err => this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 }));
+    }
+  }
+
+  private setReasonForRejection(idMotive: number): string {
+    if (idMotive === 1) {
+      return 'Acadêmico';
+    } else if (idMotive === 2) {
+      return 'Financeiro';
+    } else if (idMotive === 3) {
+      return 'Renda';
+    } else if (idMotive === 4) {
+      return 'Disciplinar';
+    } else {
+      return 'Documentação';
+    }
+  }
+
+  public sentDocuments(event: MatSlideToggleChange, process: ProcessDataInterface): void {
+    if (process.status.id === 3) {
+      const { id } = auth.getCurrentUser();
+      this.scholarshipService
+        .sentDocuments(process.id, { userId: id })
+        .subscribe(res => {
+          if (res) {
+            process.isSendDocument = event.checked;
+          }
+        }, err => {
+          this.snackBar.open('Erro ao marcar os documentos como enviados, tente novamente.', 'OK', { duration: 5000 });
+        });
+    }
+  }
+
+  public removeProcess(process: ProcessDataInterface): void {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este processo?', 'REMOVER')
       .subscribe(res => {
         if (res === true) {
-          this.store.removeProcess(process.id, auth.getCurrentUser().id);
+          this.scholarshipService.deleteProcess(process.id).subscribe(() => {
+            this.getProcesses();
+            this.snackBar.open('Processo removido!', 'OK', { duration: 5000 });
+          }, err => {
+            console.log(err);
+            this.snackBar.open('Erro ao remover processo, tente novamente.', 'OK', { duration: 5000 });
+          });
         }
       });
   }
 
-  public generateNewPasswordResponsible(process: Process): void {
-    const dataNewPassword = this.setDataNewPasswordResponsible(process);
-    this.store.generateNewPasswordResponsible(dataNewPassword);
-  }
-
-  private setDataNewPasswordResponsible(process: Process) {
-    return {
-      id: process.student.responsible.id,
-      idUser: auth.getCurrentUser().id
-    };
+  public generateNewPasswordResponsible(process: ProcessDataInterface): void {
+    const { id } = auth.getCurrentUser();
+    this.scholarshipService
+      .generateNewPasswordResponsible({ userId: id, responsibleId: process.responsible.id })
+      .subscribe(() => {
+        this.snackBar.open('Nova senha do responsável gerada com sucesso.', 'OK', { duration: 5000 });
+      }, err => this.snackBar.open('Erro ao gerar senha para o responável do processo, tente novamente.', 'OK', { duration: 5000 }));
   }
 }

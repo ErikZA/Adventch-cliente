@@ -279,23 +279,23 @@ export class ProcessesStore {
   }
 
   public changeStatus(processStatusChanged: any): void {
-    this.service.updateToStatus(processStatusChanged).subscribe(() => {
-      processStatusChanged.process.status = processStatusChanged.status;
-      this.updateProcess(processStatusChanged.process);
-    }, err => {
-      this.snackBar.open('Erro ao salvar o status do processo, tente novamente.', 'OK', { duration: 5000 });
-    });
+    // this.service.updateToStatus(processStatusChanged).subscribe(() => {
+    //   processStatusChanged.process.status = processStatusChanged.status;
+    //   this.updateProcess(processStatusChanged.process);
+    // }, err => {
+    //   this.snackBar.open('Erro ao salvar o status do processo, tente novamente.', 'OK', { duration: 5000 });
+    // });
   }
 
   public sendRejection(processRejection: any, idMotive: number): void {
-    processRejection.motive = this.setReasonForRejection(idMotive);
-    this.service.saveReject(processRejection).subscribe(() => {
-      processRejection.process.status = 7;
-      processRejection.process.motiveReject = processRejection.motive;
-      this.updateProcess(processRejection.process);
-    }, err => {
-      this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 });
-    });
+    // processRejection.motive = this.setReasonForRejection(idMotive);
+    // this.service.saveReject(processRejection).subscribe(() => {
+    //   processRejection.process.status = 7;
+    //   processRejection.process.motiveReject = processRejection.motive;
+    //   this.updateProcess(processRejection.process);
+    // }, err => {
+    //   this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 });
+    // });
   }
 
   private setReasonForRejection(idMotive: number): string {
@@ -313,35 +313,35 @@ export class ProcessesStore {
   }
 
   public savePendecy(pendecyDataProcess: any): void {
-    this.service.savePendency(pendecyDataProcess).subscribe(() => {
-      pendecyDataProcess.process.status = 3;
-      pendecyDataProcess.process.pendency = pendecyDataProcess.pendency;
-      this.updateProcess(pendecyDataProcess.process);
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao salvar pendência do processo, tente novamente.', 'OK', { duration: 5000 });
-    });
+    // this.service.savePendency(pendecyDataProcess).subscribe(() => {
+    //   pendecyDataProcess.process.status = 3;
+    //   pendecyDataProcess.process.pendency = pendecyDataProcess.pendency;
+    //   this.updateProcess(pendecyDataProcess.process);
+    // }, err => {
+    //   console.log(err);
+    //   this.snackBar.open('Erro ao salvar pendência do processo, tente novamente.', 'OK', { duration: 5000 });
+    // });
   }
 
   public sendDocuments(sendDocumentsDataProcess: any): void {
-    this.service.sendDocument(sendDocumentsDataProcess).subscribe(() => {
-      sendDocumentsDataProcess.process.isSendDocument = sendDocumentsDataProcess.isSendDocument;
-      this.updateProcess(sendDocumentsDataProcess.process);
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao salvar o envio de documentos do processo, tente novamente.', 'OK', { duration: 5000 });
-    });
+    // this.service.sendDocument(1).subscribe(() => {
+    //   sendDocumentsDataProcess.process.isSendDocument = sendDocumentsDataProcess.isSendDocument;
+    //   this.updateProcess(sendDocumentsDataProcess.process);
+    // }, err => {
+    //   console.log(err);
+    //   this.snackBar.open('Erro ao salvar o envio de documentos do processo, tente novamente.', 'OK', { duration: 5000 });
+    // });
   }
 
   public saveVacancy(vacacyDataProcess: any): void {
-    this.service.saveVacancy(vacacyDataProcess).subscribe(() => {
-      vacacyDataProcess.process.status = vacacyDataProcess.status;
-      vacacyDataProcess.process.dateRegistration = vacacyDataProcess.dateRegistration;
-      this.updateProcess(vacacyDataProcess.process);
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao salvar a aprovação do processo, tente novamente.', 'OK', { duration: 5000 });
-    });
+    // this.service.saveVacancy(vacacyDataProcess).subscribe(() => {
+    //   vacacyDataProcess.process.status = vacacyDataProcess.status;
+    //   vacacyDataProcess.process.dateRegistration = vacacyDataProcess.dateRegistration;
+    //   this.updateProcess(vacacyDataProcess.process);
+    // }, err => {
+    //   console.log(err);
+    //   this.snackBar.open('Erro ao salvar a aprovação do processo, tente novamente.', 'OK', { duration: 5000 });
+    // });
   }
 
   public generateNewPasswordResponsible(newPasswordDataResponsible: any) {
@@ -356,25 +356,22 @@ export class ProcessesStore {
   }
 
   public generateReport(id: number, message: string): void {
-    this.service.getPasswordResponsible(id).subscribe(data => {
-      const password = data.password;
-      this.reportService.reportProcess(id, password).subscribe(dataURL => {
-        const fileUrl = URL.createObjectURL(dataURL);
-        const element = document.createElement('a');
-        element.href = fileUrl;
-        element.download = 'processo.pdf';
-        element.target = '_blank';
-        element.click();
-      }, err => {
-          console.log(err);
-          this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
-      });
-      this.snackBar.open(message, 'OK', { duration: 5000 });
+    const password = '';
+    this.reportService.reportProcess(id).subscribe(dataURL => {
+      const fileUrl = URL.createObjectURL(dataURL);
+      const element = document.createElement('a');
+      element.href = fileUrl;
+      element.download = 'processo.pdf';
+      element.target = '_blank';
+      element.click();
+    }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
     });
   }
 
   public removeProcess(id: number, idUser: number) {
-    this.service.deleteProcess(id, idUser).subscribe(() => {
+    this.service.deleteProcess(id).subscribe(() => {
       this.dataStore.processes.forEach((t, i) => {
         if (t.id === id) {
           this.dataStore.processes.splice(i, 1);
