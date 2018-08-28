@@ -5,8 +5,6 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/catch';
 
-import { AuthService } from '../../shared/auth.service';
-
 import { Student } from './models/student';
 import { Process } from './models/process';
 import { Responsible } from './models/responsible';
@@ -67,16 +65,22 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getSchools(unitId: number): Observable<SchoolProcessInterface[]> {
-    const url = `/scholarship/school/unit/${unitId}`;
+  public getSchools(): Observable<SchoolProcessInterface[]> {
+    const url = `/scholarship/school`;
     return this.http
       .get<SchoolProcessInterface[]>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcesses(schoolId: number[]): Observable<ProcessDataInterface[]> {
+  public getProcessesByUnit(): Observable<ProcessDataInterface[]> {
     const url = `/scholarship/process/schools`;
-    const params = new HttpParams().set('ids', JSON.stringify(schoolId));
+    return this.http
+      .get(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public getProcessesBySchool(schoolId: number): Observable<ProcessDataInterface[]> {
+    const url = `/scholarship/process/school/${schoolId}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));

@@ -45,19 +45,19 @@
     padding-left: 30px;
 }
 
-.mat-button{
+.mat-button {
     margin: 5px;
 }
 
-.mat-action-row{
+.mat-action-row {
     padding: 16px;
 }
 
 .break-line {
-  white-space: pre-line;
+    white-space: pre-line;
 }
 
-.style-text{
+.style-text {
     white-space: pre-line;
     padding-left: 30px;
     color: rgba(0, 0, 0, 0.54);
@@ -67,11 +67,20 @@
     height: calc(100vh - 92px);
 }
 
-.auto{
+.auto {
     height: auto;
 }
 
 .conteiner {
     overflow: auto;
     max-height: calc(100vh - 240px);
+}
+
+.description {
+    margin: 0 3%;
+}
+
+.title-description {
+    color: grey;
+    font-weight: bold;
 }

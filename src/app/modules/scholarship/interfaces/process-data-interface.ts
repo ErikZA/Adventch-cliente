@@ -12,6 +12,7 @@ export interface ProcessDataInterface {
   school: string;
   pendency: string;
   motiveReject: string;
+  isSendDocument: boolean;
   dateRegistration: Date;
   documents: DocumentProcessDataInterface;
 }

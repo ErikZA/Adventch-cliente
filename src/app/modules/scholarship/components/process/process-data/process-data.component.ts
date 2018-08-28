@@ -65,6 +65,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
 
   // Verificar tipo de usuário que pode modificar projeto ou não
   isScholarship: boolean;
+  documentsIsVisible = false;
 
   constructor(
     public scholarshipService: ScholarshipService,
@@ -85,9 +86,10 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.schoolIsVisible();
     this.getAllDatas();
-    this.isScholarship = auth.getCurrentUser().isScholarship;
+    // this.schoolIsVisible();
+    // this.getAllDatas();
+    // this.isScholarship = auth.getCurrentUser().isScholarship;
     // this.processes$.subscribe(x => { this.processes = x; });
     // this.search$.subscribe(search => {
     //   this.searchProcess(search);
@@ -106,34 +108,46 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
 
+  public enableDocuments(): void {
+    this.documentsIsVisible = !this.documentsIsVisible;
+  }
+
+  private getAllSchools(): void {
+    this.schools$ = this.scholarshipService.getSchools();
+  }
+
+
   private getAllDatas(): void {
-    const unit = auth.getCurrentUnit();
-    this.schools$ = this.scholarshipService.getSchools(unit.id);
-    this.setAllFilters();
-    this.processes$ = this.scholarshipService.getProcesses(this.schoolsFilters);
-  }
-
-  private setAllFilters(): void {
-    this.setSchoolsFilters();
-    // this.setStatusFilters();
-  }
-
-  private setSchoolsFilters(): void {
-    this.schoolsFilters = new Array<number>();
-    if (this.showSchool && this.scholarshipService.schoolSelected !== -1) {
-      this.schoolsFilters.push(this.scholarshipService.schoolSelected);
-    } else if (this.showSchool && this.scholarshipService.schoolSelected === -1) {
-      this.schools$.subscribe(data => {
-        data.forEach(school => {
-          if (!this.schoolsFilters.some(x => x === school.id)) {
-            this.schoolsFilters.push(school.id);
-          }
-        });
-      });
+    const user = auth.getCurrentUser();
+    if (user.idSchool === 0) {
+      this.getAllSchools();
+      this.processes$ = this.scholarshipService.getProcessesByUnit();
     } else {
-      this.schoolsFilters.push(auth.getCurrentUser().idSchool);
+      this.processes$ = this.scholarshipService.getProcessesBySchool(user.idSchool);
     }
   }
+
+  // private setAllFilters(): void {
+  //   // this.setSchoolsFilters();
+  //   // this.setStatusFilters();
+  // }
+
+  // private setSchoolsFilters(): void {
+  //   this.schoolsFilters = new Array<number>();
+  //   if (this.showSchool && this.scholarshipService.schoolSelected !== -1) {
+  //     this.schoolsFilters.push(this.scholarshipService.schoolSelected);
+  //   } else if (this.showSchool && this.scholarshipService.schoolSelected === -1) {
+  //     this.schools$.subscribe(data => {
+  //       data.forEach(school => {
+  //         if (!this.schoolsFilters.some(x => x === school.id)) {
+  //           this.schoolsFilters.push(school.id);
+  //         }
+  //       });
+  //     });
+  //   } else {
+  //     this.schoolsFilters.push(auth.getCurrentUser().idSchool);
+  //   }
+  // }
 
   // private setStatusFilters(): void {
   //   this.statusFilters = new Array<Number>();
@@ -147,15 +161,15 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   //   }
   // }
 
-  public filterSchools(id: number, checked: boolean): void {
-    if (checked && !this.schoolsFilters.some(x => x === id) && this.showSchool) {
-      this.schoolsFilters.push(id);
-    } else if (!checked && this.schoolsFilters.some(x => x === id) && this.showSchool) {
-      const index = this.schoolsFilters.indexOf(id);
-      this.schoolsFilters.splice(index, 1);
-    }
-    // this.callFilters();
-  }
+  // public filterSchools(id: number, checked: boolean): void {
+  //   if (checked && !this.schoolsFilters.some(x => x === id) && this.showSchool) {
+  //     this.schoolsFilters.push(id);
+  //   } else if (!checked && this.schoolsFilters.some(x => x === id) && this.showSchool) {
+  //     const index = this.schoolsFilters.indexOf(id);
+  //     this.schoolsFilters.splice(index, 1);
+  //   }
+  //   // this.callFilters();
+  // }
 
   // private callFilters(): void {
   //   this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters);
