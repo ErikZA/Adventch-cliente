@@ -124,18 +124,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.subscribe1 = this.sharedService.getUnits(userId).subscribe((data: Unit[]) => {
         this.setUnitsToLocalStorage(data);
         this.lstUnits = data;
+        this.updateUnit(this.lstUnits[0]);
       });
-    } else {
-      this.lstUnits = localUnits;
+      return;
     }
-
-    if (Array.isArray(this.lstUnits)) {
-      if (!this.unit || this.unit === null || this.unit === undefined) {
-        this.unit = this.lstUnits[0];
-        this.updateUnit(this.unit);
-      } else {
-        this.updateUnit(this.unit);
-      }
+    this.lstUnits = localUnits;
+    if (typeof this.unit === 'undefined') {
+      this.updateUnit(this.lstUnits[0]);
     }
   }
   public redirectToHome() {
@@ -143,7 +138,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.router.navigate(['/']);
     }
   }
-  public updateUnit(unit): void {
+  public updateUnit(unit: Unit): void {
     this.unit = unit;
     this.authService.setCurrentUnit(unit);
   }
