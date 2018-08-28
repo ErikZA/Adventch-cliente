@@ -139,7 +139,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
   public updateUnit(unit: Unit): void {
-    console.log('SET UNIT', unit, this.unit);
     this.unit = unit;
     this.authService.setCurrentUnit(unit);
   }
