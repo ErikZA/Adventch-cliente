@@ -31,6 +31,7 @@ import { MatDialogRef,
 import { auth } from './../../../../../auth/auth';
 import { ProcessesStore } from '../processes.store';
 import { ProcessDataInterface } from '../../../interfaces/process-data-interface';
+import { EStatus } from '../../../models/enums';
 
 @Component({
   selector: 'app-process-data',
@@ -75,7 +76,6 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     private sidenavService: SidenavService,
     private router: Router,
     private route: ActivatedRoute,
-    private store: ProcessesStore,
     private reportService: ReportService,
     private location: Location,
     private confirmDialogService: ConfirmDialogService
@@ -251,9 +251,35 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   public changeStatusToProcess(process: ProcessDataInterface, status: number): void {
     const user = auth.getCurrentUser();
     this.scholarshipService
-    .changeProcessStatus(process.id, status, { userId: user.id }).subscribe(() => {
-      this.getProcesses();
+    .changeProcessStatus(process.id, status, { userId: user.id }).subscribe(res => {
+      if (res) {
+        process.status.id = status;
+        process.status.name = this.getNameStatus(status);
+      }
     }, err => this.snackBar.open('Erro ao alterar o status do processo, tente novamente.', 'OK', { duration: 5000 }));
+  }
+
+  private getNameStatus(status: number): string {
+    switch (status) {
+      case 1:
+        return 'Aguardando Análise';
+      case 2:
+        return 'Em Análise';
+      case 3:
+        return 'Pendência';
+      case 4:
+        return 'Aguardando Vaga de Bolsa';
+      case 5:
+        return 'Vaga Liberada (50%)';
+      case 6:
+        return 'Vaga Liberada (100%)';
+      case 7:
+        return 'Bolsa Indeferida';
+      case 8:
+        return 'Não Matriculado';
+      default:
+        break;
+    }
   }
 
   public toApprove(process: ProcessDataInterface): void {
@@ -269,9 +295,14 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
           const { id } = auth.getCurrentUser();
           this.scholarshipService
             .saveVacancy(process.id, { userId: id, status: vacancy.idStatus, dataRegistration: vacancy.dataRegistration })
-            .subscribe(() => {
+            .subscribe(res => {
+              if (res) {
+                process.status.id = vacancy.idStatus;
+                process.status.name = this.getNameStatus(vacancy.idStatus);
+                process.dateRegistration = vacancy.dataRegistration;
+                this.snackBar.open('Processo aprovado com sucesso.', 'OK', { duration: 5000 });
+              }
               this.getProcesses();
-              this.snackBar.open('Processo aprovado com sucesso.', 'OK', { duration: 5000 });
             }, err => this.snackBar.open('Erro ao salvar a aprovação do processo, tente novamente.', 'OK', { duration: 5000 }));
         }
       });
@@ -299,9 +330,14 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
         const { id } = auth.getCurrentUser();
         this.scholarshipService
           .savePendency(process.id, { userId: id, pendency: data.pendency })
-          .subscribe(() => {
-            this.getProcesses();
-            this.snackBar.open('Pendência salva com sucesso.', 'OK', { duration: 5000 });
+          .subscribe(res => {
+            if (res) {
+              process.status.id = EStatus.Pendency;
+              process.status.name = this.getNameStatus(EStatus.Pendency);
+              process.pendency = data.pendency;
+              process.isSendDocument = false;
+              this.snackBar.open('Pendência salva com sucesso.', 'OK', { duration: 5000 });
+            }
           }, err => this.snackBar.open('Erro ao salvar pendência do processo, tente novamente.', 'OK', { duration: 5000 }));
       }
     });
@@ -318,14 +354,19 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     };
   }
 
-  public toReject(process, idMotive: number): void {
-    if (auth.getCurrentUser().idSchool === 0 && (process.status > 1 && process.status < 7)) {
-      const { id } = auth.getCurrentUser();
+  public toReject(process: ProcessDataInterface, idMotive: number): void {
+    const user = auth.getCurrentUser();
+    if (user.idSchool === 0 && (process.status.id > 1 && process.status.id < 7)) {
       this.scholarshipService.saveReject(process.id, {
-        userId: id,
+        userId: user.id,
         motiveReject: this.setReasonForRejection(idMotive)
-      }).subscribe(() => {
-        this.getProcesses();
+      }).subscribe(res => {
+        if (res) {
+          process.status.id = EStatus.Dismissed;
+          process.status.name = this.getNameStatus(EStatus.Dismissed);
+          process.motiveReject = this.setReasonForRejection(idMotive);
+          this.snackBar.open('Pendência salva com sucesso.', 'OK', { duration: 5000 });
+        }
       }, err => this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 }));
     }
   }
@@ -349,8 +390,10 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       const { id } = auth.getCurrentUser();
       this.scholarshipService
         .sentDocuments(process.id, { userId: id })
-        .subscribe(() => {
-          this.getProcesses();
+        .subscribe(res => {
+          if (res) {
+            process.isSendDocument = event.checked;
+          }
         }, err => {
           this.snackBar.open('Erro ao marcar os documentos como enviados, tente novamente.', 'OK', { duration: 5000 });
         });
