@@ -46,7 +46,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
 
     this.routeSubscription = this.route.params.subscribe((data) => {
       if (data.id) {
-        this.editDistrict(this.store.requirements);
+        this.editRequirements(this.store.requirements);
       }
     });
 
@@ -126,13 +126,14 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  editDistrict(requirement) {
+  editRequirements(requirement) {
     this.requirement = requirement;
     this.formRequirement.setValue({
-      position: requirement.position,
+      position: requirement.position.toString(),
       name: requirement.name,
       description: requirement.description,
-      score: requirement.score,
+      score: requirement.score.toString(),
+      isAnual: requirement.isAnual.toString(),
       date: requirement.date,
     });
     // this.editAnalyst = Number(district.analyst.id);
