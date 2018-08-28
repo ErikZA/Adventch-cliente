@@ -163,8 +163,13 @@
                                             <div class="text-bold">Matrícula: </div>
                                             <div class="style-text">até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</div>
                                         </div>
-                                        <div fxLayout="row" *ngIf="process.motiveReject != null && (process.status.id === 7)">
-                                            <div class="text-bold">{{ process.motiveReject }}</div>
+                                        <div fxLayout="column" fxLayoutGap="10px" *ngIf="process.motiveReject != null && (process.status.id === 7)">
+                                            <div fxLayout="row" fxLayoutGap="10px">
+                                                <div class="text-bold">
+                                                    Bolsa Indeferida:
+                                                </div>
+                                                <div>Motivo {{ process.motiveReject }}</div>
+                                            </div>
                                             <div class="style-text">{{ getMotiveToReject(process.motiveReject) }}</div>
                                         </div>
                                     </div>
