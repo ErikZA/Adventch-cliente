@@ -43,10 +43,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initForm();
-    const unit = this.authService.getCurrentUnit();
-    this.service.getUsers2(unit.id).subscribe((data) => {
-      this.users = data;
-    });
+    this.loadAnalysts();
 
     this.routeSubscription = this.route.params.subscribe((data) => {
       if (data.id) {
@@ -61,6 +58,13 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
+  }
+
+  private loadAnalysts(): void {
+    const unit = this.authService.getCurrentUnit();
+    this.service.getUsers2(unit.id).subscribe((data) => {
+      this.users = data;
+    });
   }
 
   private checkIsEdit(): boolean {
@@ -123,8 +127,8 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
       this.district = district;
 
       this.formDistrict = new FormGroup({
-        name: new FormControl({value: district.name, disabled: false}, Validators.required),
-        analyst: new FormControl({value: district.analyst, disabled: false}, [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)])
+        'name': new FormControl({value: district.name, disabled: false}, Validators.required),
+        'analyst': new FormControl({value: district.analyst.id, disabled: false}, Validators.required)
       });
     }
   }
