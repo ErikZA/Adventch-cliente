@@ -192,7 +192,10 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   private mapFormToViewModel(): NewProcessViewModel {
     const user = auth.getCurrentUser();
     if (!Number.isInteger(user.idSchool) || !Number.isInteger(user.id)) {
-      throw new Error('user id and use schol id is invalid');
+      throw new Error('user id and use school id is invalid');
+    }
+    if (user.idSchool === 0 && (!Number.isInteger(this.scholarshipService.schoolSelected) || this.scholarshipService.schoolSelected <= 0)) {
+      throw new Error('school selected is invalid');
     }
     return {
       responsible: {
@@ -203,7 +206,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         phone: this.formProcess.value.phone
       },
       bagPorcentage: this.formProcess.value.bagPorcentage,
-      schoolId: user.idSchool,
+      schoolId: user.idSchool === 0 ? this.scholarshipService.schoolSelected : user.idSchool,
       userId: user.id,
       serieId: this.formProcess.value.studentSerieId,
       documents: this.getAllDocumentsFromTypes(),
@@ -236,7 +239,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     });
   }
   public labelTitleProcess(): string {
-    return this.process !== undefined && this.process.id !== undefined ? 'Editar' : 'Novo';
+    return this.processId !== undefined && this.processId !== undefined ? 'Editar' : 'Novo';
   }
   public setStudent(student: Student): void {
     if (Number.isInteger(student.rc)) {
