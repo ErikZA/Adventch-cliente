@@ -5,7 +5,6 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/catch';
 
-import { Student } from './models/student';
 import { Process } from './models/process';
 import { Responsible } from './models/responsible';
 import { StudentSerie } from './models/studentSerie';
@@ -72,17 +71,46 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcessesByUnit(): Observable<ProcessDataInterface[]> {
+  private setParamsProcessByUnit(status: number[]): HttpParams {
+    const params = new HttpParams();
+    return this.appendStatusParamsToProcess(params, status);
+  }
+
+  private appendStatusParamsToProcess(params: HttpParams, status: number[]): HttpParams {
+    if (status.length > 0) {
+      status.forEach(s => {
+        params.append('statusIds', s.toString());
+      });
+    }
+    return params;
+  }
+
+  public getProcessesByUnit(schools: number[], status: number[], query: string): Observable<ProcessDataInterface[]> {
+    let params = new HttpParams();
+    if (query) { params = params.set('query', query); }
+    if (status.length > 0) {
+      status.forEach(s => {
+        params = params.append('statusIds', String(s));
+      });
+    }
+    if (schools.length > 0) {
+      schools.forEach(s => {
+        params = params.append('ids', String(s));
+      });
+    }
     const url = `/scholarship/process/schools`;
     return this.http
-      .get(url)
+      .get<ProcessDataInterface[]>(url, { params: params })
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcessesBySchool(schoolId: number): Observable<ProcessDataInterface[]> {
+  public getProcessesBySchool(schoolId: number, status: number[], query: string): Observable<ProcessDataInterface[]> {
+    let params = new HttpParams();
+    if (query) { params = params.set('query', query); }
+    if (status.length > 0) { params = params.set('statusIds', String(status)); }
     const url = `/scholarship/process/school/${schoolId}`;
     return this.http
-      .get(url)
+      .get<ProcessDataInterface[]>(url, { params: params })
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
@@ -169,34 +197,27 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getStudentSeries(): Observable<StudentSerie[]> {
+  public getStudentSeries(): Observable<StudentSerie[]> {
     const url = '/scholarship/process/series';
     return this.http
-      .get(url)
+      .get<StudentSerie[]>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-
-  getAllDocuments(): Observable<ProcessDocument[]> {
+  public getAllDocuments(): Observable<ProcessDocument[]> {
     const url = '/scholarship/process/documents';
     return this.http
-      .get(url)
+      .get<ProcessDocument[]>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
   /*
   Consult
    */
-  public getPasswordResponsible(processId: number): Observable<Responsible> {
-    const url = `/scholarship/responsible/getPasswordByProcess/${processId}`;
-    return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
-  }
 
-  public generateNewPasswordResponsible(dataNewPassword: any): Observable<string> {
-    const url = '/scholarship/responsible/generateNewPassword/';
+  public generateNewPasswordResponsible(model: { userId: number, responsibleId: number }): Observable<any> {
+    const url = '/scholarship/responsible/password/new';
     return this.http
-    .post(url, dataNewPassword)
+    .put<any>(url, model)
     .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 

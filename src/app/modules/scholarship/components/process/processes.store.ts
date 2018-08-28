@@ -356,20 +356,17 @@ export class ProcessesStore {
   }
 
   public generateReport(id: number, message: string): void {
-    this.service.getPasswordResponsible(id).subscribe(data => {
-      const password = data.password;
-      this.reportService.reportProcess(id, password).subscribe(dataURL => {
-        const fileUrl = URL.createObjectURL(dataURL);
-        const element = document.createElement('a');
-        element.href = fileUrl;
-        element.download = 'processo.pdf';
-        element.target = '_blank';
-        element.click();
-      }, err => {
-          console.log(err);
-          this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
-      });
-      this.snackBar.open(message, 'OK', { duration: 5000 });
+    const password = '';
+    this.reportService.reportProcess(id, password).subscribe(dataURL => {
+      const fileUrl = URL.createObjectURL(dataURL);
+      const element = document.createElement('a');
+      element.href = fileUrl;
+      element.download = 'processo.pdf';
+      element.target = '_blank';
+      element.click();
+    }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
     });
   }
 

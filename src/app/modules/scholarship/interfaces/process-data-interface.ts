@@ -1,12 +1,13 @@
 import { StatusProcessInterface } from './status-process-interface';
 import { DocumentProcessDataInterface } from './document-process-data-interface';
 import { StudentProcessDataInterface } from './student-process-data-interface';
+import { ResponsibleDataInterface } from './responsible-data-interface';
 export interface ProcessDataInterface {
   id: number;
   protocol: string;
   status: StatusProcessInterface;
   student: StudentProcessDataInterface;
-  nameResponsible: string;
+  responsible: ResponsibleDataInterface;
   bagPorcentage: number;
   serie: string;
   school: string;

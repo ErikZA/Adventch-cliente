@@ -4,6 +4,7 @@ import { Location } from '@angular/common';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/debounceTime';
 
 import { Subscription } from 'rxjs/Subscription';
 
@@ -53,12 +54,11 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   layout: String = 'row';
 
   // New
-  processes: Process[] = new Array<Process>();
   processes$: Observable<ProcessDataInterface[]>;
   schools$: Observable<School[]>;
-  schoolsFilters: number[];
-  statusFilters: Number[];
-  valueSearch: string;
+  schoolsFilters: number[] = new Array<number>();
+  statusFilters: number[] = new Array<number>();
+  private query = '';
   inSearch: boolean;
 
   subscribeUnit: Subscription;
@@ -87,17 +87,21 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getAllDatas();
-    // this.schoolIsVisible();
-    // this.getAllDatas();
-    // this.isScholarship = auth.getCurrentUser().isScholarship;
-    // this.processes$.subscribe(x => { this.processes = x; });
-    // this.search$.subscribe(search => {
-    //   this.searchProcess(search);
-    // });
+    this.schoolIsVisible();
+    this.isScholarship = auth.getCurrentUser().isScholarship;
+    this.search$
+      .debounceTime(1000)
+      .distinctUntilChanged()
+      .subscribe(search => {
+        if (search) {
+          this.query = search;
+          this.getProcesses();
+        }
+      });
+    this.sidenavService.setSidenav(this.sidenavRight);
     // this.scholarshipService.refresh$.subscribe((refresh: boolean) => {
     //   this.searchProcess('');
     // });
-    // this.sidenavService.setSidenav(this.sidenavRight);
     // this.subscribeUnit = auth.currentUnit.subscribe(() => {
     //   this.scholarshipService.updateSchool(auth.getCurrentUser().idSchool);
     // });
@@ -121,78 +125,43 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     const user = auth.getCurrentUser();
     if (user.idSchool === 0) {
       this.getAllSchools();
-      this.processes$ = this.scholarshipService.getProcessesByUnit();
+    }
+    this.getProcesses();
+  }
+
+  private getProcesses(): void {
+    const user = auth.getCurrentUser();
+    if (user.idSchool === 0) {
+      this.processes$ = this.scholarshipService
+        .getProcessesByUnit(this.schoolsFilters, this.statusFilters, this.query)
+        .debounceTime(1000)
+        .distinctUntilChanged();
     } else {
-      this.processes$ = this.scholarshipService.getProcessesBySchool(user.idSchool);
+      this.processes$ = this.scholarshipService
+        .getProcessesBySchool(user.idSchool, this.statusFilters, this.query)
+        .debounceTime(1000)
+        .distinctUntilChanged();
     }
   }
 
-  // private setAllFilters(): void {
-  //   // this.setSchoolsFilters();
-  //   // this.setStatusFilters();
-  // }
+  public filterStatus(id: number, checked: boolean): void {
+    if (checked && !this.statusFilters.some(x => x === id)) {
+      this.statusFilters.push(id);
+    } else if (!checked && this.statusFilters.some(x => x === id)) {
+      this.statusFilters.splice(this.statusFilters.indexOf(id), 1);
+    }
+    this.getProcesses();
+  }
 
-  // private setSchoolsFilters(): void {
-  //   this.schoolsFilters = new Array<number>();
-  //   if (this.showSchool && this.scholarshipService.schoolSelected !== -1) {
-  //     this.schoolsFilters.push(this.scholarshipService.schoolSelected);
-  //   } else if (this.showSchool && this.scholarshipService.schoolSelected === -1) {
-  //     this.schools$.subscribe(data => {
-  //       data.forEach(school => {
-  //         if (!this.schoolsFilters.some(x => x === school.id)) {
-  //           this.schoolsFilters.push(school.id);
-  //         }
-  //       });
-  //     });
-  //   } else {
-  //     this.schoolsFilters.push(auth.getCurrentUser().idSchool);
-  //   }
-  // }
-
-  // private setStatusFilters(): void {
-  //   this.statusFilters = new Array<Number>();
-  //   if (this.scholarshipService.statusSelected === 0) {
-  //     for (let i = 1; i <= 8; i++) {
-  //       this.statusFilters.push(i);
-  //     }
-  //   } else {
-  //     this.statusFilters.push(this.scholarshipService.statusSelected);
-  //     this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters);
-  //   }
-  // }
-
-  // public filterSchools(id: number, checked: boolean): void {
-  //   if (checked && !this.schoolsFilters.some(x => x === id) && this.showSchool) {
-  //     this.schoolsFilters.push(id);
-  //   } else if (!checked && this.schoolsFilters.some(x => x === id) && this.showSchool) {
-  //     const index = this.schoolsFilters.indexOf(id);
-  //     this.schoolsFilters.splice(index, 1);
-  //   }
-  //   // this.callFilters();
-  // }
-
-  // private callFilters(): void {
-  //   this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters);
-  // }
-
-  // public filterStatus(id: number, checked: boolean): void {
-  //   if (checked && !this.statusFilters.some(x => x === id)) {
-  //     this.statusFilters.push(id);
-  //   } else if (!checked && this.statusFilters.some(x => x === id)) {
-  //     this.statusFilters.splice(this.statusFilters.indexOf(id), 1);
-  //   }
-  //   this.callFilters();
-  // }
-
-  // public searchProcess(search: string): void {
-  //   this.inSearch = search !== '' ? true : false;
-  //   if (!this.processes) {
-  //     return;
-  //   }
-  //   this.callFilters();
-  //   const processes = this.store.filterSearch(search);
-  //   this.processes$ = this.store.filterProcesses(this.schoolsFilters, this.statusFilters, processes);
-  // }
+  public filterSchools(id: number, checked: boolean): void {
+    if (checked && !this.schoolsFilters.some(x => x === id) && this.showSchool) {
+      this.schoolsFilters.push(id);
+    } else if (!checked && this.schoolsFilters.some(x => x === id) && this.showSchool) {
+      const index = this.schoolsFilters.indexOf(id);
+      this.schoolsFilters.splice(index, 1);
+    }
+    this.getProcesses();
+  }
 
   public closeSidenav(): void {
     this.location.back();
@@ -202,16 +171,6 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   public schoolIsVisible(): void {
     const { idSchool } = auth.getCurrentUser();
     this.showSchool = idSchool === 0 ? true : false;
-  }
-
-  private setDataRejection(process: Process): any {
-    return {
-      id: process.id,
-      status: 7,
-      description: 'Indeferido',
-      user: auth.getCurrentUser().id,
-      process: process
-    };
   }
 
   public onScroll(): void {
@@ -234,9 +193,8 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     return 'Indeferido pela apresentação da documentação inconsistente à análise correspondente.';
   }
 
-
-  public editProcess(process: Process): void {
-    this.router.navigate([process.identity.toLocaleUpperCase(), 'editar'], { relativeTo: this.route });
+  public editProcess(process: ProcessDataInterface): void {
+    this.router.navigate([process.id, 'editar'], { relativeTo: this.route });
     this.sidenavService.open();
   }
 
@@ -349,7 +307,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   public toReject(process, idMotive: number): void {
     if (auth.getCurrentUser().idSchool === 0 && (process.status > 1 && process.status < 7)) {
       const { id } = auth.getCurrentUser();
-      this.scholarshipService.saveReject(this.setDataRejection(process), {
+      this.scholarshipService.saveReject(process.id, {
         userId: id,
         motiveReject: this.setReasonForRejection(idMotive)
       }).subscribe(() => {}, err => this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 }));
@@ -397,15 +355,12 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       });
   }
 
-  public generateNewPasswordResponsible(process: Process): void {
-    const dataNewPassword = this.setDataNewPasswordResponsible(process);
-    this.store.generateNewPasswordResponsible(dataNewPassword);
-  }
-
-  private setDataNewPasswordResponsible(process: Process) {
-    return {
-      id: process.student.responsible.id,
-      idUser: auth.getCurrentUser().id
-    };
+  public generateNewPasswordResponsible(process: ProcessDataInterface): void {
+    const { id } = auth.getCurrentUser();
+    this.scholarshipService
+      .generateNewPasswordResponsible({ userId: id, responsibleId: process.responsible.id })
+      .subscribe(() => {
+        this.snackBar.open('Nova senha do responsável gerada com sucesso.', 'OK', { duration: 5000 });
+      }, err => this.snackBar.open('Erro ao gerar senha para o responável do processo, tente novamente.', 'OK', { duration: 5000 }));
   }
 }
