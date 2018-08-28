@@ -14,7 +14,6 @@
                 <mat-error *ngIf="formDistrict.get('name').hasError('maxlenght')">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
                 <mat-error *ngIf="formDistrict.get('name').hasError('pattern')">Digite um nome válido.</mat-error>
             </mat-form-field>
-            {{ district.analyst.id }}
             <mat-form-field>
                 <mat-select placeholder="Analista" formControlName="analyst" required>
                     <mat-option *ngFor="let analyst of users" [value]="analyst.id">
