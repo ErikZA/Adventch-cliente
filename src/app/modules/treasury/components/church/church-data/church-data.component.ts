@@ -84,6 +84,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   private loadAll(x: Church[]): void {
     this.loadCities(x);
     this.loadAnalysts(x);
+    this.loadDistricts(x);
   }
 
   private loadCities(x: Church[]): void {
@@ -104,6 +105,16 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
       }
     });
     this.analysts.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  private loadDistricts(x: Church[]): void {
+    this.districts = new Array<Districts>();
+    x.forEach(church => {
+      if (church.district.id !== 0 && this.districts.map(x => x.id).indexOf(church.district.id) === -1) {
+        this.districts.push(church.district);
+      }
+    });
+    this.districts.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   /* Usados pelo component */
