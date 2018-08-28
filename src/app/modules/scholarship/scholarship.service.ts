@@ -93,13 +93,6 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getChildrenStudents(responsibleId: number): Observable<Student[]> {
-    const url = `/scholarship/process/getAllChildrenStudents/${responsibleId}`;
-    return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
-  }
-
   public getResponsible(responsibleCPF: string): Observable<Responsible> {
     const url = `/scholarship/responsible/cpf/${responsibleCPF}`;
     return this.http
@@ -134,38 +127,45 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public savePendency(pendencyDataProcess: any): Observable<Process> {
-    const url = '/scholarship/Process/savePendency/';
+  public changeProcessStatus(processId: number, status: number, model: { userId: number }): Observable<any> {
+    const url = `/scholarship/process/${processId}/status/${status}`;
     return this.http
-      .post(url, pendencyDataProcess)
+      .put<any>(url, model)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public updateToStatus(processStatusChanged: any): Observable<any> {
-    const url = '/scholarship/Process/changeStatus/';
+  public saveVacancy(processId: number, model: { userId: number, status: number, dataRegistration: Date }): Observable<any> {
+    const url = `/scholarship/process/${processId}/status/approve`;
     return this.http
-      .post(url, processStatusChanged)
+      .put<any>(url, model)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public saveVacancy(vacancyDataProcess: any): Observable<any> {
-    const url = '/scholarship/Process/saveVacancy/';
+  public savePendency(processId: number, model: { userId: number, pendency: string }): Observable<Process> {
+    const url = `/scholarship/process/${processId}/status/pending/`;
     return this.http
-      .post(url, vacancyDataProcess)
+      .put<any>(url, model)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public deleteProcess(processId, userId): Observable<any> {
-    const url = `/scholarship/Process/deleteProcess?idProcess=${processId}&idUser=${userId}`;
+  public saveReject(processId: number, model: { userId: number, motiveReject: string }) {
+    const url = `/scholarship/process/${processId}/status/rejected/`;
     return this.http
-      .delete(url)
+      .put<any>(url, model)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  saveReject(rejectDataProcess: any) {
-    const url = '/scholarship/Process/saveReject/';
+  public sentDocuments(processId: number, model: { userId: number }): Observable<any> {
+    const url = `/scholarship/process/${processId}/sentDocuments/`;
     return this.http
-      .post(url, rejectDataProcess)
+      .put<any>(url, model)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public deleteProcess(processId): Observable<any> {
+    const url = `/scholarship/process/${processId}`;
+    return this.http
+      .delete<any>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
@@ -176,12 +176,7 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  sendDocument(submittedDocuments: any): Observable<Process> {
-    const url = '/scholarship/process/sendDocument/';
-    return this.http
-      .post(url, submittedDocuments)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
-  }
+
   getAllDocuments(): Observable<ProcessDocument[]> {
     const url = '/scholarship/process/documents';
     return this.http

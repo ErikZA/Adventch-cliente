@@ -155,7 +155,7 @@
                                         <div *ngIf="process.pendency != null && process.status.id === 3">
                                             <div class="text-bold">
                                                 Pendência:
-                                                <mat-slide-toggle class="padding-left-medium" [checked]="process.isSendDocument" (change)="sendDocuments($event, process)" color="primary">Documento(s) Enviado(s)</mat-slide-toggle>
+                                                <mat-slide-toggle class="padding-left-medium" [checked]="process.isSendDocument" (change)="sentDocuments($event, process)" color="primary">Documento(s) Enviado(s)</mat-slide-toggle>
                                             </div>
                                             <div class="style-text">{{ process.pendency }}</div>
                                         </div>
@@ -180,7 +180,7 @@
                             </div>
                             <mat-action-row fxLayout="row" fxLayout.xs="column">
                                 <ng-template [Feature]="41">
-                                    <button *ngIf="process.status.id === 1 && authService.getCurrentUser().idSchool === 0" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="toWaiting(process)">INICIAR</button>
+                                    <button *ngIf="process.status.id === 1 && authService.getCurrentUser().idSchool === 0" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="changeStatusToProcess(process, 2)">INICIAR</button>
                                 </ng-template>
                                 <ng-template [Feature]="42">
                                     <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status.id === 2 || process.status.id === 3)" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency(process)">PENDÊNCIA</button>
@@ -196,7 +196,7 @@
                                     </mat-menu>
                                 </ng-template>
                                 <ng-template [Feature]="45">
-                                    <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status.id === 5 || process.status.id === 6)" mat-button style="background-color: #a30000!important; color: #fff" matTooltip="Não Matriculou" (click)="toNotEnroll(process)">NÃO MATRICULOU</button>
+                                    <button *ngIf="authService.getCurrentUser().idSchool === 0 && (process.status.id === 5 || process.status.id === 6)" mat-button style="background-color: #a30000!important; color: #fff" matTooltip="Não Matriculou" (click)="changeStatusToProcess(process, 8)">NÃO MATRICULOU</button>
                                 </ng-template>
                                 <ng-template [Feature]="44">
                                     <button *ngIf="authService.getCurrentUser().idSchool == 0 && (process.status.id > 1)" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove(process)">APROVAR</button>
