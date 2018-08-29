@@ -116,7 +116,7 @@
                                         </button>
                                     </div>
                                     <mat-button-toggle (change)="enableDocuments(process)">
-                                        Documentos Enviados
+                                        {{ !documentsIsVisible ? 'Documentos Enviados' : 'Informações do Processo' }}
                                         <mat-icon>assignment</mat-icon>
                                     </mat-button-toggle>
                                 </div>
@@ -159,9 +159,9 @@
                                             </div>
                                             <div class="style-text">{{ process.pendency }}</div>
                                         </div>
-                                        <div fxLayout="row" *ngIf="process.dateRegistration != null && (process.status.id == 5 || process.status.id === 6)">
+                                        <div fxLayout="row" fxLayoutGap="10px" *ngIf="process.dateRegistration != null && (process.status.id == 5 || process.status.id === 6)">
                                             <div class="text-bold">Matrícula: </div>
-                                            <div class="style-text">até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</div>
+                                            <div>até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</div>
                                         </div>
                                         <div fxLayout="column" fxLayoutGap="10px" *ngIf="process.motiveReject != null && (process.status.id === 7)">
                                             <div fxLayout="row" fxLayoutGap="10px">
