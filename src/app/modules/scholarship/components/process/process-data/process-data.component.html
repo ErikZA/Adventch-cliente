@@ -86,7 +86,7 @@
             </div>
             <div class="conteiner" layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
                 <mat-accordion>
-                    <div *ngFor="let process of (processes$ | async ); index as i">
+                    <div *ngFor="let process of (processes$ | async); index as i">
                         <mat-expansion-panel hideToggle *ngIf="i <= showList">
                             <mat-expansion-panel-header>
                                 <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2px" fxFlex>
@@ -115,7 +115,7 @@
                                             Gerar senha
                                         </button>
                                     </div>
-                                    <mat-button-toggle (change)="enableDocuments()">
+                                    <mat-button-toggle (change)="enableDocuments(process)">
                                         Documentos Enviados
                                         <mat-icon>assignment</mat-icon>
                                     </mat-button-toggle>
