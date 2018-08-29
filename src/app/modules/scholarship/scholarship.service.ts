@@ -14,6 +14,7 @@ import { ProcessCountStatusInterface } from './interfaces/process-count-status-i
 import { SchoolProcessInterface } from './interfaces/school-process-interface';
 import { EditProcessViewModel, NewProcessViewModel } from './interfaces/process-view-models';
 import { ProcessDataInterface } from './interfaces/process-data-interface';
+import { DocumentProcessDataInterface } from './interfaces/document-process-data-interface';
 
 @Injectable()
 export class ScholarshipService {
@@ -208,6 +209,13 @@ export class ScholarshipService {
     const url = '/scholarship/process/documents';
     return this.http
       .get<ProcessDocument[]>(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public getProcessDocuments(processId: number): Observable<DocumentProcessDataInterface[]> {
+    const url = `/scholarship/process/${processId}/documents`;
+    return this.http
+      .get<DocumentProcessDataInterface[]>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
   /*

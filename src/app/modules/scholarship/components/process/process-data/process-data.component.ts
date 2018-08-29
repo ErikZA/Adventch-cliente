@@ -86,6 +86,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.setAllFilters();
     this.getAllDatas();
     this.schoolIsVisible();
     this.isScholarship = auth.getCurrentUser().isScholarship;
@@ -99,27 +100,49 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
         }
       });
     this.sidenavService.setSidenav(this.sidenavRight);
-    // this.scholarshipService.refresh$.subscribe((refresh: boolean) => {
-    //   this.searchProcess('');
-    // });
-    // this.subscribeUnit = auth.currentUnit.subscribe(() => {
-    //   this.scholarshipService.updateSchool(auth.getCurrentUser().idSchool);
-    // });
-    // this.router.navigate([this.router.url.replace(/.*/, 'bolsas/processos')]);
   }
 
   ngOnDestroy() {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
 
-  public enableDocuments(): void {
-    this.documentsIsVisible = !this.documentsIsVisible;
+  public enableDocuments(process: ProcessDataInterface): void {
+    if (process && (process.documents === null || process.documents === undefined)) {
+      this.scholarshipService.getProcessDocuments(process.id).subscribe(documents => {
+        if (documents) {
+          process.documents = documents;
+          this.documentsIsVisible = !this.documentsIsVisible;
+        }
+      });
+    } else if (process && process.documents !== null && process.documents !== undefined) {
+      this.documentsIsVisible = !this.documentsIsVisible;
+    }
+  }
+
+  private setAllFilters(): void {
+    this.setInitialFilterSchool();
+    this.setInitialFilterStatus();
+  }
+
+  private setInitialFilterStatus() {
+    if (this.scholarshipService.statusSelected !== 0) {
+      if (!this.statusFilters.some(x => x === this.scholarshipService.statusSelected)) {
+        this.statusFilters.push(this.scholarshipService.statusSelected);
+      }
+    }
+  }
+
+  private setInitialFilterSchool() {
+    if (this.scholarshipService.schoolSelected !== -1) {
+      if (!this.schoolsFilters.some(x => x === this.scholarshipService.schoolSelected)) {
+        this.schoolsFilters.push(this.scholarshipService.schoolSelected);
+      }
+    }
   }
 
   private getAllSchools(): void {
     this.schools$ = this.scholarshipService.getSchools();
   }
-
 
   private getAllDatas(): void {
     const user = auth.getCurrentUser();

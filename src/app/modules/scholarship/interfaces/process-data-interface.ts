@@ -15,5 +15,5 @@ export interface ProcessDataInterface {
   motiveReject: string;
   isSendDocument: boolean;
   dateRegistration: Date;
-  documents: DocumentProcessDataInterface;
+  documents: DocumentProcessDataInterface[];
 }
