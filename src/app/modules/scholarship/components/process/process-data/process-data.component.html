@@ -86,8 +86,8 @@
             </div>
             <div class="conteiner" layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
                 <mat-accordion>
-                    <div *ngFor="let process of (processes$ | async ); index as i">
-                        <mat-expansion-panel hideToggle *ngIf="i <= showList">
+                    <div *ngFor="let process of (processes$ | async); index as i">
+                        <mat-expansion-panel hideToggle *ngIf="i <= showList" (expandedChange)="disableVisibilityDocuments()">
                             <mat-expansion-panel-header>
                                 <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2px" fxFlex>
                                     <p *ngIf="showSchool && schoolsFilters.length !== 1" fxFlex="26%" fxHide.lt-sm>
@@ -115,8 +115,8 @@
                                             Gerar senha
                                         </button>
                                     </div>
-                                    <mat-button-toggle (change)="enableDocuments()">
-                                        Documentos Enviados
+                                    <mat-button-toggle (change)="enableDocuments(process)">
+                                        {{ !documentsIsVisible ? 'Documentos Enviados' : 'Informações do Processo' }}
                                         <mat-icon>assignment</mat-icon>
                                     </mat-button-toggle>
                                 </div>
@@ -159,9 +159,9 @@
                                             </div>
                                             <div class="style-text">{{ process.pendency }}</div>
                                         </div>
-                                        <div fxLayout="row" *ngIf="process.dateRegistration != null && (process.status.id == 5 || process.status.id === 6)">
+                                        <div fxLayout="row" fxLayoutGap="10px" *ngIf="process.dateRegistration != null && (process.status.id == 5 || process.status.id === 6)">
                                             <div class="text-bold">Matrícula: </div>
-                                            <div class="style-text">até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</div>
+                                            <div>até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</div>
                                         </div>
                                         <div fxLayout="column" fxLayoutGap="10px" *ngIf="process.motiveReject != null && (process.status.id === 7)">
                                             <div fxLayout="row" fxLayoutGap="10px">

@@ -14,6 +14,7 @@ import { ProcessCountStatusInterface } from './interfaces/process-count-status-i
 import { SchoolProcessInterface } from './interfaces/school-process-interface';
 import { ProcessDataInterface } from './interfaces/process-data-interface';
 import { EditProcessViewModel, NewProcessViewModel } from './interfaces/process-view-models';
+import { DocumentProcessDataInterface } from './interfaces/document-process-data-interface';
 
 @Injectable()
 export class ScholarshipService {
@@ -70,12 +71,6 @@ export class ScholarshipService {
       .get<SchoolProcessInterface[]>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
-
-  private setParamsProcessByUnit(status: number[]): HttpParams {
-    const params = new HttpParams();
-    return this.appendStatusParamsToProcess(params, status);
-  }
-
   private appendStatusParamsToProcess(params: HttpParams, status: number[]): HttpParams {
     if (status.length > 0) {
       status.forEach(s => {
@@ -95,7 +90,7 @@ export class ScholarshipService {
     }
     if (schools.length > 0) {
       schools.forEach(s => {
-        params = params.append('ids', String(s));
+        params = params.append('schoolsIds', String(s));
       });
     }
     const url = `/scholarship/process/schools`;
@@ -208,6 +203,13 @@ export class ScholarshipService {
     const url = '/scholarship/process/documents';
     return this.http
       .get<ProcessDocument[]>(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public getProcessDocuments(processId: number): Observable<DocumentProcessDataInterface[]> {
+    const url = `/scholarship/process/${processId}/documents`;
+    return this.http
+      .get<DocumentProcessDataInterface[]>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
   /*
