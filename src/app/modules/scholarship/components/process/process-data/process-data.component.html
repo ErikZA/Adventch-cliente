@@ -87,7 +87,7 @@
             <div class="conteiner" layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
                 <mat-accordion>
                     <div *ngFor="let process of (processes$ | async); index as i">
-                        <mat-expansion-panel hideToggle *ngIf="i <= showList">
+                        <mat-expansion-panel hideToggle *ngIf="i <= showList" (expandedChange)="disableVisibilityDocuments()">
                             <mat-expansion-panel-header>
                                 <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2px" fxFlex>
                                     <p *ngIf="showSchool && schoolsFilters.length !== 1" fxFlex="26%" fxHide.lt-sm>

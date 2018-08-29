@@ -119,6 +119,10 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     }
   }
 
+  public disableVisibilityDocuments(): void {
+    this.documentsIsVisible = false;
+  }
+
   private setAllFilters(): void {
     this.setInitialFilterSchool();
     this.setInitialFilterStatus();
