@@ -321,12 +321,12 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
         if (vacancy) {
           const { id } = auth.getCurrentUser();
           this.scholarshipService
-            .saveVacancy(process.id, { userId: id, status: vacancy.idStatus, dataRegistration: vacancy.dataRegistration })
+            .saveVacancy(process.id, { userId: id, status: vacancy.idStatus, dataRegistration: vacancy.dateRegistration })
             .subscribe(res => {
               if (res) {
                 process.status.id = vacancy.idStatus;
                 process.status.name = this.getNameStatus(vacancy.idStatus);
-                process.dateRegistration = vacancy.dataRegistration;
+                process.dateRegistration = vacancy.dateRegistration;
                 this.snackBar.open('Processo aprovado com sucesso.', 'OK', { duration: 5000 });
               }
             }, err => this.snackBar.open('Erro ao salvar a aprovação do processo, tente novamente.', 'OK', { duration: 5000 }));
