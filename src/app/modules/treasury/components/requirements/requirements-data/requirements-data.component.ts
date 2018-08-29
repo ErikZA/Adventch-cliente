@@ -79,12 +79,18 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
   }
 
   private loadPeriods() {
-    var currentYear = new Date().getFullYear();
-    for (var i = this.filterYear; i <= currentYear; i++) {
-      this.years.push(i);
+    this.requirements$.subscribe(data => {
+      const year = [];
+      data.forEach(values => {
+        year.push(new Date (values.date).getFullYear());
+      });
+      this.years = year.filter((elem, i, arr) => {
+        if (arr.indexOf(elem) === i) {
+          return elem;
+        }
+      });
+    });
     }
-    this.filterYear = new Date().getFullYear();
-  }
 
   /* Usados pelo component */
   public closeSidenav() {
@@ -144,10 +150,10 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
         element.download = 'requisitos-relatorio_geral.pdf';
         element.target = '_blank';
         element.click();
-        //this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+        // this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
     }, err => {
       console.log(err);
-        //this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+        // this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
     });
   }
 
