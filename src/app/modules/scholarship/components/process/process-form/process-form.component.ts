@@ -33,7 +33,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   filterStudentsChildren$: Observable<Student[]>;
   isSending = false;
   // New
-  process: Process;
+  process: EditProcessViewModel;
   loading: boolean;
   studentsSeries$: Observable<StudentSerie[]>;
 
@@ -88,6 +88,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
           setTimeout(() => this.setValuesToFormProcess(process), 100);
           setTimeout(() => this.setValuesToFormDocuments(process.documents), 100);
           this.processId = parsed;
+          this.process = process;
         });
       }
     });
@@ -194,7 +195,11 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     if (!Number.isInteger(user.idSchool) || !Number.isInteger(user.id)) {
       throw new Error('user id and use school id is invalid');
     }
-    if (user.idSchool === 0 && (!Number.isInteger(this.scholarshipService.schoolSelected) || this.scholarshipService.schoolSelected <= 0)) {
+    if (
+      user.idSchool === 0 &&
+      (!Number.isInteger(this.scholarshipService.schoolSelected) || this.scholarshipService.schoolSelected <= 0) &&
+      typeof this.processId === 'undefined'
+    ) {
       throw new Error('school selected is invalid');
     }
     return {
