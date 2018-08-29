@@ -14,8 +14,6 @@ export class ProcessDataDocumentInfoComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log(this.documents);
-
     if (this.type && this.documents) {
       this.loading = true;
     }
