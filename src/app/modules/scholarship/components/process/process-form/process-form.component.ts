@@ -206,7 +206,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       responsible: {
         cpf: this.formProcess.value.cpf,
         email: this.formProcess.value.email,
-        id: this.responsible.id,
+        id: Number.isInteger(this.responsible.id) ? this.responsible.id : null,
         name: this.formProcess.value.name,
         phone: this.formProcess.value.phone
       },
