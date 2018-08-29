@@ -71,12 +71,6 @@ export class ScholarshipService {
       .get<SchoolProcessInterface[]>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
-
-  private setParamsProcessByUnit(status: number[]): HttpParams {
-    const params = new HttpParams();
-    return this.appendStatusParamsToProcess(params, status);
-  }
-
   private appendStatusParamsToProcess(params: HttpParams, status: number[]): HttpParams {
     if (status.length > 0) {
       status.forEach(s => {
@@ -96,7 +90,7 @@ export class ScholarshipService {
     }
     if (schools.length > 0) {
       schools.forEach(s => {
-        params = params.append('ids', String(s));
+        params = params.append('schoolsIds', String(s));
       });
     }
     const url = `/scholarship/process/schools`;
