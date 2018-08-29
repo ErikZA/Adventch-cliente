@@ -22,14 +22,16 @@
 </div>
 <mat-divider></mat-divider>
 
-<div fxFlex>
+<div fxFlex id="printable">
     <div class="header">
         <mat-list>
             <mat-list-item>
                 <h3 matLine fxLayout="row">
                     <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex>
-                        <span fxFlex="30">Posição</span>
-                        <span fxFlex="45">Nome</span>
+                        <span fxFlex="10">Posição</span>
+                        <span fxFlex="30" style="padding-right: 10px">Nome</span>
+                        <span fxFlex="30">Nota</span>
+                        <span fxFlex="30">Nota</span>
                         <span fxFlex="30">Nota</span>
                         <span fxFlex></span>
                     </div>
@@ -42,9 +44,11 @@
         [scrollWindow]="false">
         <div>
             <mat-list-item class="break-line" *ngFor="let data of avaliationReport; index as i" fxFlex>
-                <span class="text-color-item" fxFlex="30">{{ data.position }}º</span>
-                <span class="text-color-item" fxFlex="45">{{ data.name }}</span>
+                <span class="text-color-item" fxFlex="10">{{ data.position }}º</span>
+                <span class="text-color-item" fxFlex="30" style="padding-right: 10px">{{ data.name }}</span>
                 <span class="text-color-item" fxFlex="30">{{ data.notes }}</span>
+                <span class="text-color-item" fxFlex="30">{{ data.church_name }}</span>
+                <span class="text-color-item" fxFlex="30">{{ data.district_name }}</span>
                 <mat-divider></mat-divider>
             </mat-list-item>
         </div>

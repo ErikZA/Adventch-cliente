@@ -58,7 +58,13 @@ export class AvaliationReportComponent implements OnInit {
     }
 
     generateGeneralReport() {
+        // Temporário
+        const printContents = document.getElementById('printable').innerHTML;
+        const originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
         window.print();
+        document.body.innerHTML = originalContents;
+        location.reload();
     }
 
     public search(search: string): any[] {
