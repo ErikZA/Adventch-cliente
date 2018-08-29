@@ -132,7 +132,7 @@ const logoffMain = () => {
 
 const logoffResponsible = () => {
   localStorage.removeItem('currentResponsible');
-  localStorage.removeItem('tokenResponsible');
+  localStorage.removeItem('token');
   Raven.setUserContext();
   const responsible: Responsible = new Responsible();
   responsible.cpf = getLastLogin();
