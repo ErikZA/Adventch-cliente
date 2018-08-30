@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 
 import { auth } from '../../../auth';
 import { LoginStore } from '../login.store';
+import { AuthService } from '../../../auth.service';
+import { User } from '../../../../shared/models/user.model';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-main',
@@ -11,9 +14,12 @@ import { LoginStore } from '../login.store';
 })
 export class MainComponent implements OnInit {
 
+  loading = false;
+
   constructor(
-    private store: LoginStore,
-    private router: Router
+    private service: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -21,12 +27,69 @@ export class MainComponent implements OnInit {
   }
 
   public submitForm(loginForm: { login: string, password: string, remember: boolean}): void {
+    this.loading = true;
+    this.setLastLogin(loginForm);
+    this.sendRequest(loginForm);
+  }
+
+  private sendRequest(loginForm: { login: string; password: string; remember: boolean; }) {
+    this.service.loginMain({ email: loginForm.login, password: loginForm.password })
+      .subscribe((data: {
+        user: User;
+        token: string;
+      }) => {
+        this.loginResponse(data);
+      }, err => {
+        this.loginError(err);
+      });
+  }
+
+  private setLastLogin(loginForm: { login: string; password: string; remember: boolean; }) {
     if (loginForm.remember) {
       auth.setLastLogin(loginForm.login);
-    } else {
+    }
+    else {
       auth.setLastLogin('');
     }
-    this.store.loginMain({ email: loginForm.login, password: loginForm.password });
+  }
+
+  private loginResponse(data: { user: User; token: string; }) {
+    const { user } = data;
+    const { token } = data;
+    if (user && token) {
+      this.setUserLoggedSuccess(user, token);
+    }
+    else {
+      this.setUserLoggedFail();
+    }
+    this.loading = false;
+  }
+
+  private loginError(err: any) {
+    this.loading = false;
+    console.log(err);
+    if (err.status === 500) {
+      this.snackBar.open('Usuário/senha inválido!', 'OK', { duration: 3000 });
+    }
+    else {
+      this.snackBar.open('Erro no login', 'OK', { duration: 3000 });
+    }
+  }
+
+  private setUserLoggedFail() {
+    const userFail = new User();
+    userFail.email = auth.getLastLogin();
+    auth.currentUser.emit(userFail);
+    auth.showApp.emit(false);
+  }
+
+  private setUserLoggedSuccess(user: User, token: string) {
+    user.firstName = user.name.split(' ')[0];
+    auth.setCurrentUser(user);
+    auth.setMainToken(token);
+    auth.currentUser.emit(user);
+    auth.showApp.emit(true);
+    this.router.navigate(['/']);
   }
 
   public sendEmailResetPassword(): void {

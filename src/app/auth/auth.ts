@@ -123,6 +123,7 @@ const logoffMain = () => {
   localStorage.removeItem('currentUser');
   localStorage.removeItem('token');
   localStorage.removeItem('currentUnit');
+  localStorage.removeItem('user-units');
   Raven.setUserContext();
   const user: User = new User();
   user.email = getLastLogin();
