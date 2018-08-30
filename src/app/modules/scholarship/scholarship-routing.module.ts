@@ -73,7 +73,8 @@ const routes: Routes = [
           }
         ],
         data: {
-          feature: EFeatures.PROCESSOS
+          feature: EFeatures.PROCESSOS,
+          permission: EPermissions.VISUALISAR
         }
       }
     ],
