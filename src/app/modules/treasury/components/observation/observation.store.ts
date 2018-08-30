@@ -132,6 +132,7 @@ export class ObservationStore {
   }
 
   private loadAnalysts() {
+    this.analysts = new Array<User>();
     this.dataStore.observations.forEach(observation => {
       if (this.analysts.map(x => x.id).indexOf(observation.church.district.analyst.id) === -1) {
         this.analysts.push(observation.church.district.analyst);
