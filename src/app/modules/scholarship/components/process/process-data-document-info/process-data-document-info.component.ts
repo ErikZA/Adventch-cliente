@@ -38,4 +38,8 @@ export class ProcessDataDocumentInfoComponent implements OnInit {
     }
   }
 
+  public numberOfDocuments(): number {
+    return this.documents.filter(d => d.type === this.type).length;
+  }
+
 }
