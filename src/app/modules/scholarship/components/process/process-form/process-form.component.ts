@@ -90,9 +90,12 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
           this.processId = parsed;
           this.process = process;
         });
+      } else {
+        if (auth.getCurrentUser().idSchool === 0 && this.scholarshipService.schoolSelected <= 0) {
+          this.closeSidenav();
+        }
       }
     });
-
     this.processDataComponent.sidenavRight.open();
   }
   ngOnDestroy() {
@@ -124,6 +127,9 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     responsibleCpfForm.valueChanges.subscribe((cpf: string) => {
       if (responsibleCpfForm.valid) {
         this.scholarshipService.getResponsible(cpf).subscribe(responsible => {
+          if (!responsible) {
+            return;
+          }
           this.students = Array.isArray(responsible.students) ? responsible.students : [];
           this.setFormValuesResponsible(responsible);
           this.responsible = responsible;
@@ -206,7 +212,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       responsible: {
         cpf: this.formProcess.value.cpf,
         email: this.formProcess.value.email,
-        id: Number.isInteger(this.responsible.id) ? this.responsible.id : null,
+        id: !!this.responsible ? Number.isInteger(this.responsible.id) ? this.responsible.id : 0 : 0,
         name: this.formProcess.value.name,
         phone: this.formProcess.value.phone
       },
@@ -216,7 +222,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       serieId: this.formProcess.value.studentSerieId,
       documents: this.getAllDocumentsFromTypes(),
       student: {
-        id: Number.isInteger(this.selectStudent.id) ? this.selectStudent.id : null,
+        id: !!this.selectStudent ? Number.isInteger(this.selectStudent.id) ? this.selectStudent.id : 0 : 0,
         rc: this.formProcess.value.rc,
         name: this.formProcess.value.nameStudent,
       }
