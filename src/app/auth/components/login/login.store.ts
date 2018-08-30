@@ -36,10 +36,10 @@ export class LoginStore {
       }
     }, err => {
       console.log(err);
-      if (err.status === 401) {
+      if (err.status === 500) {
         this.snackBar.open('Usuário/senha inválido!', 'OK', { duration: 3000 });
       } else {
-        this.snackBar.open('Erro no login.', 'OK', { duration: 3000 });
+        this.snackBar.open('Erro no login', 'OK', { duration: 3000 });
       }
     });
   }
