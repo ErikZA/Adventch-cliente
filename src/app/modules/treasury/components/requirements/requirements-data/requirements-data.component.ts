@@ -79,10 +79,14 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
   }
 
   private loadPeriods() {
+    const currentYear = new Date().getFullYear();
+
     this.requirements$.subscribe(data => {
       const year = [];
       data.forEach(values => {
-        year.push(new Date (values.date).getFullYear());
+        if (new Date(values.date).getFullYear() >= currentYear) {
+          year.push(new Date (values.date).getFullYear());
+        }
       });
       this.years = year.filter((elem, i, arr) => {
         if (arr.indexOf(elem) === i) {
