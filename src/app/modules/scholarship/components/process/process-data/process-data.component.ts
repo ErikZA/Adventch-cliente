@@ -268,7 +268,7 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
     }, err => {
       console.log(err);
-      this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+      this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
     });
   }
 
