@@ -11,6 +11,8 @@ export class LoginDynamicFormComponent implements OnInit {
 
   @Input()
   loginName = 'Email';
+  @Input()
+  loading = false;
 
   @Output()
   submitted: EventEmitter<any> = new EventEmitter<{ login: string, password: string, remember: boolean }>();
@@ -18,7 +20,7 @@ export class LoginDynamicFormComponent implements OnInit {
   hide = true;
   form: FormGroup;
   remember = false;
-  loading = false;
+  loadingForm = false;
 
   constructor(
     private formBuilder: FormBuilder
@@ -34,7 +36,7 @@ export class LoginDynamicFormComponent implements OnInit {
       login: [login ? login : null, [Validators.required]],
       password: [null, Validators.required]
     });
-    this.loading = true;
+    this.loadingForm = true;
   }
 
   public rememberMe(remember: boolean): void {
