@@ -124,13 +124,37 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     responsibleCpfForm.valueChanges.subscribe((cpf: string) => {
       if (responsibleCpfForm.valid) {
         this.scholarshipService.getResponsible(cpf).subscribe(responsible => {
-          this.students = Array.isArray(responsible.students) ? responsible.students : [];
-          this.setFormValuesResponsible(responsible);
-          this.responsible = responsible;
+          if (responsible) {
+            this.students = Array.isArray(responsible.students) ? responsible.students : [];
+            this.setFormValuesResponsible(responsible);
+            this.responsible = responsible;
+          } else {
+            this.resetInformationsResponsible();
+          }
         });
+      } else {
+        this.resetInformationsResponsible();
       }
     });
   }
+  private resetInformationsResponsible() {
+    this.students = [];
+    this.responsible = null;
+    this.resetFormResponsibleAndStudent();
+  }
+
+  private resetFormResponsibleAndStudent() {
+    this.formProcess.patchValue({
+      name: null,
+      email: null,
+      phone: null,
+      rc: null,
+      nameStudent: null,
+      studentSerieId: null,
+      bagPorcentage: null
+    });
+  }
+
   private setFormValuesResponsible(values: Responsible): void {
     this.formProcess.patchValue({
       name: values.name,
