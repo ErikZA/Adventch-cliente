@@ -94,10 +94,8 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       .debounceTime(1000)
       .distinctUntilChanged()
       .subscribe(search => {
-        if (search) {
-          this.query = search;
-          this.getProcesses();
-        }
+        this.query = search;
+        this.getProcesses();
       });
     this.sidenavService.setSidenav(this.sidenavRight);
   }
@@ -161,12 +159,12 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     if (user.idSchool === 0) {
       this.processes$ = this.scholarshipService
         .getProcessesByUnit(this.schoolsFilters, this.statusFilters, this.query)
-        .debounceTime(1000)
+        .debounceTime(500)
         .distinctUntilChanged();
     } else {
       this.processes$ = this.scholarshipService
         .getProcessesBySchool(user.idSchool, this.statusFilters, this.query)
-        .debounceTime(1000)
+        .debounceTime(500)
         .distinctUntilChanged();
     }
   }
