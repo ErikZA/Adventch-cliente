@@ -58,7 +58,8 @@ const routes: Routes = [
         } }
         ],
         data: {
-          feature: EFeatures.IGREJAS
+          feature: EFeatures.IGREJAS,
+          permission: EPermissions.VISUALISAR
         }
       }
     ]
@@ -76,7 +77,8 @@ const routes: Routes = [
         } }
       ],
       data: {
-        feature: EFeatures.DISTRITOS
+        feature: EFeatures.DISTRITOS,
+        permission: EPermissions.VISUALISAR
       }
     }]
   },
@@ -93,7 +95,8 @@ const routes: Routes = [
         } }
       ],
       data: {
-        feature: EFeatures.OBSERVACOES
+        feature: EFeatures.OBSERVACOES,
+        permission: EPermissions.VISUALISAR
       }
     }]
   },
