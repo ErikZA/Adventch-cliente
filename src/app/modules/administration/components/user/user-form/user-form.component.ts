@@ -1,3 +1,4 @@
+import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { AuthService } from './../../../../../shared/auth.service';
 import { ProfileStore } from '../../profile/profile.store';
 import { School } from '../../../../scholarship/models/school';
@@ -24,7 +25,7 @@ import { UserDataComponent } from '../user-data/user-data.component';
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss']
 })
-export class UserFormComponent implements OnInit {
+export class UserFormComponent implements OnInit, OnDestroy {
 
   hideNew = true;
   dates: any;
@@ -79,7 +80,9 @@ export class UserFormComponent implements OnInit {
 
     this.userDataComponent.sidenavRight.open();
   }
-
+  ngOnDestroy(): void {
+    this.closeSidenav();
+  }
   private initConfiguratios(): void {
     this.dates = {
       now: new Date(new Date().setFullYear(new Date().getFullYear())),
@@ -88,14 +91,12 @@ export class UserFormComponent implements OnInit {
     };
     moment.locale('pt');
   }
-
   public loadAllDatas(): void {
     const { modules } = auth.getCurrentUnit();
     this.modules = modules;
     this.loadSchools();
     this.loadProfiles();
   }
-
   private loadSchools(): void {
     if (this.modules) {
       const scholarship = this.modules.some(module => module === EModules.Scholarship);
@@ -205,7 +206,7 @@ export class UserFormComponent implements OnInit {
   }
 
   public closeSidenav(): void {
-    this.userDataComponent.sidenavRight.close();
+    this.userDataComponent.closeSidenav();
   }
 
   private checkIsEdit(): boolean {
@@ -222,6 +223,7 @@ export class UserFormComponent implements OnInit {
     if (this.form.valid) {
       this.store.saveUser(user).subscribe(() => {
         this.authService.renewUserToken();
+        this.closeSidenav();
       });
 
     }

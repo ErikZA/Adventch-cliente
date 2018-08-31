@@ -1,7 +1,6 @@
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { Location } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatSidenav } from '@angular/material';
 
 import { Subject } from 'rxjs/Subject';
@@ -38,7 +37,6 @@ export class UserDataComponent implements OnInit, OnDestroy {
     private store: UserStore,
     private router: Router,
     private route: ActivatedRoute,
-    private location: Location,
     private confirmDialogService: ConfirmDialogService,
   ) { }
 
@@ -49,11 +47,7 @@ export class UserDataComponent implements OnInit, OnDestroy {
       this.searchUser(search);
     });
     this.loadAllDatas();
-    this.authStoreSub = auth.currentUnit.subscribe(unit => {
-      if (unit) {
-        this.updateUnit();
-      }
-    });
+
   }
   ngOnDestroy(): void {
     if (this.authStoreSub) { this.authStoreSub.unsubscribe(); }
@@ -62,20 +56,8 @@ export class UserDataComponent implements OnInit, OnDestroy {
     this.users$ = this.store.users$;
     this.store.loadAllUsers();
   }
-
-  private updateUnit(): void {
-    this.users$ = Observable.create(null);
-    this.loadAllDatas();
-    // this.sidenavService.close();
-    const regex = /usuarios(.*)/;
-    const url = this.router.url.match(regex);
-    if (url && url[0].length !== 0) {
-      this.router.navigate([this.router.url.replace(/.*/, 'administracao/usuarios')]);
-    }
-  }
-
   public closeSidenav(): void {
-    this.location.back();
+    this.router.navigate(['/administracao/usuarios/']);
     this.sidenavRight.close();
   }
 
