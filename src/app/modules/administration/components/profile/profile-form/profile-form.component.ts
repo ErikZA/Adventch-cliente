@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
@@ -39,7 +39,6 @@ export class ProfileFormComponent implements OnInit {
     private store: ProfileStore,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private router: Router,
     private authService: AuthService,
     private profileDataComponent: ProfileDataComponent
   ) { }
@@ -269,7 +268,6 @@ export class ProfileFormComponent implements OnInit {
   }
 
   public closeSidenav(): void {
-    this.router.navigate(['/administracao/papeis']);
-    // this.profileDataComponent.sidenavRight.close();
+    this.profileDataComponent.closeSidenav();
   }
 }
