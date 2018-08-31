@@ -10,8 +10,7 @@ import { TreasurerDataComponent } from './components/treasurer/treasurer-data/tr
 import { TreasurerFormComponent } from './components/treasurer/treasurer-form/treasurer-form.component';
 
 import { TreasuryRoutingModule } from './treasury-routing.module';
-import { ModuleGuard } from '../../shared/module.guard';
-import { FeatureGuard } from '../../shared/feature.guard';
+import { ModuleGuard } from '../../shared/guards/module.guard';
 import { ChurchDataComponent } from './components/church/church-data/church-data.component';
 import { ChurchFormComponent } from './components/church/church-form/church-form.component';
 import { ChurchStore } from './components/church/church.store';
@@ -23,6 +22,7 @@ import { ObservationFormComponent } from './components/observation/observation-f
 import { ObservationStore } from './components/observation/observation.store';
 import { DashboardTreasuryComponent } from './components/dashboard/dashboard-treasury-component';
 import { ChartsModule } from 'ng2-charts';
+import { FeatureGuard } from '../../shared/guards/feature.guard';
 
 @NgModule({
   imports: [

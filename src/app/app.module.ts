@@ -1,5 +1,5 @@
 import { AuthModule } from './auth/auth.module';
-import { AdminGuard } from './shared/admin.guard';
+import { AdminGuard } from './shared/guards/admin.guard';
 // angular
 import { NgModule, LOCALE_ID, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -9,7 +9,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { AppRouting } from './app-routing.module';
-import { AuthGuard } from './shared/auth.guard';
 import { AuthService } from './shared/auth.service';
 
 // core
@@ -41,7 +40,7 @@ import { registerLocaleData } from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
 import { ReleaseNotesDataComponent } from './shared/release-notes/components/release-notes-data/release-notes-data.component';
 import { ReleaseNotesFormComponent } from './shared/release-notes/components/release-notes-form/release-notes-form.component';
-import { ModuleGuard } from './shared/module.guard';
+import { ModuleGuard } from './shared/guards/module.guard';
 import { AuthMainGuard } from './shared/guards/auth-main.guard';
 import { AuthResponsibleGuard } from './shared/guards/auth-responsible.guard';
 import { NgProgressModule } from '@ngx-progressbar/core';
@@ -92,7 +91,6 @@ registerLocaleData(ptBr);
     LayoutContainerComponent
   ],
   providers: [
-    AuthGuard,
     AuthMainGuard,
     AuthResponsibleGuard,
     AuthService,
