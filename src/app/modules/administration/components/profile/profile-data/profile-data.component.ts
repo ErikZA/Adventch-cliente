@@ -7,8 +7,6 @@ import { Observable } from 'rxjs/Observable';
 import { MatSidenav } from '@angular/material';
 
 import { ProfileStore } from '../profile.store';
-import { AuthService } from '../../../../../shared/auth.service';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { Module } from '../../../../../shared/models/modules.enum';
 import { EModules } from '../../../../../shared/models/modules.enum';
@@ -33,11 +31,9 @@ export class ProfileDataComponent implements OnInit {
   constructor(
     private store: ProfileStore,
     private confirmDialogService: ConfirmDialogService,
-    private sidenavService: SidenavService,
     private location: Location,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -45,18 +41,7 @@ export class ProfileDataComponent implements OnInit {
     this.search$.subscribe(search => {
       this.searchProfile(search);
     });
-    this.updateUnit();
-    this.sidenavService.setSidenav(this.sidenavRight);
-    utils.checkRouteUrl(this.router, '/administracao/papeis', () => this.sidenavRight.close());
-  }
-
-  private updateUnit(): void {
     this.store.loadAllProfiles();
-    const regex = /papeis(.*)/;
-    const url = this.router.url.match(regex);
-    if (url && url[0].length !== 0) {
-      this.router.navigate([this.router.url.replace(/.*/, 'administracao/papeis')]);
-    }
   }
 
   public onScroll(): void {
@@ -72,7 +57,6 @@ export class ProfileDataComponent implements OnInit {
 
   public openSidenav(): void {
     this.router.navigate(['novo'], { relativeTo: this.route });
-    this.sidenavService.open();
   }
 
   public closeSidenav(): void {
@@ -82,7 +66,6 @@ export class ProfileDataComponent implements OnInit {
 
   public editProfile(role: Profile): void {
     this.router.navigate([role.id, 'editar'], { relativeTo: this.route });
-    this.sidenavService.open();
   }
 
   public removeProfile(role: Profile): void {

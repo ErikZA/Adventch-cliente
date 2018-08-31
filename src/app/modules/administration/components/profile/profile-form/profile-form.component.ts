@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
@@ -7,7 +7,6 @@ import { map } from 'rxjs/operators';
 import 'rxjs/operator/do';
 
 import { AuthService } from '../../../../../shared/auth.service';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { ProfileStore } from '../profile.store';
 
 import { NewProfile } from '../../../models/profile/new-profile.model';
@@ -17,6 +16,7 @@ import { EModules, Module } from '../../../../../shared/models/modules.enum';
 import { EPermissions } from '../../../../../shared/models/permissions.enum';
 import { Permission } from '../../../../../shared/models/permission.model';
 import { auth } from '../../../../../auth/auth';
+import { ProfileDataComponent } from '../profile-data/profile-data.component';
 
 @Component({
   selector: 'app-profile-form',
@@ -39,8 +39,9 @@ export class ProfileFormComponent implements OnInit {
     private store: ProfileStore,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private sidenavService: SidenavService,
-    private authService: AuthService
+    private router: Router,
+    private authService: AuthService,
+    private profileDataComponent: ProfileDataComponent
   ) { }
 
   ngOnInit() {
@@ -62,6 +63,7 @@ export class ProfileFormComponent implements OnInit {
           this.loading = true;
         }
       });
+    this.profileDataComponent.sidenavRight.open();
   }
 
   public labelTitle(): string {
@@ -185,7 +187,10 @@ export class ProfileFormComponent implements OnInit {
     this.isSending = true;
     this.formSubmittedOnce = true;
     if (this.formProfile.valid && this.checkIfHaveMarkedFeatureAndPermission()) {
-      this.sendData().subscribe(() => this.authService.renewUserToken());
+      this.sendData().subscribe(() => {
+        this.authService.renewUserToken();
+        this.closeSidenav();
+      });
     }
     this.isSending = false;
   }
@@ -264,6 +269,7 @@ export class ProfileFormComponent implements OnInit {
   }
 
   public closeSidenav(): void {
-    this.sidenavService.close();
+    this.router.navigate(['/administracao/papeis']);
+    // this.profileDataComponent.sidenavRight.close();
   }
 }
