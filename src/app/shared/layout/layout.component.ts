@@ -18,7 +18,6 @@ import { ReleaseNotesStore } from '../release-notes/release-notes.store';
 import { Unit } from '../models/unit.model';
 import { auth } from '../../auth/auth';
 import { EFeatures } from '../models/EFeatures.enum';
-import { EPermissions } from '../models/permissions.enum';
 
 @Component({
   selector: 'app-layout',
