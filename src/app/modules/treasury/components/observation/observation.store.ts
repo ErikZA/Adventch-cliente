@@ -121,6 +121,7 @@ export class ObservationStore {
     this.loadResponsibles();
   }
   private loadChurches() {
+    this.churches = new Array<Church>();
     if (this.dataStore.observations != null) {
       this.dataStore.observations.forEach(observation => {
         if (this.churches.map(x => x.id).indexOf(observation.church.id) === -1) {
@@ -132,6 +133,7 @@ export class ObservationStore {
   }
 
   private loadAnalysts() {
+    this.analysts = new Array<User>();
     this.dataStore.observations.forEach(observation => {
       if (this.analysts.map(x => x.id).indexOf(observation.church.district.analyst.id) === -1) {
         this.analysts.push(observation.church.district.analyst);
@@ -141,6 +143,7 @@ export class ObservationStore {
   }
 
   private loadResponsibles() {
+    this.responsibles = new Array<User>();
     this.dataStore.observations.forEach(observation => {
       if (this.responsibles.map(x => x.id).indexOf(observation.responsible.id) === -1) {
         this.responsibles.push(observation.responsible);

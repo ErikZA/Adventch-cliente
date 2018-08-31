@@ -96,6 +96,14 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+
+  getUsers2(unitId): Observable<User[]> {
+    const url = '/treasury/churches/getUsers/' + unitId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
   /*
     Distritos
   */

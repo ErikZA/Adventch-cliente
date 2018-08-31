@@ -68,16 +68,4 @@ export class DistrictsStore {
     });
   }
 
-  /* Salvar*/
-  public updateDistricts(district) {
-    const index = this.dataStore.districts.findIndex(x => x.id === Number(district.id));
-    if (index >= 0) {
-      this.dataStore.districts[index] = district;
-      this.dataStore.districts[index].analyst.name = district.analyst.name;
-    } else {
-      this.dataStore.districts.push(district);
-    }
-    this.districts = new Districts();
-  }
-
 }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CoreModule } from '../../core/core.module';
 
 import { ScholarshipRoutingModule } from './scholarship-routing.module';
-import { ModuleGuard } from '../../shared/module.guard';
+import { ModuleGuard } from '../../shared/guards/module.guard';
 
 import { MatGridListModule } from '@angular/material';
 
@@ -16,9 +16,9 @@ import { VacancyComponent } from './components/process/vacancy/vacancy.component
 
 import { ScholarshipService } from './scholarship.service';
 import { ProcessesStore } from './components/process/processes.store';
-import { FeatureGuard } from '../../shared/feature.guard';
 import { ProcessFormDocumentInfoComponent } from './components/process/process-form-document-info/process-form-document-info.component';
 import { ProcessDataDocumentInfoComponent } from './components/process/process-data-document-info/process-data-document-info.component';
+import { FeatureGuard } from '../../shared/guards/feature.guard';
 
 @NgModule({
   imports: [

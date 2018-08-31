@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -43,10 +43,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initForm();
-    const unit = this.authService.getCurrentUnit();
-    this.service.getUsers(unit.id).subscribe((data) => {
-      this.users = data;
-    });
+    this.loadAnalysts();
 
     this.routeSubscription = this.route.params.subscribe((data) => {
       if (data.id) {
@@ -63,6 +60,13 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
 
+  private loadAnalysts(): void {
+    const unit = this.authService.getCurrentUnit();
+    this.service.getUsers2(unit.id).subscribe((data) => {
+      this.users = data;
+    });
+  }
+
   private checkIsEdit(): boolean {
     return this.district !== undefined && this.district !== null;
   }
@@ -73,8 +77,8 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
 
   initForm(): void {
     this.formDistrict = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
-      analyst: [null]
+      name: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
+      analyst: [null, Validators.required]
     });
   }
 
@@ -105,7 +109,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
 
     if (this.formDistrict.valid) {
       this.treasuryService.saveDistricts(this.values).subscribe((data) => {
-        this.store.updateDistricts(this.values);
+        this.store.loadAll();
         this.snackBar.open('Distrito salvo com sucesso!', 'OK', { duration: 5000 });
         this.formDistrict.markAsUntouched();
         this.close();
@@ -119,18 +123,20 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   }
 
   editDistrict(district) {
-    this.district = district;
-    this.formDistrict.setValue({
-      name: district.name,
-      analyst: district.analyst,
-    });
-    this.editAnalyst = Number(district.analyst.id);
+    if (district) {
+      this.district = district;
+
+      this.formDistrict = new FormGroup({
+        'name': new FormControl({value: district.name, disabled: false}, Validators.required),
+        'analyst': new FormControl({value: district.analyst.id, disabled: false}, Validators.required)
+      });
+    }
   }
 
   close() {
     this.store.openDistrict(new Districts());
     this.sidenavService.close();
-    this.router.navigate([this.router.url.replace('/novo', '').replace('distritos/' + this.values.id + '/editar', 'distritos')]);
+    this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/distritos')]);
     this.resetAllForms();
   }
 

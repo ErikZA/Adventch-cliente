@@ -8,12 +8,12 @@ import { ProcessDataComponent } from './components/process/process-data/process-
 import { ResponsibleDataComponent } from './components/responsible/responsible-data/responsible-data.component';
 
 import { EModules } from '../../shared/models/modules.enum';
-import { ModuleGuard } from '../../shared/module.guard';
-import { FeatureGuard } from '../../shared/feature.guard';
+import { ModuleGuard } from '../../shared/guards/module.guard';
 import { AuthResponsibleGuard } from '../../shared/guards/auth-responsible.guard';
 import { AuthMainGuard } from '../../shared/guards/auth-main.guard';
 import { EFeatures } from '../../shared/models/EFeatures.enum';
 import { EPermissions } from '../../shared/models/permissions.enum';
+import { FeatureGuard } from '../../shared/guards/feature.guard';
 
 const routes: Routes = [
   {
