@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
 
@@ -23,7 +23,8 @@ import { ProfileDataComponent } from '../profile-data/profile-data.component';
   templateUrl: './profile-form.component.html',
   styleUrls: ['./profile-form.component.scss']
 })
-export class ProfileFormComponent implements OnInit {
+export class ProfileFormComponent implements OnInit, OnDestroy {
+
 
   formProfile: FormGroup;
   formPermissions: FormArray;
@@ -64,7 +65,9 @@ export class ProfileFormComponent implements OnInit {
       });
     this.profileDataComponent.sidenavRight.open();
   }
-
+  ngOnDestroy(): void {
+    this.closeSidenav();
+  }
   public labelTitle(): string {
     return this.checkIsEdit() ? 'Editar' : 'Novo';
   }
