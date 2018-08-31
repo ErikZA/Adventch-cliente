@@ -60,7 +60,7 @@ export class ProfileDataComponent implements OnInit {
   }
 
   public closeSidenav(): void {
-    this.location.back();
+    this.router.navigate(['/administracao/papeis']);
     this.sidenavRight.close();
   }
 
