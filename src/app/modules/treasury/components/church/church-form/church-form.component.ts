@@ -1,18 +1,15 @@
+import { ChurchDataComponent } from './../church-data/church-data.component';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { MatSidenav, MatSnackBar } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
-import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Districts } from '../../../models/districts';
 import { State } from '../../../../../shared/models/state.model';
 import { City } from '../../../../../shared/models/city.model';
-import { AuthService } from '../../../../../shared/auth.service';
 import { TreasuryService } from '../../../treasury.service';
-import { ChurchStore } from '../church.store';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { Church } from '../../../models/church';
 import { auth } from '../../../../../auth/auth';
 
@@ -34,13 +31,10 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService,
     private service: TreasuryService,
-    private store: ChurchStore,
-    private sidenavService: SidenavService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private router: Router
+    private churchDataComponent: ChurchDataComponent
   ) { }
 
   ngOnInit() {
@@ -48,15 +42,21 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     this.loadDistricts();
     this.loadStates();
     this.route.params.subscribe(params => {
-      this.edit(params['id']);
+      const idParsed = parseInt(params.id, 10);
+      if (!idParsed) {
+        return;
+      }
+      this.edit(idParsed);
     });
     this.subscribeUnit = auth.currentUnit.subscribe(() => {
       this.reset();
     });
+    this.churchDataComponent.sidenavRight.open();
   }
 
   ngOnDestroy() {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
+    this.closeSidenav();
   }
 
   initForm(): void {
@@ -72,15 +72,12 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  public loadCities(isEdit) {
+  public loadCities() {
     this.cities = [];
     const id = this.form.value.state;
-    this.service.getCities(id == null || undefined ? this.store.church.city.state.id : id).subscribe((data: City[]) => {
+    this.service.getCities(id).subscribe((data: City[]) => {
       this.form.get('city').enable();
       this.cities = Object.assign(this.cities, data as City[]);
-      if (isEdit) {
-        this.setValues();
-      }
     });
   }
 
@@ -88,12 +85,11 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     if (this.form.valid) {
       const unit = auth.getCurrentUnit();
       const data = {
-        id: this.store.church.id,
+        id: !!this.church ? this.church.id : 0,
         unit: unit.id,
         ...this.form.value
       };
       this.service.saveChurch(data).subscribe((church: Church) => {
-        this.store.update(church);
         this.reset();
       }, err => {
         console.log(err);
@@ -105,12 +101,11 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   public reset() {
     this.form.markAsUntouched();
     this.form.reset();
-    this.sidenavService.close();
-    this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
+    this.closeSidenav();
   }
 
   public closeSidenav(): void {
-    this.sidenavService.close();
+    this.churchDataComponent.closeSidenav();
   }
 
   public labelTitle(): string {
@@ -121,17 +116,11 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     return this.church !== undefined && this.church !== null;
   }
 
-  public edit(id: string) {
-    const idParsed = parseInt(id, 10);
-    if (idParsed === this.store.church.id) {
-      if (!this.states) {
-        this.loadStates();
-      }
-      if (!this.cities) {
-        this.loadCities(this.store.church.city.state.id);
-      }
+  public edit(id: number) {
+    this.service.getChurch(id).subscribe(church => {
+      this.church = church;
       this.setValues();
-      }
+    });
   }
 
   private loadDistricts() {
@@ -150,7 +139,6 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   }
 
   private setValues(): void {
-    this.church = this.store.church;
     this.form = new FormGroup({
       name: new FormControl({value: this.church.name, disabled: false}, Validators.required),
       code: new FormControl({value: this.church.code, disabled: false}, Validators.required),
@@ -161,5 +149,6 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
       complement: new FormControl({value: this.church.complement, disabled: false}),
       cep: new FormControl({value: this.church.cep, disabled: false}, Validators.required),
     });
+    this.loadCities();
   }
 }

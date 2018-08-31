@@ -9,12 +9,9 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Church } from '../../../models/church';
 import { ChurchStore } from '../church.store';
-import { AuthService } from '../../../../../shared/auth.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { User } from '../../../../../shared/models/user.model';
 import { City } from '../../../../../shared/models/city.model';
-import { TreasuryService } from '../../../treasury.service';
 import { Districts } from '../../../models/districts';
 import { auth } from '../../../../../auth/auth';
 
@@ -46,26 +43,17 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: ChurchStore,
-    private authService: AuthService,
     private confirmDialogService: ConfirmDialogService,
-    private sidenavService: SidenavService,
     private router: Router,
     private route: ActivatedRoute,
-    private service: TreasuryService
   ) { }
 
   ngOnInit() {
-    //this.getData();
-    this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
     this.search$.subscribe(search => {
       this.filterText = search;
       this.search();
     });
-    this.subscribeUnit = auth.currentUnit.subscribe(() => {
-      this.getData();
-      this.closeSidenav();
-    });
-    this.sidenavService.setSidenav(this.sidenavRight);
+    this.getData();
   }
 
   ngOnDestroy() {
@@ -75,7 +63,6 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   private getData() {
     this.churches$ = this.store.churches$;
     this.store.loadAll();
-    //this.loadAll();
     this.churches$.subscribe(x => {
       this.loadAll(x);
     });
@@ -87,9 +74,9 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     this.loadDistricts(x);
   }
 
-  private loadCities(x: Church[]): void {
+  private loadCities(data: Church[]): void {
     this.churches = new Array<Church>();
-    x.forEach(church => {
+    data.forEach(church => {
       if (this.cities.map(x => x.id).indexOf(church.city.id) === -1) {
         this.cities.push(church.city);
       }
@@ -97,9 +84,9 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     this.cities.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  private loadAnalysts(x: Church[]): void {
+  private loadAnalysts(data: Church[]): void {
     this.analysts = new Array<User>();
-    x.forEach(church => {
+    data.forEach(church => {
       if (church.district.id !== 0 && this.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
         this.analysts.push(church.district.analyst);
       }
@@ -107,9 +94,9 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     this.analysts.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  private loadDistricts(x: Church[]): void {
+  private loadDistricts(data: Church[]): void {
     this.districts = new Array<Districts>();
-    x.forEach(church => {
+    data.forEach(church => {
       if (church.district.id !== 0 && this.districts.map(x => x.id).indexOf(church.district.id) === -1) {
         this.districts.push(church.district);
       }
@@ -119,7 +106,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
 
   /* Usados pelo component */
   closeSidenav() {
-    this.sidenavService.close();
+    this.sidenavRight.close();
     this.router.navigate(['tesouraria/igrejas']);
   }
 
@@ -128,7 +115,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   }
 
   openSidenav() {
-    this.sidenavService.open();
+    this.sidenavRight.open();
   }
 
   remove(church: Church) {
