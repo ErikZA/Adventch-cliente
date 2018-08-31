@@ -162,7 +162,7 @@ export class ProfileFormComponent implements OnInit {
       return false;
     }
     const permission = feature.permissions.find(f => f.id === permissionId);
-    console.log(permission);
+    // console.log(permission);
 
     return permission !== undefined && permission !== null && permission.isActive ? permission.isActive : false;
   }
