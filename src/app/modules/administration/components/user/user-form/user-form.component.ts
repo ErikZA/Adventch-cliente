@@ -11,13 +11,13 @@ import { map } from 'rxjs/operators';
 import { UserStore } from '../user.store';
 import { EModules, Module } from '../../../../../shared/models/modules.enum';
 import { User } from '../../../../../shared/models/user.model';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 
 import * as moment from 'moment';
 import { StrongPasswordValidator } from '../../../../../core/components/password/strong-password.directive';
 import { ProcessesStore } from '../../../../scholarship/components/process/processes.store';
 import { Profile } from '../../../models/profile/profile.model';
 import { auth } from '../../../../../auth/auth';
+import { UserDataComponent } from '../user-data/user-data.component';
 
 @Component({
   selector: 'app-user-form',
@@ -48,10 +48,10 @@ export class UserFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private store: UserStore,
     private route: ActivatedRoute,
-    private sidenavService: SidenavService,
     private profileStore: ProfileStore,
     private schoolarshipStore: ProcessesStore,
-    private authService: AuthService
+    private authService: AuthService,
+    private userDataComponent: UserDataComponent
   ) {
     this.valFn = StrongPasswordValidator(this.level, this.user_inputs);
   }
@@ -76,6 +76,8 @@ export class UserFormComponent implements OnInit {
         this.loading = true;
       }
     });
+
+    this.userDataComponent.sidenavRight.open();
   }
 
   private initConfiguratios(): void {
@@ -203,7 +205,7 @@ export class UserFormComponent implements OnInit {
   }
 
   public closeSidenav(): void {
-    this.sidenavService.close();
+    this.userDataComponent.sidenavRight.close();
   }
 
   private checkIsEdit(): boolean {
