@@ -97,10 +97,12 @@
         <mat-list>
           <mat-list-item>
             <h3 matLine fxLayout="row">
-              <span fxFlex fxFlex.gt-sm="35%">Igreja</span>
-              <span fxFlex fxFlex.gt-sm="35%" fxHide.lt-sm>Responsável</span>
-              <span fxFlex fxFlex.gt-sm="15%" fxHide.lt-sm>Data</span>
-              <span fxFlex fxFlex.gt-sm="15%" fxHide.lt-sm>Status</span>
+              <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex>
+                <span fxFlex="35">Igreja</span>
+                <span fxFlex="35" fxHide.lt-sm>Responsável</span>
+                <span fxFlex="15" fxHide.lt-sm>Data</span>
+                <span fxFlex="15" fxHide.lt-sm>Status</span>
+              </div>
             </h3>
           </mat-list-item>
         </mat-list>
@@ -112,11 +114,11 @@
           <div *ngFor="let observation of (observations$ | async ); index as i">
             <mat-expansion-panel hideToggle *ngIf="i <= showList">
               <mat-expansion-panel-header>
-                <mat-panel-description fxLayout="row" fxFlex>
-                  <span *ngIf="observation.church" fxFlex fxFlex.gt-sm="35%" style="white-space: line-wrap;">{{ observation.church.name }}</span>
-                  <span *ngIf="observation.responsible" fxFlex fxFlex.gt-sm="35%" style="white-space: line-wrap;" fxHide.lt-sm>{{ observation.responsible.name }}</span>
-                  <span fxFlex fxFlex.gt-sm="15%" style="white-space: line-wrap;" fxHide.lt-sm>{{ observation.date | date: "dd/MM/yyyy" }}</span>
-                  <span fxFlex fxFlex.gt-sm="15%" style="white-space: line-wrap;" fxHide.lt-sm>{{ getStatus(observation.status) }}</span>
+                <mat-panel-description fxLayout="row">
+                  <span *ngIf="observation.church" fxFlex="36" style="white-space: line-wrap;">{{ observation.church.name }}</span>
+                  <span *ngIf="observation.responsible" fxFlex="36" style="white-space: line-wrap;" fxHide.lt-sm>{{ observation.responsible.name }}</span>
+                  <span fxFlex="17" style="white-space: line-wrap;" fxHide.lt-sm>{{ observation.date | date: "dd/MM/yyyy" }}</span>
+                  <span fxFlex="11" style="white-space: line-wrap;" fxHide.lt-sm>{{ getStatus(observation.status) }}</span>
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <mat-list>
