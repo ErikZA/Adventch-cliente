@@ -4,24 +4,23 @@
     <span class="fill-space"></span>
     <div fxLayout="row" fxLayoutAlign="end">
         <button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
-        <mat-icon>account_circle</mat-icon>
-            <!-- <img class="material-icons mat-36 circle-18" src="{{app.currentUser.photoUrl}}?size=36" *ngIf="app.currentUser.photoDate !== ''">-->
-      </button>
+            <mat-icon>account_circle</mat-icon>
+        </button>
         <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
-        <table style="line-height: normal; text-align: right;">
-          <tr>
-            <td>
-              {{ responsible.name }}
-            </td>
-          </tr>
-        </table>
-      </button>
+            <table style="line-height: normal; text-align: right;">
+                <tr>
+                    <td>
+                        {{ responsible.name }}
+                    </td>
+                </tr>
+            </table>
+        </button>
     </div>
     <mat-menu [overlapTrigger]="false" xPosition="before" #appMenu="matMenu">
         <button mat-menu-item (click)="logoff()">
-    <mat-icon>exit_to_app</mat-icon>
-    <span>Sair</span>
-  </button>
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Sair</span>
+        </button>
     </mat-menu>
 </mat-toolbar>
 <br/>
@@ -35,9 +34,10 @@
                         <mat-list-item>
                             <h3 matLine fxLayout="row">
                                 <div fxLayout="row" fxFlex>
-                                    <span fxFlex="40%">Aluno</span>
-                                    <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">Protocolo</span>
-                                    <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">Data da matrícula</span>
+                                    <span fxFlex="30%">Aluno</span>
+                                    <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">Escola</span>
+                                    <span fxFlex="15%" fxHide.lt-sm fxFlexAlign="center">Protocolo</span>
+                                    <span fxFlex="15%" fxHide.lt-sm fxFlexAlign="center">Data da matrícula</span>
                                     <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">Status</span>
                                 </div>
                             </h3>
@@ -46,47 +46,53 @@
                     <mat-divider></mat-divider>
                 </div>
                 <div layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
-                    <mat-accordion>
-                        <div *ngFor="let process of processes; index as i">
-                            <mat-expansion-panel hideToggle *ngIf="i <= showList">
-                                <mat-expansion-panel-header>
-                                    <mat-panel-description fxLayout="row" fxFlex>
-                                        <span fxFlex="40%" style="white-space: nowrap;">
-                                            {{ process.student.name }}
-                                        </span>
-                                        <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">
-                                            {{ process.protocol }}
-                                        </span>
-                                        <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">
-                                            {{ process.dateRegistration | date: 'dd/MM/yyyy' }}
-                                        </span>
-                                        <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">
-                                            {{ process.statusString }}
-                                        </span>
-                                    </mat-panel-description>
-                                </mat-expansion-panel-header>
-                                <mat-list>
-                                    <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
-                                        <span class="text-bold" class="details-title"><b>Protocolo:</b> {{ process.protocol }}</span>
-                                    </div>
-                                    <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
-                                        <span class="text-bold" class="details-title"><b>Status:</b> {{ process.statusString }}</span>
-                                    </div>
-                                    <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
-                                        <span *ngIf="process.dateRegistration != null && (process.status == 5 || process.status ==6)" class="text-bold" class="details-title"><b>Matrícula até:</b> {{ process.dateRegistration | date: 'dd/MM/yyyy' }}</span>
-                                    </div>
-                                    <div *ngIf="process.pendency != null && process.status == 3" class="text-bold" class="details-title">
-                                      <b>Pendência: (Documento(s) <span *ngIf="!process.isSendDocument">Não</span> Enviado(s))</b>
-                                      <div class="style-text">{{ process.pendency }}</div>
-                                    </div>
-                                    <div *ngIf="process.motiveReject != null && (process.status == 7)" class="text-bold" class="details-title">
-                                      <b>{{ process.motiveReject }}: </b>
-                                      <div class="style-text">{{ getMotiveToReject(process.motiveReject) }}</div>
-                                    </div>
-                                </mat-list>
-                            </mat-expansion-panel>
-                        </div>
-                    </mat-accordion>
+                    <div *ngFor="let process of (processes$ | async); index as i">
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-description fxLayout="row" fxFlex>
+                                    <span fxFlex="30%" style="white-space: nowrap;">
+                                        {{ process.nameStudent }}
+                                    </span>
+                                    <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">
+                                        {{ process.school.name }}
+                                    </span>
+                                    <span fxFlex="15%" fxHide.lt-sm fxFlexAlign="center">
+                                        {{ process.protocol }}
+                                    </span>
+                                    <span fxFlex="15%" fxHide.lt-sm fxFlexAlign="center">
+                                        {{ process.dateRegistration | date: 'dd/MM/yyyy' }}
+                                    </span>
+                                    <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">
+                                        {{ process.status.name }}
+                                    </span>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-list>
+                                <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                    <span class="text-bold" class="details-title"><b>Protocolo:</b> {{ process.protocol }}</span>
+                                </div>
+                                <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                    <span class="text-bold" class="details-title"><b>Escola:</b> {{ process.school.name }}</span>
+                                </div>
+                                <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                    <span class="text-bold" class="details-title"><b>Status:</b> {{ process.status.name }}</span>
+                                </div>
+                                <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                    <span *ngIf="process.dateRegistration != null && (process.status.id == 5 || process.status.id ==6)" class="text-bold" class="details-title"><b>Matrícula
+                                            até:
+                                        </b> {{ process.dateRegistration | date: 'dd/MM/yyyy' }}</span>
+                                </div>
+                                <div *ngIf="process.pendency != null && process.status.id == 3" class="text-bold" class="details-title">
+                                    <b>Pendência: (Documento(s) <span *ngIf="!process.isSendDocument">Não</span> Enviado(s))</b>
+                                    <div class="style-text">{{ process.pendency }}</div>
+                                </div>
+                                <div *ngIf="process.motiveReject != null && (process.status.id == 7)" class="text-bold" class="details-title">
+                                    <b>{{ process.motiveReject }}: </b>
+                                    <div class="style-text">{{ getMotiveToReject(process.motiveReject) }}</div>
+                                </div>
+                            </mat-list>
+                        </mat-expansion-panel>
+                    </div>
                 </div>
             </div>
         </div>

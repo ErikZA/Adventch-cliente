@@ -1,0 +1,10 @@
+<button mat-icon-button class="tooltip" (click)="showInfo = !showInfo" type="button" color="primary">
+    <mat-icon aria-label="Mais informações">info</mat-icon>
+    <div fxLayout="column" class="tooltiptext" *ngIf="showInfo" (mouseleave)="showInfo = false">
+        <div fxFlex class="more-information-title">Mais informações</div>
+        <mat-divider></mat-divider>
+        <ul fxLayout="column" fxFlex="50%" class="more-information-content">
+            <li fxFlex *ngFor="let item of selectedInfo">{{ item }}</li>
+        </ul>
+    </div>
+</button>

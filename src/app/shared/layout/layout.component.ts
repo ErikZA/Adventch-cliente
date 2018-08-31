@@ -18,7 +18,6 @@ import { ReleaseNotesStore } from '../release-notes/release-notes.store';
 import { Unit } from '../models/unit.model';
 import { auth } from '../../auth/auth';
 import { EFeatures } from '../models/EFeatures.enum';
-import { EPermissions } from '../models/permissions.enum';
 
 @Component({
   selector: 'app-layout',
@@ -39,6 +38,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   unit: Unit;
   urlScholarship: String;
   user: User;
+  private releaseSub: Subscription;
+  private authSub: Subscription;
 
   constructor(
     public authService: AuthService,
@@ -55,12 +56,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getUnits();
-    auth.currentUser.subscribe(user => {
+    this.authSub = auth.currentUser.subscribe(user => {
       if (user) {
         this.user = user;
       }
     });
-    this.releaseNotes.getVersion();
+    this.releaseSub = this.releaseNotes.getVersion();
     this.subscribe = this.media.subscribe((change: MediaChange) => {
       this.isMobile = (change.mqAlias === 'xs');
       this.isOpen = !(this.isMobile || (change.mqAlias === 'sm') || (change.mqAlias === 'md'));
@@ -68,13 +69,18 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscribe.unsubscribe();
+    if (this.subscribe) { this.subscribe.unsubscribe(); }
+    if (this.releaseSub) { this.releaseSub.unsubscribe(); }
+    if (this.authSub) { this.authSub.unsubscribe(); }
+    if (this.subscribe1) { this.subscribe1.unsubscribe(); }
+    if (this.subscribe2) { this.subscribe2.unsubscribe(); }
   }
 
 
   logoff() {
     this.router.navigate(['/login']);
     auth.logoffMain();
+    this.removeUnitsFromLocalStorage();
     if (this.subscribe1 !== undefined) {
       this.subscribe1.unsubscribe();
     }
@@ -99,29 +105,39 @@ export class LayoutComponent implements OnInit, OnDestroy {
   updateCurrentNav(nav: string) {
     this.router.navigate([this.router.url.replace(/.*/, nav)]);
   }
-
+  private removeUnitsFromLocalStorage(): void {
+    localStorage.removeItem('user-units');
+  }
+  private setUnitsToLocalStorage(units: Unit[]): void {
+    localStorage.setItem('user-units', JSON.stringify(units));
+  }
+  private getUnitFromLocalStorage(): Unit[] {
+    return JSON.parse(localStorage.getItem('user-units')) as Unit[];
+  }
   getUnits() {
     this.user = auth.getCurrentUser();
     this.unit = auth.getCurrentUnit();
-    this.subscribe1 = this.sharedService.getUnits(this.user.id).subscribe((data: Unit[]) => {
-      this.lstUnits = Object.assign(this.lstUnits, data as Unit[]);
-      if (data) {
-        if (!this.unit || this.unit === null || this.unit === undefined) {
-          this.unit = data[0];
-          this.updateUnit(this.unit);
-        } else {
-          this.updateUnit(this.unit);
-        }
-      }
-    });
-
+    const localUnits = this.getUnitFromLocalStorage();
+    const userId = auth.getCurrentDecodedToken().userId;
+    if (!Array.isArray(localUnits) && typeof userId === 'number') {
+      this.subscribe1 = this.sharedService.getUnits(userId).subscribe((data: Unit[]) => {
+        this.setUnitsToLocalStorage(data);
+        this.lstUnits = data;
+        this.updateUnit(this.lstUnits[0]);
+      });
+      return;
+    }
+    this.lstUnits = localUnits;
+    if (typeof this.unit === 'undefined') {
+      this.updateUnit(this.lstUnits[0]);
+    }
   }
   public redirectToHome() {
     if (this.router.url !== '/') {
       this.router.navigate(['/']);
     }
   }
-  public updateUnit(unit): void {
+  public updateUnit(unit: Unit): void {
     this.unit = unit;
     this.authService.setCurrentUnit(unit);
   }

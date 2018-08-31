@@ -4,7 +4,7 @@ import { StudentSerie } from './studentSerie';
 
 export class Student {
   id: number;
-  rc?: string;
+  rc?: number;
   name: string;
   responsible: Responsible;
   school: School;

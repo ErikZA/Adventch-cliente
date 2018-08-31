@@ -26,6 +26,10 @@
 .mat-error-font {
     font-size: 13px !important;
 }
+.mat-error-right {
+    margin-top: 3px;
+    margin-left: 15px;
+}
 
 .section-form {
     color: lightslategrey;
@@ -40,12 +44,12 @@
     margin-top: 30px;
 }
 
-.card:focus-within {
-    border-style: solid;
-    border-color: lightgrey;
-    border-width: 1px;
-    border-left-width: 4px;
-}
+// .card:focus-within {
+//     border-style: solid;
+//     border-color: lightgrey;
+//     border-width: 1px;
+//     border-left-width: 4px;
+// }
 
 .button-form {
     padding: 0 4%;

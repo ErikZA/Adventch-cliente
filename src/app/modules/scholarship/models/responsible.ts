@@ -1,3 +1,5 @@
+import { Student } from './student';
+
 export class Responsible {
   id: number;
   name: string;
@@ -6,5 +8,6 @@ export class Responsible {
   phone?: string;
   password?: string;
   token?: string;
+  students?: Student[];
   constructor() { }
 }

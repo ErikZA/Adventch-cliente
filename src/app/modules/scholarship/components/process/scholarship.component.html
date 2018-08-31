@@ -19,21 +19,21 @@
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
             <div class="process process-1" style="color: #0f0f0f" (click)="redirectToProcess(0)">
                 <br/>
-                <p class="process-count">{{ (processes$ | async)?.length == null ? 0 : (processes$ | async)?.length}}</p>
+                <p class="process-count">{{ loading ? 0 : processesCountStatus.allProcess }}</p>
                 <p class="process-description">Processos</p>
                 <br/>
             </div>
 
             <div class="process process-2" (click)="redirectToProcess(1)">
                 <br/>
-                <p class="process-count process-2">{{ (getTotalByStatus(1) | async)?.length }}</p>
-                <p class="process-description">Aguardando Análise ({{ ((getTotalByStatus(1) | async)?.length / (processes$ | async)?.length * 100) || 0 | number: '1.0-0' }}%)</p>
+                <p class="process-count process-2">{{ loading ? 0 : processesCountStatus.waitingReview }}</p>
+                <p class="process-description">Aguardando Análise ({{ loading ? 0 : (processesCountStatus.waitingReview / processesCountStatus.allProcess * 100) || 0 | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
             <div class="process process-3" (click)="redirectToProcess(2)">
                 <br/>
-                <p class="process-count process-3">{{ (getTotalByStatus(2) | async)?.length }}</p>
-                <p class="process-description">Em Análise ({{ ((getTotalByStatus(2) | async)?.length / (processes$ | async)?.length * 100) || 0 | number: '1.0-0' }}%)</p>
+                <p class="process-count process-3">{{ loading ? 0 : processesCountStatus.analyze }}</p>
+                <p class="process-description">Em Análise ({{ loading ? 0 : (processesCountStatus.analyze / processesCountStatus.allProcess * 100) || 0 | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
         </div>
@@ -41,20 +41,20 @@
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
             <div class="process process-5" (click)="redirectToProcess(4)">
                 <br/>
-                <p class="process-count process-5">{{ (getTotalByStatus(4) | async)?.length }}</p>
-                <p class="process-description">Aguardando Vaga de Bolsa ({{ ((getTotalByStatus(4) | async)?.length / (processes$ | async)?.length * 100) || 0 | number: '1.0-0' }}%)</p>
+                <p class="process-count process-5">{{ loading ? 0 : processesCountStatus.waitingVacancy }}</p>
+                <p class="process-description">Aguardando Vaga de Bolsa ({{ loading ? 0 : (processesCountStatus.waitingVacancy / processesCountStatus.allProcess * 100) || 0 | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
             <div class="process process-6" (click)="redirectToProcess(5)">
                 <br/>
-                <p class="process-count process-6">{{ (getTotalByStatus(5) | async)?.length }}</p>
-                <p class="process-description">Vaga Liberada 50% ({{ ((getTotalByStatus(5) | async)?.length / (processes$ | async)?.length * 100) || 0 | number: '1.0-0' }}%)</p>
+                <p class="process-count process-6">{{ loading ? 0 : processesCountStatus.halfVacancy }}</p>
+                <p class="process-description">Vaga Liberada 50% ({{ loading ? 0 : (processesCountStatus.halfVacancy / processesCountStatus.allProcess * 100) || 0 | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
             <div class="process process-7" (click)="redirectToProcess(6)">
                 <br/>
-                <p class="process-count process-7">{{ (getTotalByStatus(6) | async)?.length }}</p>
-                <p class="process-description">Vaga Liberada 100% ({{ ((getTotalByStatus(6) | async)?.length / (processes$ | async)?.length * 100) || 0 | number: '1.0-0' }}%)</p>
+                <p class="process-count process-7">{{ loading ? 0 : processesCountStatus.fullVacancy }}</p>
+                <p class="process-description">Vaga Liberada 100% ({{ loading ? 0 : (processesCountStatus.fullVacancy / processesCountStatus.allProcess * 100) || 0 | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
         </div>
@@ -62,20 +62,20 @@
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
             <div class="process process-4" (click)="redirectToProcess(3)">
                 <br/>
-                <p class="process-count process-4">{{ (getTotalByStatus(3) | async)?.length }}</p>
-                <p class="process-description">Pendência ({{ ((getTotalByStatus(3) | async)?.length / (processes$ | async)?.length * 100) || 0 | number: '1.0-0' }}%)</p>
+                <p class="process-count process-4">{{ loading ? 0 : processesCountStatus.pendency }}</p>
+                <p class="process-description">Pendência ({{ loading ? 0 : (processesCountStatus.pendency / processesCountStatus.allProcess * 100) || 0 | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
             <div class="process process-8" (click)="redirectToProcess(7)">
                 <br/>
-                <p class="process-count process-8">{{ (getTotalByStatus(7) | async)?.length }}</p>
-                <p class="process-description">Bolsa Indeferida ({{ ((getTotalByStatus(7) | async)?.length / (processes$ | async)?.length * 100) || 0 | number: '1.0-0' }}%)</p>
+                <p class="process-count process-8">{{ loading ? 0 : processesCountStatus.rejected }}</p>
+                <p class="process-description">Bolsa Indeferida ({{ loading ? 0 : (processesCountStatus.rejected / processesCountStatus.allProcess * 100) || 0 | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
             <div class="process process-9" (click)="redirectToProcess(8)">
                 <br/>
-                <p class="process-count process-9">{{ (getTotalByStatus(8) | async)?.length }}</p>
-                <p class="process-description">Não matrículado ({{ ((getTotalByStatus(8) | async)?.length / (processes$ | async)?.length * 100) || 0 | number: '1.0-0' }}%)</p>
+                <p class="process-count process-9">{{ loading ? 0 : processesCountStatus.notEnroll }}</p>
+                <p class="process-description">Não matrículado ({{ loading ? 0 : (processesCountStatus.notEnroll / processesCountStatus.allProcess * 100) || 0 | number: '1.0-0' }}%)</p>
                 <br/>
             </div>
         </div>

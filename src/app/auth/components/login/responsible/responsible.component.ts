@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { LoginStore } from '../login.store';
+import { Component, OnInit, Input } from '@angular/core';
 import { auth } from '../../../auth';
+import { Responsible } from '../../../../modules/scholarship/models/responsible';
+import { AuthService } from '../../../auth.service';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-responsible',
@@ -9,8 +12,12 @@ import { auth } from '../../../auth';
 })
 export class ResponsibleComponent implements OnInit {
 
+  @Input()
+  loading = false;
   constructor(
-    private store: LoginStore
+    private service: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -18,11 +25,64 @@ export class ResponsibleComponent implements OnInit {
   }
 
   public submitForm(loginForm: { login: string, password: string, remember: boolean}): void {
+    this.loading = true;
+    this.setLastLogin(loginForm);
+    this.sendResquest(loginForm);
+  }
+
+  private sendResquest(loginForm: { login: string; password: string; remember: boolean; }) {
+    this.service.loginResponsible({ cpf: loginForm.login, password: loginForm.password })
+      .subscribe((data: {
+        responsible: Responsible;
+        token: string;
+      }) => {
+        this.loginResponse(data);
+      }, err => {
+        this.loginError(err);
+      });
+  }
+
+  private setLastLogin(loginForm: { login: string; password: string; remember: boolean; }) {
     if (loginForm.remember) {
       auth.setLastLogin(loginForm.login);
     } else {
       auth.setLastLogin('');
     }
-    this.store.loginResponsible({ cpf: loginForm.login, password: loginForm.password });
+  }
+
+  private loginError(err: any) {
+    this.loading = false;
+    console.log(err);
+    if (err.status === 500) {
+      this.snackBar.open('CPF/senha inválido!', 'OK', { duration: 3000 });
+    } else {
+      this.snackBar.open('Erro no login.', 'OK', { duration: 3000 });
+    }
+  }
+
+  private loginResponse(data: { responsible: Responsible; token: string; }) {
+    const { responsible } = data;
+    const { token } = data;
+    if (responsible && token) {
+      this.setResponsibleLoggedSuccess(responsible, token);
+    } else {
+      this.setResponsibleLoggedFail();
+    }
+    this.loading = false;
+  }
+
+  private setResponsibleLoggedFail() {
+    const responsibleFail = new Responsible();
+    responsibleFail.cpf = auth.getLastLogin();
+    auth.currentResponsible.emit(responsibleFail);
+    auth.showApp.emit(false);
+  }
+
+  private setResponsibleLoggedSuccess(responsible: Responsible, token: string) {
+    auth.setCurrentResponsible(responsible);
+    auth.setResponsibleToken(token);
+    auth.currentResponsible.emit(responsible);
+    auth.showApp.emit(true);
+    this.router.navigate(['/educacao/consultar']);
   }
 }

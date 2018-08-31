@@ -6,6 +6,7 @@ import { User } from '../shared/models/user.model';
 import { Responsible } from '../modules/scholarship/models/responsible';
 
 import * as Raven from 'raven-js';
+import { JwtHelper } from '../../../node_modules/angular2-jwt';
 
 const showApp: EventEmitter<boolean> = new EventEmitter<boolean>();
 const currentUser: EventEmitter<User> = new EventEmitter<User>();
@@ -76,11 +77,30 @@ const getMainToken = () => {
 };
 
 const setResponsibleToken = (token: string) => {
-  setLocalStorage('tokenResponsible', token);
+  setLocalStorage('token', token);
 };
 
 const getResponsibleToken = () => {
-  return getLocalStorage('tokenResponsible');
+  return getLocalStorage('token');
+};
+
+const decodeToken = (token: string): {
+  userUnitId?: number,
+  userId?: number
+} => {
+  const helper = new JwtHelper();
+  // const token = auth.getMainToken();
+
+  const decoded = helper.decodeToken(token);
+  return {
+    userUnitId: parseInt(decoded['user-unit'], 10),
+    userId: parseInt(decoded['user-id'], 10)
+  };
+};
+
+const getCurrentDecodedToken = () => {
+  const token = getMainToken();
+  return decodeToken(token);
 };
 
 const loggedInMain = () => {
@@ -103,6 +123,7 @@ const logoffMain = () => {
   localStorage.removeItem('currentUser');
   localStorage.removeItem('token');
   localStorage.removeItem('currentUnit');
+  localStorage.removeItem('user-units');
   Raven.setUserContext();
   const user: User = new User();
   user.email = getLastLogin();
@@ -112,7 +133,7 @@ const logoffMain = () => {
 
 const logoffResponsible = () => {
   localStorage.removeItem('currentResponsible');
-  localStorage.removeItem('tokenResponsible');
+  localStorage.removeItem('token');
   Raven.setUserContext();
   const responsible: Responsible = new Responsible();
   responsible.cpf = getLastLogin();
@@ -140,5 +161,7 @@ export const auth = {
   loggedInMain,
   loggedInResponsible,
   logoffMain,
-  logoffResponsible
+  logoffResponsible,
+  decodeToken,
+  getCurrentDecodedToken
 };

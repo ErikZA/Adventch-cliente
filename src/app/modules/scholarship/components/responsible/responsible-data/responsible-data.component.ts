@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs/Observable';
+import { ProcessResponsibleInterface } from './../../../interfaces/process-responsible-interface';
 import { Component, OnInit } from '@angular/core';
 
 import { AuthService } from '../../../../../shared/auth.service';
@@ -16,12 +18,12 @@ import { Router } from '@angular/router';
 export class ResponsibleDataComponent implements OnInit {
   responsible: Responsible;
   processes: Process[] = new Array<Process>();
+  processes$: Observable<ProcessResponsibleInterface[]>;
 
   get year(): number { return new Date().getFullYear(); }
   showList = 15;
 
   constructor(
-    private authService: AuthService,
     private scholarshipService: ScholarshipService,
     private router: Router
   ) { }
@@ -29,49 +31,17 @@ export class ResponsibleDataComponent implements OnInit {
   ngOnInit() {
     this.loadCurrentResponsible();
     this.loadProcesses();
-    this.getResponsible();
   }
 
-  loadCurrentResponsible() {
+  private loadCurrentResponsible(): void {
     this.responsible = auth.getCurrentResponsible();
   }
 
-  loadProcesses() {
-    this.scholarshipService.getProcessesResponsible(this.responsible.id).subscribe((data: Process[]) => {
-      this.processes = Object.assign(this.processes, data as Process[]);
-      this.processes.forEach(
-        item => {
-          item.statusString = this.getStatusToString(item.status);
-        }
-      );
-    });
+  private loadProcesses(): void {
+    this.processes$ = this.scholarshipService.getProcessesResponsible(this.responsible.id);
   }
 
-  getStatusToString(status) {
-    if (status === 1) {
-      return 'Aguardando Análise';
-    }
-    if (status === 2) {
-      return 'Em análise';
-    }
-    if (status === 3) {
-      return 'Pendente';
-    }
-    if (status === 4) {
-      return 'Aguardando Vaga de Bolsa';
-    }
-    if (status === 5) {
-      return 'Vaga liberada (50%)';
-    }
-    if (status === 6) {
-      return 'Vaga liberada (100%)';
-    }
-    if (status === 7) {
-      return 'Bolsa Indeferida';
-    }
-  }
-
-  getMotiveToReject(motive) {
+  public getMotiveToReject(motive): string {
     if (motive === 'Acadêmico') {
       return 'O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.';
     }
@@ -87,7 +57,7 @@ export class ResponsibleDataComponent implements OnInit {
     return 'Indeferido pela apresentação da documentação inconsistente à análise correspondente.';
   }
 
-  logoff() {
+  public logoff(): void {
     this.router.navigate(['/educacao']);
     auth.logoffResponsible();
   }
@@ -95,13 +65,7 @@ export class ResponsibleDataComponent implements OnInit {
   /*
   AutoScroll
    */
-  onScroll() {
+  public onScroll(): void {
     this.showList += 15;
-  }
-
-  getResponsible(): void {
-    this.scholarshipService.currentResponsible.subscribe(data => {
-      this.responsible = data;
-    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
 
@@ -7,7 +7,6 @@ import { map } from 'rxjs/operators';
 import 'rxjs/operator/do';
 
 import { AuthService } from '../../../../../shared/auth.service';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { ProfileStore } from '../profile.store';
 
 import { NewProfile } from '../../../models/profile/new-profile.model';
@@ -17,13 +16,15 @@ import { EModules, Module } from '../../../../../shared/models/modules.enum';
 import { EPermissions } from '../../../../../shared/models/permissions.enum';
 import { Permission } from '../../../../../shared/models/permission.model';
 import { auth } from '../../../../../auth/auth';
+import { ProfileDataComponent } from '../profile-data/profile-data.component';
 
 @Component({
   selector: 'app-profile-form',
   templateUrl: './profile-form.component.html',
   styleUrls: ['./profile-form.component.scss']
 })
-export class ProfileFormComponent implements OnInit {
+export class ProfileFormComponent implements OnInit, OnDestroy {
+
 
   formProfile: FormGroup;
   formPermissions: FormArray;
@@ -39,7 +40,8 @@ export class ProfileFormComponent implements OnInit {
     private store: ProfileStore,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private sidenavService: SidenavService
+    private authService: AuthService,
+    private profileDataComponent: ProfileDataComponent
   ) { }
 
   ngOnInit() {
@@ -61,8 +63,11 @@ export class ProfileFormComponent implements OnInit {
           this.loading = true;
         }
       });
+    this.profileDataComponent.sidenavRight.open();
   }
-
+  ngOnDestroy(): void {
+    this.closeSidenav();
+  }
   public labelTitle(): string {
     return this.checkIsEdit() ? 'Editar' : 'Novo';
   }
@@ -161,7 +166,7 @@ export class ProfileFormComponent implements OnInit {
       return false;
     }
     const permission = feature.permissions.find(f => f.id === permissionId);
-    console.log(permission);
+    // console.log(permission);
 
     return permission !== undefined && permission !== null && permission.isActive ? permission.isActive : false;
   }
@@ -184,7 +189,10 @@ export class ProfileFormComponent implements OnInit {
     this.isSending = true;
     this.formSubmittedOnce = true;
     if (this.formProfile.valid && this.checkIfHaveMarkedFeatureAndPermission()) {
-      this.sendData();
+      this.sendData().subscribe(() => {
+        this.authService.renewUserToken();
+        this.closeSidenav();
+      });
     }
     this.isSending = false;
   }
@@ -224,18 +232,18 @@ export class ProfileFormComponent implements OnInit {
   }
 
 
-  private sendData(): void {
+  private sendData() {
     if (this.checkIsEdit()) {
       const profile = this.formProfile.value as EditProfile;
       profile.id = this.profile.id;
       profile.features = this.getSelectedFeatures();
-      this.store.editProfile(profile);
+      return this.store.editProfile(profile);
     } else {
       const { id } = auth.getCurrentUnit();
       const profile = this.formProfile.value as NewProfile;
       profile.idUnit = id;
       profile.features = this.getSelectedFeatures();
-      this.store.newProfile(profile);
+      return this.store.newProfile(profile);
     }
   }
 
@@ -263,6 +271,6 @@ export class ProfileFormComponent implements OnInit {
   }
 
   public closeSidenav(): void {
-    this.sidenavService.close();
+    this.profileDataComponent.closeSidenav();
   }
 }

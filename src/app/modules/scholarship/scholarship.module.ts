@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CoreModule } from '../../core/core.module';
 
 import { ScholarshipRoutingModule } from './scholarship-routing.module';
-import { ModuleGuard } from '../../shared/module.guard';
+import { ModuleGuard } from '../../shared/guards/module.guard';
 
 import { MatGridListModule } from '@angular/material';
 
@@ -11,13 +11,14 @@ import { ScholarshipComponent } from './components/process/scholarship.component
 import { ProcessFormComponent } from './components/process/process-form/process-form.component';
 import { ProcessDataComponent } from './components/process/process-data/process-data.component';
 import { ResponsibleDataComponent } from './components/responsible/responsible-data/responsible-data.component';
-import { ResponsibleLoginComponent } from './components/responsible/responsible-login/responsible-login.component';
 import { PendencyComponent } from './components/process/pendency/pendency.component';
 import { VacancyComponent } from './components/process/vacancy/vacancy.component';
 
 import { ScholarshipService } from './scholarship.service';
 import { ProcessesStore } from './components/process/processes.store';
-import { FeatureGuard } from '../../shared/feature.guard';
+import { ProcessFormDocumentInfoComponent } from './components/process/process-form-document-info/process-form-document-info.component';
+import { ProcessDataDocumentInfoComponent } from './components/process/process-data-document-info/process-data-document-info.component';
+import { FeatureGuard } from '../../shared/guards/feature.guard';
 
 @NgModule({
   imports: [
@@ -38,8 +39,9 @@ import { FeatureGuard } from '../../shared/feature.guard';
     ProcessFormComponent,
     PendencyComponent,
     VacancyComponent,
-    ResponsibleLoginComponent,
-    ResponsibleDataComponent
+    ResponsibleDataComponent,
+    ProcessFormDocumentInfoComponent,
+    ProcessDataDocumentInfoComponent
   ],
   entryComponents: [
     PendencyComponent,

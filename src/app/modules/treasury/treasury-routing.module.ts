@@ -13,9 +13,9 @@ import { ObservationDataComponent } from './components/observation/observation-d
 import { ObservationFormComponent } from './components/observation/observation-form/observation-form.component';
 import { DashboardTreasuryComponent } from './components/dashboard/dashboard-treasury-component';
 
-import { FeatureGuard } from '../../shared/feature.guard';
 import { EFeatures } from '../../shared/models/EFeatures.enum';
 import { EPermissions } from '../../shared/models/permissions.enum';
+import { FeatureGuard } from '../../shared/guards/feature.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard' },
@@ -58,7 +58,8 @@ const routes: Routes = [
         } }
         ],
         data: {
-          feature: EFeatures.IGREJAS
+          feature: EFeatures.IGREJAS,
+          permission: EPermissions.VISUALISAR
         }
       }
     ]
@@ -76,7 +77,8 @@ const routes: Routes = [
         } }
       ],
       data: {
-        feature: EFeatures.DISTRITOS
+        feature: EFeatures.DISTRITOS,
+        permission: EPermissions.VISUALISAR
       }
     }]
   },
@@ -93,7 +95,8 @@ const routes: Routes = [
         } }
       ],
       data: {
-        feature: EFeatures.OBSERVACOES
+        feature: EFeatures.OBSERVACOES,
+        permission: EPermissions.VISUALISAR
       }
     }]
   },

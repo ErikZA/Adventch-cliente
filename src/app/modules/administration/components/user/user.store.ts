@@ -3,8 +3,8 @@ import { Location } from '@angular/common';
 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { map } from 'rxjs/operators';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/do';
 import { MatSnackBar } from '@angular/material';
 
 import { AuthService } from '../../../../shared/auth.service';
@@ -129,16 +129,16 @@ export class UserStore {
         this.snackBar.open('Erro ao salvar o usuário, tente novamente.', 'OK', { duration: 5000 });
       }
   }
-  public saveUser(userData: any): void {
+  public saveUser(userData: any) {
     if (userData.id) {
-      this.service.editUser(userData, userData.id).subscribe((res) => {
+      return this.service.editUser(userData, userData.id).do((res) => {
         this.load(userData.id);
         this.handleSuccess();
       }, err => {
         this.handleFail(err);
       });
     } else {
-      this.service.saveUser(userData).subscribe((res) => {
+      return this.service.saveUser(userData).do((res) => {
         console.log(res);
         this.handleSuccess();
       }, err => {
