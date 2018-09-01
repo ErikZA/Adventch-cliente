@@ -8,7 +8,6 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Districts } from '../../../models/districts';
 import { AuthService } from '../../../../../shared/auth.service';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { TreasuryService } from '../../../treasury.service';
 import { DistrictsStore } from '../districts.store';
 import { auth } from '../../../../../auth/auth';
@@ -36,7 +35,6 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     private treasureService: TreasuryService,
     private snackBar: MatSnackBar,
     private router: Router,
-    // private sidenavService: SidenavService,
     private route: ActivatedRoute,
     private authService: AuthService,
     private service: TreasuryService,
@@ -47,14 +45,12 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     this.initForm();
     this.loadAnalysts();
     this.routeSubscription = this.route.params.subscribe((data) => {
-      if (data.id) {
-        this.editDistrict(this.store.districts);
+      const id = parseInt(data.id, 10);
+      if (Number.isInteger(id)) {
+        this.editDistrict(id);
       }
     });
     this.districtsDataComponent.sidenavRight.open();
-    // this.subscribeUnit = auth.currentUnit.subscribe(() => {
-    //   this.close();
-    // });
   }
 
   ngOnDestroy() {
@@ -85,8 +81,6 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   }
 
   closeSidenav() {
-    // this.treasureService.setDistrict(new Districts());
-    // this.sidenavService.close();
     this.districtsDataComponent.closeSidenav();
   }
 
@@ -103,19 +97,19 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     this.values = {
       id: this.params,
       name: this.formDistrict.value.name,
-      analyst:
-        {
-          id: this.formDistrict.value.analyst,
-          name: valor[0].name,
-        },
-      id_unit: unit.id };
+      analyst: {
+        id: this.formDistrict.value.analyst,
+        name: valor[0].name,
+      },
+      id_unit: unit.id
+    };
 
     if (this.formDistrict.valid) {
       this.treasuryService.saveDistricts(this.values).subscribe((data) => {
-        this.store.loadAll();
         this.snackBar.open('Distrito salvo com sucesso!', 'OK', { duration: 5000 });
         this.formDistrict.markAsUntouched();
         this.closeSidenav();
+        this.districtsDataComponent.getData(unit.id);
       }, err => {
         console.log(err);
         this.snackBar.open('Erro ao salvar distrito, tente novamente.', 'OK', { duration: 5000 });
@@ -124,27 +118,14 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
       return;
     }
   }
-
-  editDistrict(district) {
-
-    this.treasureService.getDistrict()
-    // if (district) {
-    //   this.district = district;
-
-    //   this.formDistrict = new FormGroup({
-    //     'name': new FormControl({value: district.name, disabled: false}, Validators.required),
-    //     'analyst': new FormControl({value: district.analyst.id, disabled: false}, Validators.required)
-    //   });
-    // }
+  editDistrict(id: number) {
+    this.treasureService.getDistrict(id).subscribe(res => {
+      this.formDistrict.patchValue({
+        name: res.name,
+        analyst: res.analyst.id
+      });
+    });
   }
-
-  // close() {
-  //   this.store.openDistrict(new Districts());
-  //   this.sidenavService.close();
-  //   this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/distritos')]);
-  //   this.resetAllForms();
-  // }
-
   resetAllForms() {
     this.formDistrict.reset();
   }
