@@ -36,8 +36,8 @@
                 <mat-divider></mat-divider>
             </div>
             <mat-list class="conteiner" layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
-                <div *ngIf="(profiles$ | async ).length !== 0">
-                    <mat-list-item class="break-line" *ngFor="let profile of (profiles$ | async ); index as i" fxFlex>
+                <div *ngIf="profiles.length !== 0">
+                    <mat-list-item class="break-line" *ngFor="let profile of profiles; index as i" fxFlex>
                         <span class="text-color-item" fxFlex>{{ profile?.name }}</span>
                         <span class="text-color-item" fxFlex>{{ getModuleName(profile?.software) }}</span>
                         <button mat-icon-button fxHide.gt-xs [matMenuTriggerFor]="menu">
@@ -68,4 +68,4 @@
         </div>
     </div>
 </div>
-<button mat-fab color="primary" class="mat-fab-right" (click)="openSidenav()"><mat-icon aria-label="Novo papel">add</mat-icon></button>
+<button mat-fab color="primary" class="mat-fab-right" routerLink="./novo"><mat-icon aria-label="Novo papel">add</mat-icon></button>
