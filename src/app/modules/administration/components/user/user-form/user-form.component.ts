@@ -6,19 +6,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl, ValidatorFn, FormArray } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
-
-import { UserStore } from '../user.store';
 import { EModules, Module } from '../../../../../shared/models/modules.enum';
 import { User } from '../../../../../shared/models/user.model';
 
 import * as moment from 'moment';
 import { StrongPasswordValidator } from '../../../../../core/components/password/strong-password.directive';
-import { ProcessesStore } from '../../../../scholarship/components/process/processes.store';
 import { Profile } from '../../../models/profile/profile.model';
 import { auth } from '../../../../../auth/auth';
 import { UserDataComponent } from '../user-data/user-data.component';
+import { AdministrationService } from '../../../administration.service';
+import { MatSnackBar } from '@angular/material';
+import { ScholarshipService } from '../../../../scholarship/scholarship.service';
 
 @Component({
   selector: 'app-user-form',
@@ -33,10 +31,9 @@ export class UserFormComponent implements OnInit, OnDestroy {
   formProfiles: FormArray;
 
   user: User;
-  profiles$: Observable<Profile[]>;
-  schools$: Observable<School[]>;
-  modules: EModules[];
-  loading: boolean;
+  profiles: Profile[] = [];
+  schools: School[] = [];
+  modules: EModules[] = [];
   isSending = false;
 
   strength: number;
@@ -47,12 +44,12 @@ export class UserFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private store: UserStore,
     private route: ActivatedRoute,
-    private profileStore: ProfileStore,
-    private schoolarshipStore: ProcessesStore,
+    private schoolarShipService: ScholarshipService,
     private authService: AuthService,
-    private userDataComponent: UserDataComponent
+    private userDataComponent: UserDataComponent,
+    private administraionService: AdministrationService,
+    private snackBar: MatSnackBar
   ) {
     this.valFn = StrongPasswordValidator(this.level, this.user_inputs);
   }
@@ -61,27 +58,21 @@ export class UserFormComponent implements OnInit, OnDestroy {
     Inicialização
    */
   ngOnInit() {
-    this.loading = false;
     this.initConfiguratios();
     this.loadAllDatas();
     this.initForm();
-    this.route.params.pipe(map(({ idUser }) => idUser)).subscribe(id => {
-      if (id) {
-        this.store.loadUser(id).subscribe(user => {
-          this.user = user;
-          if (this.user) {
-            this.editUser();
-          }
-        });
-      } else {
-        this.loading = true;
+    this.route.params.subscribe(params => {
+      const id = parseInt(params.idUser, 10);
+      if (!Number.isInteger(id)) {
+        return;
       }
+      this.editUser(id);
     });
 
     this.userDataComponent.sidenavRight.open();
   }
   ngOnDestroy(): void {
-    this.closeSidenav();
+    this.userDataComponent.closeSidenav();
   }
   private initConfiguratios(): void {
     this.dates = {
@@ -98,18 +89,19 @@ export class UserFormComponent implements OnInit, OnDestroy {
     this.loadProfiles();
   }
   private loadSchools(): void {
-    if (this.modules) {
-      const scholarship = this.modules.some(module => module === EModules.Scholarship);
-      if (scholarship) {
-        this.schools$ = this.schoolarshipStore.schools$;
-        this.schoolarshipStore.loadSchools();
-      }
+    const scholarship = this.modules.some(module => module === EModules.Scholarship);
+    if (scholarship) {
+      this.schoolarShipService.getSchools().subscribe((data: School[]) => {
+        this.schools = data;
+      }, error => console.log('Could not load todos schools.'));
     }
   }
 
   private loadProfiles(): void {
-    this.profiles$ = this.profileStore.profiles$;
-    this.profileStore.loadAllProfiles();
+    const { id } = auth.getCurrentUnit();
+    this.administraionService.getProfiles(id).subscribe((data: Profile[]) => {
+      this.profiles = data.sort((a, b) => a.name.localeCompare(b.name));
+    }, err => console.log('Could not load todos profiles.'));
   }
 
   public labelTitle(): string {
@@ -175,10 +167,12 @@ export class UserFormComponent implements OnInit, OnDestroy {
     group.controls[field].updateValueAndValidity();
   }
 
-  private editUser(): void {
-    this.setValuesUserEdit();
-    this.setValuesUserProfiles();
-    this.loading = true;
+  private editUser(id: number): void {
+    this.administraionService.getUser(id, auth.getCurrentUnit().id).subscribe(data => {
+      this.user = data;
+      this.setValuesUserEdit();
+      this.setValuesUserProfiles();
+    });
   }
 
   private setValuesUserProfiles(): void {
@@ -204,11 +198,6 @@ export class UserFormComponent implements OnInit, OnDestroy {
       school: this.user.idSchool
     });
   }
-
-  public closeSidenav(): void {
-    this.userDataComponent.closeSidenav();
-  }
-
   private checkIsEdit(): boolean {
     return this.user !== undefined && this.user !== null;
   }
@@ -217,17 +206,42 @@ export class UserFormComponent implements OnInit, OnDestroy {
     return new Module(id).getModuleName();
   }
 
-  public saveUser() {
-    this.isSending = true;
-    const user = this.setUserData();
-    if (this.form.valid) {
-      this.store.saveUser(user).subscribe(() => {
-        this.authService.renewUserToken();
-        this.closeSidenav();
-      });
-
+  private handleFail(err = null) {
+    console.log(err);
+      if (err.status === 409) {
+        this.snackBar.open(err.error + ', tente novamente.', 'OK', { duration: 5000 });
+      } else {
+        this.snackBar.open('Erro ao salvar o usuário, tente novamente.', 'OK', { duration: 5000 });
+      }
+  }
+  handleSuccess(userId: number) {
+    if (userId === auth.getCurrentUser().id) {
+      this.authService.renewUserToken();
     }
+    this.snackBar.open('Usuário salvo com sucesso.', 'OK', { duration: 5000 });
+    this.userDataComponent.closeSidenav();
+    this.userDataComponent.getData();
     this.isSending = false;
+  }
+  public saveUser() {
+    if (this.form.invalid) {
+      return;
+    }
+    const userData = this.setUserData();
+    if (userData.id) {
+      this.administraionService.editUser(userData, userData.id).subscribe(() => {
+        this.handleSuccess(userData.id);
+      }, err => {
+        this.handleFail(err);
+      });
+    } else {
+      this.administraionService.saveUser(userData).subscribe(() => {
+        this.handleSuccess(userData.id);
+      }, err => {
+        this.handleFail(err);
+      });
+    }
+
   }
 
   private setUserData(): any {

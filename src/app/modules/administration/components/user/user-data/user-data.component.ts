@@ -1,17 +1,17 @@
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav, MatSnackBar } from '@angular/material';
 
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
 
-import { UserStore } from '../user.store';
 
 import { EModules, Module } from '../../../../../shared/models/modules.enum';
 import { User } from '../../../../../shared/models/user.model';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { auth } from '../../../../../auth/auth';
+import { AdministrationService } from '../../../administration.service';
+import { utils } from '../../../../../shared/utils';
 
 
 @Component({
@@ -27,44 +27,50 @@ export class UserDataComponent implements OnInit, OnDestroy {
   search$ = new Subject<string>();
   showList = 15;
   inSearch: boolean;
-  modules = new Array<EModules>();
-  search = '';
+  modulesFilter: EModules[] = [];
+  searchText = '';
 
-  users$: Observable<User[]>;
+  users: User[] = [];
+  usersCache: User[] = [];
 
   authStoreSub: Subscription;
   constructor(
-    private store: UserStore,
     private router: Router,
     private route: ActivatedRoute,
     private confirmDialogService: ConfirmDialogService,
+    private administrationService: AdministrationService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
-    this.search = '';
     this.search$.subscribe(search => {
-      this.search = search;
-      this.searchUser(search);
+      this.searchText = search;
+      this.search(search);
     });
-    this.loadAllDatas();
+    this.getData();
 
+  }
+  getData() {
+    this.administrationService.getUsers(auth.getCurrentUnit().id).subscribe(data => {
+      this.usersCache = data;
+      this.users = data;
+    });
   }
   ngOnDestroy(): void {
     if (this.authStoreSub) { this.authStoreSub.unsubscribe(); }
-  }
-  private loadAllDatas(): void {
-    this.users$ = this.store.users$;
-    this.store.loadAllUsers();
   }
   public closeSidenav(): void {
     this.router.navigate(['/administracao/usuarios/']);
     this.sidenavRight.close();
   }
-
-  public openSidenav() {
-    this.sidenavRight.open();
+  checkModule(module: EModules) {
+    if (this.modulesFilter.some(m => m === module)) {
+      this.modulesFilter = this.modulesFilter.filter(m => m !== module);
+    } else {
+      this.modulesFilter.push(module);
+    }
+    this.search(this.searchText);
   }
-
   public getModulesUnit(): EModules[] {
     const { modules } = auth.getCurrentUnit();
     return modules;
@@ -74,16 +80,24 @@ export class UserDataComponent implements OnInit, OnDestroy {
     return new Module(module).getModuleName();
   }
 
-  public searchUser(search: string): void {
-    this.users$ = this.store.searchUser(search);
+  public search(search: string): void {
+    this.users = this
+      .filterUsersProfilesModules(this.usersCache)
+      .filter(u => utils.buildSearchRegex(search).test(u.name));
   }
-
-
-  public filterModules(module: EModules, checked: boolean): void {
-    this.users$ = this.store.filterModules(module, checked);
-    this.searchUser(this.search);
+  private filterUsersProfilesModules(users: User[]): User[] {
+    if (this.modulesFilter.length > 0) {
+      return users.filter(user => {
+        if (Array.isArray(user.profiles)) {
+          return user.profiles.some(p => {
+            return this.modulesFilter.some(x => x === p.software);
+          });
+        }
+        return false;
+      });
+    }
+    return this.usersCache;
   }
-
   /*
   INÍCIO UTIL
   */
@@ -101,17 +115,16 @@ export class UserDataComponent implements OnInit, OnDestroy {
 
   public editUser(user: User): void {
     this.router.navigate([user.id, 'editar'], { relativeTo: this.route });
-    this.searchButton = false;
-    this.users$ = this.store.users$;
   }
-
   public removeUser(user: User): void {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este usuário?', 'REMOVER')
       .subscribe(res => {
         if (res === true) {
-          this.store.removeUser(user.id);
-          this.searchUser(this.search);
+          this.administrationService.deleteUser(user.id).subscribe(() => {
+            this.snackBar.open('Removido com sucesso', 'OK', { duration: 3000 });
+            this.getData();
+          });
         }
       });
   }
