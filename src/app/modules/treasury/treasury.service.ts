@@ -178,6 +178,13 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+  getObservation(id: number): Observable<Observation> {
+    const url = '/treasury/observations/GetObservation/' + id;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 
   saveObservation(data): Observable<Observation> {
     const url = '/treasury/observations/saveObservation';
@@ -194,7 +201,7 @@ export class TreasuryService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  finalizeObservation(data): Observable<Observation> {
+  finalizeObservation(data: { id: number }): Observable<Observation> {
     const url = '/treasury/observations/finalizeObservation/';
     return this.http
       .post(url, data)
