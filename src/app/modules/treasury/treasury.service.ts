@@ -27,8 +27,10 @@ export class TreasuryService {
     this.treasurer = treasurer;
   }
 
-  getDistrict(id: number) {
-    return this.district;
+  getDistrict(id: number): Observable<Districts> {
+    const url = '/treasury/districts/getDistrict/' + id;
+    return this.http
+      .get(url) as Observable<Districts>;
   }
 
   setDistrict(districts) {
