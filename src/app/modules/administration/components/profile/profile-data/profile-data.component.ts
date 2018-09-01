@@ -1,17 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
 
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { MatSidenav } from '@angular/material';
-
-import { ProfileStore } from '../profile.store';
+import { MatSidenav, MatSnackBar } from '@angular/material';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { Module } from '../../../../../shared/models/modules.enum';
 import { EModules } from '../../../../../shared/models/modules.enum';
 import { utils } from '../../../../../shared/utils';
 import { Profile } from '../../../models/profile/profile.model';
+import { AdministrationService } from '../../../administration.service';
+import { auth } from '../../../../../auth/auth';
 
 @Component({
   selector: 'app-profile-data',
@@ -26,24 +24,32 @@ export class ProfileDataComponent implements OnInit {
   searchButton = false;
   search$ = new Subject<string>();
   layout: String = 'row';
-  profiles$: Observable<Profile[]>;
+  profiles: Profile[] = [];
+  profilesCache: Profile[] = [];
 
   constructor(
-    private store: ProfileStore,
     private confirmDialogService: ConfirmDialogService,
-    private location: Location,
     private router: Router,
     private route: ActivatedRoute,
+    private administrationService: AdministrationService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
-    this.profiles$ = this.store.profiles$;
     this.search$.subscribe(search => {
       this.searchProfile(search);
     });
-    this.store.loadAllProfiles();
+    this.getData();
   }
-
+  getData(): void {
+    const { id } = auth.getCurrentUnit();
+    this.administrationService
+      .getProfiles(id).map(p => p.sort((a, b) => a.name.localeCompare(b.name)))
+      .subscribe((data: Profile[]) => {
+        this.profiles =  data;
+        this.profilesCache = data;
+    }, err => console.log('Could not load todos profiles.'));
+  }
   public onScroll(): void {
     this.showList += 15;
   }
@@ -52,13 +58,8 @@ export class ProfileDataComponent implements OnInit {
   }
 
   public searchProfile(search: string) {
-    this.profiles$ = this.store.searchProfile(search);
+    this.profiles = this.profilesCache.filter(p => utils.buildSearchRegex(search).test(p.name));
   }
-
-  public openSidenav(): void {
-    this.router.navigate(['novo'], { relativeTo: this.route });
-  }
-
   public closeSidenav(): void {
     this.router.navigate(['/administracao/papeis']);
     this.sidenavRight.close();
@@ -73,7 +74,10 @@ export class ProfileDataComponent implements OnInit {
       .confirm('Remover registro', 'Você deseja realmente remover este papel?', 'REMOVER')
       .subscribe(res => {
         if (res === true) {
-          this.store.removeProfile(role);
+          this.administrationService.deleteProfile(role.id).subscribe(() => {
+            this.snackBar.open('Removido com sucesso', 'OK', { duration: 30000 });
+            this.getData();
+          });
         }
       });
   }

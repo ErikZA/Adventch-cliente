@@ -2,12 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
 
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
 import 'rxjs/operator/do';
 
 import { AuthService } from '../../../../../shared/auth.service';
-import { ProfileStore } from '../profile.store';
 
 import { NewProfile } from '../../../models/profile/new-profile.model';
 import { EditProfile } from '../../../models/profile/edit-profile.model';
@@ -17,6 +14,8 @@ import { EPermissions } from '../../../../../shared/models/permissions.enum';
 import { Permission } from '../../../../../shared/models/permission.model';
 import { auth } from '../../../../../auth/auth';
 import { ProfileDataComponent } from '../profile-data/profile-data.component';
+import { AdministrationService } from '../../../administration.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-profile-form',
@@ -31,42 +30,34 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
   profile: EditProfile;
   loading: boolean;
   isSending = false;
-  modules: EModules[];
-  features$: Observable<Feature[]>;
+  modules: EModules[] = [];
+  features: Feature[] = [];
   moduleSelected = false;
   formSubmittedOnce = false;
 
   constructor(
-    private store: ProfileStore,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private profileDataComponent: ProfileDataComponent
+    private profileDataComponent: ProfileDataComponent,
+    private admimistrationService: AdministrationService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
-    this.loading = false;
     this.getModulesUserUnit();
     this.initForm();
-    this.route.params.pipe(map(({ idProfile }) => idProfile))
-      .subscribe(id => {
-        if (id) {
-          this.store.loadEditProfile(id).subscribe(data => {
-            if (data) {
-              this.profile = data;
-              if (this.profile) {
-                this.editProfile();
-              }
-            }
-          });
-        } else {
-          this.loading = true;
+    this.route.params.subscribe(params => {
+        const id = parseInt(params.idProfile, 10);
+        if (!Number.isInteger(id)) {
+          return;
         }
+        this.editProfile(id);
       });
     this.profileDataComponent.sidenavRight.open();
   }
   ngOnDestroy(): void {
-    this.closeSidenav();
+    this.profileDataComponent.closeSidenav();
   }
   public labelTitle(): string {
     return this.checkIsEdit() ? 'Editar' : 'Novo';
@@ -98,11 +89,10 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
   }
 
   private getFormFeaturesSoftwares(software: EModules): void {
-    this.features$ = this.store.features$;
-    this.store.loadFeatures(software);
     this.formPermissions = this.formBuilder.array([]);
-    this.features$.subscribe((features: Feature[]) => {
-      if (features) {
+    this.admimistrationService.getFeaturesBySoftware(software).subscribe((features: Feature[]) => {
+      if (Array.isArray(features)) {
+        this.features = features;
         this.formPermissions = this.formBuilder.array([]);
         let form: FormArray;
         form = this.formBuilder.array([]);
@@ -121,7 +111,6 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
           form.push(formFeature);
         });
         this.formPermissions = form;
-        this.loading = true;
       }
     });
   }
@@ -171,9 +160,13 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
     return permission !== undefined && permission !== null && permission.isActive ? permission.isActive : false;
   }
 
-  private editProfile(): void {
-    this.getFormFeaturesSoftwares(this.profile.software);
-    this.setValueProfileEdit();
+  private editProfile(id: number): void {
+    this.admimistrationService.getProfile(id).subscribe((data: EditProfile) => {
+      console.log(data);
+      this.profile = data;
+      this.getFormFeaturesSoftwares(data.software);
+      this.setValueProfileEdit();
+    });
   }
 
   private setValueProfileEdit(): void {
@@ -191,7 +184,9 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
     if (this.formProfile.valid && this.checkIfHaveMarkedFeatureAndPermission()) {
       this.sendData().subscribe(() => {
         this.authService.renewUserToken();
-        this.closeSidenav();
+        this.profileDataComponent.closeSidenav();
+        this.profileDataComponent.getData();
+        this.snackBar.open('Papel salvo com sucesso!', 'OK', { duration: 3000 });
       });
     }
     this.isSending = false;
@@ -237,13 +232,13 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
       const profile = this.formProfile.value as EditProfile;
       profile.id = this.profile.id;
       profile.features = this.getSelectedFeatures();
-      return this.store.editProfile(profile);
+      return this.admimistrationService.putProfile(profile);
     } else {
       const { id } = auth.getCurrentUnit();
       const profile = this.formProfile.value as NewProfile;
       profile.idUnit = id;
       profile.features = this.getSelectedFeatures();
-      return this.store.newProfile(profile);
+      return this.admimistrationService.postProfile(profile);
     }
   }
 
@@ -268,9 +263,5 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
     if (module) {
       this.getFormFeaturesSoftwares(module);
     }
-  }
-
-  public closeSidenav(): void {
-    this.profileDataComponent.closeSidenav();
   }
 }
