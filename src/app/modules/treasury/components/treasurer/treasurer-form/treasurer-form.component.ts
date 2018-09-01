@@ -1,15 +1,13 @@
 
-import { Router, ActivatedRoute } from '@angular/router';
-import { Component, OnInit, OnDestroy, Input, } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
 
 import { MatSnackBar } from '@angular/material';
 
-import { AuthService } from '../../../../../shared/auth.service';
 import { TreasuryService } from '../../../treasury.service';
-import { TreasurerStore } from '../treasurer.store';
 
 import { Phone } from '../../../models/phone';
 import { Church } from '../../../models/church';
@@ -19,7 +17,6 @@ import * as moment from 'moment';
 
 
 import { TreasurerDataComponent } from '../treasurer-data/treasurer-data.component';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { auth } from '../../../../../auth/auth';
 
 @Component({
@@ -29,7 +26,6 @@ import { auth } from '../../../../../auth/auth';
 })
 
 export class TreasurerFormComponent implements OnInit, OnDestroy {
-  [x: string]: any;
   formTreasurer: FormGroup;
   formPersonal: FormGroup;
   formPhones: FormArray;
@@ -42,26 +38,27 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
   dates: any;
 
   constructor(
-    private authService: AuthService,
     private treasuryService: TreasuryService,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
-    private router: Router,
-    private store: TreasurerStore,
-    private sidenavService: SidenavService,
+    private treasurerDataComponent: TreasurerDataComponent
   ) { }
 
   ngOnInit() {
     this.initConfigurations();
     this.initForm();
     this.getChurches();
-    this.subscribeUnit = auth.currentUnit.subscribe(() => {
-      this.updateUnit();
+    this.subscribe2 = this.activatedRoute.params.subscribe((params) => {
+      const id = parseInt(params.id, 10);
+      if (!Number.isInteger(id)) {
+        return;
+      }
+      this.treasuryService.getTreasurer(id).subscribe(data => {
+        this.setDataToForm(data);
+      });
     });
-    this.subscribe2 = this.activatedRoute.params.subscribe((data) => {
-      this.editTreasurer(this.store.treasurer);
-    });
+    this.treasurerDataComponent.sidenavRight.open();
   }
 
   initConfigurations() {
@@ -74,23 +71,19 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
     this.treasurer.gender = 1;
   }
 
-  updateUnit() {
-      this.getChurches();
-      this.formTreasurer.reset();
-  }
-
   ngOnDestroy() {
     if (this.subscribe1) { this.subscribe1.unsubscribe(); }
     if (this.subscribe2) { this.subscribe2.unsubscribe(); }
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
+    this.treasurerDataComponent.closeSidenav();
   }
 
-  editTreasurer(treasurer: Treasurer) {
+  setDataToForm(treasurer: Treasurer) {
+    this.treasurer = treasurer;
     if (treasurer.id === undefined) {
       this.resetAllForms();
       return;
     }
-    this.treasurer.gender = this.store.treasurer.gender;
     this.formPersonal.setValue({
         name: treasurer.name,
         churchId: treasurer.church.id,
@@ -180,30 +173,22 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
       this.lstChurches = Object.assign(this.lstChurches, data as Church[]);
     });
   }
-
-  close() {
-    this.store.editTreasurer(new Treasurer());
-    this.sidenavService.close();
-    this.router.navigate([this.router.url.replace('/novo', '').replace('/editar', '')]);
-    this.resetAllForms();
-  }
-
   saveTreasurer() {
     const treasurer = {
       ...this.formPersonal.value,
       ...this.formContact.value,
       phones: this.formPhones.value[0].number == null ? [] : this.formPhones.value,
       unitId: auth.getCurrentUnit().id,
-      id: this.store.treasurer.id,
-      identity: this.store.treasurer.identity
+      id: this.treasurer.id,
+      identity: this.treasurer.identity
     };
     if (this.formTreasurer.valid) {
       this.treasuryService.saveTreasurer(treasurer).subscribe((data) => {
-        this.store.updateTreasurers(data.obj);
         this.snackBar.open('Tesoureiro salvo!', 'OK', { duration: 5000 });
         this.formTreasurer.markAsUntouched();
         this.resetAllForms();
-        this.close();
+        this.treasurerDataComponent.closeSidenav();
+        this.treasurerDataComponent.getData();
       }, err => {
         console.log(err);
         this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
@@ -212,7 +197,6 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
       return;
     }
   }
-
   resetAllForms() {
     this.formPersonal.reset();
     this.formContact.reset();
@@ -221,7 +205,6 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
       id: 0
     });
   }
-
   getSelectDateTime() {
     const date = this.formPersonal.get('dateRegister').value;
     if (this.dateRegisterValid()) {
