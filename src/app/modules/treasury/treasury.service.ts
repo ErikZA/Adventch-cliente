@@ -19,8 +19,10 @@ export class TreasuryService {
     private http: HttpClient
   ) { }
 
-  getTreasurer() {
-    return this.treasurer;
+  getTreasurer(id: number): Observable<Treasurer> {
+    const url = '/treasury/treasurers/getTreasurer/' + id;
+    return this.http
+      .get(url) as Observable<Treasurer>;
   }
 
   setTreasurer(treasurer) {

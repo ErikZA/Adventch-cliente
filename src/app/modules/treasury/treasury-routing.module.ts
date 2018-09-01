@@ -31,7 +31,7 @@ const routes: Routes = [
             }
           },
           {
-            path: 'editar', component: TreasurerFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard],
+            path: ':id/editar', component: TreasurerFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard],
             data: {
               feature: EFeatures.TESOUREIRO,
               permission: EPermissions.EDITAR
