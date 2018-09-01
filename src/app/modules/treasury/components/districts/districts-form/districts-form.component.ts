@@ -1,3 +1,4 @@
+import { DistrictsDataComponent } from './../districts-data/districts-data.component';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
@@ -35,29 +36,30 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     private treasureService: TreasuryService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private sidenavService: SidenavService,
+    // private sidenavService: SidenavService,
     private route: ActivatedRoute,
     private authService: AuthService,
     private service: TreasuryService,
+    private districtsDataComponent: DistrictsDataComponent
   ) { }
 
   ngOnInit() {
     this.initForm();
     this.loadAnalysts();
-
     this.routeSubscription = this.route.params.subscribe((data) => {
       if (data.id) {
         this.editDistrict(this.store.districts);
       }
     });
-
-    this.subscribeUnit = auth.currentUnit.subscribe(() => {
-      this.close();
-    });
+    this.districtsDataComponent.sidenavRight.open();
+    // this.subscribeUnit = auth.currentUnit.subscribe(() => {
+    //   this.close();
+    // });
   }
 
   ngOnDestroy() {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
+    this.closeSidenav();
   }
 
   private loadAnalysts(): void {
@@ -83,8 +85,9 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   }
 
   closeSidenav() {
-    this.treasureService.setDistrict(new Districts());
-    this.sidenavService.close();
+    // this.treasureService.setDistrict(new Districts());
+    // this.sidenavService.close();
+    this.districtsDataComponent.closeSidenav();
   }
 
   saveDistrict() {
@@ -112,7 +115,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
         this.store.loadAll();
         this.snackBar.open('Distrito salvo com sucesso!', 'OK', { duration: 5000 });
         this.formDistrict.markAsUntouched();
-        this.close();
+        this.closeSidenav();
       }, err => {
         console.log(err);
         this.snackBar.open('Erro ao salvar distrito, tente novamente.', 'OK', { duration: 5000 });
@@ -123,22 +126,24 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   }
 
   editDistrict(district) {
-    if (district) {
-      this.district = district;
 
-      this.formDistrict = new FormGroup({
-        'name': new FormControl({value: district.name, disabled: false}, Validators.required),
-        'analyst': new FormControl({value: district.analyst.id, disabled: false}, Validators.required)
-      });
-    }
+    this.treasureService.getDistrict()
+    // if (district) {
+    //   this.district = district;
+
+    //   this.formDistrict = new FormGroup({
+    //     'name': new FormControl({value: district.name, disabled: false}, Validators.required),
+    //     'analyst': new FormControl({value: district.analyst.id, disabled: false}, Validators.required)
+    //   });
+    // }
   }
 
-  close() {
-    this.store.openDistrict(new Districts());
-    this.sidenavService.close();
-    this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/distritos')]);
-    this.resetAllForms();
-  }
+  // close() {
+  //   this.store.openDistrict(new Districts());
+  //   this.sidenavService.close();
+  //   this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/distritos')]);
+  //   this.resetAllForms();
+  // }
 
   resetAllForms() {
     this.formDistrict.reset();

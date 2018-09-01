@@ -27,7 +27,7 @@ export class TreasuryService {
     this.treasurer = treasurer;
   }
 
-  getDistrict() {
+  getDistrict(id: number) {
     return this.district;
   }
 
