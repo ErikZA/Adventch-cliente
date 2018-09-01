@@ -91,6 +91,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
       };
       this.service.saveChurch(data).subscribe((church: Church) => {
         this.reset();
+        this.churchDataComponent.getData();
       }, err => {
         console.log(err);
         this.snackBar.open('Erro ao salvar igreja, tente novamente.', 'OK', { duration: 5000 });
