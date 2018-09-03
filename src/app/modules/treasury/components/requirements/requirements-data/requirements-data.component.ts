@@ -171,11 +171,11 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
 
   private getTypeName(): string {
     if (this.filterIsAnual === 0) {
-      return "TODOS";
+      return 'TODOS';
     }
     if (this.filterIsAnual === 1) {
-      return "Anual";
+      return 'Anual';
     }
-    return "Mensal";
+    return 'Mensal';
   }
 }
