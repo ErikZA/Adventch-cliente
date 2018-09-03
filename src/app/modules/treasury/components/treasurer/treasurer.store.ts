@@ -37,9 +37,9 @@ export class TreasurerStore {
     moment.locale('pt');
   }
 
-  public loadAll() {
-    this.loadAllTreasurers();
-  }
+  // public loadAll() {
+  //   this.loadAllTreasurers();
+  // }
 
   public searchTreasurers(search): Treasurer[] {
     if (search === '' || search === undefined || search === null) {
@@ -87,29 +87,29 @@ export class TreasurerStore {
     return 'Assistente';
   }
 
-  private loadAllTreasurers(): void {
-    const unit = auth.getCurrentUnit();
-    this.service.getTreasurers(unit.id).subscribe((data: Treasurer[]) => {
-      this.dataStore.treasurers = data;
-      this.formatTreasurers();
-      this._treasurers.next(Object.assign({}, this.dataStore).treasurers);
-    });
-  }
+  // private loadAllTreasurers(): void {
+  //   const unit = auth.getCurrentUnit();
+  //   this.service.getTreasurers(unit.id).subscribe((data: Treasurer[]) => {
+  //     this.dataStore.treasurers = data;
+  //     this.formatTreasurers();
+  //     this._treasurers.next(Object.assign({}, this.dataStore).treasurers);
+  //   });
+  // }
 
-  private formatTreasurers() {
-    if (this.dataStore.treasurers === null || this.dataStore.treasurers === undefined) {
-      return;
-    }
-    this.dataStore.treasurers.forEach(
-      item => {
-        item.functionName = this.getFunctionName(item.function);
-        if (item.dateRegister != null) {
-          item.dateRegister = new Date(item.dateRegister);
-          item.dateRegisterFormatted = moment(item.dateRegister).fromNow();
-        }
-      }
-    );
-  }
+  // private formatTreasurers() {
+  //   if (this.dataStore.treasurers === null || this.dataStore.treasurers === undefined) {
+  //     return;
+  //   }
+  //   this.dataStore.treasurers.forEach(
+  //     item => {
+  //       item.functionName = this.getFunctionName(item.function);
+  //       if (item.dateRegister != null) {
+  //         item.dateRegister = new Date(item.dateRegister);
+  //         item.dateRegisterFormatted = moment(item.dateRegister).fromNow();
+  //       }
+  //     }
+  //   );
+  // }
 
   public searchAnalyst(idAnalyst: number, treasurers: Treasurer[]): Treasurer[] {
     // tslint:disable-next-line:triple-equals

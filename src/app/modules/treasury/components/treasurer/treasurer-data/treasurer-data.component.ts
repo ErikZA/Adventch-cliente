@@ -62,10 +62,21 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
-
+  getFunctionName(treasurer: Treasurer) {
+    if (treasurer.function === 1) {
+      return 'Tesoureiro (a)';
+    }
+    if (treasurer.function === 2) {
+      return 'Tesoureiro (a) Associado (a)';
+    }
+    return 'Tesoureiro (a) Assistente';
+  }
   getData() {
-    this.treasureService.getTreasurers(auth.getCurrentUnit().id).subscribe(data => {
-      this.treasurersCache = data;
+    this.treasureService.getTreasurers(auth.getCurrentUnit().id)
+      .subscribe(data => {
+      const wifhFunctionName = data.map(d => ({ ...d, functionName: this.getFunctionName(d) })) as Treasurer[];
+      this.treasurersCache = wifhFunctionName;
+      this.treasurers = wifhFunctionName;
       this.loadAnalysts();
       this.loadDistricts();
       this.search();
