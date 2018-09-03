@@ -51,6 +51,15 @@ export class RequirementStore {
     public loadAll(): void {
         const unit = auth.getCurrentUnit();
         this.service.getRequirements(unit.id).subscribe((data: Requirement[]) => {
+            data = data.sort((obj1, obj2) => {
+                if (obj1.position > obj2.position) {
+                    return 1;
+                }
+                if (obj1.position < obj2.position) {
+                    return -1;
+                }
+                return 0;
+            });
             this.dataStore.requirements = data;
             this._requirements.next(Object.assign({}, this.dataStore).requirements);
         });
@@ -64,6 +73,15 @@ export class RequirementStore {
       this.dataStore.requirements[index] = requirement;
     } else {
       this.dataStore.requirements.push(requirement);
+      this.dataStore.requirements.sort((obj1, obj2) => {
+        if (obj1.position > obj2.position) {
+            return 1;
+        }
+        if (obj1.position < obj2.position) {
+            return -1;
+        }
+        return 0;
+    });
     }
     this.requirements = new Requirement();
   }
