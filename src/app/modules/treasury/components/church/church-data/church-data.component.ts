@@ -71,6 +71,9 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     });
   }
   private loadCities(data: Church[]): void {
+    if (!Array.isArray(data)) {
+      return;
+    }
     data.forEach(church => {
       if (this.cities.map(x => x.id).indexOf(church.city.id) === -1) {
         this.cities.push(church.city);
@@ -79,7 +82,9 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     this.cities.sort((a, b) => a.name.localeCompare(b.name));
   }
   private loadAnalysts(data: Church[]): void {
-    this.analysts = new Array<User>();
+    if (!Array.isArray(data)) {
+      return;
+    }
     data.forEach(church => {
       if (church.district.id !== 0 && this.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
         this.analysts.push(church.district.analyst);
@@ -88,7 +93,9 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     this.analysts.sort((a, b) => a.name.localeCompare(b.name));
   }
   private loadDistricts(data: Church[]): void {
-    this.districts = new Array<Districts>();
+    if (!Array.isArray(data)) {
+      return;
+    }
     data.forEach(church => {
       if (church.district.id !== 0 && this.districts.map(x => x.id).indexOf(church.district.id) === -1) {
         this.districts.push(church.district);
