@@ -27,6 +27,7 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
   subscribeUnit: Subscription;
   requirements: Requirement[];
   showList = 15;
+  searchButton = false;
 
   filterText: string;
   filterIsAnual: number;

@@ -20,6 +20,7 @@ export class AvaliationReportComponent implements OnInit {
     avaliationReport: any;
     dataAvaliationReport: any;
     search$ = new Subject<string>();
+    searchButton = false;
 
     constructor(
         private service: TreasuryService,
