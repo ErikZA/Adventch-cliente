@@ -88,14 +88,14 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     if (!this.formDistrict.valid) {
       return;
     }
-    this.routeSubscription = this.route.params.subscribe(params => {
-      this.params = params['id'];
-    });
+    // this.routeSubscription = this.route.params.subscribe(params => {
+    //   this.params = params['id'];
+    // });
     const unit = auth.getCurrentUnit();
     // modificar para id, caso de conflito
     const valor = this.users.filter(x => x.id === this.formDistrict.value.analyst);
     this.values = {
-      id: this.params,
+      id: this.checkIsEdit() ? this.district.id : 0,
       name: this.formDistrict.value.name,
       analyst: {
         id: this.formDistrict.value.analyst,
@@ -120,6 +120,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   }
   editDistrict(id: number) {
     this.treasureService.getDistrict(id).subscribe(res => {
+      this.district = res;
       this.formDistrict.patchValue({
         name: res.name,
         analyst: res.analyst.id
