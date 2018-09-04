@@ -19,7 +19,17 @@ export class DashboardTreasuryComponent implements OnInit {
   users: any;
   // Chart Configurations
   // Adicione novas cores aqui, caso o gráfico fique com cor cinza
-  chartColors = [{ backgroundColor: ['#03a9f4', '#76d275', '#ffc947', '#f44336', '#6a5acd', '#ff0000'] }];
+  chartColors = [{ 
+    backgroundColor: ['#03a9f4',
+      '#76d275',
+      '#ffc947',
+      '#f44336',
+      '#6a5acd',
+      '#922428',
+      '#535154',
+      '#948b3d',
+      '#3d8294',
+      '#3d9477'] }];
   // Igrejas
   cardChurchesData: number;
   // Distritos

@@ -12,6 +12,7 @@ import { SidenavService } from '../../../../core/services/sidenav.service';
 import { auth } from '../../../../auth/auth';
 import { Districts } from '../../models/districts';
 import { AvaliationRequirement } from '../../models/avaliationRequirement';
+import { Observation } from '../../models/observation';
 @Injectable()
 export class AvaliationStore {
 
@@ -188,6 +189,20 @@ export class AvaliationStore {
     }, err => {
       console.log(err);
       this.snackBar.open('Erro ao salvar avaliação, tente novamente.', 'OK', { duration: 5000 });
+    });
+  }
+
+  /*Observação*/
+  
+  public finalize(id) {
+    const data = {
+      id: id
+    };
+    this.service.finalizeObservation(data).subscribe((observation: Observation) => {
+      this.snackBar.open('Observação finalizada!', 'OK', { duration: 5000 });
+    }, err => {
+      console.log(err);
+      this.snackBar.open('Erro ao finalizar observação, tente novamente.', 'OK', { duration: 5000 });
     });
   }
 }
