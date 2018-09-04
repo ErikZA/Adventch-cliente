@@ -14,55 +14,56 @@ import { Districts } from '../../../models/districts';
 import { auth } from '../../../../../auth/auth';
 import { TreasuryService } from '../../../treasury.service';
 import { utils } from '../../../../../shared/utils';
+import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+
 
 @Component({
   selector: 'app-church-data',
   templateUrl: './church-data.component.html',
   styleUrls: ['./church-data.component.scss']
 })
-export class ChurchDataComponent implements OnInit, OnDestroy {
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
+@AutoUnsubscribe()
+export class ChurchDataComponent extends AbstractSidenavContainer implements OnInit {
+  protected componentUrl = 'tesouraria/igrejas';
 
   searchButton = false;
   showList = 15;
   search$ = new Subject<string>();
-  subscribeUnit: Subscription;
   layout: String = 'row';
 
-  churches: Church[] = new Array<Church>();
-  churchesCache: Church[] = new Array<Church>();
+  churches: Church[] = [];
+  churchesCache: Church[] = [];
 
-  cities: City[] = new Array<City>();
-  analysts: User[] = new Array<User>();
-  districts: Districts[] = new Array<Districts>();
+  cities: City[] = [];
+  analysts: User[] = [];
+  districts: Districts[] = [];
 
   filterDistrict: number;
   filterCity: number;
   filterAnalyst: number;
   filterText = '';
 
+  sub1: Subscription;
+
   constructor(
+    protected router: Router,
     private confirmDialogService: ConfirmDialogService,
-    private router: Router,
     private route: ActivatedRoute,
     private treasuryService: TreasuryService,
     private snackBar: MatSnackBar
-  ) { }
+  ) { super(router); }
 
   ngOnInit() {
-    this.search$.subscribe(search => {
-      this.filterText = search;
-      this.search();
-    });
-    this.getData();
+    this.sub1 = this.getData()
+      .switchMap(() => this.search$)
+      .subscribe(search => {
+        this.filterText = search;
+        this.search();
+      });
   }
-
-  ngOnDestroy() {
-    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
-  }
-
   getData() {
-    this.treasuryService.getChurches(auth.getCurrentUnit().id).subscribe(data => {
+    return this.treasuryService.getChurches(auth.getCurrentUnit().id).do(data => {
       this.churches = data;
       this.churchesCache = data;
       this.loadAnalysts(data);
@@ -103,25 +104,17 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
     });
     this.districts.sort((a, b) => a.name.localeCompare(b.name));
   }
-  /* Usados pelo component */
-  closeSidenav() {
-    this.sidenavRight.close();
-    this.router.navigate(['tesouraria/igrejas']);
-  }
   onScroll() {
     this.showList += 15;
   }
   remove(church: Church) {
     this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover a igreja?', 'REMOVER')
-      .subscribe(res => {
-        if (res) {
-          this.treasuryService.deleteChurch(church.id).subscribe(() => {
-            this.snackBar.open('Removido com sucesso', 'OK', { duration: 5000 });
-            this.getData();
-          });
-        }
-      });
+      .skipWhile(res => res !== true)
+      .switchMap(() => this.treasuryService.deleteChurch(church.id))
+      .switchMap(() => this.getData())
+      .do(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 5000 }))
+      .subscribe();
   }
   edit(church: Church) {
     this.router.navigate([church.id, 'editar'], { relativeTo: this.route });

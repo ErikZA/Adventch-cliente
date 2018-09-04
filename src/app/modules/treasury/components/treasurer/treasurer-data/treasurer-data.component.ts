@@ -1,38 +1,34 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
 import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
-
-import { MatSidenav, MatSnackBar } from '@angular/material';
+import {MatSnackBar } from '@angular/material';
 
 import { TreasuryService } from '../../../treasury.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
-import { TreasurerStore } from '../treasurer.store';
 
 import { Treasurer } from '../../../models/treasurer';
 import { auth } from '../../../../../auth/auth';
 import { Districts } from '../../../models/districts';
 import { User } from '../../../../../shared/models/user.model';
 import { utils } from '../../../../../shared/utils';
+import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
+import 'rxjs/add/observable/of';
+import { Subscription } from 'rxjs/Subscription';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 
 @Component({
   selector: 'app-treasurer-data',
   templateUrl: './treasurer-data.component.html',
   styleUrls: ['./treasurer-data.component.scss']
 })
-export class TreasurerDataComponent implements OnInit, OnDestroy {
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
-
+@AutoUnsubscribe()
+export class TreasurerDataComponent extends AbstractSidenavContainer implements OnInit {
+  protected componentUrl = 'tesouraria/tesoureiros';
   searchButton = false;
   showList = 15;
   search$ = new Subject<string>();
   filterText = '';
-  treasurers$: Observable<Treasurer[]>;
 
-  subscribeUnit: Subscription;
   treasurers: Treasurer[] = [];
   treasurersCache: Treasurer[] = [];
 
@@ -42,25 +38,21 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
   districts: Districts[] = [];
   analysts: User[] = [];
 
+
+  sub1: Subscription;
+
   constructor(
-    private router: Router,
-    public treasureService: TreasuryService,
-    public cd: ChangeDetectorRef,
-    public confirmDialogService: ConfirmDialogService,
-    public snackBar: MatSnackBar,
-    private store: TreasurerStore,
-  ) { }
+    protected router: Router,
+    private treasureService: TreasuryService,
+    private confirmDialogService: ConfirmDialogService,
+    private snackBar: MatSnackBar,
+  ) { super(router); }
 
   ngOnInit() {
-    this.getData();
-    this.search$.subscribe(search => {
+   this.sub1 = this.getData().switchMap(() => this.search$).subscribe(search => {
       this.filterText = search;
       this.search();
     });
-  }
-
-  ngOnDestroy() {
-    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
   getFunctionName(treasurer: Treasurer) {
     if (treasurer.function === 1) {
@@ -72,15 +64,16 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
     return 'Tesoureiro (a) Assistente';
   }
   getData() {
-    this.treasureService.getTreasurers(auth.getCurrentUnit().id)
-      .subscribe(data => {
-      const wifhFunctionName = data.map(d => ({ ...d, functionName: this.getFunctionName(d) })) as Treasurer[];
-      this.treasurersCache = wifhFunctionName;
-      this.treasurers = wifhFunctionName;
-      this.loadAnalysts();
-      this.loadDistricts();
-      this.search();
-    });
+    return this.treasureService
+      .getTreasurers(auth.getCurrentUnit().id)
+      .map(data => data.map(d => ({ ...d, functionName: this.getFunctionName(d) })) as Treasurer[])
+      .do(data => {
+        this.treasurersCache = data;
+        this.treasurers = data;
+        this.search();
+      })
+      .switchMap(() => this.loadAnalysts())
+      .switchMap(() => this.loadDistricts());
   }
 
   editTreasurer(treasurer): void {
@@ -94,40 +87,14 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
   removeTreasurer(treasurer: Treasurer) {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este tesoureiro?', 'REMOVER')
-      .subscribe(res => {
-        if (res === true) {
-          this.treasureService.deleteTreasurer(treasurer.id).subscribe(() => {
-            this.snackBar.open('Tesoureiro removido!', 'OK', { duration: 5000 });
-            this.getData();
-          }, err => {
-            console.log(err);
-            this.snackBar.open('Erro ao remover tesoureiro, tente novamente.', 'OK', { duration: 5000 });
-        });
-        }
+      .skipWhile(res => res !== true)
+      .switchMap(() => this.treasureService.deleteTreasurer(treasurer.id))
+      .switchMap(() => this.getData())
+      .do(() => this.snackBar.open('Tesoureiro removido!', 'OK', { duration: 5000 }))
+      .subscribe(null, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao remover tesoureiro, tente novamente.', 'OK', { duration: 5000 });
       });
-  }
-
-  removeAllTreasurers(treasurers) {
-    this.confirmDialogService
-      .confirm('Remover registro(s)', 'Você deseja realmente remover este(s) tesoureiro(s)?', 'REMOVER')
-      .subscribe(res => {
-        if (res === true) {
-          // const status = false;
-          const ids: number[] = this.treasurers.map(t => t.id);
-
-          this.treasureService.deleteTreasurers(ids).subscribe(() => {
-            this.getData();
-            this.snackBar.open('Tesoureiro(s) removido(s)!', 'OK', { duration: 5000 });
-          }, err => {
-            console.log(err);
-            this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
-          });
-        }
-      });
-  }
-  closeSidenav() {
-    this.sidenavRight.close();
-    this.router.navigate(['tesouraria/tesoureiros']);
   }
 
   onScroll() {
@@ -169,12 +136,12 @@ export class TreasurerDataComponent implements OnInit, OnDestroy {
     this.treasurers = treasurersFilttered;
   }
   private loadDistricts() {
-    this.treasureService.getDistricts(auth.getCurrentUnit().id).subscribe((data: Districts[]) => {
+    return this.treasureService.getDistricts(auth.getCurrentUnit().id).do((data: Districts[]) => {
       this.districts = data;
     });
   }
   private loadAnalysts() {
-    this.treasureService.loadAnalysts(auth.getCurrentUnit().id).subscribe((data: User[]) => {
+    return this.treasureService.loadAnalysts(auth.getCurrentUnit().id).do((data: User[]) => {
       this.analysts = data;
     });
   }

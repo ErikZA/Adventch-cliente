@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs/Subscription';
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TreasuryService } from '../../../treasury.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -5,20 +7,20 @@ import { Observation } from '../../../models/observation';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import * as moment from 'moment';
-import { Subscription } from 'rxjs/Subscription';
 import { MatSnackBar } from '@angular/material';
 import { EObservationStatus } from '../../../models/Enums';
 import { auth } from '../../../../../auth/auth';
 import { ObservationDataComponent } from '../observation-data/observation-data.component';
+import 'rxjs/add/operator/takeLast';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 
 @Component({
   selector: 'app-observation-form',
   templateUrl: './observation-form.component.html',
   styleUrls: ['./observation-form.component.scss']
 })
+@AutoUnsubscribe()
 export class ObservationFormComponent implements OnInit, OnDestroy {
-
-  subscribeUnit: Subscription;
 
   formObservation: FormGroup;
   churches: any;
@@ -27,8 +29,11 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
   values: any;
   editChurch: any;
   editChurchName: any;
+  observation: Observation;
 
-  routeSubscription: Subscription;
+  loading = true;
+
+  sub1: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -44,20 +49,19 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
     this.initConfigurations();
     this.initForm();
 
-    this.service.loadChurches(auth.getCurrentUnit().id).subscribe((data) => {
-      this.churches = data;
-    });
+    this.sub1 = this.service
+      .loadChurches(auth.getCurrentUnit().id)
+      .do((data) => { this.churches = data; })
+      .switchMap(() => this.route.params)
+      .do(({ id }) => this.loading = !!id)
+      .skipWhile(({ id }) => !id)
+      .switchMap(({ id }) => this.editObservation(id))
+      .delay(300)
+      .subscribe(() => { this.loading = false; });
 
-    this.routeSubscription = this.route.params.subscribe((data) => {
-      const id = parseInt(data.id, 10);
-      if (Number.isInteger(id)) {
-        this.editObservation(id);
-      }
-    });
-    this.observationDataComponent.sidenavRight.open();
+    this.observationDataComponent.openSidenav();
   }
   ngOnDestroy() {
-    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
     this.observationDataComponent.closeSidenav();
   }
   initForm(): void {
@@ -84,35 +88,32 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
     if (!this.formObservation.valid) {
       return;
     }
-    this.routeSubscription = this.route.params.subscribe(params => {
-      this.params = params['id'];
-    });
     const unit = auth.getCurrentUnit();
     const responsible = auth.getCurrentUser();
 
     this.values = {
-      id: this.params === undefined ? 0 : this.params,
+      id: !!this.observation ? this.observation.id : 0,
       responsible: responsible.id,
       unit: unit.id,
       status: EObservationStatus.Open,
       ...this.formObservation.value
     };
-    if (this.formObservation.valid) {
-      this.treasuryService.saveObservation(this.values).subscribe((data: Observation) => {
-        this.snackBar.open('Observação armazenado com sucesso!', 'OK', { duration: 5000 });
+    this.treasuryService
+      .saveObservation(this.values)
+      .do(() => {
         this.formObservation.markAsUntouched();
         this.observationDataComponent.closeSidenav();
-        this.observationDataComponent.getData();
-      }, err => {
-        console.log(err);
+      })
+      .switchMap(() => this.observationDataComponent.getData())
+      .do(() => this.snackBar.open('Observação armazenado com sucesso!', 'OK', { duration: 5000 }))
+      .subscribe(() => {}, error => {
+        console.log(error);
         this.snackBar.open('Erro ao salvar observação, tente novamente.', 'OK', { duration: 5000 });
       });
-    } else {
-      return;
-    }
   }
   editObservation(id: number) {
-    this.treasuryService.getObservation(id).subscribe(data => {
+    return this.treasuryService.getObservation(id).do(data => {
+      this.observation = data;
       this.formObservation.patchValue({
         description: data.description,
         date: data.date,
