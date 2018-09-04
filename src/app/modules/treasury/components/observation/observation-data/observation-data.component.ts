@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatSidenav, MatSnackBar } from '@angular/material';
+import { Subscription } from 'rxjs/Subscription';
+import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
 
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { ReportService } from '../../../../../shared/report.service';
@@ -13,23 +13,25 @@ import { User } from '../../../../../shared/models/user.model';
 import { auth } from '../../../../../auth/auth';
 import { TreasuryService } from '../../../treasury.service';
 import { utils } from '../../../../../shared/utils';
+import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
+import 'rxjs/add/operator/skipWhile';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 
 @Component({
   selector: 'app-observation-data',
   templateUrl: './observation-data.component.html',
   styleUrls: ['./observation-data.component.scss']
 })
-export class ObservationDataComponent implements OnInit, OnDestroy {
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
+@AutoUnsubscribe()
+export class ObservationDataComponent extends AbstractSidenavContainer implements OnInit {
+  protected componentUrl = 'tesouraria/observacoes';
 
   searchButton = false;
   showList = 15;
   search$ = new Subject<string>();
-  subscribeUnit: Subscription;
 
   observations: Observation[] = [];
   observationsCache: Observation[] = [];
-  // observations: Observation[] = new Array<Observation>();
   churches: Church[] = [];
   analysts: User[] = [];
   responsibles: User[] = [];
@@ -42,35 +44,37 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   filterPeriodStart: Date = new Date(new Date().getFullYear(), 0, 1);
   filterPeriodEnd: Date = new Date(new Date().getFullYear(), 11, 31);
 
+  sub1: Subscription;
+
   constructor(
-    private router: Router,
+    protected router: Router,
     private confirmDialogService: ConfirmDialogService,
     private route: ActivatedRoute,
     private reportService: ReportService,
     private snackBar: MatSnackBar,
     private treasuryService: TreasuryService
-  ) { }
+  ) {  super(router); }
 
   ngOnInit() {
-    this.getData();
-    this.search$.subscribe(search => {
-      this.filterText = search;
-      this.search();
-    });
-  }
-
-  ngOnDestroy() {
-    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
+    this.sub1 = this
+      .getData()
+      .switchMap(() => this.search$)
+      .subscribe(search => {
+        this.filterText = search;
+        this.search();
+      });
   }
   getData() {
-    this.treasuryService.getObservations(auth.getCurrentUnit().id).subscribe(data => {
-      this.observations = data.sort(this.sortByDate);
-      this.observationsCache = data.sort(this.sortByDate);
-      this.loadAnalysts(data);
-      this.loadChurches(data);
-      this.loadResponsibles(data);
-      this.search();
-    });
+    return this.treasuryService
+      .getObservations(auth.getCurrentUnit().id)
+      .do(data => {
+        this.observations = data.sort(this.sortByDate);
+        this.observationsCache = data.sort(this.sortByDate);
+        this.loadAnalysts(data);
+        this.loadChurches(data);
+        this.loadResponsibles(data);
+        this.search();
+      });
   }
   private sortByDate(a: Observation, b: Observation) {
     if (a.date === b.date) {
@@ -109,12 +113,6 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
     this.responsibles.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  /* Usados pelo component */
-  public closeSidenav() {
-    this.sidenavRight.close();
-    this.router.navigate(['tesouraria/observacoes']);
-  }
-
   public onScroll() {
     this.showList += 15;
   }
@@ -122,14 +120,11 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   public remove(observation: Observation) {
     this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover a observação?', 'REMOVER')
-      .subscribe(res => {
-        if (res) {
-          this.treasuryService.deleteObservation(observation.id).subscribe(() => {
-            this.snackBar.open('Removido com sucesso', 'OK', { duration: 2000 });
-            this.getData();
-          });
-        }
-      });
+      .skipWhile(res => res !== true)
+      .switchMap(() => this.treasuryService.deleteObservation(observation.id))
+      .switchMap(() => this.getData())
+      .do(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 2000 }))
+      .subscribe();
   }
   public edit(observation: Observation) {
     this.router.navigate([observation.id, 'editar'], { relativeTo: this.route });
@@ -137,15 +132,11 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   public finalize(observation: Observation) {
     this.confirmDialogService
       .confirm('Finalizar', 'Você deseja realmente finalizar a observação?', 'FINALIZAR')
-      .subscribe(res => {
-        if (res) {
-          this.treasuryService.finalizeObservation(observation).subscribe(() => {
-            this.snackBar.open('Finalizado com sucesso', 'OK', { duration: 2000 });
-            this.getData();
-
-          });
-        }
-      });
+      .skipWhile(res => res !== true)
+      .switchMap(() => this.treasuryService.finalizeObservation(observation))
+      .switchMap(() => this.getData())
+      .do(() => this.snackBar.open('Finalizado com sucesso', 'OK', { duration: 2000 }))
+      .subscribe();
   }
   public getStatus(status): string {
     if (status === 1) {

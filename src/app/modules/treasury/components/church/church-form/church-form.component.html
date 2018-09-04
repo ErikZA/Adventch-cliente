@@ -1,4 +1,7 @@
-<form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px">
+<div fxLayout="row" fxFlexFill fxLayoutAlign="center" *ngIf="!!loading" style="padding-top: 25vh;">
+    <mat-spinner></mat-spinner>
+</div>
+<form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="!loading">
     <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
         <div fxFlex>
             <h2 class="title"> {{ labelTitle() }} Igreja</h2>
@@ -30,7 +33,7 @@
             </mat-form-field>
             <div fxLayoutGap.gt-md="20px">
                 <mat-form-field fxFlex="30%">
-                    <mat-select placeholder="Estado" formControlName="state" required (change)="loadCities(false)" name="Estado">
+                    <mat-select placeholder="Estado" formControlName="state" required name="Estado">
                         <mat-option *ngFor="let state of states" [value]="state.id">
                             {{ state.name }}
                         </mat-option>
