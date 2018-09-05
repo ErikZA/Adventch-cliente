@@ -69,7 +69,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
 
   initForm(): void {
     this.formRequirement = this.formBuilder.group({
-      position:  [{ value: '', disabled: this.requirement.hasAvaliation,  Validators: Validators.required }],
+      position:  ['', [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
       score:  ['', [Validators.required]],
@@ -100,6 +100,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
       date: this.formRequirement.value.date,
       description: this.formRequirement.value.description,
       isAnual: this.formRequirement.value.isAnual,
+      hasAvaliation: this.requirement.hasAvaliation,
       unitId: unit.id }
       :
       this.values = {
@@ -109,6 +110,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
         date: this.formRequirement.value.date,
         description: this.formRequirement.value.description,
         isAnual: this.formRequirement.value.isAnual,
+        hasAvaliation: this.requirement.hasAvaliation,
         unitId: unit.id };
 
     if (this.formRequirement.valid) {
@@ -136,7 +138,17 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
       isAnual: requirement.isAnual.toString(),
       date: requirement.date,
     });
-    // this.editAnalyst = Number(district.analyst.id);
+
+    if (this.requirement.hasAvaliation) {
+      this.disable();
+    }
+  }
+
+  private disable() {
+    this.formRequirement.controls['name'].disable();
+    this.formRequirement.controls['score'].disable();
+    this.formRequirement.controls['isAnual'].disable();
+    this.formRequirement.controls['date'].disable();
   }
 
   close() {
