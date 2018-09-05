@@ -58,18 +58,7 @@ export class TreasurerStore {
   }
 
   public updateTreasurers(treasurer) {
-    treasurer.functionName = this.getFunctionName(treasurer.function);
-    if (treasurer.dateRegister != null) {
-      treasurer.dateRegister = new Date(treasurer.dateRegister);
-      treasurer.dateRegisterFormatted = moment(treasurer.dateRegister).fromNow();
-    }
-
-    const index = this.dataStore.treasurers.findIndex(x => x.id === treasurer.id);
-    if (index >= 0) {
-      this.dataStore.treasurers[index] = treasurer;
-    } else {
-      this.dataStore.treasurers.push(treasurer);
-    }
+    this.loadAllTreasurers();
     this.treasurer = new Treasurer();
   }
 
