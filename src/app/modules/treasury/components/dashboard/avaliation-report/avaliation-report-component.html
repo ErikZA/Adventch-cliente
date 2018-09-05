@@ -41,12 +41,12 @@
         <mat-divider></mat-divider>
     </div>
     <mat-list class="conteiner" layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300"
-        [scrollWindow]="false">
+        [scrollWindow]="true" (scrolled)="onScroll()">
         <div>
             <mat-list-item class="break-line" *ngFor="let data of avaliationReport; index as i" fxFlex>
                 <span class="text-color-item" fxFlex="10" fxFlex.sm="50" fxFlex.xs="50">{{ data.position }}º</span>
                 <span class="text-color-item" fxFlex="30" fxFlex.sm="50" fxFlex.xs="50" style="padding-right: 10px">{{ data.name }}</span>
-                <span class="text-color-item" fxFlex="30" fxHide.sm fxHide.xs>{{ data.notes }}</span>
+                <span class="text-color-item" fxFlex="30" fxHide.sm fxHide.xs>{{ (data.notes/totalRequirements)*100 | number : '1.1-1'}}% </span>
                 <span class="text-color-item" fxFlex="30" fxHide.sm fxHide.xs>{{ data.church_name }}</span>
                 <span class="text-color-item" fxFlex="30" fxHide.sm fxHide.xs>{{ data.district_name }}</span>
                 <mat-divider></mat-divider>

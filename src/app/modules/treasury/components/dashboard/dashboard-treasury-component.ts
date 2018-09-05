@@ -19,7 +19,7 @@ export class DashboardTreasuryComponent implements OnInit {
   users: any;
   // Chart Configurations
   // Adicione novas cores aqui, caso o gráfico fique com cor cinza
-  chartColors = [{ 
+  chartColors = [{
     backgroundColor: ['#03a9f4',
       '#76d275',
       '#ffc947',
@@ -46,9 +46,11 @@ export class DashboardTreasuryComponent implements OnInit {
   chartAvaliationsData: any[] = [];
   chartAvaliationsLabels: any[] = [];
   chartAvaliationsDatasets: any[];
+  totalRequirements: any;
   // Subscription
   getDataSubscription: Subscription;
   mediaSubscription: Subscription;
+  getAvaliationSubscription: Subscription;
 
   pieChartOptions: any = {
     options: {
@@ -66,32 +68,32 @@ export class DashboardTreasuryComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-        xAxes: [{
-            stacked: true,
-            ticks: {
-                autoSkip: false
-            }
-        }],
-        yAxes: [{
-            stacked: true
-        }]
+      xAxes: [{
+        stacked: true,
+        ticks: {
+          autoSkip: false
+        }
+      }],
+      yAxes: [{
+        stacked: true
+      }]
     },
     title: {
-        display: true,
+      display: true,
     },
     plugins: {
-        datalabels: {
-            color: 'black',
-            display: function (context) {
-                return context.dataset.data[context.dataIndex] > 0;
-            },
-            font: {
-                weight: 'bold'
-            },
-            formatter: Math.round
-        }
+      datalabels: {
+        color: 'black',
+        display: function (context) {
+          return context.dataset.data[context.dataIndex] > 0;
+        },
+        font: {
+          weight: 'bold'
+        },
+        formatter: Math.round
+      }
     }
-};
+  };
 
 
   constructor(
@@ -103,6 +105,7 @@ export class DashboardTreasuryComponent implements OnInit {
 
   ngOnInit() {
     const unit = auth.getCurrentUnit();
+    this.getAvaliationSubscription = this.getAvaliationScore();
     this.mediaSubscription = this.media.subscribe((change: MediaChange) => setTimeout(() => this.isMobile = change.mqAlias === 'xs'));
     this.getDataSubscription = this.getDashboardData(0);
     this.service.getUsers(unit.id).subscribe((data) => {
@@ -123,16 +126,25 @@ export class DashboardTreasuryComponent implements OnInit {
     });
   }
 
+  getAvaliationScore() {
+    const unit = auth.getCurrentUnit();
+    return this.service.getTotalAvaliationScore(unit.id).subscribe((data) => {
+       data.forEach(dataReq => {
+        this.totalRequirements = dataReq.totalScore;
+      });
+    });
+  }
+
   openDialog() {
-  const dialogRef = this.dialog.open(AvaliationReportComponent, {
-    height: '90%',
-    width: '90%',
-  });
-  dialogRef.afterClosed().subscribe(result => {
-    if (!result) {
-      return;
-    }
-  });
+    const dialogRef = this.dialog.open(AvaliationReportComponent, {
+      height: '90%',
+      width: '90%',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) {
+        return;
+      }
+    });
   }
 
   getCardChurchesData(array) {
@@ -188,23 +200,42 @@ export class DashboardTreasuryComponent implements OnInit {
     });
   }
 
-  getCardAvaliationsData(array) {
+  getCardAvaliationsData(array: any) {
     this.chartAvaliationsData = [];
     this.chartAvaliationsLabels = [];
+    // dados de presentes em cada coluna
+    let fourth = 0;
+    let third = 0;
+    let second = 0;
+    let first = 0;
+
+    array.forEach((f, i) => {
+      const val = f.notes / this.totalRequirements;
+      if (val < 0.5) {
+        fourth = fourth + f.ranking;
+      } else
+        if (val < 0.7) {
+          third = third + f.ranking;
+        } else
+          if (val < 0.9) {
+            second = second + f.ranking;
+          } else
+            if (val <= 1) {
+              first = first + f.ranking;
+            }
+    });
 
     const value = [];
     const data = [];
-    const labels = [];
-    array.forEach((f, i) => {
-      if (f !== 0) {
-        data.push(f.ranking);
-        labels.push(f.notes);
-      }
 
-    });
-    value.push({data: data});
-    this.chartAvaliationsData =  value;
-    this.chartAvaliationsLabels = labels;
+    data.push(first);
+    data.push(second);
+    data.push(third);
+    data.push(fourth);
+
+    value.push({ data: data });
+    this.chartAvaliationsData = value;
+    this.chartAvaliationsLabels = ['100%-90%', '90%-70%', '70%-50%', '50%-0%'];
   }
 
   checkEmpty(array) {
