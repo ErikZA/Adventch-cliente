@@ -17,11 +17,13 @@ import { Subject } from 'rxjs/Subject';
 export class AvaliationReportComponent implements OnInit {
 
     getrankingReportData: Subscription;
+    getTotalReportData: Subscription;
     avaliationReport: any;
     dataAvaliationReport: any;
     search$ = new Subject<string>();
     searchButton = false;
-    totalRequirements: any;
+    totalRequirementsAnual = 0;
+    totalRequirementsMonth: any;
     showList = 15;
 
     constructor(
@@ -34,8 +36,19 @@ export class AvaliationReportComponent implements OnInit {
 
     ngOnInit() {
         const unit = auth.getCurrentUnit();
-        this.getTotalAvaliationScore(unit.id);
-        this.getrankingReportData = this.service.getAvaliationRaking(unit.id).subscribe((data) => {
+        this.getTotalReportData = this.getTotalAvaliationScore(unit.id);
+        this.search$.subscribe(search => {
+            this.avaliationReport = this.search(search);
+        });
+        this.getrankingReportData = this.getAvaliationData(unit.id);
+    }
+
+    cancel() {
+        this.dialogRef.close(false);
+    }
+
+    getAvaliationData(id) {
+        return this.service.getAvaliationRaking(id).subscribe((data) => {
             let previousNote;
             let position = 0;
             data.forEach(element => {
@@ -47,22 +60,23 @@ export class AvaliationReportComponent implements OnInit {
                 }
                 previousNote = element.notes;
             });
+
+            data.forEach(element => {
+                if (element.isAnual) {
+                    element.notes = element.notes / this.totalRequirementsAnual; } else {
+                    element.notes = element.notes / this.totalRequirementsMonth; }
+            });
             this.avaliationReport = data;
             this.dataAvaliationReport = this.avaliationReport;
         });
-        this.search$.subscribe(search => {
-            this.avaliationReport = this.search(search);
-        });
-    }
-
-    cancel() {
-        this.dialogRef.close(false);
     }
 
     getTotalAvaliationScore(id) {
         return this.service.getTotalAvaliationScore(id).subscribe((data) => {
             data.forEach(dataReq => {
-                this.totalRequirements = dataReq.totalScore;
+                dataReq.isAnual ?
+                this.totalRequirementsAnual = dataReq.totalScore :
+                this.totalRequirementsMonth = dataReq.totalScore;
             });
         });
     }
