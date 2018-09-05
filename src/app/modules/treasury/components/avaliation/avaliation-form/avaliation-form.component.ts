@@ -206,7 +206,6 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         if (res) {
           this.store.finalize(observation.id);
-          debugger;
           const index = this.observations.findIndex(x => x.id === observation.id);
           this.observations.splice(index, 1);
         }

@@ -246,7 +246,6 @@ export class TreasuryService {
   }
 
   saveRequirements(data): Observable<Requirement> {
-    debugger;
     const url = '/treasury/requirement/AddRequirement/' + data;
     return this.http
       .post(url, data)

@@ -69,10 +69,10 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
 
   initForm(): void {
     this.formRequirement = this.formBuilder.group({
-      position:  ['', [Validators.required]],
+      position: ['', [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
-      score:  ['', [Validators.required]],
+      score: ['', [Validators.required]],
       date: ['', [Validators.required]],
       isAnual: ['', [Validators.required]]
     });
@@ -91,27 +91,41 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
       this.params = params['id'];
     });
     const unit = auth.getCurrentUnit();
-    this.params ?
-    this.values = {
-      id: Number(this.params),
-      name: this.formRequirement.value.name,
-      position: Number(this.formRequirement.value.position),
-      score: Number(this.formRequirement.value.score),
-      date: this.formRequirement.value.date,
-      description: this.formRequirement.value.description,
-      isAnual: this.formRequirement.value.isAnual,
-      hasAvaliation: this.requirement.hasAvaliation,
-      unitId: unit.id }
-      :
+    this.params && this.requirement.hasAvaliation ?
       this.values = {
-        name: this.formRequirement.value.name,
+        id: Number(this.params),
+        name: this.requirement.name,
         position: Number(this.formRequirement.value.position),
-        score: Number(this.formRequirement.value.score),
-        date: this.formRequirement.value.date,
+        score: Number(this.requirement.score),
+        date: this.requirement.date,
         description: this.formRequirement.value.description,
-        isAnual: this.formRequirement.value.isAnual,
+        isAnual: this.requirement.isAnual,
         hasAvaliation: this.requirement.hasAvaliation,
-        unitId: unit.id };
+        unitId: unit.id
+      }
+      : this.params && !this.requirement.hasAvaliation ?
+        this.values = {
+          id: Number(this.params),
+          name: this.formRequirement.value.name,
+          position: Number(this.formRequirement.value.position),
+          score: Number(this.formRequirement.value.score),
+          date: this.formRequirement.value.date,
+          description: this.formRequirement.value.description,
+          isAnual: this.formRequirement.value.isAnual,
+          hasAvaliation: false,
+          unitId: unit.id
+        }
+        :
+        this.values = {
+          name: this.formRequirement.value.name,
+          position: Number(this.formRequirement.value.position),
+          score: Number(this.formRequirement.value.score),
+          date: this.formRequirement.value.date,
+          description: this.formRequirement.value.description,
+          isAnual: this.formRequirement.value.isAnual,
+          hasAvaliation: false,
+          unitId: unit.id
+        };
 
     if (this.formRequirement.valid) {
       this.service.saveRequirements(this.values).subscribe((data) => {
