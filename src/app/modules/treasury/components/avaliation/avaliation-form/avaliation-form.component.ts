@@ -13,6 +13,7 @@ import { AvaliationRequirement } from '../../../models/avaliationRequirement';
 import { forEach } from '@angular/router/src/utils/collection';
 import { Church } from '../../../models/church';
 import { Observation } from '../../../models/observation';
+import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-avaliation-form',
@@ -37,7 +38,8 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
     public store: AvaliationStore,
     private service: TreasuryService,
     private formBuilder: FormBuilder,
-    private sidenavService: SidenavService
+    private sidenavService: SidenavService,
+    private confirmDialogService: ConfirmDialogService
   ) { }
 
   ngOnInit() {
@@ -102,7 +104,8 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
         }
       });
       this.loadAvaliationRequirements();
-    });
+      this.requirements.sort((a, b) => a.position.toString().localeCompare(b.position.toString()));
+    });    
   }
 
   private loadMensalRequirements(requirement: Requirement) {
@@ -127,8 +130,8 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
         var avaliationRequirement = data.filter(f => f.requirement.id === requirement.id)[0]; //carregando os requisitos já avaliados
         this.setAvalitionRequirement(requirement, avaliationRequirement);
       });
-    });
-  }
+    });    
+  }  
 
   private setAvalitionRequirement(requirement: Requirement, avaliationRequirement: AvaliationRequirement) {
     if (avaliationRequirement == undefined || avaliationRequirement.id === 0) {
@@ -195,6 +198,19 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   closeSidenav() {
     this.store.avaliation = new Avaliation();
     this.sidenavService.close();
+  }
+
+  public finalize(observation: Observation) {
+    this.confirmDialogService
+      .confirm('Finalizar', 'Você deseja realmente finalizar a observação?', 'FINALIZAR')
+      .subscribe(res => {
+        if (res) {
+          this.store.finalize(observation.id);
+          debugger;
+          const index = this.observations.findIndex(x => x.id === observation.id);
+          this.observations.splice(index, 1);
+        }
+      });
   }
 
   public getTitleLabel() {

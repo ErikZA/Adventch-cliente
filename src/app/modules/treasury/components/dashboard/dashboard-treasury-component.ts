@@ -26,12 +26,10 @@ export class DashboardTreasuryComponent implements OnInit {
       '#f44336',
       '#6a5acd',
       '#922428',
-      '##535154',
+      '#535154',
       '#948b3d',
       '#3d8294',
-      '#3d9477']
-  }];
-
+      '#3d9477'] }];
   // Igrejas
   cardChurchesData: number;
   // Distritos

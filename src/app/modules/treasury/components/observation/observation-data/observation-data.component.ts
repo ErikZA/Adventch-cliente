@@ -6,6 +6,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
+import * as moment from 'moment';
+
 import { AuthService } from '../../../../../shared/auth.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { ReportService } from '../../../../../shared/report.service';
@@ -55,6 +57,7 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    moment.locale('pt');
     this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/observacoes')]);
     this.sidenavService.setSidenav(this.sidenavRight);
@@ -224,5 +227,14 @@ export class ObservationDataComponent implements OnInit, OnDestroy {
       dateStart: this.filterPeriodStart,
       dateEnd: this.filterPeriodEnd,
     };
+  }
+
+  public checkAttention(observation: Observation): boolean {
+    var startDate = moment(observation.date);    
+    var endDate = moment(new Date());
+    if (observation.status === 1 && endDate.diff(startDate, "days") > 30) {
+      return true;
+    }
+    return false;
   }
 }
