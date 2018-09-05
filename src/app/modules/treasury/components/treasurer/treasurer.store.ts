@@ -59,18 +59,6 @@ export class TreasurerStore {
 
   public updateTreasurers(treasurer) {
     this.loadAllTreasurers();
-    /*treasurer.functionName = this.getFunctionName(treasurer.function);
-    if (treasurer.dateRegister != null) {
-      treasurer.dateRegister = new Date(treasurer.dateRegister);
-      treasurer.dateRegisterFormatted = moment(treasurer.dateRegister).fromNow();
-    }
-
-    const index = this.dataStore.treasurers.findIndex(x => x.id === treasurer.id);
-    if (index >= 0) {
-      this.dataStore.treasurers[index] = treasurer;
-    } else {
-      this.dataStore.treasurers.push(treasurer);
-    }*/
     this.treasurer = new Treasurer();
   }
 
@@ -91,7 +79,6 @@ export class TreasurerStore {
   private loadAllTreasurers(): void {
     const unit = auth.getCurrentUnit();
     this.service.getTreasurers(unit.id).subscribe((data: Treasurer[]) => {
-      debugger;
       this.dataStore.treasurers = data;
       this.formatTreasurers();
       this._treasurers.next(Object.assign({}, this.dataStore).treasurers);
