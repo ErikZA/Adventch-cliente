@@ -9,6 +9,7 @@ export class Requirement {
   isAnual: boolean;
   removed: boolean;
   unitid: number;
+  hasAvaliation: boolean;
 
   unit: Unit;
   date: Date;
