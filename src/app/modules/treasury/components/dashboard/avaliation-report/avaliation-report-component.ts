@@ -21,6 +21,8 @@ export class AvaliationReportComponent implements OnInit {
     dataAvaliationReport: any;
     search$ = new Subject<string>();
     searchButton = false;
+    totalRequirements: any;
+    showList = 15;
 
     constructor(
         private service: TreasuryService,
@@ -32,8 +34,8 @@ export class AvaliationReportComponent implements OnInit {
 
     ngOnInit() {
         const unit = auth.getCurrentUnit();
+        this.getTotalAvaliationScore(unit.id);
         this.getrankingReportData = this.service.getAvaliationRaking(unit.id).subscribe((data) => {
-
             let previousNote;
             let position = 0;
             data.forEach(element => {
@@ -48,7 +50,6 @@ export class AvaliationReportComponent implements OnInit {
             this.avaliationReport = data;
             this.dataAvaliationReport = this.avaliationReport;
         });
-
         this.search$.subscribe(search => {
             this.avaliationReport = this.search(search);
         });
@@ -56,6 +57,14 @@ export class AvaliationReportComponent implements OnInit {
 
     cancel() {
         this.dialogRef.close(false);
+    }
+
+    getTotalAvaliationScore(id) {
+        return this.service.getTotalAvaliationScore(id).subscribe((data) => {
+            data.forEach(dataReq => {
+                this.totalRequirements = dataReq.totalScore;
+            });
+        });
     }
 
     generateGeneralReport() {
@@ -77,4 +86,8 @@ export class AvaliationReportComponent implements OnInit {
             });
         }
     }
+
+    public onScroll(): void {
+        this.showList += 15;
+      }
 }
