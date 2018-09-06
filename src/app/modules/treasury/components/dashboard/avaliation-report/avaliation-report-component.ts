@@ -17,7 +17,6 @@ import { Subject } from 'rxjs/Subject';
 export class AvaliationReportComponent implements OnInit {
 
     getrankingReportData: Subscription;
-    getTotalReportData: Subscription;
     avaliationReport: any;
     dataAvaliationReport: any;
     search$ = new Subject<string>();
@@ -36,7 +35,6 @@ export class AvaliationReportComponent implements OnInit {
 
     ngOnInit() {
         const unit = auth.getCurrentUnit();
-        this.getTotalReportData = this.getTotalAvaliationScore(unit.id);
         this.search$.subscribe(search => {
             this.avaliationReport = this.search(search);
         });
@@ -58,26 +56,11 @@ export class AvaliationReportComponent implements OnInit {
                     position++;
                     element.position = position;
                 }
+                element.notes = element.notes / element.score;
                 previousNote = element.notes;
-            });
-
-            data.forEach(element => {
-                if (element.isAnual) {
-                    element.notes = element.notes / this.totalRequirementsAnual; } else {
-                    element.notes = element.notes / this.totalRequirementsMonth; }
             });
             this.avaliationReport = data;
             this.dataAvaliationReport = this.avaliationReport;
-        });
-    }
-
-    getTotalAvaliationScore(id) {
-        return this.service.getTotalAvaliationScore(id).subscribe((data) => {
-            data.forEach(dataReq => {
-                dataReq.isAnual ?
-                this.totalRequirementsAnual = dataReq.totalScore :
-                this.totalRequirementsMonth = dataReq.totalScore;
-            });
         });
     }
 

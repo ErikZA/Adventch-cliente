@@ -46,8 +46,6 @@ export class DashboardTreasuryComponent implements OnInit {
   chartAvaliationsData: any[] = [];
   chartAvaliationsLabels: any[] = [];
   chartAvaliationsDatasets: any[];
-  totalRequirementsAnual: any;
-  totalRequirementsMonth: any;
   // Subscription
   getDataSubscription: Subscription;
   mediaSubscription: Subscription;
@@ -106,12 +104,12 @@ export class DashboardTreasuryComponent implements OnInit {
 
   ngOnInit() {
     const unit = auth.getCurrentUnit();
-    this.getAvaliationSubscription = this.getAvaliationScore(unit.id);
     this.mediaSubscription = this.media.subscribe((change: MediaChange) => setTimeout(() => this.isMobile = change.mqAlias === 'xs'));
     this.service.getUsers(unit.id).subscribe((data) => {
       this.users = data;
     });
     this.getDataSubscription = this.getDashboardData(0);
+
   }
 
   getDashboardData(idAnalyst) {
@@ -124,16 +122,6 @@ export class DashboardTreasuryComponent implements OnInit {
         this.getCardDistrictsData(data.cardDistrictsData);
         this.getCardAvaliationsData(data.cardAvaliationData);
       }
-    });
-  }
-
-  getAvaliationScore(id) {
-    return this.service.getTotalAvaliationScore(id).subscribe((data) => {
-       data.forEach(dataReq => {
-        dataReq.isAnual ?
-          this.totalRequirementsAnual = dataReq.totalScore :
-          this.totalRequirementsMonth = dataReq.totalScore;
-      });
     });
   }
 
@@ -211,8 +199,7 @@ export class DashboardTreasuryComponent implements OnInit {
     let second = 0;
     let first = 0;
     array.forEach((f, i) => {
-      let val = 0;
-      f.isAnual ? val = f.notes / this.totalRequirementsAnual : val = f.notes / this.totalRequirementsMonth;
+      const val = f.notes / f.score;
 
       if (val < 0.5) {
         fourth = fourth + f.ranking;
