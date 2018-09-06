@@ -58,13 +58,8 @@ export class AvaliationReportComponent implements OnInit {
                     position++;
                     element.position = position;
                 }
+                element.notes = element.notes / element.score;
                 previousNote = element.notes;
-            });
-
-            data.forEach(element => {
-                if (element.isAnual) {
-                    element.notes = element.notes / this.totalRequirementsAnual; } else {
-                    element.notes = element.notes / this.totalRequirementsMonth; }
             });
             this.avaliationReport = data;
             this.dataAvaliationReport = this.avaliationReport;
