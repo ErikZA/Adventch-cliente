@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
@@ -66,7 +67,11 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   getData() {
     return this.treasureService
       .getTreasurers(auth.getCurrentUnit().id)
-      .map(data => data.map(d => ({ ...d, functionName: this.getFunctionName(d) })) as Treasurer[])
+      .map(data => data.map(d => ({
+        ...d,
+        functionName: this.getFunctionName(d),
+        dateRegisterFormatted: !!d.dateRegister ? moment(d.dateRegister).fromNow() : null
+      })) as Treasurer[])
       .do(data => {
         this.treasurersCache = data;
         this.treasurers = data;
