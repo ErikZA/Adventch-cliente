@@ -12,8 +12,8 @@ import { ProcessDocument } from './models/processDocument';
 import { ProcessResponsibleInterface } from './interfaces/process-responsible-interface';
 import { ProcessCountStatusInterface } from './interfaces/process-count-status-interface';
 import { SchoolProcessInterface } from './interfaces/school-process-interface';
-import { EditProcessViewModel, NewProcessViewModel } from './interfaces/process-view-models';
 import { ProcessDataInterface } from './interfaces/process-data-interface';
+import { EditProcessViewModel, NewProcessViewModel } from './interfaces/process-view-models';
 import { DocumentProcessDataInterface } from './interfaces/document-process-data-interface';
 
 @Injectable()
