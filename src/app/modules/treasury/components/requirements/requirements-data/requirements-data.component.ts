@@ -66,7 +66,7 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
 
   private getData() {
     this.requirements$ = this.store.requirements$;
-    this.store.loadAll();
+    this.store.loadAll(this.searchButton);
     this.loadPeriods();
     // VERIFICAR
     // this.requirements = this.store.dataStore.requirements;

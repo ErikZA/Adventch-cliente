@@ -48,9 +48,9 @@ export class RequirementStore {
     }
 
     /* Listagem */
-    public loadAll(): void {
+    public loadAll(year: number): void {
         const unit = auth.getCurrentUnit();
-        this.service.getRequirements(unit.id).subscribe((data: Requirement[]) => {
+        this.service.getRequirements(unit.id, year).subscribe((data: Requirement[]) => {
             data = data.sort((obj1, obj2) => {
                 if (obj1.position > obj2.position) {
                     return 1;

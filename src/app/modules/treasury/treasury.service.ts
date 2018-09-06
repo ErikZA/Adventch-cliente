@@ -237,8 +237,8 @@ export class TreasuryService {
   }
 
   // Avaliações
-  getRequirements(unitId): Observable<Requirement[]> {
-    const url = '/treasury/requirement/getRequirements/' + unitId;
+  getRequirements(unitId, year): Observable<Requirement[]> {
+    const url = `/treasury/requirement/getRequirements/${unitId}/${year}`;
     return this.http
       .get(url)
       .map((res: Response) => res)
