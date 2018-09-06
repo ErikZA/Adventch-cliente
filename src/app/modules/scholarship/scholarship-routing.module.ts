@@ -62,7 +62,7 @@ const routes: Routes = [
             }
           },
           {
-            path: ':identifyProcess/editar',
+            path: ':id/editar',
             component: ProcessFormComponent,
             canActivate: [FeatureGuard],
             canLoad: [FeatureGuard],
