@@ -12,13 +12,13 @@ const routes: Routes = [
   { path: 'papeis', component: LayoutComponent, children: [
     { path: '', component: ProfileDataComponent, children: [
       { path: 'novo', component: ProfileFormComponent },
-      { path: ':idProfile/editar', component: ProfileFormComponent },
+      { path: ':id/editar', component: ProfileFormComponent },
     ]},
   ]},
   { path: 'usuarios', component: LayoutComponent, children: [
     { path: '', component: UserDataComponent, children: [
       { path: 'novo', component: UserFormComponent },
-      { path: ':idUser/editar', component: UserFormComponent },
+      { path: ':id/editar', component: UserFormComponent },
     ]},
   ]},
 ];
