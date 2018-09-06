@@ -1,4 +1,7 @@
-<form [formGroup]="formProcess" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px">
+<div fxLayout="row" fxFlexFill fxLayoutAlign="center" *ngIf="loading" style="padding-top: 25vh;">
+    <mat-spinner></mat-spinner>
+</div>
+<form [formGroup]="formProcess" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="!loading">
     <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
         <div fxFlex>
             <h2 class="title"> {{ labelTitleProcess() }} Processo</h2>
@@ -106,7 +109,7 @@
         </div> -->
 
         <div fxLayout="column" class="padding-form margin-top-20" fxFlex [formGroup]="processDocumentsForm">
-            <div fxLayout="column" fxLayoutAlign="space-between" *ngFor="let documentType of (documentTypes | async)">
+            <div fxLayout="column" fxLayoutAlign="space-between" *ngFor="let documentType of types">
                 <div fxLayout="row" fxLayoutAlign="space-between">
                     <p class="section-form">{{ documentType.description }} *</p>
                     <app-process-form-document-info [type]="documentType.id"></app-process-form-document-info>
@@ -124,7 +127,7 @@
     </div>
     <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
         <back-button></back-button>
-        <button mat-raised-button type="submit" (click)="saveProcess()" color="primary" [disabled]="isSending">SALVAR</button>
+        <button mat-raised-button type="submit" (click)="saveProcess()" color="primary">SALVAR</button>
     </div>
 </form>
 
