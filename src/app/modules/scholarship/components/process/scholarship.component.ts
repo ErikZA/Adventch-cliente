@@ -54,7 +54,9 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
 
   private getAllDatas(): void {
     this.schools$ = this.scholarshipService.getSchools();
-    this.getCountProcesses();
+    if (!this.authService.getCurrentUser().idSchool) {
+      this.getCountProcesses();
+    }
   }
 
   private getCountProcesses(): void {
