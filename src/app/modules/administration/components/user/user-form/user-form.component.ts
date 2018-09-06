@@ -1,6 +1,6 @@
+import { Subscription } from 'rxjs/Subscription';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { AuthService } from './../../../../../shared/auth.service';
-import { ProfileStore } from '../../profile/profile.store';
 import { School } from '../../../../scholarship/models/school';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl, ValidatorFn, FormArray } from '@angular/forms';
@@ -17,12 +17,16 @@ import { UserDataComponent } from '../user-data/user-data.component';
 import { AdministrationService } from '../../../administration.service';
 import { MatSnackBar } from '@angular/material';
 import { ScholarshipService } from '../../../../scholarship/scholarship.service';
+import { of } from 'rxjs/observable/of';
+import 'rxjs/add/operator/delay';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 
 @Component({
   selector: 'app-user-form',
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss']
 })
+@AutoUnsubscribe()
 export class UserFormComponent implements OnInit, OnDestroy {
 
   hideNew = true;
@@ -34,14 +38,15 @@ export class UserFormComponent implements OnInit, OnDestroy {
   profiles: Profile[] = [];
   schools: School[] = [];
   modules: EModules[] = [];
-  isSending = false;
+  // isSending = false;
 
   strength: number;
   valFn: ValidatorFn;     // the validation function
-
   user_inputs: string[] = ['foobar', 'barfoo'];
   level = '2';
 
+  loading = true;
+  sub1: Subscription;
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -59,22 +64,24 @@ export class UserFormComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.initConfiguratios();
-    this.loadAllDatas();
     this.initForm();
-    this.route.params.subscribe(params => {
-      const id = parseInt(params.idUser, 10);
-      if (!Number.isInteger(id)) {
-        return;
-      }
-      this.editUser(id);
-    });
 
-    this.userDataComponent.sidenavRight.open();
+    this.sub1 = this.loadSchools()
+      .switchMap(() => this.loadProfiles())
+      .switchMap(() => this.route.params)
+      .do(({ id }) => this.loading = !!id)
+      .skipWhile(({ id }) => !id)
+      .switchMap(({ id }) => this.editUser(id))
+      .delay(500)
+      .subscribe(() => this.loading = false);
+
+    this.userDataComponent.openSidenav();
   }
   ngOnDestroy(): void {
     this.userDataComponent.closeSidenav();
   }
   private initConfiguratios(): void {
+    this.modules = auth.getCurrentUnit().modules;
     this.dates = {
       now: new Date(new Date().setFullYear(new Date().getFullYear())),
       min: new Date(new Date().setFullYear(new Date().getFullYear() - 95)),
@@ -82,24 +89,20 @@ export class UserFormComponent implements OnInit, OnDestroy {
     };
     moment.locale('pt');
   }
-  public loadAllDatas(): void {
-    const { modules } = auth.getCurrentUnit();
-    this.modules = modules;
-    this.loadSchools();
-    this.loadProfiles();
-  }
-  private loadSchools(): void {
+
+  private loadSchools() {
     const scholarship = this.modules.some(module => module === EModules.Scholarship);
     if (scholarship) {
-      this.schoolarShipService.getSchools().subscribe((data: School[]) => {
-        this.schools = data;
-      }, error => console.log('Could not load todos schools.'));
+      return this.schoolarShipService.getSchools().do((data: School[]) => {
+          this.schools = data;
+        }, error => console.log('Could not load todos schools.'));
     }
+    return of(undefined);
   }
 
-  private loadProfiles(): void {
+  private loadProfiles() {
     const { id } = auth.getCurrentUnit();
-    this.administraionService.getProfiles(id).subscribe((data: Profile[]) => {
+    return this.administraionService.getProfiles(id).do((data: Profile[]) => {
       this.profiles = data.sort((a, b) => a.name.localeCompare(b.name));
     }, err => console.log('Could not load todos profiles.'));
   }
@@ -167,17 +170,16 @@ export class UserFormComponent implements OnInit, OnDestroy {
     group.controls[field].updateValueAndValidity();
   }
 
-  private editUser(id: number): void {
-    this.administraionService.getUser(id, auth.getCurrentUnit().id).subscribe(data => {
+  private editUser(id: number) {
+    return this.administraionService.getUser(id, auth.getCurrentUnit().id).do(data => {
       this.user = data;
-      this.setValuesUserEdit();
-      this.setValuesUserProfiles();
+      this.setValuesUserEdit(data);
+      this.setValuesUserProfiles(data.profiles);
     });
   }
 
-  private setValuesUserProfiles(): void {
-    const { profiles } = this.user;
-    if (!profiles) { return; }
+  private setValuesUserProfiles(profiles: Profile[]): void {
+    if (!Array.isArray(profiles)) { return; }
     this.formProfiles.controls.forEach((control: FormGroup) => {
       const profile = profiles.find(data => data.software === control.value.module);
       if (profile) {
@@ -188,14 +190,14 @@ export class UserFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setValuesUserEdit(): void {
+  private setValuesUserEdit(user: User): void {
     this.form.setValue({
-      name: this.user.name,
-      email: this.user.email,
-      birthday: this.user.birthday ? this.user.birthday : null,
+      name: user.name,
+      email: user.email,
+      birthday: user.birthday ? user.birthday : null,
       password: 'password_!change-now',
-      isAdmin: this.user.isSysAdmin,
-      school: this.user.idSchool
+      isAdmin: user.isSysAdmin,
+      school: user.idSchool
     });
   }
   private checkIsEdit(): boolean {
@@ -208,11 +210,11 @@ export class UserFormComponent implements OnInit, OnDestroy {
 
   private handleFail(err = null) {
     console.log(err);
-      if (err.status === 409) {
-        this.snackBar.open(err.error + ', tente novamente.', 'OK', { duration: 5000 });
-      } else {
-        this.snackBar.open('Erro ao salvar o usuário, tente novamente.', 'OK', { duration: 5000 });
-      }
+    if (err.status === 409) {
+      this.snackBar.open(err.error + ', tente novamente.', 'OK', { duration: 5000 });
+    } else {
+      this.snackBar.open('Erro ao salvar o usuário, tente novamente.', 'OK', { duration: 5000 });
+    }
   }
   handleSuccess(userId: number) {
     if (userId === auth.getCurrentUser().id) {
@@ -220,31 +222,20 @@ export class UserFormComponent implements OnInit, OnDestroy {
     }
     this.snackBar.open('Usuário salvo com sucesso.', 'OK', { duration: 5000 });
     this.userDataComponent.closeSidenav();
-    this.userDataComponent.getData();
-    this.isSending = false;
   }
   public saveUser() {
     if (this.form.invalid) {
       return;
     }
-    const userData = this.setUserData();
-    if (userData.id) {
-      this.administraionService.editUser(userData, userData.id).subscribe(() => {
-        this.handleSuccess(userData.id);
-      }, err => {
-        this.handleFail(err);
-      });
-    } else {
-      this.administraionService.saveUser(userData).subscribe(() => {
-        this.handleSuccess(userData.id);
-      }, err => {
-        this.handleFail(err);
-      });
-    }
+    const userData = this.getUserData();
+    of(userData.id)
+      .switchMap(id => !!id ? this.administraionService.editUser(userData, id) : this.administraionService.saveUser(userData))
+      .switchMap(() => this.userDataComponent.getData())
+      .subscribe(() => this.handleSuccess(userData.id), error => this.handleFail(error));
 
   }
 
-  private setUserData(): any {
+  private getUserData(): any {
     const { id } = auth.getCurrentUnit();
     const arr = Array.isArray(this.formProfiles.value) ? Array.from<any>(this.formProfiles.value) : [];
     const validate = arr.filter(f => !!f.id).map(f => f.id);
@@ -260,7 +251,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  public onStrength({strength}) {
+  public onStrength({ strength }) {
     this.strength = strength;
   }
 

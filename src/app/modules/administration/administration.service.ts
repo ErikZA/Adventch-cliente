@@ -66,8 +66,8 @@ export class AdministrationService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public putProfile(profile: EditProfile): Observable<any> {
-    const url = `/profile/${profile.id}`;
+  public putProfile(profile: EditProfile, id: number): Observable<any> {
+    const url = `/profile/${id}`;
     return this.http
       .put(url, profile)
       .catch((error: any) => Observable.throw(error || 'Server error'));

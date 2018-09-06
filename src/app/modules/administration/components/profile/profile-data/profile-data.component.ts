@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Subject } from 'rxjs/Subject';
-import { MatSidenav, MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { Module } from '../../../../../shared/models/modules.enum';
 import { EModules } from '../../../../../shared/models/modules.enum';
@@ -10,16 +10,18 @@ import { utils } from '../../../../../shared/utils';
 import { Profile } from '../../../models/profile/profile.model';
 import { AdministrationService } from '../../../administration.service';
 import { auth } from '../../../../../auth/auth';
-
+import { Subscription } from 'rxjs/Subscription';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
+import 'rxjs/add/operator/switchMap';
 @Component({
   selector: 'app-profile-data',
   templateUrl: './profile-data.component.html',
   styleUrls: ['./profile-data.component.scss']
 })
-export class ProfileDataComponent implements OnInit {
-
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
-
+@AutoUnsubscribe()
+export class ProfileDataComponent extends AbstractSidenavContainer implements OnInit {
+  protected componentUrl = '/administracao/papeis';
   showList = 15;
   searchButton = false;
   search$ = new Subject<string>();
@@ -27,28 +29,30 @@ export class ProfileDataComponent implements OnInit {
   profiles: Profile[] = [];
   profilesCache: Profile[] = [];
 
+  sub1: Subscription;
+
   constructor(
+    protected router: Router,
     private confirmDialogService: ConfirmDialogService,
-    private router: Router,
     private route: ActivatedRoute,
     private administrationService: AdministrationService,
     private snackBar: MatSnackBar
-  ) { }
+  ) { super(router); }
 
   ngOnInit() {
-    this.search$.subscribe(search => {
+    this.sub1 = this.getData().switchMap(() => this.search$).subscribe(search => {
       this.searchProfile(search);
     });
-    this.getData();
   }
-  getData(): void {
+  getData() {
     const { id } = auth.getCurrentUnit();
-    this.administrationService
-      .getProfiles(id).map(p => p.sort((a, b) => a.name.localeCompare(b.name)))
-      .subscribe((data: Profile[]) => {
+    return this.administrationService
+      .getProfiles(id)
+      .map(p => p.sort((a, b) => a.name.localeCompare(b.name)))
+      .do((data: Profile[]) => {
         this.profiles =  data;
         this.profilesCache = data;
-    }, err => console.log('Could not load todos profiles.'));
+      });
   }
   public onScroll(): void {
     this.showList += 15;
@@ -60,10 +64,6 @@ export class ProfileDataComponent implements OnInit {
   public searchProfile(search: string) {
     this.profiles = this.profilesCache.filter(p => utils.buildSearchRegex(search).test(p.name));
   }
-  public closeSidenav(): void {
-    this.router.navigate(['/administracao/papeis']);
-    this.sidenavRight.close();
-  }
 
   public editProfile(role: Profile): void {
     this.router.navigate([role.id, 'editar'], { relativeTo: this.route });
@@ -72,13 +72,10 @@ export class ProfileDataComponent implements OnInit {
   public removeProfile(role: Profile): void {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este papel?', 'REMOVER')
-      .subscribe(res => {
-        if (res === true) {
-          this.administrationService.deleteProfile(role.id).subscribe(() => {
-            this.snackBar.open('Removido com sucesso', 'OK', { duration: 30000 });
-            this.getData();
-          });
-        }
-      });
+      .skipWhile(res => res !== true)
+      .switchMap(() => this.administrationService.deleteProfile(role.id))
+      .switchMap(() => this.getData())
+      .do(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 30000 }))
+      .subscribe();
   }
 }

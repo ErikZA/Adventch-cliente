@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs/Subscription';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSidenav, MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 
 import { Subject } from 'rxjs/Subject';
 
@@ -12,6 +12,8 @@ import { ConfirmDialogService } from '../../../../../core/components/confirm-dia
 import { auth } from '../../../../../auth/auth';
 import { AdministrationService } from '../../../administration.service';
 import { utils } from '../../../../../shared/utils';
+import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 
 
 @Component({
@@ -19,49 +21,42 @@ import { utils } from '../../../../../shared/utils';
   templateUrl: './user-data.component.html',
   styleUrls: ['./user-data.component.scss']
 })
-export class UserDataComponent implements OnInit, OnDestroy {
-
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
+@AutoUnsubscribe()
+export class UserDataComponent extends AbstractSidenavContainer implements OnInit {
+  protected componentUrl = '/administracao/usuarios/';
 
   searchButton = false;
   search$ = new Subject<string>();
   showList = 15;
-  inSearch: boolean;
   modulesFilter: EModules[] = [];
   searchText = '';
 
   users: User[] = [];
   usersCache: User[] = [];
 
-  authStoreSub: Subscription;
+  sub1: Subscription;
   constructor(
-    private router: Router,
+    protected router: Router,
     private route: ActivatedRoute,
     private confirmDialogService: ConfirmDialogService,
     private administrationService: AdministrationService,
     private snackBar: MatSnackBar
-  ) { }
+  ) {  super(router); }
 
   ngOnInit() {
-    this.search$.subscribe(search => {
+    this.sub1 = this.getData().switchMap(() => this.search$).subscribe(search => {
       this.searchText = search;
       this.search(search);
     });
-    this.getData();
 
   }
   getData() {
-    this.administrationService.getUsers(auth.getCurrentUnit().id).subscribe(data => {
-      this.usersCache = data;
-      this.users = data;
-    });
-  }
-  ngOnDestroy(): void {
-    if (this.authStoreSub) { this.authStoreSub.unsubscribe(); }
-  }
-  public closeSidenav(): void {
-    this.router.navigate(['/administracao/usuarios/']);
-    this.sidenavRight.close();
+    return this.administrationService
+      .getUsers(auth.getCurrentUnit().id)
+      .do(data => {
+        this.usersCache = data;
+        this.users = data;
+      });
   }
   checkModule(module: EModules) {
     if (this.modulesFilter.some(m => m === module)) {
@@ -119,13 +114,11 @@ export class UserDataComponent implements OnInit, OnDestroy {
   public removeUser(user: User): void {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este usuário?', 'REMOVER')
-      .subscribe(res => {
-        if (res === true) {
-          this.administrationService.deleteUser(user.id).subscribe(() => {
-            this.snackBar.open('Removido com sucesso', 'OK', { duration: 3000 });
-            this.getData();
-          });
-        }
+      .skipWhile(res => res !== true)
+      .switchMap(() => this.administrationService.deleteUser(user.id))
+      .switchMap(() => this.getData())
+      .subscribe(() => {
+        this.snackBar.open('Removido com sucesso', 'OK', { duration: 3000 });
       });
   }
 }

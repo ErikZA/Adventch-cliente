@@ -10,7 +10,6 @@ import { AdministratioRoutingModule } from './administration-routing.module';
 import { UserDataComponent } from './components/user/user-data/user-data.component';
 import { UserFormComponent } from './components/user/user-form/user-form.component';
 import { ProfileDataComponent } from './components/profile/profile-data/profile-data.component';
-import { ProfileStore } from './components/profile/profile.store';
 import { ProfileFormComponent } from './components/profile/profile-form/profile-form.component';
 
 @NgModule({
@@ -21,7 +20,6 @@ import { ProfileFormComponent } from './components/profile/profile-form/profile-
   ],
   providers: [
     AdministrationService,
-    ProfileStore,
     UserStore,
     ProcessesStore
   ],
