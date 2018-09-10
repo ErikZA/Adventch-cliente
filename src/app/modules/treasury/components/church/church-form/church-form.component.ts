@@ -60,7 +60,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.closeSidenav();
+    this.churchDataComponent.closeSidenav();
   }
 
   initForm(): void {
@@ -96,14 +96,14 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
       this.service
         .saveChurch(data)
         .switchMap(() => this.churchDataComponent.getData())
-        .subscribe(() => this.closeSidenav(), err => {
+        .subscribe(() => {
+          this.churchDataComponent.closeSidenav();
+          this.snackBar.open('Salvo com sucesso!', 'OK', { duration: 5000 });
+        }, err => {
           console.log(err);
           this.snackBar.open('Erro ao salvar igreja, tente novamente.', 'OK', { duration: 5000 });
         });
     }
-  }
-  public closeSidenav(): void {
-    this.churchDataComponent.closeSidenav();
   }
 
   public labelTitle(): string {

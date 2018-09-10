@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
 
 import { Subscription } from 'rxjs/Subscription';
 
@@ -29,6 +28,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/switchMap';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 
 
 @Component({
@@ -36,6 +36,7 @@ import 'rxjs/add/operator/switchMap';
   templateUrl: './process-data.component.html',
   styleUrls: ['./process-data.component.scss']
 })
+@AutoUnsubscribe()
 export class ProcessDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
   protected componentUrl = '/bolsas/processos';
 
@@ -44,7 +45,6 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   showList = 15;
   idSchool = -1;
   showSchool = false;
-  refresh$ = new Observable<boolean>();
 
   dialogRef: MatDialogRef<PendencyComponent>;
   dialogRef2: MatDialogRef<VacancyComponent>;
@@ -53,6 +53,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   // New
   processes: ProcessDataInterface[] = [];
+  processesCache: ProcessDataInterface[] = [];
   schools: School[] = [];
   schoolsFilters: number[] = [];
   statusFilters: number[] = [];
@@ -64,6 +65,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   // Verificar tipo de usuário que pode modificar projeto ou não
   isScholarship: boolean;
   documentsIsVisible = false;
+  sub1: Subscription;
 
   constructor(
     protected router: Router,
@@ -86,7 +88,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.isScholarship = auth.getCurrentUser().isScholarship;
     this.schoolIsVisible();
     this.setAllFilters();
-    this.getData()
+    this.sub1 = this.getData()
       .switchMap(() => this.search$)
       .debounceTime(1000)
       .distinctUntilChanged()
@@ -152,11 +154,17 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     if (user.idSchool === 0) {
       return this.scholarshipService
         .getProcessesByUnit(this.schoolsFilters, this.statusFilters, this.query)
-        .do(processes => this.processes = processes);
+        .do(processes => {
+          this.processes = processes;
+          this.processesCache = processes;
+        });
     }
     return this.scholarshipService
       .getProcessesBySchool(user.idSchool, this.statusFilters, this.query)
-      .do(processes => this.processes = processes);
+      .do(processes => {
+        this.processes = processes;
+        this.processesCache = processes;
+      });
 
   }
 
@@ -164,9 +172,14 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     if (checked && !this.statusFilters.some(x => x === id)) {
       this.statusFilters.push(id);
     } else if (!checked && this.statusFilters.some(x => x === id)) {
-      this.statusFilters.splice(this.statusFilters.indexOf(id), 1);
+      this.statusFilters = this.statusFilters.filter(f => f !== id);
     }
-    this.getProcesses();
+
+    if (this.statusFilters.length === 0) {
+      this.processes = this.processesCache;
+      return;
+    }
+    this.processes = this.processesCache.filter(p => this.statusFilters.includes(p.status.id));
   }
 
   public filterSchools(id: number, checked: boolean): void {

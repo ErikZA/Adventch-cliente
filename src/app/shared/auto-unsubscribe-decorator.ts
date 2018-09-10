@@ -1,4 +1,4 @@
-export function AutoUnsubscribe(blackList = [] ) {
+export function AutoUnsubscribe(blackList = []) {
 
   return function(constructor) {
     const original = constructor.prototype.ngOnDestroy;
@@ -8,11 +8,7 @@ export function AutoUnsubscribe(blackList = [] ) {
         const property = this[prop];
         if (!blackList.includes(prop)) {
           if (property && (typeof property.unsubscribe === 'function')) {
-
-            console.log('UNSUBSCRIBE ===>', prop);
             property.unsubscribe();
-
-
           }
         }
       }

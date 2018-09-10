@@ -16,12 +16,15 @@ import { ProfileDataComponent } from '../profile-data/profile-data.component';
 import { AdministrationService } from '../../../administration.service';
 import { MatSnackBar } from '@angular/material';
 import 'rxjs/add/operator/skipWhile';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-profile-form',
   templateUrl: './profile-form.component.html',
   styleUrls: ['./profile-form.component.scss']
 })
+@AutoUnsubscribe()
 export class ProfileFormComponent implements OnInit, OnDestroy {
 
 
@@ -35,6 +38,7 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
   // formSubmittedOnce = false;
 
   loading = true;
+  sub1: Subscription;
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -48,7 +52,7 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
     this.getModulesUserUnit();
     this.initForm();
 
-    this.route.params
+    this.sub1 = this.route.params
       .do(({ id }) => this.loading = !!id)
       .skipWhile(({ id }) => !id)
       .switchMap(({ id }) => this.editProfile(id))
