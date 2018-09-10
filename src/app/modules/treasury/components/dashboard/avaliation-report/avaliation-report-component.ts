@@ -53,7 +53,6 @@ export class AvaliationReportComponent implements OnInit {
                 if (element.t.toFixed(2) === previousNote.toFixed(2)) {
                     element.position = position;
                 } else {
-                    debugger;
                     position++;
                     element.position = position;
                 }
