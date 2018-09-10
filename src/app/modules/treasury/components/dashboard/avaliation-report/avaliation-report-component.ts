@@ -50,14 +50,14 @@ export class AvaliationReportComponent implements OnInit {
             let previousNote;
             let position = 0;
             data.forEach(element => {
-                if (element.notes === previousNote) {
+                debugger;
+                if (element.t === previousNote) {
                     element.position = position;
                 } else {
                     position++;
                     element.position = position;
                 }
-                element.notes = element.notes / element.score;
-                previousNote = element.notes;
+                previousNote = element.notes / element.score;
             });
             this.avaliationReport = data;
             this.dataAvaliationReport = this.avaliationReport;
