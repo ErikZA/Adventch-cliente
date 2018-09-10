@@ -47,17 +47,17 @@ export class AvaliationReportComponent implements OnInit {
 
     getAvaliationData(id) {
         return this.service.getAvaliationRaking(id).subscribe((data) => {
-            let previousNote;
+            let previousNote = 0;
             let position = 0;
             data.forEach(element => {
-                if (element.notes === previousNote) {
+                if (element.t.toFixed(2) === previousNote.toFixed(2)) {
                     element.position = position;
                 } else {
+                    debugger;
                     position++;
                     element.position = position;
                 }
-                element.notes = element.notes / element.score;
-                previousNote = element.notes;
+                previousNote = element.notes / element.score;
             });
             this.avaliationReport = data;
             this.dataAvaliationReport = this.avaliationReport;

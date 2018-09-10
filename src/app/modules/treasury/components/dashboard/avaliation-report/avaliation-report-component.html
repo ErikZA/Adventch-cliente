@@ -30,7 +30,8 @@
                     <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex>
                         <span fxFlex="10" fxFlex.sm="50" fxFlex.xs="50">Posição</span>
                         <span fxFlex="30" fxFlex.sm="50" fxFlex.xs="50" style="padding-right: 10px">Nome</span>
-                        <span fxFlex="30" fxHide.sm fxHide.xs>Nota</span>
+                        <span fxFlex="10" fxHide.sm fxHide.xs>Nota/Total</span>
+                        <span fxFlex="10" fxHide.sm fxHide.xs>%</span>
                         <span fxFlex="30" fxHide.sm fxHide.xs>Igreja</span>
                         <span fxFlex="30" fxHide.sm fxHide.xs>Distrito</span>
                         <span fxFlex></span>
@@ -46,7 +47,8 @@
             <mat-list-item class="break-line" *ngFor="let data of avaliationReport; index as i" fxFlex>
                 <span class="text-color-item" fxFlex="10" fxFlex.sm="50" fxFlex.xs="50">{{ data.position }}º</span>
                 <span class="text-color-item" fxFlex="30" fxFlex.sm="50" fxFlex.xs="50" style="padding-right: 10px">{{ data.name }}</span>
-                <span class="text-color-item" fxFlex="30" fxHide.sm fxHide.xs>{{ data.notes * 100 | number : '1.1-2'}}% </span>
+                <span class="text-color-item" fxFlex="10" fxHide.sm fxHide.xs>{{ data.notes }}/{{ data.score }}</span>
+                <span class="text-color-item" fxFlex="10" fxHide.sm fxHide.xs>{{ data.t * 100}}% </span>
                 <span class="text-color-item" fxFlex="30" fxHide.sm fxHide.xs>{{ data.church_name }}</span>
                 <span class="text-color-item" fxFlex="30" fxHide.sm fxHide.xs>{{ data.district_name }}</span>
                 <mat-divider></mat-divider>
