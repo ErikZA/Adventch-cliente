@@ -54,6 +54,10 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
       this.filterText = search;
       this.search();
     });
+
+    setTimeout(() => {
+      this.search();
+    }, 5000);
   }
 
   public onScroll() {
