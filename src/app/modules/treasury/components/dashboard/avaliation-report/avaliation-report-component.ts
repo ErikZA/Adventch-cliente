@@ -47,12 +47,13 @@ export class AvaliationReportComponent implements OnInit {
 
     getAvaliationData(id) {
         return this.service.getAvaliationRaking(id).subscribe((data) => {
-            let previousNote;
+            let previousNote = 0;
             let position = 0;
             data.forEach(element => {
-                if (element.t === previousNote) {
+                if (element.t.toFixed(2) === previousNote.toFixed(2)) {
                     element.position = position;
                 } else {
+                    debugger;
                     position++;
                     element.position = position;
                 }
