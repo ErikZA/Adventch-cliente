@@ -50,7 +50,6 @@ export class AvaliationReportComponent implements OnInit {
             let previousNote;
             let position = 0;
             data.forEach(element => {
-                debugger;
                 if (element.t === previousNote) {
                     element.position = position;
                 } else {
