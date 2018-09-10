@@ -94,7 +94,7 @@
               </mat-list>
               
               <mat-action-row>
-                <ng-template [Feature]="55" permission="4">
+                <ng-template [Feature]="55" permission="4" *ngIf="!requirement.hasAvaliation">
                   <button mat-button color="warn" matTooltip="Excluir" (click)="remove(requirement)">REMOVER</button>
                 </ng-template>
                 <ng-template [Feature]="55" permission="3">
