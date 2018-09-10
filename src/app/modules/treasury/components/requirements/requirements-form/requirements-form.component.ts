@@ -129,7 +129,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
 
     if (this.formRequirement.valid) {
       this.service.saveRequirements(this.values).subscribe((data) => {
-        this.store.addRequirement(this.values);
+        this.store.loadAll();
         this.snackBar.open('Requisito salvo com sucesso!', 'OK', { duration: 5000 });
         this.formRequirement.markAsUntouched();
         this.close();
