@@ -1,0 +1,95 @@
+<form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px">
+  <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
+    <div fxFlex>
+      <h2 class="title">{{ store.churchAvaliation?.church?.name }} - {{ getTitleLabel() }}</h2>
+      <mat-divider></mat-divider>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="center" fxLayout.lt-md="column" fxFlex class="margin-bottom-30">
+
+    <div fxLayout="column" fxFlex="50%">
+      <div fxFlex="100%" fxFlexOffset="40px">
+        <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
+          <button mat-button color="primary" (click)="expandPanel(matExpansionPanel)">Observações</button>
+        </div>
+      </div>
+      <br/>
+      <mat-accordion class="example-headers-align" #matExpansionPanel>
+        <mat-expansion-panel #matExpansionPanel hideToggle="true">
+          <div class="header">
+            <mat-list>
+              <mat-list-item>
+                <h3 matLine fxLayout="row">
+                  <span fxFlex fxFlex.gt-sm="60%">Descrição</span>
+                  <span fxFlex fxFlex.gt-sm="20%" style="text-align: center">Status</span>
+                  <span fxFlex fxFlex.gt-sm="20%" style="text-align: center">Ação</span>
+                </h3>
+              </mat-list-item>
+            </mat-list>
+            <mat-divider></mat-divider>
+          </div>
+          <div>
+            <div *ngIf="observations.length === 0">
+              <span fxFlex fxFlex.gt-sm="80%" style="white-space: line-wrap; text-align: justify; padding: 5px;">
+                Não existem observações em aberto nesta igreja!
+              </span>
+            </div>
+            <div *ngFor="let observation of observations" fxLayout="row">
+              <span fxFlex fxFlex.gt-sm="80%" style="white-space: line-wrap; text-align: justify; padding: 5px;">
+                {{ observation.description }}
+              </span>
+              <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap; padding: 5px; text-align: center">
+                {{ observation.status === 1 ? "Aberta" : "Finalizada" }}
+              </span>
+              <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap; padding: 5px; text-align: center">
+                <ng-template [Feature]="50">
+                  <button mat-button style="background-color: #fff!important; color: #E8702A" matTooltip="Finalizar observação" (click)="finalize(observation)">FINALIZAR</button>
+                </ng-template>
+              </span>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <br/>
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Data da Avaliação" formControlName="date">
+        <mat-error *ngIf="form.get('date').hasError('required')">Este campo é obrigatório</mat-error>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <br/>
+      <div>
+        <div *ngFor="let avaliationRequirement of avaliationRequirements; index as i">
+          <mat-panel-description fxLayout="row" fxFlex>
+            <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+              {{ avaliationRequirement.requirement.name }}
+            </span>
+            <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+              <span style="padding: 5px">0</span>
+              <mat-slide-toggle [checked]="avaliationRequirement.check" (change)="updateCheck(avaliationRequirement)"></mat-slide-toggle>
+              <span style="padding: 5px">{{ avaliationRequirement.requirement.score }}</span>
+            </span>
+          </mat-panel-description>
+        </div>
+        <div>
+          <mat-panel-description fxLayout="row" fxFlex>
+            <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+              <b>TOTAL</b>
+            </span>
+            <span fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap;">
+              <b>{{ total }}</b>
+            </span>
+          </mat-panel-description>
+        </div>
+      </div>
+      <div fxFlex="100%" fxFlexOffset="40px">
+        <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
+          <a (click)="closeSidenav()">
+            <back-button></back-button>
+          </a>
+          <button mat-raised-button type="submit" (click)="saveAvaliation()" color="primary">SALVAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

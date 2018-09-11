@@ -12,10 +12,15 @@ import { DistrictsFormComponent } from './components/districts/districts-form/di
 import { ObservationDataComponent } from './components/observation/observation-data/observation-data.component';
 import { ObservationFormComponent } from './components/observation/observation-form/observation-form.component';
 import { DashboardTreasuryComponent } from './components/dashboard/dashboard-treasury-component';
+import { AvaliationDataComponent } from './components/avaliation/avaliation-data/avaliation-data.component';
+import { AvaliationFormComponent } from './components/avaliation/avaliation-form/avaliation-form.component';
 
 import { EFeatures } from '../../shared/models/EFeatures.enum';
 import { EPermissions } from '../../shared/models/permissions.enum';
 import { FeatureGuard } from '../../shared/guards/feature.guard';
+import { RequirementDataComponent } from './components/requirements/requirements-data/requirements-data.component';
+import { RequirementFormComponent } from './components/requirements/requirements-form/requirements-form.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard' },
@@ -101,12 +106,50 @@ const routes: Routes = [
     }]
   },
   {
+    path: 'avaliacoes', component: LayoutComponent, children: [
+      { path: '', component: AvaliationDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
+        { path: ':id/mensal', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
+          feature: EFeatures.AVALIARMENSALMENTE
+        } },
+        { path: ':id/anual', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
+          feature: EFeatures.AVALIARANUALMENTE
+        } }
+      ],
+      data: {
+        feature: EFeatures.LISTARAVALIACOES
+      }
+    }]
+  },
+  {
     path: 'dashboard', component: LayoutComponent, children: [
       { path: '', component: DashboardTreasuryComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
         feature: EFeatures.DASHBOARDTESOURARIA
       } }
     ]
-  }
+  },
+  {
+    path: 'requisitos', component: LayoutComponent, children: [
+      { path: '', component: RequirementDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children:
+        [
+          { path: 'novo', component:  RequirementFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], 
+            data: {
+              feature: EFeatures.REQUISITOS,
+              permission: EPermissions.CRIAR
+            }
+          },
+          { path: ':id/editar', component: RequirementFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard],
+            data: {
+              feature: EFeatures.REQUISITOS,
+              permission: EPermissions.EDITAR
+            }
+          }
+        ],
+        data: {
+          feature: EFeatures.REQUISITOS
+        }
+      }
+    ]
+  },
 ];
 
 @NgModule({

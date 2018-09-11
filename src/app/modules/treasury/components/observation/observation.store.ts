@@ -132,6 +132,7 @@ export class ObservationStore {
     }
   }
 
+
   private loadAnalysts() {
     this.analysts = new Array<User>();
     this.dataStore.observations.forEach(observation => {
@@ -158,6 +159,7 @@ export class ObservationStore {
       const index = this.dataStore.observations.findIndex(x => x.id === id);
       this.dataStore.observations.splice(index, 1);
       this.snackBar.open('Observação removida!', 'OK', { duration: 5000 });
+      this._observations.next(Object.assign({}, this.dataStore).observations);
     }, err => {
       console.log(err);
       this.snackBar.open('Erro ao remover observação, tente novamente.', 'OK', { duration: 5000 });

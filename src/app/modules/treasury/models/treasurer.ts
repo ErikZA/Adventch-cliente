@@ -22,6 +22,7 @@ export class Treasurer {
   email?: string;
   dateBirth?: Date;
   cpf?: string;
+  dateLastEdition?: Date;
   constructor(
   ) { }
 

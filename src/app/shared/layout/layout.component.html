@@ -90,6 +90,12 @@
                     <ng-template [Feature]="49">
                         <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/observacoes']">Observações</a>
                     </ng-template>
+                    <ng-template [Feature]="55" permission="2">
+                        <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/requisitos']">Requisitos</a>
+                    </ng-template>
+                    <ng-template [Feature]="51">
+                        <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/avaliacoes']">Avaliações</a>
+                    </ng-template>
                 </mat-expansion-panel>
                 <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!this.checkPermissionSoftware(7)" matTooltip="Sessão indisponível" [matTooltipDisabled]="this.checkPermissionSoftware(7)" matTooltipPosition="below">
                     <!--Novo Módulo-->
@@ -111,7 +117,7 @@
     <div class="page-container mat-elevation-z4" fxFlex.gt-md="94%" fxFlex="100%">
         <router-outlet></router-outlet>
         <footer fxLayout="row" [ngStyle]="{'position': 'relative'}">
-            <div fxFlex="155px" class="footer-unit">©FORLOGIC 2004 - {{year}}</div>
+            <div fxFlex="155px" class="footer-unit" fxHide.xs>©FORLOGIC 2004 - {{year}}</div>
             <div fxFlex="145px" class="footer-software">
                 <div style="width: 90px; float: left">Adven.tech</div>
                 <div style="width: 30px; float: right; text-align: right">
