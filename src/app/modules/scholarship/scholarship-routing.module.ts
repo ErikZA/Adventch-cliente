@@ -6,19 +6,16 @@ import { ScholarshipComponent } from './components/process/scholarship.component
 import { ProcessFormComponent } from './components/process/process-form/process-form.component';
 import { ProcessDataComponent } from './components/process/process-data/process-data.component';
 import { ResponsibleDataComponent } from './components/responsible/responsible-data/responsible-data.component';
-import { ResponsibleLoginComponent } from './components/responsible/responsible-login/responsible-login.component';
 
-import { AuthGuard } from '../../shared/auth.guard';
 import { EModules } from '../../shared/models/modules.enum';
-import { ModuleGuard } from '../../shared/module.guard';
-import { FeatureGuard } from '../../shared/feature.guard';
+import { ModuleGuard } from '../../shared/guards/module.guard';
 import { AuthResponsibleGuard } from '../../shared/guards/auth-responsible.guard';
 import { AuthMainGuard } from '../../shared/guards/auth-main.guard';
 import { EFeatures } from '../../shared/models/EFeatures.enum';
 import { EPermissions } from '../../shared/models/permissions.enum';
+import { FeatureGuard } from '../../shared/guards/feature.guard';
 
 const routes: Routes = [
-  // { path: 'educacao', component: ResponsibleLoginComponent, pathMatch: 'full' },
   {
     path: 'educacao/consultar',
     component: ResponsibleDataComponent,
@@ -76,7 +73,8 @@ const routes: Routes = [
           }
         ],
         data: {
-          feature: EFeatures.PROCESSOS
+          feature: EFeatures.PROCESSOS,
+          permission: EPermissions.VISUALISAR
         }
       }
     ],

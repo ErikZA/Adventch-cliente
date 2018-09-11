@@ -15,9 +15,9 @@ import { DashboardTreasuryComponent } from './components/dashboard/dashboard-tre
 import { AvaliationDataComponent } from './components/avaliation/avaliation-data/avaliation-data.component';
 import { AvaliationFormComponent } from './components/avaliation/avaliation-form/avaliation-form.component';
 
-import { FeatureGuard } from '../../shared/feature.guard';
 import { EFeatures } from '../../shared/models/EFeatures.enum';
 import { EPermissions } from '../../shared/models/permissions.enum';
+import { FeatureGuard } from '../../shared/guards/feature.guard';
 import { RequirementDataComponent } from './components/requirements/requirements-data/requirements-data.component';
 import { RequirementFormComponent } from './components/requirements/requirements-form/requirements-form.component';
 
@@ -63,7 +63,8 @@ const routes: Routes = [
         } }
         ],
         data: {
-          feature: EFeatures.IGREJAS
+          feature: EFeatures.IGREJAS,
+          permission: EPermissions.VISUALISAR
         }
       }
     ]
@@ -81,7 +82,8 @@ const routes: Routes = [
         } }
       ],
       data: {
-        feature: EFeatures.DISTRITOS
+        feature: EFeatures.DISTRITOS,
+        permission: EPermissions.VISUALISAR
       }
     }]
   },
@@ -98,7 +100,8 @@ const routes: Routes = [
         } }
       ],
       data: {
-        feature: EFeatures.OBSERVACOES
+        feature: EFeatures.OBSERVACOES,
+        permission: EPermissions.VISUALISAR
       }
     }]
   },
@@ -129,7 +132,7 @@ const routes: Routes = [
       { path: '', component: RequirementDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children:
         [
           { path: 'novo', component:  RequirementFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], 
-            data: { 
+            data: {
               feature: EFeatures.REQUISITOS,
               permission: EPermissions.CRIAR
             }

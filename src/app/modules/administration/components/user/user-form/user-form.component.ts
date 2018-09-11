@@ -1,3 +1,5 @@
+import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
+import { AuthService } from './../../../../../shared/auth.service';
 import { ProfileStore } from '../../profile/profile.store';
 import { School } from '../../../../scholarship/models/school';
 import { Component, OnInit } from '@angular/core';
@@ -8,25 +10,22 @@ import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators';
 
 import { UserStore } from '../user.store';
-import { AuthService } from '../../../../../shared/auth.service';
-
-import { Role } from '../../../models/role.model';
 import { EModules, Module } from '../../../../../shared/models/modules.enum';
 import { User } from '../../../../../shared/models/user.model';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 
 import * as moment from 'moment';
 import { StrongPasswordValidator } from '../../../../../core/components/password/strong-password.directive';
 import { ProcessesStore } from '../../../../scholarship/components/process/processes.store';
 import { Profile } from '../../../models/profile/profile.model';
 import { auth } from '../../../../../auth/auth';
+import { UserDataComponent } from '../user-data/user-data.component';
 
 @Component({
   selector: 'app-user-form',
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss']
 })
-export class UserFormComponent implements OnInit {
+export class UserFormComponent implements OnInit, OnDestroy {
 
   hideNew = true;
   dates: any;
@@ -49,11 +48,11 @@ export class UserFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private store: UserStore,
-    private authService: AuthService,
     private route: ActivatedRoute,
-    private sidenavService: SidenavService,
     private profileStore: ProfileStore,
-    private schoolarshipStore: ProcessesStore
+    private schoolarshipStore: ProcessesStore,
+    private authService: AuthService,
+    private userDataComponent: UserDataComponent
   ) {
     this.valFn = StrongPasswordValidator(this.level, this.user_inputs);
   }
@@ -72,16 +71,18 @@ export class UserFormComponent implements OnInit {
           this.user = user;
           if (this.user) {
             this.editUser();
-            this.setValidatorsSelectsProfiles();
           }
         });
       } else {
-        this.setValidatorsSelectsProfiles();
         this.loading = true;
       }
     });
-  }
 
+    this.userDataComponent.sidenavRight.open();
+  }
+  ngOnDestroy(): void {
+    this.closeSidenav();
+  }
   private initConfiguratios(): void {
     this.dates = {
       now: new Date(new Date().setFullYear(new Date().getFullYear())),
@@ -90,14 +91,12 @@ export class UserFormComponent implements OnInit {
     };
     moment.locale('pt');
   }
-
   public loadAllDatas(): void {
     const { modules } = auth.getCurrentUnit();
     this.modules = modules;
     this.loadSchools();
     this.loadProfiles();
   }
-
   private loadSchools(): void {
     if (this.modules) {
       const scholarship = this.modules.some(module => module === EModules.Scholarship);
@@ -126,44 +125,37 @@ export class UserFormComponent implements OnInit {
       isAdmin: [false],
       school: null
     });
-    this.initFormRoles();
+    this.initFormProfiles();
   }
 
-  private initFormRoles(): void {
+  private initFormProfiles(): void {
     this.formProfiles = this.formBuilder.array([]);
     const { modules } = auth.getCurrentUnit();
     this.modules = modules;
     if (!modules) { return; }
     modules.forEach(module => {
-      this.formProfiles.push(this.roleModuleForm(module));
+      this.formProfiles.push(this.profileModuleForm(module));
     });
   }
 
-  private roleModuleForm(module: EModules): FormGroup {
+  private profileModuleForm(module: EModules): FormGroup {
     return this.formBuilder.group({
       id: null,
-      access: false,
       module: module
     });
   }
 
-  private setValidatorsSelectsProfiles(): void {
-    if (!this.formProfiles.controls || this.formProfiles.controls === undefined || this.formProfiles.controls === null) {
-      return;
-    }
-    this.formProfiles.controls.forEach((group: FormGroup) => {
-      if (group.value.access && group.value.module !== EModules.Scholarship) {
-        this.setValidatorsRequiredSelectGeneric(group, 'id');
-      } else if (!group.value.access && group.value.module !== EModules.Scholarship) {
-        this.unsetValidatorsRequiredSelectGeneric(group, 'id');
-      } else if (group.value.access && group.value.module === EModules.Scholarship) {
-        this.setValidatorsRequiredSelectGeneric(group, 'id');
-        this.setValidatorsRequiredSelectGeneric(this.form, 'school');
-      } else if (!group.value.access && group.value.module === EModules.Scholarship) {
-        this.unsetValidatorsRequiredSelectGeneric(group, 'id');
-        this.unsetValidatorsRequiredSelectGeneric(this.form, 'school');
+  public enableSchoolSelected(module: EModules) {
+    if (module === EModules.Scholarship) {
+      const formProfileScholarship = this.formProfiles.controls.find(group => group.value.module === EModules.Scholarship);
+      if (formProfileScholarship) {
+        if (formProfileScholarship.value.id !== null && formProfileScholarship.value.id !== undefined) {
+          this.setValidatorsRequiredSelectGeneric(this.form, 'school');
+        } else {
+          this.unsetValidatorsRequiredSelectGeneric(this.form, 'school');
+        }
       }
-    });
+    }
   }
 
   private setValidatorsRequiredSelectGeneric(group: FormGroup, field: string): void {
@@ -185,19 +177,18 @@ export class UserFormComponent implements OnInit {
 
   private editUser(): void {
     this.setValuesUserEdit();
-    this.setValuesUserRoles();
+    this.setValuesUserProfiles();
     this.loading = true;
   }
 
-  private setValuesUserRoles(): void {
+  private setValuesUserProfiles(): void {
     const { profiles } = this.user;
     if (!profiles) { return; }
     this.formProfiles.controls.forEach((control: FormGroup) => {
       const profile = profiles.find(data => data.software === control.value.module);
       if (profile) {
         control.patchValue({
-          id: profile.id,
-          access: true
+          id: profile.id
         });
       }
     });
@@ -214,9 +205,8 @@ export class UserFormComponent implements OnInit {
     });
   }
 
-
   public closeSidenav(): void {
-    this.sidenavService.close();
+    this.userDataComponent.closeSidenav();
   }
 
   private checkIsEdit(): boolean {
@@ -231,7 +221,11 @@ export class UserFormComponent implements OnInit {
     this.isSending = true;
     const user = this.setUserData();
     if (this.form.valid) {
-      this.store.saveUser(user);
+      this.store.saveUser(user).subscribe(() => {
+        this.authService.renewUserToken();
+        this.closeSidenav();
+      });
+
     }
     this.isSending = false;
   }

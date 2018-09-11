@@ -1,17 +1,20 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/catch';
 
-import { AuthService } from '../../shared/auth.service';
-
-import { School } from './models/school';
-import { Student } from './models/student';
 import { Process } from './models/process';
 import { Responsible } from './models/responsible';
 import { StudentSerie } from './models/studentSerie';
+import { ProcessDocument } from './models/processDocument';
+import { ProcessResponsibleInterface } from './interfaces/process-responsible-interface';
+import { ProcessCountStatusInterface } from './interfaces/process-count-status-interface';
+import { SchoolProcessInterface } from './interfaces/school-process-interface';
+import { ProcessDataInterface } from './interfaces/process-data-interface';
+import { EditProcessViewModel, NewProcessViewModel } from './interfaces/process-view-models';
+import { DocumentProcessDataInterface } from './interfaces/document-process-data-interface';
 
 @Injectable()
 export class ScholarshipService {
@@ -25,8 +28,7 @@ export class ScholarshipService {
 
 
   constructor(
-    private http: HttpClient,
-    private auth: AuthService
+    private http: HttpClient
   ) {
     this.refresh = new Subject<boolean>();
     this.refresh$ = this.refresh.asObservable();
@@ -55,10 +57,59 @@ export class ScholarshipService {
 
 
   // New
-  public getSchools(unitId: number): Observable<School[]> {
-    const url = '/scholarship/Process/getAllSchools/' + unitId;
+  public getProcessCountStatus(unitId: number): Observable<ProcessCountStatusInterface> {
+    const url = `/scholarship/process/status/unit/${unitId}/count`;
+    const params = new HttpParams().set('schoolId', this.schoolSelected.toString());
     return this.http
-      .get(url)
+      .get<ProcessCountStatusInterface>(url, { params: params })
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public getSchools(): Observable<SchoolProcessInterface[]> {
+    const url = `/scholarship/school`;
+    return this.http
+      .get<SchoolProcessInterface[]>(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+  private appendStatusParamsToProcess(params: HttpParams, status: number[]): HttpParams {
+    if (status.length > 0) {
+      status.forEach(s => {
+        params.append('statusIds', s.toString());
+      });
+    }
+    return params;
+  }
+
+  public getProcessesByUnit(schools: number[], status: number[], query: string): Observable<ProcessDataInterface[]> {
+    let params = new HttpParams();
+    if (query) { params = params.set('query', query); }
+    if (status.length > 0) {
+      status.forEach(s => {
+        params = params.append('statusIds', String(s));
+      });
+    }
+    if (schools.length > 0) {
+      schools.forEach(s => {
+        params = params.append('schoolsIds', String(s));
+      });
+    }
+    const url = `/scholarship/process/schools`;
+    return this.http
+      .get<ProcessDataInterface[]>(url, { params: params })
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public getProcessesBySchool(schoolId: number, status: number[], query: string): Observable<ProcessDataInterface[]> {
+    let params = new HttpParams();
+    if (query) { params = params.set('query', query); }
+    if (status.length > 0) {
+      status.forEach(s => {
+        params = params.append('statusIds', String(s));
+      });
+    }
+    const url = `/scholarship/process/school/${schoolId}`;
+    return this.http
+      .get<ProcessDataInterface[]>(url, { params: params })
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
@@ -69,36 +120,28 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getChildrenStudents(responsibleId: number): Observable<Student[]> {
-    const url = `/scholarship/process/getAllChildrenStudents/${responsibleId}`;
+  public getResponsible(responsibleCPF: string): Observable<Responsible> {
+    const url = `/scholarship/responsible/cpf/${responsibleCPF}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getResponsible(schoolId: number, responsibleCPF: string): Observable<Responsible> {
-    const url = `/scholarship/process/getResponsible?schoolId=${schoolId}&responsibleCPF=${responsibleCPF}`;
-    return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
-  }
-
-  public postProcess(process: Process): Observable<any> {
-    const url = '/scholarship/process/saveProcess';
+  public saveProcess(process: NewProcessViewModel): Observable<any> {
+    const url = '/scholarship/process/';
     return this.http
       .post(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
-
-  public getProcesses(schoolId: number, unitId: number): Observable<Process[]> {
-    const url = `/scholarship/process/getProcesses/${schoolId}/${unitId}`;
+  public editProcess(processId: number, process: NewProcessViewModel): Observable<any> {
+    const url = `/scholarship/process/${processId}`;
     return this.http
-      .get(url)
+      .put(url, process)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcessById(id: number): Observable<Process> {
-    const url = `/scholarship/process/getProcess/${id}`;
+  public getProcessById(id: number): Observable<EditProcessViewModel> {
+    const url = `/scholarship/process/${id}`;
     return this.http
       .get(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
@@ -111,102 +154,83 @@ export class ScholarshipService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public savePendency(pendencyDataProcess: any): Observable<Process> {
-    const url = '/scholarship/Process/savePendency/';
+  public changeProcessStatus(processId: number, status: number, model: { userId: number }): Observable<any> {
+    const url = `/scholarship/process/${processId}/status/${status}`;
     return this.http
-      .post(url, pendencyDataProcess)
+      .put<any>(url, model)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public updateToStatus(processStatusChanged: any): Observable<any> {
-    const url = '/scholarship/Process/changeStatus/';
+  public saveVacancy(processId: number, model: { userId: number, status: number, dataRegistration: Date }): Observable<any> {
+    const url = `/scholarship/process/${processId}/status/approve`;
     return this.http
-      .post(url, processStatusChanged)
+      .put<any>(url, model)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public saveVacancy(vacancyDataProcess: any): Observable<any> {
-    const url = '/scholarship/Process/saveVacancy/';
+  public savePendency(processId: number, model: { userId: number, pendency: string }): Observable<Process> {
+    const url = `/scholarship/process/${processId}/status/pending/`;
     return this.http
-      .post(url, vacancyDataProcess)
+      .put<any>(url, model)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public deleteProcess(processId, userId): Observable<any> {
-    const url = `/scholarship/Process/deleteProcess?idProcess=${processId}&idUser=${userId}`;
+  public saveReject(processId: number, model: { userId: number, motiveReject: string }) {
+    const url = `/scholarship/process/${processId}/status/rejected/`;
     return this.http
-      .delete(url)
+      .put<any>(url, model)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  saveReject(rejectDataProcess: any) {
-    const url = '/scholarship/Process/saveReject/';
+  public sentDocuments(processId: number, model: { userId: number }): Observable<any> {
+    const url = `/scholarship/process/${processId}/sentDocuments/`;
     return this.http
-      .post(url, rejectDataProcess)
+      .put<any>(url, model)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  getStudentSeries(): Observable<StudentSerie[]> {
-    const url = '/scholarship/process/getAllStudentsSeries';
+  public deleteProcess(processId): Observable<any> {
+    const url = `/scholarship/process/${processId}`;
     return this.http
-      .get(url)
+      .delete<any>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  sendDocument(submittedDocuments: any): Observable<Process> {
-    const url = '/scholarship/process/sendDocument/';
+  public getStudentSeries(): Observable<StudentSerie[]> {
+    const url = '/scholarship/process/series';
     return this.http
-      .post(url, submittedDocuments)
+      .get<StudentSerie[]>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
+  public getAllDocuments(): Observable<ProcessDocument[]> {
+    const url = '/scholarship/process/documents';
+    return this.http
+      .get<ProcessDocument[]>(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  public getProcessDocuments(processId: number): Observable<DocumentProcessDataInterface[]> {
+    const url = `/scholarship/process/${processId}/documents`;
+    return this.http
+      .get<DocumentProcessDataInterface[]>(url)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
   /*
   Consult
    */
 
-  login(cpf: string, password: string) {
-    const body = JSON.stringify({ cpf: cpf, password: password });
+  public generateNewPasswordResponsible(model: { userId: number, responsibleId: number }): Observable<any> {
+    const url = '/scholarship/responsible/password/new';
     return this.http
-      .post<any>('/scholarship/responsible/login', body)
-      .retry(3)
-      .toPromise()
-      .then(data => {
-        let responsible = data.responsible as Responsible;
-        if (responsible) {
-          // user.photoUrl = `${environment.apiUrl}/users/photo/${user.identifier}/${user.photoDate}`;
-          localStorage.setItem('currentResponsible', JSON.stringify(responsible));
-          localStorage.setItem('tokenResponsible', data.token);
-          this.currentResponsible.emit(responsible);
-          this.showApp.emit(true);
-        } else {
-          responsible = new Responsible();
-          this.currentResponsible.emit(responsible);
-          this.showApp.emit(false);
-        }
-        return responsible;
-      }).catch((error: any) => {
-        Promise.reject(error);
-      });
-  }
-
-  public getPasswordResponsible(processId: number): Observable<Responsible> {
-    const url = `/scholarship/responsible/getPasswordByProcess/${processId}`;
-    return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
-  }
-
-  public generateNewPasswordResponsible(dataNewPassword: any): Observable<string> {
-    const url = '/scholarship/responsible/generateNewPassword/';
-    return this.http
-    .post(url, dataNewPassword)
+    .put<any>(url, model)
     .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  public getProcessesResponsible(responsibleId): Observable<Process[]> {
-    const url = `/scholarship/responsible/getAllProcesses/${responsibleId}`;
+  public getProcessesResponsible(responsibleId): Observable<ProcessResponsibleInterface[]> {
+    const url = `/scholarship/process/responsible/${responsibleId}`;
     return this.http
-      .get(url)
+      .get<ProcessResponsibleInterface[]>(url)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 }

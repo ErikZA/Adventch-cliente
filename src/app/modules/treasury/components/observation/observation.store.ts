@@ -90,26 +90,26 @@ export class ObservationStore {
 
   public searchStatus(status: number, observations: Observation[]): Observation[] {
     // tslint:disable-next-line:triple-equals
-    return observations.filter(f => f.status == status);
+    return Array.isArray(observations) ? observations.filter(f => f.status == status) : [];
   }
 
   public searchChurches(church: number, observations: Observation[]): Observation[] {
     // tslint:disable-next-line:triple-equals
-    return observations.filter(f => f.church.id == church);
+    return Array.isArray(observations) ? observations.filter(f => f.church.id == church) : [];
   }
 
   public searchAnalysts(analyst: number, observations: Observation[]): Observation[] {
     // tslint:disable-next-line:triple-equals
-    return observations.filter(f => f.church.district.analyst.id == analyst);
+    return Array.isArray(observations) ? observations.filter(f => f.church.district.analyst.id == analyst) : [];
   }
 
   public searchResponsibles(responsible: number, observations: Observation[]): Observation[] {
     // tslint:disable-next-line:triple-equals
-    return observations.filter(f => f.responsible.id == responsible);
+    return Array.isArray(observations) ? observations.filter(f => f.responsible.id == responsible) : [];
   }
 
   public searchInDates(startDate: Date, endDate: Date, observations: Observation[]) {
-    return observations.filter(f => new Date(f.date) > startDate && new Date(f.date) < endDate);
+    return Array.isArray(observations) ? observations.filter(f => new Date(f.date) > startDate && new Date(f.date) < endDate) : [];
   }
 
   /* Carregar */
@@ -121,6 +121,7 @@ export class ObservationStore {
     this.loadResponsibles();
   }
   private loadChurches() {
+    this.churches = new Array<Church>();
     if (this.dataStore.observations != null) {
       this.dataStore.observations.forEach(observation => {
         if (this.churches.map(x => x.id).indexOf(observation.church.id) === -1) {
@@ -133,6 +134,7 @@ export class ObservationStore {
 
 
   private loadAnalysts() {
+    this.analysts = new Array<User>();
     this.dataStore.observations.forEach(observation => {
       if (this.analysts.map(x => x.id).indexOf(observation.church.district.analyst.id) === -1) {
         this.analysts.push(observation.church.district.analyst);
@@ -142,6 +144,7 @@ export class ObservationStore {
   }
 
   private loadResponsibles() {
+    this.responsibles = new Array<User>();
     this.dataStore.observations.forEach(observation => {
       if (this.responsibles.map(x => x.id).indexOf(observation.responsible.id) === -1) {
         this.responsibles.push(observation.responsible);

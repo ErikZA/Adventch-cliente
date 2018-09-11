@@ -69,7 +69,7 @@ export class ProcessesStore {
 
   public loadSchools(): void {
     const { id } = auth.getCurrentUnit();
-    this.service.getSchools(id).subscribe((data: School[]) => {
+    this.service.getSchools().subscribe((data: School[]) => {
       this.dataStore.schools = data;
       this._schools.next(Object.assign({}, this.dataStore).schools);
     }, error => console.log('Could not load todos schools.'));
@@ -77,7 +77,7 @@ export class ProcessesStore {
 
   public loadAllSchools(): void {
     const { id } = auth.getCurrentUnit();
-    this.service.getSchools(id).subscribe((data: School[]) => {
+    this.service.getSchools().subscribe((data: School[]) => {
       if (auth.getCurrentUser().idSchool === 0) {
         this.dataStore.schools = data;
       } else {
@@ -88,15 +88,15 @@ export class ProcessesStore {
   }
 
   private loadAllProcesses(): void {
-    let idSchool;
-    idSchool = auth.getCurrentUser().idSchool === 0 ? -1 : auth.getCurrentUser().idSchool;
-    const { id } = auth.getCurrentUnit();
-    this.service.getProcesses(idSchool, id).subscribe(data => {
-      this.setStatus(data);
-      this.setStudentsSerie(data);
-      this.dataStore.processes = data;
-      this._processes.next(Object.assign({}, this.dataStore).processes);
-    }, error => console.log('Could not load todos processes.'));
+    // let idSchool;
+    // idSchool = auth.getCurrentUser().idSchool === 0 ? -1 : auth.getCurrentUser().idSchool;
+    // const { id } = auth.getCurrentUnit();
+    // this.service.getProcesses(idSchool, id).subscribe(data => {
+    //   this.setStatus(data);
+    //   this.setStudentsSerie(data);
+    //   this.dataStore.processes = data;
+    //   this._processes.next(Object.assign({}, this.dataStore).processes);
+    // }, error => console.log('Could not load todos processes.'));
   }
 
   private loadSeriesStudents(): void {
@@ -106,27 +106,27 @@ export class ProcessesStore {
     });
   }
 
-  public loadProcess(id: number) {
-    this.service.getProcessById(id).subscribe(data => {
-      let notFound = true;
-      data.statusString = this.getStatusToString(data.status);
-      data = this.setStudentSerieName(data);
-      if (this.dataStore.processes != null) {
-        this.dataStore.processes.forEach((item, index) => {
-          if (item.id === data.id) {
-            this.dataStore.processes[index] = data;
-            notFound = false;
-          }
-        });
-      } else {
-        this.dataStore.processes = new Array<Process>();
-      }
-      if (notFound) {
-        this.dataStore.processes.push(data);
-      }
-      this._processes.next(Object.assign({}, this.dataStore).processes);
-    }, error => console.log('Could not load todo.'));
-  }
+  // public loadProcess(id: number) {
+  //   this.service.getProcessById(id).subscribe(data => {
+  //     let notFound = true;
+  //     data.statusString = this.getStatusToString(data.status);
+  //     data = this.setStudentSerieName(data);
+  //     if (this.dataStore.processes != null) {
+  //       this.dataStore.processes.forEach((item, index) => {
+  //         if (item.id === data.id) {
+  //           this.dataStore.processes[index] = data;
+  //           notFound = false;
+  //         }
+  //       });
+  //     } else {
+  //       this.dataStore.processes = new Array<Process>();
+  //     }
+  //     if (notFound) {
+  //       this.dataStore.processes.push(data);
+  //     }
+  //     this._processes.next(Object.assign({}, this.dataStore).processes);
+  //   }, error => console.log('Could not load todo.'));
+  // }
 
   public loadProcessByIdentity(identity: string) {
     this.service.getProcessByIdentity(identity).subscribe((data: Process) => {
@@ -149,19 +149,19 @@ export class ProcessesStore {
   }
 
 
-  public saveProcess(processData: any): void {
-    this.service.postProcess(processData).subscribe((process: Process) => {
-      this.loadProcess(process.id);
-      this.generateReport(process.id, 'Processo salvo com sucesso!');
-      setTimeout(() => {
-        this.location.back();
-        this.sidenavService.close();
-      }, 2000);
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
-    });
-  }
+  // public saveProcess(processData: any): void {
+  //   this.service.postProcess(processData).subscribe((process: Process) => {
+  //     this.loadProcess(process.id);
+  //     this.generateReport(process.id, 'Processo salvo com sucesso!');
+  //     setTimeout(() => {
+  //       this.location.back();
+  //       this.sidenavService.close();
+  //     }, 2000);
+  //   }, err => {
+  //     console.log(err);
+  //     this.snackBar.open('Erro ao salvar o processo, tente novamente.', 'OK', { duration: 5000 });
+  //   });
+  // }
 
   private setStatus(processes: Process[]): void {
     if (processes) {
@@ -279,23 +279,23 @@ export class ProcessesStore {
   }
 
   public changeStatus(processStatusChanged: any): void {
-    this.service.updateToStatus(processStatusChanged).subscribe(() => {
-      processStatusChanged.process.status = processStatusChanged.status;
-      this.updateProcess(processStatusChanged.process);
-    }, err => {
-      this.snackBar.open('Erro ao salvar o status do processo, tente novamente.', 'OK', { duration: 5000 });
-    });
+    // this.service.updateToStatus(processStatusChanged).subscribe(() => {
+    //   processStatusChanged.process.status = processStatusChanged.status;
+    //   this.updateProcess(processStatusChanged.process);
+    // }, err => {
+    //   this.snackBar.open('Erro ao salvar o status do processo, tente novamente.', 'OK', { duration: 5000 });
+    // });
   }
 
   public sendRejection(processRejection: any, idMotive: number): void {
-    processRejection.motive = this.setReasonForRejection(idMotive);
-    this.service.saveReject(processRejection).subscribe(() => {
-      processRejection.process.status = 7;
-      processRejection.process.motiveReject = processRejection.motive;
-      this.updateProcess(processRejection.process);
-    }, err => {
-      this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 });
-    });
+    // processRejection.motive = this.setReasonForRejection(idMotive);
+    // this.service.saveReject(processRejection).subscribe(() => {
+    //   processRejection.process.status = 7;
+    //   processRejection.process.motiveReject = processRejection.motive;
+    //   this.updateProcess(processRejection.process);
+    // }, err => {
+    //   this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 });
+    // });
   }
 
   private setReasonForRejection(idMotive: number): string {
@@ -313,35 +313,35 @@ export class ProcessesStore {
   }
 
   public savePendecy(pendecyDataProcess: any): void {
-    this.service.savePendency(pendecyDataProcess).subscribe(() => {
-      pendecyDataProcess.process.status = 3;
-      pendecyDataProcess.process.pendency = pendecyDataProcess.pendency;
-      this.updateProcess(pendecyDataProcess.process);
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao salvar pendência do processo, tente novamente.', 'OK', { duration: 5000 });
-    });
+    // this.service.savePendency(pendecyDataProcess).subscribe(() => {
+    //   pendecyDataProcess.process.status = 3;
+    //   pendecyDataProcess.process.pendency = pendecyDataProcess.pendency;
+    //   this.updateProcess(pendecyDataProcess.process);
+    // }, err => {
+    //   console.log(err);
+    //   this.snackBar.open('Erro ao salvar pendência do processo, tente novamente.', 'OK', { duration: 5000 });
+    // });
   }
 
   public sendDocuments(sendDocumentsDataProcess: any): void {
-    this.service.sendDocument(sendDocumentsDataProcess).subscribe(() => {
-      sendDocumentsDataProcess.process.isSendDocument = sendDocumentsDataProcess.isSendDocument;
-      this.updateProcess(sendDocumentsDataProcess.process);
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao salvar o envio de documentos do processo, tente novamente.', 'OK', { duration: 5000 });
-    });
+    // this.service.sendDocument(1).subscribe(() => {
+    //   sendDocumentsDataProcess.process.isSendDocument = sendDocumentsDataProcess.isSendDocument;
+    //   this.updateProcess(sendDocumentsDataProcess.process);
+    // }, err => {
+    //   console.log(err);
+    //   this.snackBar.open('Erro ao salvar o envio de documentos do processo, tente novamente.', 'OK', { duration: 5000 });
+    // });
   }
 
   public saveVacancy(vacacyDataProcess: any): void {
-    this.service.saveVacancy(vacacyDataProcess).subscribe(() => {
-      vacacyDataProcess.process.status = vacacyDataProcess.status;
-      vacacyDataProcess.process.dateRegistration = vacacyDataProcess.dateRegistration;
-      this.updateProcess(vacacyDataProcess.process);
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao salvar a aprovação do processo, tente novamente.', 'OK', { duration: 5000 });
-    });
+    // this.service.saveVacancy(vacacyDataProcess).subscribe(() => {
+    //   vacacyDataProcess.process.status = vacacyDataProcess.status;
+    //   vacacyDataProcess.process.dateRegistration = vacacyDataProcess.dateRegistration;
+    //   this.updateProcess(vacacyDataProcess.process);
+    // }, err => {
+    //   console.log(err);
+    //   this.snackBar.open('Erro ao salvar a aprovação do processo, tente novamente.', 'OK', { duration: 5000 });
+    // });
   }
 
   public generateNewPasswordResponsible(newPasswordDataResponsible: any) {
@@ -356,25 +356,22 @@ export class ProcessesStore {
   }
 
   public generateReport(id: number, message: string): void {
-    this.service.getPasswordResponsible(id).subscribe(data => {
-      const password = data.password;
-      this.reportService.reportProcess(id, password).subscribe(dataURL => {
-        const fileUrl = URL.createObjectURL(dataURL);
-        const element = document.createElement('a');
-        element.href = fileUrl;
-        element.download = 'processo.pdf';
-        element.target = '_blank';
-        element.click();
-      }, err => {
-          console.log(err);
-          this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
-      });
-      this.snackBar.open(message, 'OK', { duration: 5000 });
+    const password = '';
+    this.reportService.reportProcess(id).subscribe(dataURL => {
+      const fileUrl = URL.createObjectURL(dataURL);
+      const element = document.createElement('a');
+      element.href = fileUrl;
+      element.download = 'processo.pdf';
+      element.target = '_blank';
+      element.click();
+    }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
     });
   }
 
   public removeProcess(id: number, idUser: number) {
-    this.service.deleteProcess(id, idUser).subscribe(() => {
+    this.service.deleteProcess(id).subscribe(() => {
       this.dataStore.processes.forEach((t, i) => {
         if (t.id === id) {
           this.dataStore.processes.splice(i, 1);

@@ -1,4 +1,4 @@
-<form [formGroup]="form" fxLayout="column" fxLayoutGap="25px" *ngIf="loading">
+<form [formGroup]="form" fxLayout="column" fxLayoutGap="25px" *ngIf="loadingForm">
     <mat-form-field fxFlex>
         <input matInput [placeholder]="loginName" formControlName="login" maxlength="200">
         <mat-icon matSuffix>person</mat-icon>
@@ -9,5 +9,5 @@
         <mat-icon matSuffix (click)="hide = !hide">{{ hide ? 'visibility' : 'visibility_off'}}</mat-icon>
     </mat-form-field>
     <mat-checkbox color="primary" [checked]="remember" (change)="rememberMe($event.checked)">Lembrar-me</mat-checkbox>
-    <button fxFlex mat-flat-button color="primary" type="submit" (click)="login()">ENTRAR</button>
+    <button fxFlex mat-flat-button color="primary" type="submit" [disabled]="loading" (click)="login()">ENTRAR</button>
 </form>

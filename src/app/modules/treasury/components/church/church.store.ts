@@ -20,16 +20,8 @@ export class ChurchStore {
   churches$: Observable<Church[]>;
   private _churches: BehaviorSubject<Church[]>;
 
-  cities$: Observable<City[]>;
-  private _cities: BehaviorSubject<City[]>;
-
-  analysts$: Observable<User[]>;
-  private _analysts: BehaviorSubject<User[]>;
-
   private dataStore: {
-    churches: Church[],
-    cities: City[],
-    analysts: User[]
+    churches: Church[]
   };
   public church: Church;
 
@@ -39,18 +31,10 @@ export class ChurchStore {
     private sidenavService: SidenavService
   ) {
     this.dataStore = {
-      churches: [],
-      cities: [],
-      analysts: []
+      churches: []
     };
     this._churches = <BehaviorSubject<Church[]>>new BehaviorSubject([]);
     this.churches$ = this._churches.asObservable();
-
-    this._cities = <BehaviorSubject<City[]>>new BehaviorSubject([]);
-    this.cities$ = this._cities.asObservable();
-
-    this._analysts = <BehaviorSubject<User[]>>new BehaviorSubject([]);
-    this.analysts$ = this._analysts.asObservable();
 
     this.resetChurch();
   }
@@ -92,37 +76,6 @@ export class ChurchStore {
   public searchAnalysts(idAnalyst: number, churches: Church[]): Church[] {
     // tslint:disable-next-line:triple-equals
     return churches.filter(x => x.district.analyst.id == idAnalyst);
-  }
-
-  /* Carregar */
-  public loadFilters() {
-    this.loadCities();
-    this.loadAnalysts();
-  }
-  private loadCities() {
-    this.dataStore.cities = new Array<City>();
-    if (!this.dataStore.churches && Array.isArray(this.dataStore.churches)) {
-      this.dataStore.churches.forEach(church => {
-        if (this.dataStore.cities.map(x => x.id).indexOf(church.city.id) === -1) {
-          this.dataStore.cities.push(church.city);
-        }
-      });
-      this._cities.next(Object.assign({}, this.dataStore).cities);
-      this.dataStore.cities.sort((a, b) => a.name.localeCompare(b.name));
-    }
-  }
-
-  private loadAnalysts() {
-    this.dataStore.analysts = new Array<User>();
-    if (!this.dataStore.churches && Array.isArray(this.dataStore.churches)) {
-      this.dataStore.churches.forEach(church => {
-        if (church.district.id !== 0 && this.dataStore.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
-          this.dataStore.analysts.push(church.district.analyst);
-        }
-      });
-      this._analysts.next(Object.assign({}, this.dataStore).analysts);
-      this.dataStore.analysts.sort((a, b) => a.name.localeCompare(b.name));
-    }
   }
 
   /* Remoção */

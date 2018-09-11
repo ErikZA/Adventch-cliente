@@ -5,21 +5,18 @@ import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 // core
 import { LayoutComponent } from './shared/layout/layout.component';
 
-import { AuthGuard } from './shared/auth.guard';
-import { AdminGuard } from './shared/admin.guard';
-import { ModuleGuard } from './shared/module.guard';
+import { AdminGuard } from './shared/guards/admin.guard';
+import { ModuleGuard } from './shared/guards/module.guard';
 
 // shared
 import { DashboardComponent } from './shared/dashboard/dashboard.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 import { ReleaseNotesDataComponent } from './shared/release-notes/components/release-notes-data/release-notes-data.component';
-import { ScholarshipModule } from './modules/scholarship/scholarship.module';
 import { ReleaseNotesFormComponent } from './shared/release-notes/components/release-notes-form/release-notes-form.component';
 import { EditUserComponent } from './shared/profile/edit-user/edit-user.component';
 import { ChangePasswordComponent } from './shared/change-password/change-password.component';
 
 import { EModules } from './shared/models/modules.enum';
-import { AuthModule } from './auth/auth.module';
 import { AuthMainGuard } from './shared/guards/auth-main.guard';
 
 // components

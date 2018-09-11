@@ -77,6 +77,13 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+  getChurch(unitId): Observable<Church> {
+    const url = '/treasury/churches/getChurch/' + unitId;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
   loadChurches(unitId): Observable<Church[]> {
     const url = '/treasury/churches/loadChurches/' + unitId;
     return this.http
@@ -96,6 +103,14 @@ export class TreasuryService {
     const url = '/treasury/churches/deleteChurch/' + id;
     return this.http
       .delete(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
+
+  getUsers2(unitId): Observable<User[]> {
+    const url = '/treasury/churches/getUsers/' + unitId;
+    return this.http
+      .get(url)
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }

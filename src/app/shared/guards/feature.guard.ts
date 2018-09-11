@@ -4,9 +4,9 @@ import { CanActivate, CanLoad, ActivatedRouteSnapshot, RouterStateSnapshot, Rout
 import { Observable } from 'rxjs/Observable';
 
 import { MatSnackBar } from '@angular/material';
-import { EFeatures } from './models/EFeatures.enum';
-import { EPermissions } from './models/permissions.enum';
-import { PermissionService } from '../core/components/permissions/service/permission.service';
+import { EPermissions } from '../models/permissions.enum';
+import { PermissionService } from '../../core/components/permissions/service/permission.service';
+import { EFeatures } from '../models/EFeatures.enum';
 
 
 @Injectable()

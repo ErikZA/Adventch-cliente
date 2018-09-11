@@ -3,8 +3,8 @@ import { CanActivate, CanLoad, ActivatedRouteSnapshot, RouterStateSnapshot, Rout
 
 import { Observable } from 'rxjs/Observable';
 
-import { AuthService } from './auth.service';
-import { EModules } from './models/modules.enum';
+import { AuthService } from '../auth.service';
+import { EModules } from '../models/modules.enum';
 import { MatSnackBar } from '@angular/material';
 
 

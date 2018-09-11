@@ -3,7 +3,6 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 
 import { MatSidenav } from '@angular/material';
@@ -14,8 +13,8 @@ import { ScholarshipService } from '../../scholarship.service';
 
 import { School } from '../../models/school';
 import { Process } from '../../models/process';
-import { ProcessesStore } from './processes.store';
 import { auth } from '../../../../auth/auth';
+import { ProcessCountStatusInterface } from '../../interfaces/process-count-status-interface';
 
 @Component({
   selector: 'app-scholarship',
@@ -28,7 +27,10 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
   idSchool = -1;
   schools$: Observable<School[]>;
   processes$: Observable<Process[]>;
+  processesCountStatus: ProcessCountStatusInterface;
+  loading = true;
 
+  subscribeProcessesCount: Subscription;
   subscribeUnit: Subscription;
 
   constructor(
@@ -36,7 +38,6 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private router: Router,
     private sidenavService: SidenavService,
-    private store: ProcessesStore,
     private location: Location
   ) { }
 
@@ -44,20 +45,29 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
     this.getAllDatas();
     this.setSchoolInitial();
     this.sidenavService.setSidenav(this.sidenavRight);
-    this.subscribeUnit = auth.currentUnit.subscribe(() => {
-      this.setSchoolInitial();
-      this.getAllDatas();
-    });
   }
 
   ngOnDestroy() {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
+    if (this.subscribeProcessesCount) { this.subscribeProcessesCount.unsubscribe(); }
   }
 
   private getAllDatas(): void {
-    this.processes$ = this.store.processes$;
-    this.schools$ = this.store.schools$;
-    this.store.loadAll();
+    this.schools$ = this.scholarshipService.getSchools();
+    if (!this.authService.getCurrentUser().idSchool) {
+      this.getCountProcesses();
+    }
+  }
+
+  private getCountProcesses(): void {
+    this.loading = true;
+    const unit = auth.getCurrentUnit();
+    this.subscribeProcessesCount = this.scholarshipService.getProcessCountStatus(unit.id).subscribe(counts => {
+      if (counts) {
+        this.processesCountStatus = counts;
+        this.loading = false;
+      }
+    });
   }
 
   private setSchoolInitial(): void {
@@ -70,25 +80,14 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
     this.changeDashboard();
   }
 
-  public getTotalByStatus(idStatus): Observable<Process[]> {
-    return this.processes$.pipe(
-      map((todos: Process[]) =>
-          todos != null ? todos.filter(p => p.status === idStatus) : []
-    ));
-  }
-
   public closeSidenav(): void {
     this.location.back();
     this.sidenavRight.close();
   }
 
-  public changeSchool(): void {
-    this.scholarshipService.schoolSelected = this.idSchool;
-  }
-
   public changeDashboard(): void {
-    this.processes$ = this.store.filterProcessesSchool(this.idSchool);
-    this.changeSchool();
+    this.scholarshipService.schoolSelected = this.idSchool;
+    this.getCountProcesses();
   }
 
   public redirectToProcess(idStatus) {

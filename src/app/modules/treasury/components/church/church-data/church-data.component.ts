@@ -9,12 +9,9 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Church } from '../../../models/church';
 import { ChurchStore } from '../church.store';
-import { AuthService } from '../../../../../shared/auth.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { User } from '../../../../../shared/models/user.model';
 import { City } from '../../../../../shared/models/city.model';
-import { TreasuryService } from '../../../treasury.service';
 import { Districts } from '../../../models/districts';
 import { auth } from '../../../../../auth/auth';
 
@@ -35,10 +32,8 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   churches$: Observable<Church[]>;
   churches: Church[] = new Array<Church>();
 
-  cities$: Observable<City[]>;
   cities: City[] = new Array<City>();
-
-  analysts$: Observable<User[]>;
+  analysts: User[] = new Array<User>();
   districts: Districts[] = new Array<Districts>();
 
   filterDistrict: number;
@@ -48,26 +43,17 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: ChurchStore,
-    private authService: AuthService,
     private confirmDialogService: ConfirmDialogService,
-    private sidenavService: SidenavService,
     private router: Router,
     private route: ActivatedRoute,
-    private service: TreasuryService
   ) { }
 
   ngOnInit() {
-    this.getData();
-    this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/igrejas')]);
     this.search$.subscribe(search => {
       this.filterText = search;
       this.search();
     });
-    this.subscribeUnit = auth.currentUnit.subscribe(() => {
-      this.getData();
-      this.closeSidenav();
-    });
-    this.sidenavService.setSidenav(this.sidenavRight);
+    this.getData();
   }
 
   ngOnDestroy() {
@@ -77,35 +63,50 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   private getData() {
     this.churches$ = this.store.churches$;
     this.store.loadAll();
-    this.loadAll();
-    this.churches$.subscribe(() => {
-      this.store.loadFilters();
+    this.churches$.subscribe(x => {
+      this.loadAll(x);
     });
   }
 
-  private loadAll() {
-    this.loadDistricts();
-    this.loadCities();
-    this.loadAnalysts();
+  private loadAll(x: Church[]): void {
+    this.loadCities(x);
+    this.loadAnalysts(x);
+    this.loadDistricts(x);
   }
 
-  private loadDistricts() {
-    this.service.getDistricts(auth.getCurrentUnit().id).subscribe((data: Districts[]) => {
-      this.districts = data;
+  private loadCities(data: Church[]): void {
+    this.churches = new Array<Church>();
+    data.forEach(church => {
+      if (this.cities.map(x => x.id).indexOf(church.city.id) === -1) {
+        this.cities.push(church.city);
+      }
     });
+    this.cities.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  private loadCities() {
-    this.cities$ = this.store.cities$;
+  private loadAnalysts(data: Church[]): void {
+    this.analysts = new Array<User>();
+    data.forEach(church => {
+      if (church.district.id !== 0 && this.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
+        this.analysts.push(church.district.analyst);
+      }
+    });
+    this.analysts.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  private loadAnalysts() {
-    this.analysts$ = this.store.analysts$;
+  private loadDistricts(data: Church[]): void {
+    this.districts = new Array<Districts>();
+    data.forEach(church => {
+      if (church.district.id !== 0 && this.districts.map(x => x.id).indexOf(church.district.id) === -1) {
+        this.districts.push(church.district);
+      }
+    });
+    this.districts.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   /* Usados pelo component */
   closeSidenav() {
-    this.sidenavService.close();
+    this.sidenavRight.close();
     this.router.navigate(['tesouraria/igrejas']);
   }
 
@@ -114,7 +115,7 @@ export class ChurchDataComponent implements OnInit, OnDestroy {
   }
 
   openSidenav() {
-    this.sidenavService.open();
+    this.sidenavRight.open();
   }
 
   remove(church: Church) {
