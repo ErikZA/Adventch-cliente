@@ -57,6 +57,7 @@ export class AvaliationDataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/avaliacoes')]);
     this.search$.subscribe(search => {
       this.filterText = search;
