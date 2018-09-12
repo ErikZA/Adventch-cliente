@@ -40,38 +40,38 @@
             </mat-form-field>
           </mat-list>
 
-          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-            <mat-form-field>
-              <mat-select placeholder="Igreja" (change)="search()" [(ngModel)]="filterChurch">
-                <mat-option value="0">TODAS</mat-option>
-                <mat-option *ngFor="let church of (churches$ | async )" [value]="church.id">
-                  {{ church.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </mat-list>
+                    <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+                        <mat-form-field>
+                            <mat-select placeholder="Igreja" (change)="search()" [(ngModel)]="filterChurch">
+                                <mat-option value="0">TODAS</mat-option>
+                                <mat-option *ngFor="let church of churches" [value]="church.id">
+                                    {{ church.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-list>
 
-          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-            <mat-form-field>
-              <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
-                <mat-option [value]="0">TODOS</mat-option>
-                <mat-option *ngFor="let analyst of (analysts$ | async )" [value]="analyst.id">
-                  {{ analyst.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </mat-list>
+                    <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+                        <mat-form-field>
+                            <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
+                                <mat-option [value]="0">TODOS</mat-option>
+                                <mat-option *ngFor="let analyst of analysts" [value]="analyst.id">
+                                    {{ analyst.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-list>
 
-          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-            <mat-form-field>
-              <mat-select placeholder="Responsável" (change)="search()" [(ngModel)]="filterResponsible">
-                <mat-option value="0">TODOS</mat-option>
-                <mat-option *ngFor="let responsible of (responsibles$ | async )" [value]="responsible.id">
-                  {{ responsible.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </mat-list>
+                    <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+                        <mat-form-field>
+                            <mat-select placeholder="Responsável" (change)="search()" [(ngModel)]="filterResponsible">
+                                <mat-option value="0">TODOS</mat-option>
+                                <mat-option *ngFor="let responsible of responsibles" [value]="responsible.id">
+                                    {{ responsible.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-list>
 
           <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
             <mat-form-field>
@@ -112,7 +112,7 @@
       <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()"
         [scrollWindow]="false">
         <mat-accordion>
-          <div *ngFor="let observation of (observations$ | async ); index as i">
+          <div *ngFor="let observation of observations; index as i">
             <mat-expansion-panel hideToggle *ngIf="i <= showList">
               <mat-expansion-panel-header>
                 <mat-panel-description fxLayout="row">
@@ -166,7 +166,5 @@
   </div>
 </div>
 <ng-template [Feature]="49" permission="1">
-  <button mat-fab color="primary" class="mat-fab-right" routerLink="./novo" (click)="openSidenav()">
-    <mat-icon aria-label="Adicionar">add</mat-icon>
-  </button>
+    <button mat-fab color="primary" class="mat-fab-right" routerLink="./novo"><mat-icon aria-label="Adicionar">add</mat-icon></button>
 </ng-template>

@@ -25,15 +25,5 @@ export class Treasurer {
   dateLastEdition?: Date;
   constructor(
   ) { }
-
-  getFunction() {
-    if (this.function === 1) {
-      return 'Tesoureiro (a)';
-    }
-    if (this.function === 2) {
-      return 'Tesoureiro (a) Associado (a)';
-    }
-    return 'Tesoureiro (a) Assistente';
-  }
 }
 

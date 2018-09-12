@@ -22,16 +22,20 @@ export class TreasuryService {
     private http: HttpClient
   ) { }
 
-  getTreasurer() {
-    return this.treasurer;
+  getTreasurer(id: number): Observable<Treasurer> {
+    const url = '/treasury/treasurers/getTreasurer/' + id;
+    return this.http
+      .get(url) as Observable<Treasurer>;
   }
 
   setTreasurer(treasurer) {
     this.treasurer = treasurer;
   }
 
-  getDistrict() {
-    return this.district;
+  getDistrict(id: number): Observable<Districts> {
+    const url = '/treasury/districts/getDistrict/' + id;
+    return this.http
+      .get(url) as Observable<Districts>;
   }
 
   setDistrict(districts) {
@@ -179,6 +183,13 @@ export class TreasuryService {
       .map((res: Response) => res)
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
+  getObservation(id: number): Observable<Observation> {
+    const url = '/treasury/observations/GetObservation/' + id;
+    return this.http
+      .get(url)
+      .map((res: Response) => res)
+      .catch((error: any) => Observable.throw(error || 'Server error'));
+  }
 
   saveObservation(data): Observable<Observation> {
     const url = '/treasury/observations/saveObservation';
@@ -195,7 +206,7 @@ export class TreasuryService {
       .catch((error: any) => Observable.throw(error || 'Server error'));
   }
 
-  finalizeObservation(data): Observable<Observation> {
+  finalizeObservation(data: { id: number }): Observable<Observation> {
     const url = '/treasury/observations/finalizeObservation/';
     return this.http
       .post(url, data)

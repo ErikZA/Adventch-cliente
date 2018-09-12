@@ -1,101 +1,75 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { auth } from './../../../../../auth/auth';
+import { Component, OnInit } from '@angular/core';
 
-
-import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-import { distinctUntilChanged } from 'rxjs/operators';
 
 import { Districts } from '../../../models/districts';
-import { DistrictsStore } from '../districts.store';
 import { Router } from '@angular/router';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
-import { MatSidenav, MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { TreasuryService } from '../../../treasury.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
-import { auth } from '../../../../../auth/auth';
+import { utils } from '../../../../../shared/utils';
+import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 
 @Component({
   selector: 'app-districts-data',
   templateUrl: './districts-data.component.html',
   styleUrls: ['./districts-data.component.scss']
 })
-export class DistrictsDataComponent implements OnInit, OnDestroy {
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
+@AutoUnsubscribe()
+export class DistrictsDataComponent extends AbstractSidenavContainer implements OnInit {
+  protected componentUrl = 'tesouraria/distritos';
 
   searchButton = false;
   showList = 15;
   search$ = new Subject<string>();
-  subscribeUnit: Subscription;
 
-  districts$: Observable<Districts[]>;
-  district: Districts[] = new Array<Districts>();
+  districtsCache: Districts[] = [];
+  districts: Districts[] = [];
+
+  sub1: Subscription;
 
   constructor(
-    private store: DistrictsStore,
-    private router: Router,
+    protected router: Router,
     private treasureService: TreasuryService,
-    private sidenavService: SidenavService,
     private snackBar: MatSnackBar,
     private confirmDialogService: ConfirmDialogService,
-  ) { }
+  ) { super(router); }
 
   ngOnInit() {
-    this.getData();
-    this.search$.subscribe(search => {
-      this.districts$ = Observable.of(this.store.search(search));
+    this.sub1 = this.getData()
+      .switchMap(() => this.search$)
+      .subscribe(value => {
+        this.districts = this.districtsCache.filter(d => utils.buildSearchRegex(value).test(d.name));
+      });
+  }
+  getData() {
+    return this.treasureService.getDistricts(auth.getCurrentUnit().id).do(districts => {
+      this.districtsCache = districts;
+      this.districts = districts;
     });
-    this.getData();
-    this.subscribeUnit = auth.currentUnit.pipe(distinctUntilChanged()).subscribe(() => {
-      this.getData();
-    });
-    this.sidenavService.setSidenav(this.sidenavRight);
   }
-
-  ngOnDestroy() {
-    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
-  }
-
-  private getData() {
-    this.districts$ = this.store.districts$;
-    this.store.loadAll();
-  }
-
   /* Usados pelo component */
-  closeSidenav() {
-    this.treasureService.setDistrict(new Districts());
-    this.sidenavService.close();
-    this.router.navigate(['tesouraria/distritos']);
-  }
-
   onScroll() {
     this.showList += 15;
-  }
-
-  openSidenav() {
-    this.treasureService.setDistrict(new Districts());
-    this.sidenavService.open();
   }
 
   remove(district: Districts) {
     this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover este distrito?', 'REMOVER')
-      .subscribe(res => {
-        if (res) {
-          this.store.remove(district.id);
-          this.snackBar.open('Distrito removido com sucesso.', 'OK', { duration: 5000 });
-        }
-      });
+      .skipWhile(res => res !== true)
+      .switchMap(() => this.treasureService.removeDistricts(district.id))
+      .switchMap(() => this.getData())
+      .do(() => this.snackBar.open('Distrito removido com sucesso.', 'OK', { duration: 5000 }))
+      .subscribe();
   }
 
   edit(district: Districts) {
     if (district.id === undefined) {
       return;
     }
-    this.store.openDistrict(district);
     this.router.navigate(['tesouraria/distritos/' + district.id + '/editar']);
-    this.searchButton = false;
-    this.districts$ = this.store.districts$;
-    this.sidenavRight.open();
   }
 }

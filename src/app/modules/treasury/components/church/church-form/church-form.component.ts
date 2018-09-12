@@ -1,33 +1,38 @@
-import { ChurchDataComponent } from './../church-data/church-data.component';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
-import { MatSidenav, MatSnackBar } from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
-
 import { Subscription } from 'rxjs/Subscription';
-
+import { ChurchDataComponent } from './../church-data/church-data.component';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
 import { Districts } from '../../../models/districts';
 import { State } from '../../../../../shared/models/state.model';
 import { City } from '../../../../../shared/models/city.model';
 import { TreasuryService } from '../../../treasury.service';
 import { Church } from '../../../models/church';
 import { auth } from '../../../../../auth/auth';
+import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/takeUntil';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 
 @Component({
   selector: 'app-church-form',
   templateUrl: './church-form.component.html',
   styleUrls: ['./church-form.component.scss']
 })
+@AutoUnsubscribe()
 export class ChurchFormComponent implements OnInit, OnDestroy {
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
-
-  subscribeUnit: Subscription;
-
   form: FormGroup;
-  districts: Districts[];
-  states: State[];
-  cities: City[];
+  districts: Districts[] = [];
+  states: State[] = [];
+  cities: City[] = [];
   church: Church;
+
+  // Subs
+  sub1: Subscription;
+  sub2: Subscription;
+
+  loading = true;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,28 +40,27 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private churchDataComponent: ChurchDataComponent
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.initForm();
-    this.loadDistricts();
-    this.loadStates();
-    this.route.params.subscribe(params => {
-      const idParsed = parseInt(params.id, 10);
-      if (!idParsed) {
-        return;
-      }
-      this.edit(idParsed);
-    });
-    this.subscribeUnit = auth.currentUnit.subscribe(() => {
-      this.reset();
-    });
-    this.churchDataComponent.sidenavRight.open();
+    this.sub1 = this.loadDistricts()
+      .switchMap(() => this.loadStates())
+      .switchMap(() => this.route.params)
+      .do(({ id }) => this.loading = !!id)
+      .skipWhile(({ id }) => !id)
+      .switchMap(({ id }) => this.edit(id))
+      .subscribe(() => this.loading = false);
+    this.sub2 = this.form
+      .get('state')
+      .valueChanges
+      .switchMap(value => this.loadCities(value))
+      .subscribe();
+    this.churchDataComponent.openSidenav();
   }
 
   ngOnDestroy() {
-    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
-    this.closeSidenav();
+    this.churchDataComponent.closeSidenav();
   }
 
   initForm(): void {
@@ -72,13 +76,13 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  public loadCities() {
-    this.cities = [];
-    const id = this.form.value.state;
-    this.service.getCities(id).subscribe((data: City[]) => {
-      this.form.get('city').enable();
-      this.cities = Object.assign(this.cities, data as City[]);
-    });
+  public loadCities(stateid) {
+    return this.service
+      .getCities(stateid)
+      .do((data: City[]) => {
+        this.form.get('city').enable();
+        this.cities = data;
+      });
   }
 
   public save(): void {
@@ -89,23 +93,17 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
         unit: unit.id,
         ...this.form.value
       };
-      this.service.saveChurch(data).subscribe((church: Church) => {
-        this.reset();
-      }, err => {
-        console.log(err);
-        this.snackBar.open('Erro ao salvar igreja, tente novamente.', 'OK', { duration: 5000 });
-      });
+      this.service
+        .saveChurch(data)
+        .switchMap(() => this.churchDataComponent.getData())
+        .subscribe(() => {
+          this.churchDataComponent.closeSidenav();
+          this.snackBar.open('Salvo com sucesso!', 'OK', { duration: 5000 });
+        }, err => {
+          console.log(err);
+          this.snackBar.open('Erro ao salvar igreja, tente novamente.', 'OK', { duration: 5000 });
+        });
     }
-  }
-
-  public reset() {
-    this.form.markAsUntouched();
-    this.form.reset();
-    this.closeSidenav();
-  }
-
-  public closeSidenav(): void {
-    this.churchDataComponent.closeSidenav();
   }
 
   public labelTitle(): string {
@@ -117,38 +115,38 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   }
 
   public edit(id: number) {
-    this.service.getChurch(id).subscribe(church => {
-      this.church = church;
-      this.setValues();
-    });
+    return this.service
+      .getChurch(id)
+      .delay(500)
+      .do(church => {
+        this.church = church;
+        this.setValues(church);
+      })
+      .delay(100);
   }
 
   private loadDistricts() {
-    const unit = auth.getCurrentUnit();
-    this.districts = [];
-    this.service.getDistricts(unit.id).subscribe((data: Districts[]) => {
-      this.districts = Object.assign(this.districts, data as Districts[]);
-    });
+    return this.service
+      .getDistricts(auth.getCurrentUnit().id)
+      .do((data: Districts[]) => { this.districts = data; });
   }
 
   private loadStates() {
-    this.states = [];
-    this.service.getStates().subscribe((data: State[]) => {
-      this.states = Object.assign(this.states, data as State[]);
-    });
+    return this.service
+      .getStates()
+      .do((data: State[]) => { this.states = data; });
   }
 
-  private setValues(): void {
-    this.form = new FormGroup({
-      name: new FormControl({value: this.church.name, disabled: false}, Validators.required),
-      code: new FormControl({value: this.church.code, disabled: false}, Validators.required),
-      district: new FormControl({value: this.church.district.id, disabled: false}, [Validators.required, Validators.min(1)]),
-      state: new FormControl({value: this.church.city.state.id, disabled: false}, Validators.required),
-      city: new FormControl({value: this.church.city.id, disabled: false}, Validators.required),
-      address: new FormControl({value: this.church.address, disabled: false}, Validators.required),
-      complement: new FormControl({value: this.church.complement, disabled: false}),
-      cep: new FormControl({value: this.church.cep, disabled: false}, Validators.required),
+  private setValues(church: Church): void {
+    this.form.patchValue({
+      name: church.name,
+      code: church.code,
+      district: church.district.id,
+      state: church.city.state.id,
+      city: church.city.id,
+      address: church.address,
+      complement: church.complement,
+      cep: church.cep
     });
-    this.loadCities();
   }
 }

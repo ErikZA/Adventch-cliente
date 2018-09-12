@@ -75,7 +75,7 @@
             </div>
             <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
                 <mat-accordion>
-                    <div *ngFor="let church of (churches$ | async ); index as i">
+                    <div *ngFor="let church of churches; index as i">
                         <mat-expansion-panel hideToggle *ngIf="i <= showList">
                             <mat-expansion-panel-header>
                                 <mat-panel-description fxLayout="row" fxFlex>
@@ -128,5 +128,5 @@
     </div>
 </div>
 <ng-template [Feature]="48" permission="1">
-    <button mat-fab color="primary" class="mat-fab-right" routerLink="./novo" (click)="openSidenav()"><mat-icon aria-label="Adicionar">add</mat-icon></button>
+    <button mat-fab color="primary" class="mat-fab-right" routerLink="./novo"><mat-icon aria-label="Adicionar">add</mat-icon></button>
 </ng-template>

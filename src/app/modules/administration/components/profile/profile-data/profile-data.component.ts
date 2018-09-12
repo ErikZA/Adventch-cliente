@@ -1,49 +1,59 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
 
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { MatSidenav } from '@angular/material';
-
-import { ProfileStore } from '../profile.store';
+import { MatSnackBar } from '@angular/material';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { Module } from '../../../../../shared/models/modules.enum';
 import { EModules } from '../../../../../shared/models/modules.enum';
 import { utils } from '../../../../../shared/utils';
 import { Profile } from '../../../models/profile/profile.model';
-
+import { AdministrationService } from '../../../administration.service';
+import { auth } from '../../../../../auth/auth';
+import { Subscription } from 'rxjs/Subscription';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
+import 'rxjs/add/operator/switchMap';
 @Component({
   selector: 'app-profile-data',
   templateUrl: './profile-data.component.html',
   styleUrls: ['./profile-data.component.scss']
 })
-export class ProfileDataComponent implements OnInit {
-
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
-
+@AutoUnsubscribe()
+export class ProfileDataComponent extends AbstractSidenavContainer implements OnInit {
+  protected componentUrl = '/administracao/papeis';
   showList = 15;
   searchButton = false;
   search$ = new Subject<string>();
   layout: String = 'row';
-  profiles$: Observable<Profile[]>;
+  profiles: Profile[] = [];
+  profilesCache: Profile[] = [];
+
+  sub1: Subscription;
 
   constructor(
-    private store: ProfileStore,
+    protected router: Router,
     private confirmDialogService: ConfirmDialogService,
-    private location: Location,
-    private router: Router,
     private route: ActivatedRoute,
-  ) { }
+    private administrationService: AdministrationService,
+    private snackBar: MatSnackBar
+  ) { super(router); }
 
   ngOnInit() {
-    this.profiles$ = this.store.profiles$;
-    this.search$.subscribe(search => {
+    this.sub1 = this.getData().switchMap(() => this.search$).subscribe(search => {
       this.searchProfile(search);
     });
-    this.store.loadAllProfiles();
   }
-
+  getData() {
+    const { id } = auth.getCurrentUnit();
+    return this.administrationService
+      .getProfiles(id)
+      .map(p => p.sort((a, b) => a.name.localeCompare(b.name)))
+      .do((data: Profile[]) => {
+        this.profiles =  data;
+        this.profilesCache = data;
+      });
+  }
   public onScroll(): void {
     this.showList += 15;
   }
@@ -52,16 +62,7 @@ export class ProfileDataComponent implements OnInit {
   }
 
   public searchProfile(search: string) {
-    this.profiles$ = this.store.searchProfile(search);
-  }
-
-  public openSidenav(): void {
-    this.router.navigate(['novo'], { relativeTo: this.route });
-  }
-
-  public closeSidenav(): void {
-    this.router.navigate(['/administracao/papeis']);
-    this.sidenavRight.close();
+    this.profiles = this.profilesCache.filter(p => utils.buildSearchRegex(search).test(p.name));
   }
 
   public editProfile(role: Profile): void {
@@ -71,10 +72,10 @@ export class ProfileDataComponent implements OnInit {
   public removeProfile(role: Profile): void {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este papel?', 'REMOVER')
-      .subscribe(res => {
-        if (res === true) {
-          this.store.removeProfile(role);
-        }
-      });
+      .skipWhile(res => res !== true)
+      .switchMap(() => this.administrationService.deleteProfile(role.id))
+      .switchMap(() => this.getData())
+      .do(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 30000 }))
+      .subscribe();
   }
 }

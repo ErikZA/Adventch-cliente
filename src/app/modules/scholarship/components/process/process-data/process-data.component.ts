@@ -1,53 +1,50 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { Location } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/debounceTime';
 
 import { Subscription } from 'rxjs/Subscription';
 
 import { AuthService } from '../../../../../shared/auth.service';
 import { ScholarshipService } from '../../../scholarship.service';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
 import { ReportService } from '../../../../../shared/report.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 
 import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
-
-import { Process } from '../../../models/process';
 import { School } from '../../../models/school';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { MatDialogRef,
   MatDialog,
   MatSnackBar,
-  MatSidenav,
   MatSlideToggleChange,
   MatDialogConfig } from '@angular/material';
 
 import { auth } from './../../../../../auth/auth';
-import { ProcessesStore } from '../processes.store';
 import { ProcessDataInterface } from '../../../interfaces/process-data-interface';
 import { EStatus } from '../../../models/enums';
+import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/switchMap';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+
 
 @Component({
   selector: 'app-process-data',
   templateUrl: './process-data.component.html',
   styleUrls: ['./process-data.component.scss']
 })
-export class ProcessDataComponent implements OnInit, OnDestroy {
-
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
+@AutoUnsubscribe()
+export class ProcessDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
+  protected componentUrl = '/bolsas/processos';
 
   searchButton = false;
   search$ = new Subject<string>();
   showList = 15;
   idSchool = -1;
   showSchool = false;
-  refresh$ = new Observable<boolean>();
 
   dialogRef: MatDialogRef<PendencyComponent>;
   dialogRef2: MatDialogRef<VacancyComponent>;
@@ -55,10 +52,11 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   layout: String = 'row';
 
   // New
-  processes$: Observable<ProcessDataInterface[]>;
-  schools$: Observable<School[]>;
-  schoolsFilters: number[] = new Array<number>();
-  statusFilters: number[] = new Array<number>();
+  processes: ProcessDataInterface[] = [];
+  processesCache: ProcessDataInterface[] = [];
+  schools: School[] = [];
+  schoolsFilters: number[] = [];
+  statusFilters: number[] = [];
   private query = '';
   inSearch: boolean;
 
@@ -67,37 +65,36 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
   // Verificar tipo de usuário que pode modificar projeto ou não
   isScholarship: boolean;
   documentsIsVisible = false;
+  sub1: Subscription;
 
   constructor(
+    protected router: Router,
+
     public scholarshipService: ScholarshipService,
     public authService: AuthService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
-    private sidenavService: SidenavService,
-    private router: Router,
     private route: ActivatedRoute,
     private reportService: ReportService,
-    private location: Location,
     private confirmDialogService: ConfirmDialogService
   ) {
+    super(router);
     if (window.screen.width < 450) {
       this.layout = 'column';
     }
   }
 
   ngOnInit() {
-    this.setAllFilters();
-    this.getAllDatas();
-    this.schoolIsVisible();
     this.isScholarship = auth.getCurrentUser().isScholarship;
-    this.search$
+    this.schoolIsVisible();
+    this.setAllFilters();
+    this.sub1 = this.getData()
+      .switchMap(() => this.search$)
       .debounceTime(1000)
       .distinctUntilChanged()
-      .subscribe(search => {
-        this.query = search;
-        this.getProcesses();
-      });
-    this.sidenavService.setSidenav(this.sidenavRight);
+      .do(search => this.query = search)
+      .switchMap(() => this.getProcesses())
+      .subscribe();
   }
 
   ngOnDestroy() {
@@ -141,41 +138,48 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
       }
     }
   }
-
-  private getAllSchools(): void {
-    this.schools$ = this.scholarshipService.getSchools();
-  }
-
-  private getAllDatas(): void {
+  getData() {
     const user = auth.getCurrentUser();
     if (user.idSchool === 0) {
-      this.getAllSchools();
+      return this.scholarshipService
+        .getSchools()
+        .do(schools => this.schools = schools)
+        .switchMap(() => this.getProcesses());
     }
-    this.getProcesses();
+    return this.getProcesses();
   }
 
-  private getProcesses(): void {
+  private getProcesses() {
     const user = auth.getCurrentUser();
     if (user.idSchool === 0) {
-      this.processes$ = this.scholarshipService
+      return this.scholarshipService
         .getProcessesByUnit(this.schoolsFilters, this.statusFilters, this.query)
-        .debounceTime(500)
-        .distinctUntilChanged();
-    } else {
-      this.processes$ = this.scholarshipService
-        .getProcessesBySchool(user.idSchool, this.statusFilters, this.query)
-        .debounceTime(500)
-        .distinctUntilChanged();
+        .do(processes => {
+          this.processes = processes;
+          this.processesCache = processes;
+        });
     }
+    return this.scholarshipService
+      .getProcessesBySchool(user.idSchool, this.statusFilters, this.query)
+      .do(processes => {
+        this.processes = processes;
+        this.processesCache = processes;
+      });
+
   }
 
   public filterStatus(id: number, checked: boolean): void {
     if (checked && !this.statusFilters.some(x => x === id)) {
       this.statusFilters.push(id);
     } else if (!checked && this.statusFilters.some(x => x === id)) {
-      this.statusFilters.splice(this.statusFilters.indexOf(id), 1);
+      this.statusFilters = this.statusFilters.filter(f => f !== id);
     }
-    this.getProcesses();
+
+    if (this.statusFilters.length === 0) {
+      this.processes = this.processesCache;
+      return;
+    }
+    this.processes = this.processesCache.filter(p => this.statusFilters.includes(p.status.id));
   }
 
   public filterSchools(id: number, checked: boolean): void {
@@ -187,12 +191,6 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
     }
     this.getProcesses();
   }
-
-  public closeSidenav(): void {
-    this.location.back();
-    this.sidenavRight.close();
-  }
-
   public schoolIsVisible(): void {
     const { idSchool } = auth.getCurrentUser();
     this.showSchool = idSchool === 0 ? true : false;
@@ -220,7 +218,6 @@ export class ProcessDataComponent implements OnInit, OnDestroy {
 
   public editProcess(process: ProcessDataInterface): void {
     this.router.navigate([process.id, 'editar'], { relativeTo: this.route });
-    this.sidenavService.open();
   }
 
   public expandPanel(matExpansionPanel): void {

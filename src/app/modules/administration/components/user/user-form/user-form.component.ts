@@ -1,30 +1,32 @@
+import { Subscription } from 'rxjs/Subscription';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { AuthService } from './../../../../../shared/auth.service';
-import { ProfileStore } from '../../profile/profile.store';
 import { School } from '../../../../scholarship/models/school';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl, ValidatorFn, FormArray } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
-
-import { UserStore } from '../user.store';
 import { EModules, Module } from '../../../../../shared/models/modules.enum';
 import { User } from '../../../../../shared/models/user.model';
 
 import * as moment from 'moment';
 import { StrongPasswordValidator } from '../../../../../core/components/password/strong-password.directive';
-import { ProcessesStore } from '../../../../scholarship/components/process/processes.store';
 import { Profile } from '../../../models/profile/profile.model';
 import { auth } from '../../../../../auth/auth';
 import { UserDataComponent } from '../user-data/user-data.component';
+import { AdministrationService } from '../../../administration.service';
+import { MatSnackBar } from '@angular/material';
+import { ScholarshipService } from '../../../../scholarship/scholarship.service';
+import { of } from 'rxjs/observable/of';
+import 'rxjs/add/operator/delay';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 
 @Component({
   selector: 'app-user-form',
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss']
 })
+@AutoUnsubscribe()
 export class UserFormComponent implements OnInit, OnDestroy {
 
   hideNew = true;
@@ -33,26 +35,26 @@ export class UserFormComponent implements OnInit, OnDestroy {
   formProfiles: FormArray;
 
   user: User;
-  profiles$: Observable<Profile[]>;
-  schools$: Observable<School[]>;
-  modules: EModules[];
-  loading: boolean;
-  isSending = false;
+  profiles: Profile[] = [];
+  schools: School[] = [];
+  modules: EModules[] = [];
+  // isSending = false;
 
   strength: number;
   valFn: ValidatorFn;     // the validation function
-
   user_inputs: string[] = ['foobar', 'barfoo'];
   level = '2';
 
+  loading = true;
+  sub1: Subscription;
   constructor(
     private formBuilder: FormBuilder,
-    private store: UserStore,
     private route: ActivatedRoute,
-    private profileStore: ProfileStore,
-    private schoolarshipStore: ProcessesStore,
+    private schoolarShipService: ScholarshipService,
     private authService: AuthService,
-    private userDataComponent: UserDataComponent
+    private userDataComponent: UserDataComponent,
+    private administraionService: AdministrationService,
+    private snackBar: MatSnackBar
   ) {
     this.valFn = StrongPasswordValidator(this.level, this.user_inputs);
   }
@@ -61,29 +63,25 @@ export class UserFormComponent implements OnInit, OnDestroy {
     Inicialização
    */
   ngOnInit() {
-    this.loading = false;
     this.initConfiguratios();
-    this.loadAllDatas();
     this.initForm();
-    this.route.params.pipe(map(({ idUser }) => idUser)).subscribe(id => {
-      if (id) {
-        this.store.loadUser(id).subscribe(user => {
-          this.user = user;
-          if (this.user) {
-            this.editUser();
-          }
-        });
-      } else {
-        this.loading = true;
-      }
-    });
 
-    this.userDataComponent.sidenavRight.open();
+    this.sub1 = this.loadSchools()
+      .switchMap(() => this.loadProfiles())
+      .switchMap(() => this.route.params)
+      .do(({ id }) => this.loading = !!id)
+      .skipWhile(({ id }) => !id)
+      .switchMap(({ id }) => this.editUser(id))
+      .delay(500)
+      .subscribe(() => this.loading = false);
+
+    this.userDataComponent.openSidenav();
   }
   ngOnDestroy(): void {
-    this.closeSidenav();
+    this.userDataComponent.closeSidenav();
   }
   private initConfiguratios(): void {
+    this.modules = auth.getCurrentUnit().modules;
     this.dates = {
       now: new Date(new Date().setFullYear(new Date().getFullYear())),
       min: new Date(new Date().setFullYear(new Date().getFullYear() - 95)),
@@ -91,25 +89,22 @@ export class UserFormComponent implements OnInit, OnDestroy {
     };
     moment.locale('pt');
   }
-  public loadAllDatas(): void {
-    const { modules } = auth.getCurrentUnit();
-    this.modules = modules;
-    this.loadSchools();
-    this.loadProfiles();
-  }
-  private loadSchools(): void {
-    if (this.modules) {
-      const scholarship = this.modules.some(module => module === EModules.Scholarship);
-      if (scholarship) {
-        this.schools$ = this.schoolarshipStore.schools$;
-        this.schoolarshipStore.loadSchools();
-      }
+
+  private loadSchools() {
+    const scholarship = this.modules.some(module => module === EModules.Scholarship);
+    if (scholarship) {
+      return this.schoolarShipService.getSchools().do((data: School[]) => {
+          this.schools = data;
+        }, error => console.log('Could not load todos schools.'));
     }
+    return of(undefined);
   }
 
-  private loadProfiles(): void {
-    this.profiles$ = this.profileStore.profiles$;
-    this.profileStore.loadAllProfiles();
+  private loadProfiles() {
+    const { id } = auth.getCurrentUnit();
+    return this.administraionService.getProfiles(id).do((data: Profile[]) => {
+      this.profiles = data.sort((a, b) => a.name.localeCompare(b.name));
+    }, err => console.log('Could not load todos profiles.'));
   }
 
   public labelTitle(): string {
@@ -175,15 +170,16 @@ export class UserFormComponent implements OnInit, OnDestroy {
     group.controls[field].updateValueAndValidity();
   }
 
-  private editUser(): void {
-    this.setValuesUserEdit();
-    this.setValuesUserProfiles();
-    this.loading = true;
+  private editUser(id: number) {
+    return this.administraionService.getUser(id, auth.getCurrentUnit().id).do(data => {
+      this.user = data;
+      this.setValuesUserEdit(data);
+      this.setValuesUserProfiles(data.profiles);
+    });
   }
 
-  private setValuesUserProfiles(): void {
-    const { profiles } = this.user;
-    if (!profiles) { return; }
+  private setValuesUserProfiles(profiles: Profile[]): void {
+    if (!Array.isArray(profiles)) { return; }
     this.formProfiles.controls.forEach((control: FormGroup) => {
       const profile = profiles.find(data => data.software === control.value.module);
       if (profile) {
@@ -194,21 +190,16 @@ export class UserFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setValuesUserEdit(): void {
+  private setValuesUserEdit(user: User): void {
     this.form.setValue({
-      name: this.user.name,
-      email: this.user.email,
-      birthday: this.user.birthday ? this.user.birthday : null,
+      name: user.name,
+      email: user.email,
+      birthday: user.birthday ? user.birthday : null,
       password: 'password_!change-now',
-      isAdmin: this.user.isSysAdmin,
-      school: this.user.idSchool
+      isAdmin: user.isSysAdmin,
+      school: user.idSchool
     });
   }
-
-  public closeSidenav(): void {
-    this.userDataComponent.closeSidenav();
-  }
-
   private checkIsEdit(): boolean {
     return this.user !== undefined && this.user !== null;
   }
@@ -217,20 +208,34 @@ export class UserFormComponent implements OnInit, OnDestroy {
     return new Module(id).getModuleName();
   }
 
-  public saveUser() {
-    this.isSending = true;
-    const user = this.setUserData();
-    if (this.form.valid) {
-      this.store.saveUser(user).subscribe(() => {
-        this.authService.renewUserToken();
-        this.closeSidenav();
-      });
-
+  private handleFail(err = null) {
+    console.log(err);
+    if (err.status === 409) {
+      this.snackBar.open(err.error + ', tente novamente.', 'OK', { duration: 5000 });
+    } else {
+      this.snackBar.open('Erro ao salvar o usuário, tente novamente.', 'OK', { duration: 5000 });
     }
-    this.isSending = false;
+  }
+  handleSuccess(userId: number) {
+    if (userId === auth.getCurrentUser().id) {
+      this.authService.renewUserToken();
+    }
+    this.snackBar.open('Usuário salvo com sucesso.', 'OK', { duration: 5000 });
+    this.userDataComponent.closeSidenav();
+  }
+  public saveUser() {
+    if (this.form.invalid) {
+      return;
+    }
+    const userData = this.getUserData();
+    of(userData.id)
+      .switchMap(id => !!id ? this.administraionService.editUser(userData, id) : this.administraionService.saveUser(userData))
+      .switchMap(() => this.userDataComponent.getData())
+      .subscribe(() => this.handleSuccess(userData.id), error => this.handleFail(error));
+
   }
 
-  private setUserData(): any {
+  private getUserData(): any {
     const { id } = auth.getCurrentUnit();
     const arr = Array.isArray(this.formProfiles.value) ? Array.from<any>(this.formProfiles.value) : [];
     const validate = arr.filter(f => !!f.id).map(f => f.id);
@@ -246,7 +251,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  public onStrength({strength}) {
+  public onStrength({ strength }) {
     this.strength = strength;
   }
 

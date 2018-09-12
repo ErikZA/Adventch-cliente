@@ -36,8 +36,8 @@
                 <mat-divider></mat-divider>
             </div>
             <mat-list class="conteiner" layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
-                <div *ngIf="(districts$ | async ).length !== 0">
-                    <mat-list-item class="break-line" *ngFor="let district of (districts$ | async ); index as i" fxFlex>
+                <div *ngIf="districts.length !== 0">
+                    <mat-list-item class="break-line" *ngFor="let district of districts; index as i" fxFlex>
                         <span class="text-color-item" fxFlex>{{ district.name }}</span>
                         <span class="text-color-item" fxFlex>{{ district.analyst.name }}</span>
                         <button mat-icon-button fxHide.gt-xs [matMenuTriggerFor]="menu">
@@ -75,5 +75,5 @@
     </div>
 </div>
 <ng-template [Feature]="47" permission="1">
-    <button mat-fab color="primary" class="mat-fab-right" routerLink="./novo" (click)="openSidenav()"><mat-icon aria-label="Adicionar distrito">add</mat-icon></button>
+    <button mat-fab color="primary" class="mat-fab-right" routerLink="./novo"><mat-icon aria-label="Adicionar distrito">add</mat-icon></button>
 </ng-template>

@@ -1,5 +1,8 @@
+<div fxLayout="row" fxFlexFill fxLayoutAlign="center" *ngIf="!!loading" style="padding-top: 25vh;">
+  <mat-spinner></mat-spinner>
+</div>
 <div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"  [ngStyle.xs]="{'width.vw': 80}"
-  [ngStyle.xs]="{'width.vw': 100}">
+  [ngStyle.xs]="{'width.vw': 100}" *ngIf="!loading">
 <div fxFlex>
     <h2 class="title">Observação</h2>
     <mat-divider></mat-divider>
@@ -10,7 +13,7 @@
       <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
     </mat-form-field> -->
     <mat-form-field>
-      <mat-select placeholder="Igreja" formControlName="church" [(ngModel)]="editChurch" required> 
+      <mat-select placeholder="Igreja" formControlName="church" required> 
         <mat-option *ngFor="let church of churches" [value]="church.id">
           {{ church.name }}
         </mat-option>
@@ -29,7 +32,7 @@
     </mat-form-field>
 
     <div fxLayout="row" fxLayoutAlign="space-between">
-      <button mat-button type="button" (click)="closeSidenav()">CANCELAR</button>
+      <button mat-button type="button" routerLink="/tesouraria/observacoes">CANCELAR</button>
       <button mat-raised-button type="submit" (click)="saveObservation()" color="primary">SALVAR</button>
     </div>
   </form>

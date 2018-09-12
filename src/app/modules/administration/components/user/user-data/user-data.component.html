@@ -31,7 +31,7 @@
                         <mat-list-item fxLayout="row">
                             <ng-container *ngIf="getModulesUnit().length !== 0; else modulesEmpty">
                                 <div fxFlex fxFlexOffset="6%" *ngFor="let module of getModulesUnit()">
-                                    <mat-checkbox #checkModules color="primary" (click)="filterModules(module, !checkModules.checked)">{{ getModuleName(module) }}</mat-checkbox>
+                                    <mat-checkbox color="primary" (click)="checkModule(module)">{{ getModuleName(module) }}</mat-checkbox>
                                 </div>
                             </ng-container>
                             <ng-template #modulesEmpty>
@@ -61,7 +61,7 @@
             </div>
             <div class="conteiner" layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
                 <mat-accordion>
-                    <div *ngFor="let user of (users$ | async ); index as i">
+                    <div *ngFor="let user of users; index as i">
                         <mat-expansion-panel hideToggle *ngIf="i <= showList">
                             <mat-expansion-panel-header>
                                 <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" fxFlex>
@@ -116,6 +116,6 @@
         </div>
     </div>
 </div>
-<button mat-fab color="primary" class="mat-fab-right" [routerLink]="['novo']" (click)="openSidenav()">
+<button mat-fab color="primary" class="mat-fab-right" [routerLink]="['novo']">
     <mat-icon aria-label="Adicionar usuário">add</mat-icon>
 </button>
