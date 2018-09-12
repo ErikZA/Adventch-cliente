@@ -45,6 +45,7 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.getData();
     this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/requisitos')]);
     this.sidenavService.setSidenav(this.sidenavRight);
     this.subscribeUnit = auth.currentUnit.subscribe(() => {
