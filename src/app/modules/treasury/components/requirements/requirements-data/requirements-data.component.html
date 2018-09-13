@@ -77,8 +77,8 @@
                 <mat-panel-description fxLayout="row" fxFlex>
                   <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ requirement.position }}</span>
                   <span fxFlex fxFlex.gt-sm="37" style="white-space: line-wrap;">{{ requirement.name }}</span>
-                  <span fxFlex fxFlex.gt-sm="37" style="white-space: line-wrap;">{{ requirement.score }}</span>
-                  <span fxFlex fxFlex.gt-sm="11" style="white-space: line-wrap;">{{ requirement.date | date: "yyyy" }}</span>
+                  <span fxFlex fxFlex.gt-sm="37" style="white-space: line-wrap;" fxHide.lt-sm>{{ requirement.score }}</span>
+                  <span fxFlex fxFlex.gt-sm="11" style="white-space: line-wrap;" fxHide.lt-sm>{{ requirement.date | date: "yyyy" }}</span>
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <mat-list>
