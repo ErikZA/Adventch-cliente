@@ -281,7 +281,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         this.scholarshipService.editProcess(process.id, data) :
         this.scholarshipService.saveProcess(data)
       )
-      .do(() => this.processDataComponent.getProcesses())
+      .switchMap(() => this.processDataComponent.getProcesses())
       .subscribe(() => this.handleSaveSuccess(), error => console.log(error));
   }
   public maskPhone(phone): string {

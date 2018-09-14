@@ -29,6 +29,7 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/switchMap';
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { utils } from '../../../../../shared/utils';
 
 
 @Component({
@@ -53,6 +54,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   // New
   processes: ProcessDataInterface[] = [];
+  processesCache: ProcessDataInterface[] = [];
   schools: School[] = [];
   schoolsFilters: number[] = [];
   statusFilters: number[] = [];
@@ -88,19 +90,23 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.isScholarship = auth.getCurrentUser().isScholarship;
     this.schoolIsVisible();
     this.setAllFilters();
-    this.sub1 = this.getInitialData()
-      .switchMap(() => this.search$)
-      .debounceTime(1000)
+    this.sub1 = this.getInitialData().subscribe();
+    this.search$
       .distinctUntilChanged()
-      .do(search => this.query = search)
-      .switchMap(() => this.getProcesses())
+      .do(search => this.processes = this.searchFilter(search))
       .subscribe();
   }
 
   ngOnDestroy() {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
-
+  private searchFilter(value: string) {
+    return this.processesCache.filter(p =>
+      utils.buildSearchRegex(value).test(p.protocol) ||
+      utils.buildSearchRegex(value).test(p.student.name) ||
+      utils.buildSearchRegex(value).test(p.responsible.name)
+    );
+  }
   public enableDocuments(process: ProcessDataInterface): void {
     if (process && (process.documents === null || process.documents === undefined)) {
       this.scholarshipService.getProcessDocuments(process.id).subscribe(documents => {
@@ -138,7 +144,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       }
     }
   }
-  getInitialData() {
+  private getInitialData() {
     const user = auth.getCurrentUser();
     return this.getProcesses()
       .skipWhile(() => user.idSchool !== 0)
@@ -155,13 +161,17 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       return this.scholarshipService
         .getProcessesByUnit(this.schoolsFilters, this.statusFilters, this.query)
         .do(processes => {
+          console.log(processes);
           this.processes = processes;
+          this.processesCache = processes;
         });
     }
     return this.scholarshipService
       .getProcessesBySchool(user.idSchool, this.statusFilters, this.query)
       .do(processes => {
+        console.log(processes);
         this.processes = processes;
+        this.processesCache = processes;
       });
 
   }
