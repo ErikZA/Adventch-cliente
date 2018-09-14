@@ -69,7 +69,7 @@
               <span fxFlex fxFlex.gt-sm="40%">Nome do tesoureiro</span>
               <span fxFlex="20%" fxHide.lt-sm>Igreja</span>
               <span fxFlex="20%" fxHide.lt-sm>Cargo</span>
-              <span fxFlex="20%">Última edição</span>
+              <span fxFlex="20%" fxHide.lt-sm>Última edição</span>
             </h3>
           </mat-list-item>
         </mat-list>
@@ -91,7 +91,7 @@
                       <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center" style="white-space: line-wrap;">
                         {{ treasurer.functionName }}
                       </span>
-                      <span fxFlex="20%" style="text-align: center">
+                      <span fxFlex="20%" fxHide.lt-sm style="text-align: center">
                         {{ treasurer.dateLastEdition | date: "dd/MM/yyyy" }}
                       </span>
                     </mat-panel-description>
@@ -105,6 +105,9 @@
                         </span>
                         <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
                           <b>Cargo:&ensp;</b> {{ treasurer.functionName }}
+                        </span>
+                        <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                          <b>Última edição:&ensp;</b> {{ treasurer.dateLastEdition | date: "dd/MM/yyyy" }}
                         </span>
                         <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
                           <b>Email:&ensp;</b> {{ treasurer.email || "Não Informado" }}
