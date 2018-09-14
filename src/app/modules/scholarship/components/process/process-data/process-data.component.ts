@@ -53,7 +53,6 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   // New
   processes: ProcessDataInterface[] = [];
-  processesCache: ProcessDataInterface[] = [];
   schools: School[] = [];
   schoolsFilters: number[] = [];
   statusFilters: number[] = [];
@@ -66,6 +65,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   isScholarship: boolean;
   documentsIsVisible = false;
   sub1: Subscription;
+  sub2: Subscription;
 
   constructor(
     protected router: Router,
@@ -88,7 +88,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.isScholarship = auth.getCurrentUser().isScholarship;
     this.schoolIsVisible();
     this.setAllFilters();
-    this.sub1 = this.getData()
+    this.sub1 = this.getInitialData()
       .switchMap(() => this.search$)
       .debounceTime(1000)
       .distinctUntilChanged()
@@ -138,32 +138,30 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       }
     }
   }
-  getData() {
+  getInitialData() {
     const user = auth.getCurrentUser();
-    if (user.idSchool === 0) {
-      return this.scholarshipService
-        .getSchools()
-        .do(schools => this.schools = schools)
-        .switchMap(() => this.getProcesses());
-    }
-    return this.getProcesses();
+    return this.getProcesses()
+      .skipWhile(() => user.idSchool !== 0)
+      .switchMap(() => this.scholarshipService.getSchools())
+      .do(schools => this.schools = schools);
   }
-
-  private getProcesses() {
+  private refetchData() {
+    this.sub2 = this.getProcesses().subscribe();
+  }
+  getProcesses() {
+    this.search$.next('');
     const user = auth.getCurrentUser();
     if (user.idSchool === 0) {
       return this.scholarshipService
         .getProcessesByUnit(this.schoolsFilters, this.statusFilters, this.query)
         .do(processes => {
           this.processes = processes;
-          this.processesCache = processes;
         });
     }
     return this.scholarshipService
       .getProcessesBySchool(user.idSchool, this.statusFilters, this.query)
       .do(processes => {
         this.processes = processes;
-        this.processesCache = processes;
       });
 
   }
@@ -174,12 +172,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     } else if (!checked && this.statusFilters.some(x => x === id)) {
       this.statusFilters = this.statusFilters.filter(f => f !== id);
     }
-
-    if (this.statusFilters.length === 0) {
-      this.processes = this.processesCache;
-      return;
-    }
-    this.processes = this.processesCache.filter(p => this.statusFilters.includes(p.status.id));
+    this.refetchData();
   }
 
   public filterSchools(id: number, checked: boolean): void {
@@ -189,7 +182,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       const index = this.schoolsFilters.indexOf(id);
       this.schoolsFilters.splice(index, 1);
     }
-    this.getProcesses();
+    this.refetchData();
   }
   public schoolIsVisible(): void {
     const { idSchool } = auth.getCurrentUser();
@@ -424,18 +417,16 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   public removeProcess(process: ProcessDataInterface): void {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este processo?', 'REMOVER')
-      .subscribe(res => {
-        if (res === true) {
-          this.scholarshipService.deleteProcess(process.id).subscribe(() => {
-            this.getProcesses();
+      .skipWhile(res => res !== true)
+      .switchMap(() => this.scholarshipService.deleteProcess(process.id))
+      .switchMap(() => this.getProcesses())
+      .subscribe(() => {
             this.snackBar.open('Processo removido!', 'OK', { duration: 5000 });
           }, err => {
             console.log(err);
             this.snackBar.open('Erro ao remover processo, tente novamente.', 'OK', { duration: 5000 });
           });
         }
-      });
-  }
 
   public generateNewPasswordResponsible(process: ProcessDataInterface): void {
     const { id } = auth.getCurrentUser();
