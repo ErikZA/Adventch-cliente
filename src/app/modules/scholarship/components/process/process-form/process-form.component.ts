@@ -182,7 +182,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       rc: process.student.rc,
       nameStudent: process.student.name,
       studentSerieId: process.serieId,
-      bagPorcentage: process.bagPorcentage
+      bagPorcentage: process.bagPorcentage.toString()
     });
   }
   private setValuesToFormDocuments(documents: number[]) {

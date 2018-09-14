@@ -13,6 +13,8 @@ export class VacancyComponent implements OnInit {
   public formVacancy: FormGroup;
   private process: Process;
 
+  value: string;
+
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<VacancyComponent>,
@@ -23,6 +25,7 @@ export class VacancyComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
+    this.value = this.process.bagPorcentage === 50 ? '1' : '2';
   }
 
   private initForm(): void {
