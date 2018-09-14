@@ -11,7 +11,7 @@
         <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
             <h2 class="title" *ngIf="!searchButton">Lista de Papéis</h2>
             <mat-form-field *ngIf="searchButton" fxFlex>
-                <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
+                <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)" [value]="search$ | async">
             </mat-form-field>
             <div class="buttons" fxLayoutAlign="start center">
                 <button mat-icon-button matTooltip="Pesquisar papel" (click)="searchButton = !searchButton">
