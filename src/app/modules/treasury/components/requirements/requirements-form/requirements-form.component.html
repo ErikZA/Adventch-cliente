@@ -1,6 +1,6 @@
 <div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"  [ngStyle.xs]="{'width.vw': 80}"
   [ngStyle.xs]="{'width.vw': 100}">
-<form [formGroup]="formRequirement" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px">
+<form [formGroup]="formRequirement" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" (keydown.enter)="$event.preventDefault()">
         <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
             <div fxFlex>
                 <h2 class="title"> {{ labelTitle() }} Requisito</h2>

@@ -1,4 +1,4 @@
-<form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px">
+<form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" (keydown.enter)="$event.preventDefault()">
   <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
     <div fxFlex>
       <h2 class="title">{{ store.churchAvaliation?.church?.name }} - {{ getTitleLabel() }}</h2>

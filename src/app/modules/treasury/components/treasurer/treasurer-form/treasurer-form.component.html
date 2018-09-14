@@ -11,7 +11,7 @@
     <div fxLayout="column" fxLayoutAlign="start" class="container beautiful-scroll-x">
         <mat-horizontal-stepper linear>
             <mat-step label="Pessoal" [stepControl]="formPersonal">
-                <form [formGroup]="formPersonal" #formDirective="ngForm" fxLayout="column" fxLayoutGap="60px">
+                <form [formGroup]="formPersonal" #formDirective="ngForm" fxLayout="column" fxLayoutGap="60px" (keydown.enter)="$event.preventDefault()">
                     <div fxLayout="column">
                         <mat-form-field fxFlex>
                             <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
