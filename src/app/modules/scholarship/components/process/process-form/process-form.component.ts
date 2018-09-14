@@ -21,6 +21,7 @@ import { NewProcessViewModel, EditProcessViewModel } from '../../../interfaces/p
 import 'rxjs/add/operator/skipWhile';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/distinctUntilChanged';
+import { ReportService } from '../../../../../shared/report.service';
 
 @Component({
   selector: 'app-process-form',
@@ -34,7 +35,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   // New
   process: EditProcessViewModel;
   loading = true;
-
+  processId: number;
 
   students: Student[] = [];
   studentSeries: StudentSerie[] = [];
@@ -56,12 +57,14 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   ];
   selectStudent: Student;
   sub1: Subscription;
+
   constructor(
     private formBuilder: FormBuilder,
     private scholarshipService: ScholarshipService,
     private route: ActivatedRoute,
     public snackBar: MatSnackBar,
     private processDataComponent: ProcessDataComponent,
+    private reportService: ReportService
   ) { }
   ngOnInit() {
     this.initForm();
@@ -244,10 +247,27 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     });
     this.formProcess.markAsTouched();
   }
-  private handleSaveSuccess() {
+  private handleSaveSuccess(id: number) {
+    this.generateReport(id);
     this.snackBar.open('Processo salvo com sucesso', ' OK', { duration: 2000 });
     this.processDataComponent.closeSidenav();
   }
+
+  public generateReport(id: number) {
+    this.reportService.reportProcess(id).subscribe(dataURL => {
+      const fileUrl = URL.createObjectURL(dataURL);
+      const element = document.createElement('a');
+      element.href = fileUrl;
+      element.download = 'processo.pdf';
+      element.target = '_blank';
+      element.click();
+      this.snackBar.open('Relatório gerado com sucesso.', 'OK', { duration: 5000 });
+    }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
+    });
+  }
+
   public getDocumentsByType(type: number): ProcessDocument[] {
     return this.processDocuments.filter(d => d.type === type);
   }
@@ -274,15 +294,26 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       return;
     }
     const data = this.mapFormToViewModel();
+    if (this.process) {
+      this.scholarshipService.editProcess(this.process.id, data);
+      this.processDataComponent.getData();
+      this.handleSaveSuccess(this.process.id);
+    } else {
 
-    of(this.process)
-      .switchMap(
-        process => !!process ?
-        this.scholarshipService.editProcess(process.id, data) :
-        this.scholarshipService.saveProcess(data)
-      )
-      .switchMap(() => this.processDataComponent.getData())
-      .subscribe(() => this.handleSaveSuccess(), error => console.log(error));
+      this.scholarshipService.saveProcess(data).subscribe(value => {
+        const processId = value;
+        this.processDataComponent.getData();
+        this.handleSaveSuccess(processId);
+      });
+    }
+    // of(this.process)
+    //   .switchMap(
+    //     process => !!process ?
+    //     this.scholarshipService.editProcess(process.id, data) :
+    //     this.scholarshipService.saveProcess(data)
+    //   )
+    //   .switchMap(() => this.processDataComponent.getData())
+    //   .subscribe(() => this.handleSaveSuccess(this.process.id), error => console.log(error));
   }
   public maskPhone(phone): string {
     return phone.value.length <= 14 ? '(99) 9999-9999' : '(99) 99999-9999';
