@@ -13,7 +13,6 @@ import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
 import { School } from '../../../models/school';
 import { Router, ActivatedRoute } from '@angular/router';
-
 import { MatDialogRef,
   MatDialog,
   MatSnackBar,
@@ -71,7 +70,6 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   constructor(
     protected router: Router,
-
     public scholarshipService: ScholarshipService,
     public authService: AuthService,
     private dialog: MatDialog,
@@ -154,6 +152,14 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   private refetchData() {
     this.sub2 = this.getProcesses().subscribe();
   }
+  private orderByStudentName(processes: ProcessDataInterface[]) {
+    return processes.sort((a, b) => {
+      if (typeof a.student.name  !== 'string' || typeof b.student.name !== 'string') {
+        return 0;
+      }
+      return a.student.name.localeCompare(b.student.name);
+    });
+  }
   getProcesses() {
     this.search$.next('');
     const user = auth.getCurrentUser();
@@ -161,17 +167,15 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       return this.scholarshipService
         .getProcessesByUnit(this.schoolsFilters, this.statusFilters, this.query)
         .do(processes => {
-          console.log(processes);
-          this.processes = processes;
-          this.processesCache = processes;
+          this.processes = this.orderByStudentName(processes);
+          this.processesCache = this.orderByStudentName(processes);
         });
     }
     return this.scholarshipService
       .getProcessesBySchool(user.idSchool, this.statusFilters, this.query)
       .do(processes => {
-        console.log(processes);
-        this.processes = processes;
-        this.processesCache = processes;
+        this.processes = this.orderByStudentName(processes);
+        this.processesCache = this.orderByStudentName(processes);
       });
 
   }
