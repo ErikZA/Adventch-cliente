@@ -18,6 +18,7 @@ import { MatSnackBar } from '@angular/material';
 import 'rxjs/add/operator/skipWhile';
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 import { Subscription } from 'rxjs/Subscription';
+import { DEFAULT_RESIZE_TIME } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-profile-form',
@@ -36,7 +37,7 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
   features: Feature[] = [];
   // moduleSelected = false;
   // formSubmittedOnce = false;
-
+  hasSaved = true;
   loading = true;
   sub1: Subscription;
   constructor(
@@ -180,6 +181,7 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
   }
 
   public saveProfile(): void {
+    this.hasSaved = false;
     const profilesIds = auth.getCurrentDecodedToken().profiles.map(p => p.id);
     const renewToken = !!this.profile ? profilesIds.includes(this.profile.id) : false;
     if (this.formProfile.valid && this.checkIfHaveMarkedFeatureAndPermission()) {
@@ -195,6 +197,9 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
   }
 
   private checkIfHaveMarkedFeatureAndPermission(): boolean {
+    if (this.hasSaved) {
+      return true;
+    }
     const features = this.formPermissions.value;
     if (!features) {
       return false;

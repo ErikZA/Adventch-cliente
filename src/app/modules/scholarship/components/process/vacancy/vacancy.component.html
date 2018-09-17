@@ -3,7 +3,7 @@
         <mat-card-title fxFlex fxFlexAlign="center">Aprovação da bolsa</mat-card-title>
           <br/>
           <div style="width: 100%">
-            <mat-radio-group formControlName="type" name="type" aria-label="Tipo da bolsa" layout="row">
+            <mat-radio-group formControlName="type" name="type" aria-label="Tipo da bolsa" layout="row" [(ngModel)]="value">
               <mat-radio-button value="1" aria-label="50% (Meia)" style="margin: 0 20px 0 0">50% (Meia)</mat-radio-button>
               <mat-radio-button value="2" aria-label="100% (Completa)">100% (Completa)</mat-radio-button>
             </mat-radio-group>
