@@ -42,8 +42,8 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.getAllDatas();
     this.setSchoolInitial();
+    this.getAllDatas();
     this.sidenavService.setSidenav(this.sidenavRight);
   }
 
@@ -75,7 +75,6 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
       this.idSchool = auth.getCurrentUser().idSchool;
       this.scholarshipService.schoolSelected = this.idSchool;
     }
-    this.changeDashboard();
   }
 
   public closeSidenav(): void {
