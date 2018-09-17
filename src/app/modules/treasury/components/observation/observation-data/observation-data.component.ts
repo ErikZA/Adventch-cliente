@@ -65,6 +65,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       });
   }
   getData() {
+    this.search$.next('');
     return this.treasuryService
       .getObservations(auth.getCurrentUnit().id)
       .do(data => {
