@@ -27,9 +27,9 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
   lstChurches: Church[] = [];
   treasurer: Treasurer;
   dates: any;
-  loading = true;
-
   sub1: Subscription;
+  loading = true;
+  isSending = false;
   constructor(
     private treasuryService: TreasuryService,
     private activatedRoute: ActivatedRoute,
@@ -164,6 +164,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
     if (!this.formTreasurer.valid) {
       return;
     }
+    this.isSending = true;
     const treasurer = {
       ...this.formPersonal.value,
       ...this.formContact.value,
@@ -177,9 +178,9 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
       .do(() => this.treasurerDataComponent.closeSidenav())
       .switchMap(() => this.treasurerDataComponent.getData())
       .do(() => this.snackBar.open('Tesoureiro salvo!', 'OK', { duration: 5000 }))
-      // .takeUntil(this.onDestroyUtil$)
-      .subscribe(() => {}, err => {
+      .subscribe(() => this.isSending = false, err => {
         console.log(err);
+        this.isSending = false;
         this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
       });
   }

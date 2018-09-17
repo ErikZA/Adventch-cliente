@@ -41,11 +41,10 @@ export class DistrictsDataComponent extends AbstractSidenavContainer implements 
   ngOnInit() {
     this.sub1 = this.getData()
       .switchMap(() => this.search$)
-      .subscribe(value => {
-        this.districts = this.districtsCache.filter(d => utils.buildSearchRegex(value).test(d.name));
-      });
+      .subscribe(value => this.districts = this.searchFilter(value));
   }
   getData() {
+    this.search$.next('');
     return this.treasureService.getDistricts(auth.getCurrentUnit().id).do(districts => {
       this.districtsCache = districts;
       this.districts = districts;
@@ -55,7 +54,12 @@ export class DistrictsDataComponent extends AbstractSidenavContainer implements 
   onScroll() {
     this.showList += 15;
   }
-
+  searchFilter(value: string): Districts[] {
+    return this.districtsCache.filter(d =>
+      utils.buildSearchRegex(value).test(d.name) ||
+      utils.buildSearchRegex(value).test(d.analystName)
+    );
+  }
   remove(district: Districts) {
     this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover este distrito?', 'REMOVER')

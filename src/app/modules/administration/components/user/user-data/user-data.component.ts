@@ -51,6 +51,7 @@ export class UserDataComponent extends AbstractSidenavContainer implements OnIni
 
   }
   getData() {
+    this.search$.next('');
     return this.administrationService
       .getUsers(auth.getCurrentUnit().id)
       .do(data => {
@@ -78,7 +79,10 @@ export class UserDataComponent extends AbstractSidenavContainer implements OnIni
   public search(search: string): void {
     this.users = this
       .filterUsersProfilesModules(this.usersCache)
-      .filter(u => utils.buildSearchRegex(search).test(u.name));
+      .filter(u =>
+        utils.buildSearchRegex(search).test(u.name) ||
+        utils.buildSearchRegex(search).test(u.email)
+      );
   }
   private filterUsersProfilesModules(users: User[]): User[] {
     if (this.modulesFilter.length > 0) {

@@ -13,7 +13,6 @@ import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
 import { School } from '../../../models/school';
 import { Router, ActivatedRoute } from '@angular/router';
-
 import { MatDialogRef,
   MatDialog,
   MatSnackBar,
@@ -29,6 +28,7 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/switchMap';
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { utils } from '../../../../../shared/utils';
 
 
 @Component({
@@ -66,10 +66,10 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   isScholarship: boolean;
   documentsIsVisible = false;
   sub1: Subscription;
+  sub2: Subscription;
 
   constructor(
     protected router: Router,
-
     public scholarshipService: ScholarshipService,
     public authService: AuthService,
     private dialog: MatDialog,
@@ -88,19 +88,23 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.isScholarship = auth.getCurrentUser().isScholarship;
     this.schoolIsVisible();
     this.setAllFilters();
-    this.sub1 = this.getData()
-      .switchMap(() => this.search$)
-      .debounceTime(1000)
+    this.sub1 = this.getInitialData().subscribe();
+    this.search$
       .distinctUntilChanged()
-      .do(search => this.query = search)
-      .switchMap(() => this.getProcesses())
+      .do(search => this.processes = this.searchFilter(search))
       .subscribe();
   }
 
   ngOnDestroy() {
     if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
   }
-
+  private searchFilter(value: string) {
+    return this.processesCache.filter(p =>
+      utils.buildSearchRegex(value).test(p.protocol) ||
+      utils.buildSearchRegex(value).test(p.student.name) ||
+      utils.buildSearchRegex(value).test(p.responsible.name)
+    );
+  }
   public enableDocuments(process: ProcessDataInterface): void {
     if (process && (process.documents === null || process.documents === undefined)) {
       this.scholarshipService.getProcessDocuments(process.id).subscribe(documents => {
@@ -138,32 +142,40 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       }
     }
   }
-  getData() {
+  private getInitialData() {
     const user = auth.getCurrentUser();
-    if (user.idSchool === 0) {
-      return this.scholarshipService
-        .getSchools()
-        .do(schools => this.schools = schools)
-        .switchMap(() => this.getProcesses());
-    }
-    return this.getProcesses();
+    return this.getProcesses()
+      .skipWhile(() => user.idSchool !== 0)
+      .switchMap(() => this.scholarshipService.getSchools())
+      .do(schools => this.schools = schools);
   }
-
-  private getProcesses() {
+  private refetchData() {
+    this.sub2 = this.getProcesses().subscribe();
+  }
+  private orderByStudentName(processes: ProcessDataInterface[]) {
+    return processes.sort((a, b) => {
+      if (typeof a.student.name  !== 'string' || typeof b.student.name !== 'string') {
+        return 0;
+      }
+      return a.student.name.localeCompare(b.student.name);
+    });
+  }
+  getProcesses() {
+    this.search$.next('');
     const user = auth.getCurrentUser();
     if (user.idSchool === 0) {
       return this.scholarshipService
         .getProcessesByUnit(this.schoolsFilters, this.statusFilters, this.query)
         .do(processes => {
-          this.processes = processes;
-          this.processesCache = processes;
+          this.processes = this.orderByStudentName(processes);
+          this.processesCache = this.orderByStudentName(processes);
         });
     }
     return this.scholarshipService
       .getProcessesBySchool(user.idSchool, this.statusFilters, this.query)
       .do(processes => {
-        this.processes = processes;
-        this.processesCache = processes;
+        this.processes = this.orderByStudentName(processes);
+        this.processesCache = this.orderByStudentName(processes);
       });
 
   }
@@ -174,12 +186,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     } else if (!checked && this.statusFilters.some(x => x === id)) {
       this.statusFilters = this.statusFilters.filter(f => f !== id);
     }
-
-    if (this.statusFilters.length === 0) {
-      this.processes = this.processesCache;
-      return;
-    }
-    this.processes = this.processesCache.filter(p => this.statusFilters.includes(p.status.id));
+    this.refetchData();
   }
 
   public filterSchools(id: number, checked: boolean): void {
@@ -189,7 +196,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       const index = this.schoolsFilters.indexOf(id);
       this.schoolsFilters.splice(index, 1);
     }
-    this.getProcesses();
+    this.refetchData();
   }
   public schoolIsVisible(): void {
     const { idSchool } = auth.getCurrentUser();
@@ -424,18 +431,16 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   public removeProcess(process: ProcessDataInterface): void {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este processo?', 'REMOVER')
-      .subscribe(res => {
-        if (res === true) {
-          this.scholarshipService.deleteProcess(process.id).subscribe(() => {
-            this.getProcesses();
+      .skipWhile(res => res !== true)
+      .switchMap(() => this.scholarshipService.deleteProcess(process.id))
+      .switchMap(() => this.getProcesses())
+      .subscribe(() => {
             this.snackBar.open('Processo removido!', 'OK', { duration: 5000 });
           }, err => {
             console.log(err);
             this.snackBar.open('Erro ao remover processo, tente novamente.', 'OK', { duration: 5000 });
           });
         }
-      });
-  }
 
   public generateNewPasswordResponsible(process: ProcessDataInterface): void {
     const { id } = auth.getCurrentUser();

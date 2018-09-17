@@ -75,7 +75,7 @@
                 <a routerLink="/administracao/usuarios">
                     <back-button></back-button>
                 </a>
-                <button mat-raised-button type="submit" (click)="saveUser()" color="primary">SALVAR</button>
+                <button mat-raised-button type="submit" (click)="saveUser()" color="primary" [disabled]="isSending">SALVAR</button>
             </div>
         </div>
     </div>

@@ -45,6 +45,7 @@ export class ProfileDataComponent extends AbstractSidenavContainer implements On
     });
   }
   getData() {
+    this.search$.next('');
     const { id } = auth.getCurrentUnit();
     return this.administrationService
       .getProfiles(id)
@@ -62,7 +63,10 @@ export class ProfileDataComponent extends AbstractSidenavContainer implements On
   }
 
   public searchProfile(search: string) {
-    this.profiles = this.profilesCache.filter(p => utils.buildSearchRegex(search).test(p.name));
+    this.profiles = this.profilesCache.filter(p =>
+      utils.buildSearchRegex(search).test(p.name) ||
+      utils.buildSearchRegex(search).test(new Module(p.software).getModuleName())
+    );
   }
 
   public editProfile(role: Profile): void {

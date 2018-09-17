@@ -294,26 +294,18 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       return;
     }
     const data = this.mapFormToViewModel();
-    if (this.process) {
-      this.scholarshipService.editProcess(this.process.id, data);
-      this.processDataComponent.getData();
-      this.handleSaveSuccess(this.process.id);
+    this.isSending = true;
+    if (typeof this.process === 'undefined') {
+      this.scholarshipService.saveProcess(data)
+        .do(id => this.handleSaveSuccess(id))
+        .switchMap(() => this.processDataComponent.getProcesses())
+        .subscribe(() => this.isSending = false);
     } else {
-
-      this.scholarshipService.saveProcess(data).subscribe(value => {
-        const processId = value;
-        this.processDataComponent.getData();
-        this.handleSaveSuccess(processId);
-      });
+      this.scholarshipService.editProcess(this.process.id, data)
+        .do(() => this.handleSaveSuccess(this.process.id))
+        .switchMap(() => this.processDataComponent.getProcesses())
+        .subscribe(() => this.isSending = false);
     }
-    // of(this.process)
-    //   .switchMap(
-    //     process => !!process ?
-    //     this.scholarshipService.editProcess(process.id, data) :
-    //     this.scholarshipService.saveProcess(data)
-    //   )
-    //   .switchMap(() => this.processDataComponent.getData())
-    //   .subscribe(() => this.handleSaveSuccess(this.process.id), error => console.log(error));
   }
   public maskPhone(phone): string {
     return phone.value.length <= 14 ? '(99) 9999-9999' : '(99) 99999-9999';

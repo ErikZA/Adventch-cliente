@@ -33,6 +33,6 @@
 
     <div fxLayout="row" fxLayoutAlign="space-between">
       <button mat-button type="button" routerLink="/tesouraria/observacoes">CANCELAR</button>
-      <button mat-raised-button type="submit" (click)="saveObservation()" color="primary">SALVAR</button>
+      <button mat-raised-button type="submit" (click)="saveObservation()" color="primary" [disabled]="isSending">SALVAR</button>
     </div>
   </form>

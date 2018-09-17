@@ -39,9 +39,9 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
   analysts: User[] = [];
   districts: Districts[] = [];
 
-  filterDistrict: number;
-  filterCity: number;
-  filterAnalyst: number;
+  filterDistrict = 0;
+  filterCity = 0;
+  filterAnalyst = 0;
   filterText = '';
 
   sub1: Subscription;
@@ -63,6 +63,7 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
       });
   }
   getData() {
+    this.search$.next('');
     return this.treasuryService.getChurches(auth.getCurrentUnit().id).do(data => {
       this.churches = data;
       this.churchesCache = data;

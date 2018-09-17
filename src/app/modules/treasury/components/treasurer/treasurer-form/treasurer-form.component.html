@@ -149,7 +149,7 @@
                     </div>
                     <div fxLayout="row" fxLayoutAlign="space-between">
                         <button mat-button matStepperPrevious type="button">VOLTAR</button>
-                        <button mat-button type="submit" (click)="saveTreasurer()" color="primary">SALVAR</button>
+                        <button mat-button type="submit" (click)="saveTreasurer()" color="primary" [disabled]="isSending">SALVAR</button>
                     </div>
                 </form>
             </mat-step>

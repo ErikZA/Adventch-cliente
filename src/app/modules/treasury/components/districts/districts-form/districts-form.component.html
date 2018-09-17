@@ -29,7 +29,7 @@
                     <a (click)="closeSidenav()">
                         <back-button></back-button>
                     </a>
-                    <button mat-raised-button type="submit" (click)="saveDistrict()" color="primary">SALVAR</button>
+                    <button mat-raised-button type="submit" (click)="saveDistrict()" color="primary" [disabled]="isSending">SALVAR</button>
                 </div>
             </div>
         </div>
