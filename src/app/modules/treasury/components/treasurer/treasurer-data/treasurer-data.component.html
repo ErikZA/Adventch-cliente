@@ -100,13 +100,13 @@
                     <h3 matSubheader>Informações da tesoureiro</h3>
                     <mat-list-item fxLayout="row" style="height: auto">
                       <div fxLayout="column" fxFlex matLine>
-                        <span *ngIf="treasurer.church.name" class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                        <span *ngIf="treasurer.church.name" class="details-title" fxLayout.lt-sm="row" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
                           <b>Igreja:&ensp;</b> {{ treasurer.church.name }}
                         </span>
                         <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
                           <b>Cargo:&ensp;</b> {{ treasurer.functionName }}
                         </span>
-                        <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
+                        <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px" *ngIf="treasurer.dateLastEdition != null">
                           <b>Última edição:&ensp;</b> {{ treasurer.dateLastEdition | date: "dd/MM/yyyy" }}
                         </span>
                         <span class="details-title" fxLayout.lt-sm="column" fxHide.gt-xs fxLayoutGap.lt-sm="10px">
