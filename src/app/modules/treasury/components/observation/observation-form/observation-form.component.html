@@ -8,7 +8,7 @@
     <mat-divider></mat-divider>
   </div>
   <br />
-<form [formGroup]="formObservation" fxLayout="column">
+<form [formGroup]="formObservation" fxLayout="column" (keydown.enter)="$event.preventDefault()">
     <!-- <mat-form-field fxFlex>
       <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
     </mat-form-field> -->
