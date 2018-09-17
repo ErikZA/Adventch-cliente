@@ -63,6 +63,7 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
       });
   }
   getData() {
+    this.search$.next('');
     return this.treasuryService.getChurches(auth.getCurrentUnit().id).do(data => {
       this.churches = data;
       this.churchesCache = data;
