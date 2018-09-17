@@ -25,9 +25,10 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   params: any;
   users: User[] = [];
   district: Districts;
-  loading = true;
-
   sub1: Subscription;
+
+  loading = true;
+  isSending = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -83,6 +84,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     if (!this.formDistrict.valid) {
       return;
     }
+    this.isSending = true;
     const unit = auth.getCurrentUnit();
     // modificar para id, caso de conflito
     const valor = this.users.filter(x => x.id === this.formDistrict.value.analyst);
@@ -97,6 +99,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     };
     this.treasuryService.saveDistricts(data)
       .do(() => {
+        this.isSending = false;
         this.formDistrict.markAsUntouched();
         this.districtsDataComponent.closeSidenav();
       })

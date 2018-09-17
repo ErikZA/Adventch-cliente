@@ -40,6 +40,7 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
   hasSaved = true;
   loading = true;
   sub1: Subscription;
+  isSending = false;
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -185,10 +186,12 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
     const profilesIds = auth.getCurrentDecodedToken().profiles.map(p => p.id);
     const renewToken = !!this.profile ? profilesIds.includes(this.profile.id) : false;
     if (this.formProfile.valid && this.checkIfHaveMarkedFeatureAndPermission()) {
+      this.isSending = true;
       this.sendData()
         .switchMap(() => this.profileDataComponent.getData())
         .do(() => this.profileDataComponent.closeSidenav())
         .do(() => this.snackBar.open('Papel salvo com sucesso!', 'OK', { duration: 3000 }))
+        .do(() => this.isSending = false)
         .skipWhile(() => renewToken === false)
         .subscribe(() => this.authService.renewUserToken(), () => {
           this.snackBar.open('Ocorreu um erro ao salar o papel', 'OK', { duration: 3000 });

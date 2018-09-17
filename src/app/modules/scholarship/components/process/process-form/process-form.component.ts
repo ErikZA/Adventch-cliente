@@ -294,19 +294,17 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       return;
     }
     const data = this.mapFormToViewModel();
+    this.isSending = true;
     if (typeof this.process === 'undefined') {
       this.scholarshipService.saveProcess(data)
-        .do(id => {
-          console.log(id);
-          this.handleSaveSuccess(id);
-        })
+        .do(id => this.handleSaveSuccess(id))
         .switchMap(() => this.processDataComponent.getProcesses())
-        .subscribe();
+        .subscribe(() => this.isSending = false);
     } else {
       this.scholarshipService.editProcess(this.process.id, data)
         .do(() => this.handleSaveSuccess(this.process.id))
         .switchMap(() => this.processDataComponent.getProcesses())
-        .subscribe();
+        .subscribe(() => this.isSending = false);
     }
   }
   public maskPhone(phone): string {

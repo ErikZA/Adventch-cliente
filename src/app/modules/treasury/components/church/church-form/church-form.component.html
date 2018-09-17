@@ -68,10 +68,10 @@
             </mat-form-field>
             <div fxFlex="100%" fxFlexOffset="40px">
                 <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
-                    <a (click)="closeSidenav()">
+                    <a routerLink="/tesouraria/igrejas">
                         <back-button></back-button>
                     </a>
-                    <button mat-raised-button type="submit" (click)="save()" color="primary">SALVAR</button>
+                    <button mat-raised-button type="submit" (click)="save()" color="primary" [disabled]="isSending">SALVAR</button>
                 </div>
             </div>
         </div>

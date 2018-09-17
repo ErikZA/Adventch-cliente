@@ -84,7 +84,7 @@
                 <a class="positionButtom" routerLink="/administracao/papeis">
                     <back-button></back-button>
                 </a>
-                <button class="positionButtom" mat-raised-button type="submit" (click)="saveProfile()" color="primary">SALVAR</button>
+                <button class="positionButtom" mat-raised-button type="submit" (click)="saveProfile()" color="primary" [disabled]="isSending">SALVAR</button>
             </div>
         </div>
     </div>

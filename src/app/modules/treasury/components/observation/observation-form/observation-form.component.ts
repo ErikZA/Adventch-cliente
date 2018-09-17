@@ -13,6 +13,7 @@ import { auth } from '../../../../../auth/auth';
 import { ObservationDataComponent } from '../observation-data/observation-data.component';
 import 'rxjs/add/operator/takeLast';
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { Church } from '../../../models/church';
 
 @Component({
   selector: 'app-observation-form',
@@ -23,17 +24,12 @@ import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorato
 export class ObservationFormComponent implements OnInit, OnDestroy {
 
   formObservation: FormGroup;
-  churches: any;
+  churches: Church[] = [];
   dates: any;
-  params: any;
-  values: any;
-  editChurch: any;
-  editChurchName: any;
   observation: Observation;
-
-  loading = true;
-
   sub1: Subscription;
+  loading = true;
+  isSending = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -90,8 +86,8 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
     }
     const unit = auth.getCurrentUnit();
     const responsible = auth.getCurrentUser();
-
-    this.values = {
+    this.isSending = true;
+    const data = {
       id: !!this.observation ? this.observation.id : 0,
       responsible: responsible.id,
       unit: unit.id,
@@ -99,8 +95,9 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
       ...this.formObservation.value
     };
     this.treasuryService
-      .saveObservation(this.values)
+      .saveObservation(data)
       .do(() => {
+        this.isSending = false;
         this.formObservation.markAsUntouched();
         this.observationDataComponent.closeSidenav();
       })

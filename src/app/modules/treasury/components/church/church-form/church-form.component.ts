@@ -33,7 +33,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   sub2: Subscription;
 
   loading = true;
-
+  isSending = false;
   constructor(
     private formBuilder: FormBuilder,
     private service: TreasuryService,
@@ -87,6 +87,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
 
   public save(): void {
     if (this.form.valid) {
+      this.isSending = true;
       const unit = auth.getCurrentUnit();
       const data = {
         id: !!this.church ? this.church.id : 0,
@@ -97,6 +98,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
         .saveChurch(data)
         .switchMap(() => this.churchDataComponent.getData())
         .subscribe(() => {
+          this.isSending = false;
           this.churchDataComponent.closeSidenav();
           this.snackBar.open('Salvo com sucesso!', 'OK', { duration: 5000 });
         }, err => {

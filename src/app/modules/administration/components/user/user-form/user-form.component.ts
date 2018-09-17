@@ -47,6 +47,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
 
   loading = true;
   sub1: Subscription;
+  isSending = false;
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -210,6 +211,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
 
   private handleFail(err = null) {
     console.log(err);
+    this.isSending = false;
     if (err.status === 409) {
       this.snackBar.open(err.error + ', tente novamente.', 'OK', { duration: 5000 });
     } else {
@@ -220,6 +222,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
     if (userId === auth.getCurrentUser().id) {
       this.authService.renewUserToken();
     }
+    this.isSending = false;
     this.snackBar.open('Usuário salvo com sucesso.', 'OK', { duration: 5000 });
     this.userDataComponent.closeSidenav();
   }
@@ -228,6 +231,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
       return;
     }
     const userData = this.getUserData();
+    this.isSending = true;
     of(userData.id)
       .switchMap(id => !!id ? this.administraionService.editUser(userData, id) : this.administraionService.saveUser(userData))
       .switchMap(() => this.userDataComponent.getData())
