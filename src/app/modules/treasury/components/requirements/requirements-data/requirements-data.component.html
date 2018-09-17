@@ -83,9 +83,9 @@
               </mat-expansion-panel-header>
               <mat-list>
                 <h3 matSubheader>Informações do requisito</h3>
-                <mat-list-item fxLayout="row" style="height: auto">
+                <mat-list-item fxLayout="row" style="height: auto;">
                   <div fxLayout="column" fxFlex matLine>
-                    <span class="details-title" fxLayout.lt-sm="column">
+                    <span class="details-title" fxLayout.lt-sm="column" style="white-space: pre-line;">
                       <b>Descrição:&ensp;</b> {{ requirement.description }}</span>
                     <span class="details-title" fxLayout.lt-sm="column">
                       <b>Tipo:&ensp;</b> {{ (requirement.isAnual ? "Anual" : "Mensal") }}</span>
