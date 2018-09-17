@@ -2,10 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { Subject } from 'rxjs/Subject';
+
 import { TreasuryService } from '../../../treasury.service';
 import { Subscription } from 'rxjs/Subscription';
 import { auth } from '../../../../../auth/auth';
-import { Subject } from 'rxjs/Subject';
+import { ReportService } from '../../../../../shared/report.service';
 
 
 
@@ -29,7 +32,8 @@ export class AvaliationReportComponent implements OnInit {
         private service: TreasuryService,
         private router: Router,
         public dialogRef: MatDialogRef<AvaliationReportComponent>,
-        public snackBar: MatSnackBar
+        public snackBar: MatSnackBar,
+        private reportService: ReportService
     ) { }
 
 
@@ -63,7 +67,7 @@ export class AvaliationReportComponent implements OnInit {
         });
     }
 
-    generateGeneralReport() {
+    /*generateGeneralReport() {
         // Temporário
         const printContents = document.getElementById('printable').innerHTML;
         const originalContents = document.body.innerHTML;
@@ -71,7 +75,7 @@ export class AvaliationReportComponent implements OnInit {
         window.print();
         document.body.innerHTML = originalContents;
         location.reload();
-    }
+    }*/
 
     public search(search: string): any[] {
         if (search === '' || search === undefined || search === null) {
@@ -85,5 +89,28 @@ export class AvaliationReportComponent implements OnInit {
 
     public onScroll(): void {
         this.showList += 15;
-      }
+    }
+
+    public generateGeneralReport(): void {
+        const data = this.getDataParams();
+        this.reportService.reportAvaliationDashboard(data).subscribe(urlData => {
+            const fileUrl = URL.createObjectURL(urlData);
+            let element;
+            element = document.createElement('a');
+            element.href = fileUrl;
+            element.download = 'avaliacoes-relatorio_dashboard.pdf';
+            element.target = '_blank';
+            element.click();
+            this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+        }, err => {
+            console.log(err);
+            this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+        });
+    }
+
+    private getDataParams(): any {
+        return {
+            year: new Date().getFullYear(),
+        };
+    }
 }

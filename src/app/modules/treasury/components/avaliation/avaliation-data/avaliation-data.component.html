@@ -163,7 +163,7 @@
                     (click)="anual(avaliation)">ANUAL</button>
                 </ng-template>
                 <ng-template [Feature]="54">
-                  <button mat-button *ngIf="checkChurchHasAvaliation(avaliation, true) || checkChurchHasAvaliation(avaliation, false)" style="background-color: #0D2139!important; color: #fff" matTooltip="Finalizar avaliação da igre" [matMenuTriggerFor]="menu">
+                  <button mat-button *ngIf="checkChurchHasAvaliation(avaliation, true) || checkChurchHasAvaliation(avaliation, false)" style="background-color: #0D2139!important; color: #fff" matTooltip="Finalizar avaliação da igreja" [matMenuTriggerFor]="menu">
                     <mat-icon>list</mat-icon>FINALIZAR</button>
                   <mat-menu #menu="matMenu">
                     <button *ngIf="checkChurchHasAvaliation(avaliation, true)" (click)="finalize(avaliation, true)" mat-menu-item matTooltip="Finaliza apenas a avaliação mensal da igreja">Avaliação Mensal</button>
