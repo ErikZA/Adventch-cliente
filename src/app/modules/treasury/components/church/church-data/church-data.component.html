@@ -28,7 +28,7 @@
                     <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
                         <mat-form-field>
                             <mat-select placeholder="Distrito" (change)="search()" [(ngModel)]="filterDistrict">
-                                <mat-option value="0">TODOS</mat-option>
+                                <mat-option [value]="0">TODOS</mat-option>
                                 <mat-option *ngFor="let district of districts" [value]="district.id">
                                     {{ district.name }}
                                 </mat-option>
@@ -38,7 +38,7 @@
                     <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
                         <mat-form-field>
                             <mat-select placeholder="Cidade" (change)="search()" [(ngModel)]="filterCity">
-                                <mat-option value="0">TODOS</mat-option>
+                                <mat-option [value]="0">TODOS</mat-option>
                                 <mat-option *ngFor="let city of cities" [value]="city.id">
                                     {{ city.name }}
                                 </mat-option>
@@ -48,7 +48,7 @@
                     <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
                         <mat-form-field>
                             <mat-select placeholder="Analista" (change)="search()" [(ngModel)]="filterAnalyst">
-                                <mat-option value="0">TODOS</mat-option>
+                                <mat-option [value]="0">TODOS</mat-option>
                                 <mat-option *ngFor="let analyst of analysts" [value]="analyst.id">
                                     {{ analyst.name }}
                                 </mat-option>

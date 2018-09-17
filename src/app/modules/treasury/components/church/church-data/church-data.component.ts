@@ -39,9 +39,9 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
   analysts: User[] = [];
   districts: Districts[] = [];
 
-  filterDistrict: number;
-  filterCity: number;
-  filterAnalyst: number;
+  filterDistrict = 0;
+  filterCity = 0;
+  filterAnalyst = 0;
   filterText = '';
 
   sub1: Subscription;

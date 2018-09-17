@@ -43,7 +43,7 @@
                     <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
                         <mat-form-field>
                             <mat-select placeholder="Igreja" (change)="search()" [(ngModel)]="filterChurch">
-                                <mat-option value="0">TODAS</mat-option>
+                                <mat-option [value]="0">TODAS</mat-option>
                                 <mat-option *ngFor="let church of churches" [value]="church.id">
                                     {{ church.name }}
                                 </mat-option>
@@ -65,7 +65,7 @@
                     <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
                         <mat-form-field>
                             <mat-select placeholder="Responsável" (change)="search()" [(ngModel)]="filterResponsible">
-                                <mat-option value="0">TODOS</mat-option>
+                                <mat-option [value]="0">TODOS</mat-option>
                                 <mat-option *ngFor="let responsible of responsibles" [value]="responsible.id">
                                     {{ responsible.name }}
                                 </mat-option>

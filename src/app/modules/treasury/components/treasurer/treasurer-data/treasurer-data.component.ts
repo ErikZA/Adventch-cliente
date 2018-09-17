@@ -33,9 +33,9 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   treasurers: Treasurer[] = [];
   treasurersCache: Treasurer[] = [];
 
-  filterDistrict: number;
-  filterAnalyst: number;
-  filterFunction: number;
+  filterDistrict = 0;
+  filterAnalyst = 0;
+  filterFunction = 0;
   districts: Districts[] = [];
   analysts: User[] = [];
 

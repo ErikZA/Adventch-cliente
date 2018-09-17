@@ -38,9 +38,9 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
 
   filterText: string;
   filterStatus = 1;
-  filterChurch: number;
-  filterAnalyst: number;
-  filterResponsible: number;
+  filterChurch = 0;
+  filterAnalyst = 0;
+  filterResponsible = 0;
   filterPeriodStart: Date = new Date(new Date().getFullYear(), 0, 1);
   filterPeriodEnd: Date = new Date(new Date().getFullYear(), 11, 31);
 
