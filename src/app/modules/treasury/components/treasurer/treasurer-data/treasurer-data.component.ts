@@ -65,6 +65,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     return 'Tesoureiro (a) Assistente';
   }
   getData() {
+    this.search$.next('');
     return this.treasureService
       .getTreasurers(auth.getCurrentUnit().id)
       .map(data => data.map(d => ({
