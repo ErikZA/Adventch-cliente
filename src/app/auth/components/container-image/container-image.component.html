@@ -1,5 +1,10 @@
-<div [className]="getClassNameLoginType()" fxLayout="row" fxLayoutAlign="center center">
-    <mat-card fxFlex="95%" fxFlex.gt-xs="60%" fxFlex.gt-sm="35%" fxFlex.gt-md="30%" fxFlex.gt-lg="22%">
-        <ng-content></ng-content>
-    </mat-card>
+<div fxLayout="column" [className]="getClassNameLoginType()">
+    <div fxLayout="row" fxLayoutAlign="end" class="link">
+        <ng-content select="[button-type=redirect]"></ng-content>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center" fxFlex>
+        <mat-card fxFlex="95%" fxFlex.gt-xs="60%" fxFlex.gt-sm="35%" fxFlex.gt-md="30%" fxFlex.gt-lg="22%">
+            <ng-content select="[space-type=login]"></ng-content>
+        </mat-card>
+    </div>
 </div>
