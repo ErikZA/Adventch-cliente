@@ -98,11 +98,11 @@
           <mat-list-item>
             <h3 matLine fxLayout="row">
               <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex>
-                <span fxFlex="32">Igreja</span>
-                <span fxFlex="35" fxHide.lt-sm>Responsável</span>
-                <span fxFlex="15" fxHide.lt-sm>Data</span>
-                <span fxFlex="15" fxHide.lt-sm>Status</span>
-                <span fxFlex="3"></span>
+                <span fxFlex fxFlex.gt-sm="32">Igreja</span>
+                <span fxFlex fxFlex.gt-sm="35" fxHide.lt-sm>Responsável</span>
+                <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Data</span>
+                <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Status</span>
+                <span></span>
               </div>
             </h3>
           </mat-list-item>
@@ -116,11 +116,11 @@
             <mat-expansion-panel hideToggle *ngIf="i <= showList">
               <mat-expansion-panel-header>
                 <mat-panel-description fxLayout="row">
-                  <span *ngIf="observation.church" fxFlex="32" style="white-space: line-wrap;">{{ observation.church.name }}</span>
-                  <span *ngIf="observation.responsible" fxFlex="35" style="white-space: line-wrap;" fxHide.lt-sm>{{ observation.responsible.name }}</span>
-                  <span fxFlex="17" style="white-space: line-wrap;" fxHide.lt-sm>{{ observation.date | date: "dd/MM/yyyy" }}</span>
-                  <span fxFlex="13" style="white-space: line-wrap;" fxHide.lt-sm>{{ getStatus(observation.status) }}</span>
-                  <span fxFlex="3" style="white-space: line-wrap;"><mat-icon *ngIf="checkAttention(observation)" matTooltip="Aberta há mais de 30 dias" style="color: red">error_outline</mat-icon></span>
+                  <span *ngIf="observation.church" fxFlex fxFlex.gt-sm="32" style="white-space: line-wrap;">{{ observation.church.name }}</span>
+                  <span *ngIf="observation.responsible" fxFlex fxFlex.gt-sm="35" style="white-space: line-wrap;" fxHide.lt-sm>{{ observation.responsible.name }}</span>
+                  <span fxFlex fxFlex.gt-sm="17" style="white-space: line-wrap;" fxHide.lt-sm>{{ observation.date | date: "dd/MM/yyyy" }}</span>
+                  <span fxFlex fxFlex.gt-sm="13" style="white-space: line-wrap;" fxHide.lt-sm>{{ getStatus(observation.status) }}</span>
+                  <span style="white-space: line-wrap;"><mat-icon *ngIf="checkAttention(observation)" matTooltip="Aberta há mais de 30 dias" style="color: red">error_outline</mat-icon></span>
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <mat-list>
