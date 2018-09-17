@@ -12,6 +12,8 @@ export class LoginDynamicFormComponent implements OnInit {
   @Input()
   loginName = 'Email';
   @Input()
+  placeholder = '';
+  @Input()
   loading = false;
 
   @Output()

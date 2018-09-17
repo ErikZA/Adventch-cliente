@@ -1,8 +1,9 @@
 <form [formGroup]="form" fxLayout="column" fxLayoutGap="25px" *ngIf="loadingForm">
-    <mat-form-field fxFlex>
-        <input matInput [placeholder]="loginName" formControlName="login" maxlength="200">
+    <mat-form-field appearance="standard">
+        <mat-label>{{ loginName }}</mat-label>
+        <input matInput [placeholder]="placeholder" formControlName="login" maxlength="200">
         <mat-icon matSuffix>person</mat-icon>
-        <!-- <mat-error *ngIf="form.get('login').hasError('required')"></mat-error> -->
+        <mat-hint *ngIf="placeholder">Exemplo: {{ placeholder }}</mat-hint>
     </mat-form-field>
     <mat-form-field>
         <input matInput placeholder="Senha" formControlName="password" [type]="hide ? 'password' : 'text'" (keyup.enter)="login()">

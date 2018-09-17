@@ -4,7 +4,7 @@
     </mat-card-header>
     <mat-card-title class="title padding-top-5 padding-bottom-5" fxLayoutAlign="center">Entre com seu e-mail</mat-card-title>
     <mat-card-content fxLayout="column" fxLayoutAlign="space-between">
-        <app-login-dynamic-form (submitted)="submitForm($event)" [loading]="loading" loginName="Email">
+        <app-login-dynamic-form (submitted)="submitForm($event)" [loading]="loading" loginName="Email" placeholder="seuemail@email.com">
         </app-login-dynamic-form>
         <a class="link" style="margin-top: 20px" (click)="sendEmailResetPassword()">Esqueceu sua senha?</a>
     </mat-card-content>
