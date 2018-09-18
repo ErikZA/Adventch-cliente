@@ -128,11 +128,6 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   }
 
   private setInitialFilterStatus() {
-    if (this.scholarshipService.statusSelected === 0) {
-      for (var i = 0; i < 9; i++) {
-        this.statusFilters.push(i);
-      }
-    }
     if (this.scholarshipService.statusSelected !== 0) {
       if (!this.statusFilters.some(x => x === this.scholarshipService.statusSelected)) {
         this.statusFilters.push(this.scholarshipService.statusSelected);
@@ -262,8 +257,8 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   public generateGeneralProcessReport(): void {
     const data = {
-      school: this.schoolsFilters.length === 1 ? this.schoolsFilters[0] : this.scholarshipService.schoolSelected,
-      status2: String(this.statusFilters)
+      school2: this.getSchoolParams(),
+      status2: String(this.statusFilters.length === 0 ? [1, 2, 3, 4, 5, 6, 7, 8] : this.statusFilters)
     };
     this.reportService.reportProcesses(data).subscribe(urlData => {
       const fileUrl = URL.createObjectURL(urlData);
@@ -278,6 +273,17 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       console.log(err);
       this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
     });
+  }
+
+  private getSchoolParams(): string {
+    const school = this.authService.getCurrentUser().idSchool;
+    if (school > 0) { //Secretária
+      return school.toString();
+    }
+    if (this.schoolsFilters.length === 0) { //Assistente que não selecionou nenhum item
+      return String(this.schools.map(m => m.id));
+    }
+    return String(this.schoolsFilters); //assistante que selecionou um ou mais itens
   }
 
   public changeStatusToProcess(process: ProcessDataInterface, status: number): void {
