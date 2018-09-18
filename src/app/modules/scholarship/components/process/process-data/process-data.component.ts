@@ -128,6 +128,11 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   }
 
   private setInitialFilterStatus() {
+    if (this.scholarshipService.statusSelected === 0) {
+      for (var i = 0; i < 9; i++) {
+        this.statusFilters.push(i);
+      }
+    }
     if (this.scholarshipService.statusSelected !== 0) {
       if (!this.statusFilters.some(x => x === this.scholarshipService.statusSelected)) {
         this.statusFilters.push(this.scholarshipService.statusSelected);
@@ -256,10 +261,9 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   }
 
   public generateGeneralProcessReport(): void {
-    const status = this.statusFilters.length === 1 ? this.statusFilters[0] : this.scholarshipService.statusSelected;
     const data = {
       school: this.schoolsFilters.length === 1 ? this.schoolsFilters[0] : this.scholarshipService.schoolSelected,
-      status: status === 0 || status === undefined || status == null ? -1 : status
+      status2: String(this.statusFilters)
     };
     this.reportService.reportProcesses(data).subscribe(urlData => {
       const fileUrl = URL.createObjectURL(urlData);
@@ -275,7 +279,6 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
     });
   }
-
 
   public changeStatusToProcess(process: ProcessDataInterface, status: number): void {
     const user = auth.getCurrentUser();
