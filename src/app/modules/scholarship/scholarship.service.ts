@@ -102,7 +102,11 @@ export class ScholarshipService {
   public getProcessesBySchool(schoolId: number, status: number[], query: string): Observable<ProcessDataInterface[]> {
     let params = new HttpParams();
     if (query) { params = params.set('query', query); }
-    if (status.length > 0) { params = params.set('statusIds', String(status)); }
+    if (status.length > 0) {
+      status.forEach(s => {
+        params = params.append('statusIds', String(s));
+      });
+    }
     const url = `/scholarship/process/school/${schoolId}`;
     return this.http
       .get<ProcessDataInterface[]>(url, { params: params })
