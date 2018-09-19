@@ -74,6 +74,7 @@ export class RequirementDataComponent implements OnInit, OnDestroy {
       this.requirements$ = Observable.of(x);
       this.search();
     });
+    this.store.loadAll();
     this.loadPeriods();
     // VERIFICAR
     // this.requirements = this.store.dataStore.requirements;
