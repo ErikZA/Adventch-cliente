@@ -128,15 +128,9 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
         };
 
     if (this.formRequirement.valid) {
-      this.service.saveRequirements(this.values).subscribe((data) => {
-        this.store.loadAll();
-        this.snackBar.open('Requisito salvo com sucesso!', 'OK', { duration: 5000 });
-        this.formRequirement.markAsUntouched();
-        this.close();
-      }, err => {
-        console.log(err);
-        this.snackBar.open('Erro ao salvar requisito, tente novamente.', 'OK', { duration: 5000 });
-      });
+      this.store.save(this.values);
+      this.formRequirement.markAsUntouched();
+      this.close();
     } else {
       return;
     }

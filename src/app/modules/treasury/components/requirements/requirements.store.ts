@@ -66,36 +66,48 @@ export class RequirementStore {
         this.requirements$ = this._requirements.asObservable();
     }
 
-      /* Salvar*/
-  public addRequirement(requirement) {
-    const index = this.dataStore.requirements.findIndex(x => x.id === Number(requirement.id));
-    if (index >= 0) {
-      this.dataStore.requirements[index] = requirement;
-    } else {
-      this.dataStore.requirements.push(requirement);
-      this.dataStore.requirements.sort((obj1, obj2) => {
-        if (obj1.position > obj2.position) {
-            return 1;
+    /* Salvar*/
+    public addRequirement(requirement) {
+        const index = this.dataStore.requirements.findIndex(x => x.id === Number(requirement.id));
+        if (index >= 0) {
+            this.dataStore.requirements[index] = requirement;
+        } else {
+            this.dataStore.requirements.push(requirement);
+            this.dataStore.requirements.sort((obj1, obj2) => {
+                if (obj1.position > obj2.position) {
+                    return 1;
+                }
+                if (obj1.position < obj2.position) {
+                    return -1;
+                }
+                return 0;
+            });
         }
-        if (obj1.position < obj2.position) {
-            return -1;
-        }
-        return 0;
-    });
+        this.requirements = new Requirement();
     }
-    this.requirements = new Requirement();
-  }
 
-  public remove(requirement: Requirement) {
-    this.service.deleteRequirement(requirement).subscribe(() => {
-      const index = this.dataStore.requirements.findIndex(x => x.id === requirement.id);
-      this.dataStore.requirements.splice(index, 1);
-      this.snackBar.open('Requisito removido!', 'OK', { duration: 5000 });
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao remover requisito, tente novamente.', 'OK', { duration: 5000 });
-    });
-  }
+    public save(obj) {
+        this.service.saveRequirements(obj).subscribe((data) => {
+            setTimeout(() => {
+                this.snackBar.open('Requisito salvo com sucesso!', 'OK', { duration: 5000 });
+                this.loadAll();
+              }, 1000);
+        }, err => {
+            console.log(err);
+            this.snackBar.open('Erro ao salvar requisito, tente novamente.', 'OK', { duration: 5000 });
+        });
+    }
+
+    public remove(requirement: Requirement) {
+        this.service.deleteRequirement(requirement).subscribe(() => {
+            const index = this.dataStore.requirements.findIndex(x => x.id === requirement.id);
+            this.dataStore.requirements.splice(index, 1);
+            this.snackBar.open('Requisito removido!', 'OK', { duration: 5000 });
+        }, err => {
+            console.log(err);
+            this.snackBar.open('Erro ao remover requisito, tente novamente.', 'OK', { duration: 5000 });
+        });
+    }
 
     private load() {
         const { requirements } = this.dataStore;
