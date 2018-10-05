@@ -1,0 +1,14 @@
+<mat-card [style.background-color]="color" [style.color]="getColorText()">
+    <!-- <mat-card-header fxLayout="row" fxLayoutAlign="center">
+        <mat-card-title class="font-title">{{ title }}</mat-card-title>
+    </mat-card-header> -->
+    <mat-card-content fxLayout="column" fxLayoutAlign="start center">
+        <div class="process-count">{{ count }}</div>
+        <div fxLayout="row" fxLayoutAlign="space-between">
+            <p>
+                {{ title }}
+                <span *ngIf="total !== 0"> ({{ (count / total * 100) || 0 | number: '1.0-0' }}%)</span>
+            </p>
+        </div>
+    </mat-card-content>
+</mat-card>

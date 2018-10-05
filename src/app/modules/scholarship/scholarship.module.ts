@@ -15,9 +15,9 @@ import { PendencyComponent } from './components/process/pendency/pendency.compon
 import { VacancyComponent } from './components/process/vacancy/vacancy.component';
 
 import { ScholarshipService } from './scholarship.service';
-import { ProcessesStore } from './components/process/processes.store';
 import { ProcessFormDocumentInfoComponent } from './components/process/process-form-document-info/process-form-document-info.component';
 import { ProcessDataDocumentInfoComponent } from './components/process/process-data-document-info/process-data-document-info.component';
+import { ProcessCardCountComponent } from './components/process/process-card-count/process-card-count.component';
 import { FeatureGuard } from '../../shared/guards/feature.guard';
 
 @NgModule({
@@ -29,7 +29,6 @@ import { FeatureGuard } from '../../shared/guards/feature.guard';
   ],
   providers: [
     ScholarshipService,
-    ProcessesStore,
     ModuleGuard,
     FeatureGuard
   ],
@@ -41,7 +40,8 @@ import { FeatureGuard } from '../../shared/guards/feature.guard';
     VacancyComponent,
     ResponsibleDataComponent,
     ProcessFormDocumentInfoComponent,
-    ProcessDataDocumentInfoComponent
+    ProcessDataDocumentInfoComponent,
+    ProcessCardCountComponent
   ],
   entryComponents: [
     PendencyComponent,

@@ -1,15 +1,6 @@
-<mat-sidenav fxLayout="column" #sidenavRight mode="side" align="end" class="sidenav-right mat-elevation-z4" (keydown.esc)="closeSidenav()"
-  [class.mat-drawer-opened]="sidenavRight.opened" [class.mat-drawer-closed]="!sidenavRight.opened">
-  <button mat-icon-button type="button" matTooltip="Fechar" (click)="closeSidenav()">
-    <mat-icon>clear</mat-icon>
-  </button>
-  <div fxFlex fxFlexAlign="center">
-    <router-outlet></router-outlet>
-  </div>
-</mat-sidenav>
-
-<div class="page-container mat-elevation-z2" fxLayoutAlign="center" style="overflow: auto;">
-  <div fxFlex="95%">
+<app-form-sidenav-right (closeEmitted)="closeSidenav()" #sidenavRight></app-form-sidenav-right>
+<app-layout-data>
+  <div space-type="header" fxLayout="column">
     <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
       <h2 class="title" *ngIf="!searchButton">Lista de Requisitos</h2>
       <mat-form-field *ngIf="searchButton" fxFlex>
@@ -22,94 +13,85 @@
         <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
           <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
         </button>
-        <button mat-icon-button matTooltip="Imprimir requisitos" (click)="generateGeneralReport()">
-          <mat-icon aria-label="Imprimir relatório geral">print</mat-icon>
-        </button>
+        <div matTooltip="Relatório geral">
+          <button mat-icon-button (click)="generateGeneralReport()" [disabled]="disableReport()">
+            <mat-icon>print</mat-icon>
+          </button>
+        </div>
       </div>
     </div>
     <mat-accordion class="example-headers-align" #matExpansionPanel>
       <mat-expansion-panel #matExpansionPanel hideToggle="true">
-        <div fxLayout="row wrap" style="flex-wrap: wrap;">
-          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-            <mat-form-field>
-              <mat-select placeholder="Tipo" (change)="search()" [(ngModel)]="filterIsAnual">
-                <mat-option [value]="0">TODOS</mat-option>
-                <mat-option [value]="1">Anual</mat-option>
-                <mat-option [value]="2">Mensal</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </mat-list>
-
-          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-            <mat-form-field>
-              <mat-select placeholder="Ano" (change)="search()" [(ngModel)]="filterYear">
-                <!-- <mat-option value="0">TODOS</mat-option> -->
-                <mat-option *ngFor="let year of years" [value]="year">
-                  {{ year }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </mat-list>
+        <div fxLayout.gt-xs="row" fxLayout="column">
+          <app-filter flex="35" [data]="typesData" placeholder="Tipo" (filterEmitted)="checkTypes($event)"></app-filter>
+          <app-filter flex="35" [data]="yearsData" placeholder="Período" (filterEmitted)="checkYears($event)"></app-filter>
         </div>
       </mat-expansion-panel>
     </mat-accordion>
     <mat-divider></mat-divider>
-    <div fxFlex>
-      <div class="header">
-        <mat-list>
-          <mat-list-item>
-            <h3 matLine fxLayout="row">
-              <span fxFlex fxFlex.gt-sm="15">Posição</span>
-              <span fxFlex fxFlex.gt-sm="35">Nome</span>
-              <span fxFlex fxFlex.gt-sm="35" fxHide.lt-sm>Nota</span>
-              <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Período</span>
-            </h3>
-          </mat-list-item>
-        </mat-list>
-        <mat-divider></mat-divider>
-      </div>
-      <div class="conteiner" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()"
-        [scrollWindow]="false">
-        <mat-accordion>
-          <div *ngFor="let requirement of (requirements$ | async ); index as i">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-description fxLayout="row" fxFlex>
-                  <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ requirement.position }}</span>
-                  <span fxFlex fxFlex.gt-sm="37" style="white-space: line-wrap;">{{ requirement.name }}</span>
-                  <span fxFlex fxFlex.gt-sm="37" style="white-space: line-wrap;" fxHide.lt-sm>{{ requirement.score }}</span>
-                  <span fxFlex fxFlex.gt-sm="11" style="white-space: line-wrap;" fxHide.lt-sm>{{ requirement.date | date: "yyyy" }}</span>
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <mat-list>
-                <h3 matSubheader>Informações do requisito</h3>
-                <mat-list-item fxLayout="row" style="height: auto;">
-                  <div fxLayout="column" fxFlex matLine>
-                    <span class="details-title" fxLayout.lt-sm="column" style="white-space: pre-line;">
-                      <b>Descrição:&ensp;</b> {{ requirement.description }}</span>
-                    <span class="details-title" fxLayout.lt-sm="column">
-                      <b>Tipo:&ensp;</b> {{ (requirement.isAnual ? "Anual" : "Mensal") }}</span>
-                  </div>
-                </mat-list-item>
-              </mat-list>
-              
-              <mat-action-row>
-                <ng-template [Feature]="55" permission="4" *ngIf="!requirement.hasAvaliation">
-                  <button mat-button color="warn" matTooltip="Excluir" (click)="remove(requirement)">REMOVER</button>
-                </ng-template>
-                <ng-template [Feature]="55" permission="3">
-                  <button mat-button color="primary" matTooltip="Editar" (click)="edit(requirement)">EDITAR</button>
-                </ng-template>
-              </mat-action-row>
-            </mat-expansion-panel>
-          </div>
-        </mat-accordion>
-      </div>
+    <div class="header">
+      <mat-list>
+        <mat-list-item>
+          <h3 matLine fxLayout="row">
+            <span fxFlex fxFlex.gt-sm="15">Posição</span>
+            <span fxFlex fxFlex.gt-sm="35">Nome</span>
+            <span fxFlex fxFlex.gt-sm="35" fxHide.lt-sm>Nota</span>
+            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Período</span>
+          </h3>
+        </mat-list-item>
+      </mat-list>
+      <mat-divider></mat-divider>
     </div>
   </div>
-</div>
+  <div space-type="container" fxLayout="column" class="container" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+    (scrolled)="onScroll()" [scrollWindow]="false">
+    <mat-accordion>
+      <div *ngFor="let requirement of requirements; index as i">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-description fxLayout="row" fxFlex>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ requirement.position }}</span>
+              <span fxFlex fxFlex.gt-sm="37" style="white-space: line-wrap;">{{ requirement.name }}</span>
+              <span fxFlex fxFlex.gt-sm="37" style="white-space: line-wrap;" fxHide.lt-sm>{{ requirement.score }}</span>
+              <span fxFlex fxFlex.gt-sm="11" style="white-space: line-wrap;" fxHide.lt-sm>{{ requirement.date | date: "yyyy" }}</span>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div fxLayout="column" class="description">
+            <div fxLayout="row">
+              <p class="title-description">Informações do Requisito</p>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Nota:</span>
+              <span>{{ requirement.score }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Periodo:</span>
+              <span>{{ requirement.date | date: "yyyy" }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+              <span class="text-bold">Descrição:</span>
+              <span>{{ requirement.description }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+              <span class="text-bold">Tipo:</span>
+              <span>{{ (requirement.isAnual ? "Anual" : "Mensal") }}</span>
+            </div>
+          </div>
+          <mat-action-row>
+            <ng-template [Feature]="55" permission="4" *ngIf="!requirement.hasAvaliation">
+              <button mat-button color="warn" matTooltip="Excluir" (click)="remove(requirement)">REMOVER</button>
+            </ng-template>
+            <ng-template [Feature]="55" permission="3">
+              <button mat-button color="primary" matTooltip="Editar" (click)="edit(requirement)">EDITAR</button>
+            </ng-template>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </div>
+    </mat-accordion>
+  </div>
+</app-layout-data>
 <ng-template [Feature]="55" permission="1">
-  <button mat-fab color="primary" class="mat-fab-right" routerLink="./novo" (click)="openSidenav()">
+  <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo" (click)="openSidenav()">
     <mat-icon aria-label="Adicionar">add</mat-icon>
   </button>
 </ng-template>

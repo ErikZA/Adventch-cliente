@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 
+const modules = {}
+
 import {
   MatSlideToggleModule,
   MatDividerModule,
   MatStepperModule,
   MatTableModule,
   MatPaginatorModule,
-  DateAdapter,
   MatAutocompleteModule,
   MatButtonModule,
   MatButtonToggleModule,
@@ -34,7 +35,8 @@ import {
   MatChipsModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatGridListModule
+  MatGridListModule,
+  MatTreeModule
 } from '@angular/material';
 
 
@@ -72,7 +74,8 @@ import {
     MatChipsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatGridListModule
+    MatGridListModule,
+    MatTreeModule
   ]
 })
 export class MaterialModule { }

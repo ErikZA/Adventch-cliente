@@ -1,38 +1,32 @@
 <div fxLayout="row" fxFlexFill fxLayoutAlign="center" *ngIf="!!loading" style="padding-top: 25vh;">
-  <mat-spinner></mat-spinner>
+    <mat-spinner></mat-spinner>
 </div>
-<div [ngStyle.xl]="{'width.vw': 30}" [ngStyle.lg]="{'width.vw': 40}" [ngStyle.md]="{'width.vw': 60}" [ngStyle.sm]="{'width.vw': 70}"  [ngStyle.xs]="{'width.vw': 80}"
-  [ngStyle.xs]="{'width.vw': 100}" *ngIf="!loading">
-<div fxFlex>
-    <h2 class="title">Observação</h2>
-    <mat-divider></mat-divider>
-  </div>
-  <br />
-<form [formGroup]="formObservation" fxLayout="column" (keydown.enter)="$event.preventDefault()">
-    <!-- <mat-form-field fxFlex>
-      <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
-    </mat-form-field> -->
-    <mat-form-field>
-      <mat-select placeholder="Igreja" formControlName="church" required> 
-        <mat-option *ngFor="let church of churches" [value]="church.id">
-          {{ church.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+<form [formGroup]="formObservation" fxLayout="column" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="!loading" (keydown.enter)="$event.preventDefault()">
+    <app-header-form title="Observações"></app-header-form>
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center">
+        <div fxLayout="column" fxFlex="50%">
+            <mat-form-field>
+                <mat-select placeholder="Igreja" formControlName="church" required>
+                    <mat-option *ngFor="let church of churches" [value]="church.id">
+                        {{ church.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
 
-    <mat-form-field fxFlexFill>
-        <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerBirth" placeholder="Data" formControlName="date" required>
-        <mat-datepicker-toggle matSuffix [for]="pickerBirth"></mat-datepicker-toggle>
-        <mat-datepicker #pickerBirth></mat-datepicker>
-    </mat-form-field>
+            <mat-form-field>
+                <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerBirth" placeholder="Data" formControlName="date" required>
+                <mat-datepicker-toggle matSuffix [for]="pickerBirth"></mat-datepicker-toggle>
+                <mat-datepicker #pickerBirth></mat-datepicker>
+            </mat-form-field>
 
-    <mat-form-field style="width: 100%">
-        <textarea formControlName="description" matInput placeholder="Descrição" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10" required></textarea>
-        <mat-error *ngIf="formObservation.get('description').hasError('pattern')">Este campo é inválido</mat-error>
-    </mat-form-field>
-
-    <div fxLayout="row" fxLayoutAlign="space-between">
-      <button mat-button type="button" routerLink="/tesouraria/observacoes">CANCELAR</button>
-      <button mat-raised-button type="submit" (click)="saveObservation()" color="primary" [disabled]="isSending">SALVAR</button>
+            <mat-form-field style="width: 100%">
+                <textarea formControlName="description" matInput placeholder="Descrição" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10" required></textarea>
+                <mat-error *ngIf="formObservation.get('description').hasError('pattern')">Este campo é inválido</mat-error>
+            </mat-form-field>
+            <div fxLayout="row" fxLayoutAlign="space-between" fxFlexOffset="40px">
+                <button mat-button type="button" routerLink="/tesouraria/observacoes">CANCELAR</button>
+                <button mat-raised-button type="submit" (click)="saveObservation()" color="primary" [disabled]="isSending">SALVAR</button>
+            </div>
+        </div>
     </div>
-  </form>
+</form>

@@ -5,8 +5,8 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import 'rxjs/add/operator/retry';
-import 'rxjs/add/operator/catch';
+
+
 
 import { Unit } from './models/unit.model';
 import { EModules } from './models/modules.enum';
@@ -60,8 +60,8 @@ export class AuthService {
   }
 
   public setCurrentUnit(unit: Unit): void {
-    this.setPermissionsUser(unit.id);
     auth.setCurrentUnit(unit);
+    this.setPermissionsUser(unit.id);
   }
 
   private setPermissionsUser(unitId: number) {
@@ -73,7 +73,10 @@ export class AuthService {
         return;
       }
       this.http.get(`/auth/token/renew/${unitId}`)
-        .pipe(tap(() => window.location.reload()))
+        .pipe(tap(() => {
+          this.router.navigate(['/']);
+          window.location.reload();
+        }))
         .subscribe((t: any) => {
           auth.setMainToken(t.token);
         });
@@ -86,7 +89,10 @@ export class AuthService {
       return;
     }
     this.http.get(`/auth/token/renew/${unitId}`)
-    .pipe(tap(() => window.location.reload()))
+    .pipe(tap(() => {
+      this.router.navigate(['/']);
+      window.location.reload();
+    }))
     .subscribe((t: any) => {
       auth.setMainToken(t.token);
     });

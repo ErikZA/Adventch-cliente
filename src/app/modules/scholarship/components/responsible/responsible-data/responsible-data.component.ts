@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ProcessResponsibleInterface } from './../../../interfaces/process-responsible-interface';
 import { Component, OnInit } from '@angular/core';
 

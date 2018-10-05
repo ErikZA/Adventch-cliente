@@ -1,20 +1,16 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { Location } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-
-import { MatSidenav } from '@angular/material';
+import { Observable ,  Subscription } from 'rxjs';
 
 import { AuthService } from '../../../../shared/auth.service';
-import { SidenavService } from '../../../../core/services/sidenav.service';
 import { ScholarshipService } from '../../scholarship.service';
 
 import { School } from '../../models/school';
 import { Process } from '../../models/process';
 import { auth } from '../../../../auth/auth';
 import { ProcessCountStatusInterface } from '../../interfaces/process-count-status-interface';
+import { takeWhile, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-scholarship',
@@ -22,8 +18,6 @@ import { ProcessCountStatusInterface } from '../../interfaces/process-count-stat
   styleUrls: ['./scholarship.component.scss']
 })
 export class ScholarshipComponent implements OnInit, OnDestroy {
-
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
   idSchool = -1;
   schools$: Observable<School[]>;
   processes$: Observable<Process[]>;
@@ -36,15 +30,12 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
   constructor(
     public scholarshipService: ScholarshipService,
     public authService: AuthService,
-    private router: Router,
-    private sidenavService: SidenavService,
-    private location: Location
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.setSchoolInitial();
     this.getAllDatas();
-    this.sidenavService.setSidenav(this.sidenavRight);
   }
 
   ngOnDestroy() {
@@ -59,13 +50,19 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
 
   private getCountProcesses(): void {
     this.loading = true;
+    this.processesCountStatus = null;
     const unit = auth.getCurrentUnit();
-    this.subscribeProcessesCount = this.scholarshipService.getProcessCountStatus(unit.id).subscribe(counts => {
-      if (counts) {
-        this.processesCountStatus = counts;
-        this.loading = false;
-      }
-    });
+    this.subscribeProcessesCount = this.scholarshipService
+      .getProcessCountStatus(unit.id)
+      .pipe(
+        takeWhile(p => p !== null && p !== undefined),
+        distinctUntilChanged()
+      ).subscribe(counts => {
+        if (counts) {
+          this.processesCountStatus = counts;
+          this.loading = false;
+        }
+      });
   }
 
   private setSchoolInitial(): void {
@@ -77,24 +74,14 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
     }
   }
 
-  public closeSidenav(): void {
-    this.location.back();
-    this.sidenavRight.close();
-  }
-
   public changeDashboard(): void {
-    this.scholarshipService.schoolSelected = this.idSchool;
+    this.scholarshipService.updateSchool(this.idSchool);
+    console.log(this.scholarshipService.schoolSelected);
     this.getCountProcesses();
   }
 
   public redirectToProcess(idStatus) {
     this.scholarshipService.updateStatus(idStatus);
     this.router.navigate(['/bolsas/processos']);
-  }
-
-  public compareIds(id1: any, id2: any): boolean {
-    const a1 = id1;
-    const a2 = id2;
-    return a1 === a2;
   }
 }

@@ -1,10 +1,9 @@
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+
 
 @Injectable()
 export class ChangePasswordService {
@@ -17,7 +16,7 @@ export class ChangePasswordService {
     const body = JSON.stringify({ userId: userId, currentPassword: currentPassword, newPassword: newPassword });
     return this.http
       .put('/shared/updatePassword/', body)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+
   }
 
 }

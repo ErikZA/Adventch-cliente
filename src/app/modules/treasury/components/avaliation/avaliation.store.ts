@@ -2,17 +2,15 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/observable/of';
+import { Observable ,  BehaviorSubject } from 'rxjs';
 
 import { Avaliation, ChurchAvaliation } from '../../models/avaliation';
 import { TreasuryService } from '../../treasury.service';
 import { SidenavService } from '../../../../core/services/sidenav.service';
 import { auth } from '../../../../auth/auth';
 import { Districts } from '../../models/districts';
-import { AvaliationRequirement } from '../../models/avaliationRequirement';
 import { Observation } from '../../models/observation';
+
 @Injectable()
 export class AvaliationStore {
 
@@ -22,7 +20,7 @@ export class AvaliationStore {
     public churchAvaliation: ChurchAvaliation;
     public isMensal: boolean;
     public period: Date = new Date();
-    
+
     districts$: Observable<Districts[]>;
     private _districts: BehaviorSubject<Districts[]>;
 
@@ -42,22 +40,22 @@ export class AvaliationStore {
             districts: []
         };
         this._avaliations = <BehaviorSubject<ChurchAvaliation[]>>new BehaviorSubject([]);
-        this.avaliations$ = this._avaliations.asObservable();  
+        this.avaliations$ = this._avaliations.asObservable();
 
         this._districts = <BehaviorSubject<Districts[]>>new BehaviorSubject([]);
-        this.districts$ = this._districts.asObservable();          
+        this.districts$ = this._districts.asObservable();
     }
-    
+
   /* Listagem */
   public loadAll(): void {
     const unit = auth.getCurrentUnit();
     this.service.getAvaliations(unit.id).subscribe((data: any[]) => {
-      this.dataStore.avaliations = data;      
+      this.dataStore.avaliations = data;
       this._avaliations.next(Object.assign({}, this.dataStore).avaliations);
-      this.loadDistricts()
+      this.loadDistricts();
     });
-  }  
-  
+  }
+
 
   private loadDistricts() {
     this.dataStore.districts = new Array<Districts>();
@@ -177,7 +175,7 @@ export class AvaliationStore {
     });
   }
 
-  /*Salvar*/    
+  /*Salvar*/
   public save(data): void {
     this.service.postAvaliation(data).subscribe((profile: Avaliation) => {
       setTimeout(() => {
@@ -193,7 +191,7 @@ export class AvaliationStore {
   }
 
   /*Observação*/
-  
+
   public finalize(id) {
     const data = {
       id: id

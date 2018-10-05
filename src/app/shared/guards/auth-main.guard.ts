@@ -1,7 +1,8 @@
+import { tokenGetter } from './../../app.module';
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, Route } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { tokenNotExpired } from 'angular2-jwt';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { auth } from '../../auth/auth';
 
@@ -9,7 +10,8 @@ import { auth } from '../../auth/auth';
 export class AuthMainGuard implements CanActivate {
 
   constructor(
-    private router: Router
+    private router: Router,
+    public jwtHelper: JwtHelperService
   ) { }
 
   canActivate(
@@ -23,7 +25,8 @@ export class AuthMainGuard implements CanActivate {
   }
 
   private checkAccess() {
-    if (tokenNotExpired('token')) {
+    const token = auth.getMainToken();
+    if (!this.jwtHelper.isTokenExpired(token)) {
       const user: User = auth.getCurrentUser();
       if (user === null || user === undefined) {
         this.router.navigate(['/login']);

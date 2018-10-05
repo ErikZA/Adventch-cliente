@@ -1,58 +1,42 @@
-<div fxLayout="row" fxLayoutAlign="end center">
-    <button mat-icon-button type="button" matTooltip="Fechar" (click)="cancel()">
-        <mat-icon>clear</mat-icon>
-    </button>
-</div>
-
-<div fxFlex.gt-sm="95%" fxFlex="97%">
+<div fxLayout="column">
     <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
-        <h2 style="color: gray;" *ngIf="!searchButton">Lista de tesoureiros avaliados</h2>
+        <h2 class="title" *ngIf="!searchButton">Tesoureiros Avaliados</h2>
         <mat-form-field *ngIf="searchButton" fxFlex>
             <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
         </mat-form-field>
         <div class="buttons" fxLayoutAlign="start center">
-            <button mat-icon-button matTooltip="Pesquisar papel" (click)="searchButton = !searchButton">
-                <mat-icon aria-label="Pesquisar Papel">search</mat-icon>
-            </button>
-            <button mat-icon-button matTooltip="Imprimir observações" (click)="generateGeneralReport()">
-                <mat-icon aria-label="Imprimir relatório geral">print</mat-icon>
-            </button>
+            <button mat-icon-button (click)="searchButton = !searchButton">
+          <mat-icon aria-label="Pesquisar">search</mat-icon>
+        </button>
+            <button mat-icon-button matTooltip="Imprimir" (click)="generateGeneralReport()">
+          <mat-icon aria-label="Imprimir relatório">print</mat-icon>
+        </button>
         </div>
     </div>
-</div>
-<mat-divider></mat-divider>
-
-<div fxFlex id="printable">
+    <mat-divider></mat-divider>
     <div class="header">
         <mat-list>
             <mat-list-item>
                 <h3 matLine fxLayout="row">
-                    <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex>
-                        <span fxFlex="10" fxFlex.sm="50" fxFlex.xs="50">Posição</span>
-                        <span fxFlex="30" fxFlex.sm="50" fxFlex.xs="50" style="padding-right: 10px">Nome</span>
-                        <span fxFlex="10" fxHide.sm fxHide.xs style="text-align: center">Nota/Total</span>
-                        <span fxFlex="10" fxHide.sm style="text-align: center">%</span>
-                        <span fxFlex="30" fxHide.sm fxHide.xs>Igreja</span>
-                        <span fxFlex="30" fxHide.sm fxHide.xs>Distrito</span>
-                        <span fxFlex></span>
-                    </div>
+                    <span fxFlex="10" fxFlex.sm="50" fxFlex.xs="50">Pos.</span>
+                    <span fxFlex="30" fxFlex.sm="50" fxFlex.xs="50" style="padding-right: 10px">Nome</span>
+                    <span fxFlex="10" fxHide.sm fxHide.xs style="text-align: center">Nota/Total</span>
+                    <span fxFlex="10" fxHide.sm style="text-align: center">%</span>
+                    <span fxFlex="30" fxHide.sm fxHide.xs>Igreja</span>
+                    <span fxFlex="30" fxHide.sm fxHide.xs>Distrito</span>
                 </h3>
             </mat-list-item>
         </mat-list>
         <mat-divider></mat-divider>
     </div>
-    <mat-list class="conteiner" layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300"
-        [scrollWindow]="true" (scrolled)="onScroll()">
-        <div>
-            <mat-list-item class="break-line" *ngFor="let data of avaliationReport; index as i" fxFlex>
-                <span class="text-color-item" fxFlex="10" fxFlex.sm="50" fxFlex.xs="50">{{ data.position }}º</span>
-                <span class="text-color-item" fxFlex="30" fxFlex.sm="50" fxFlex.xs="50" style="padding-right: 10px">{{ data.name }}</span>
-                <span class="text-color-item" fxFlex="10" fxHide.sm fxHide.xs style="text-align: center">{{ data.notes }}/{{ data.score }}</span>
-                <span class="text-color-item" fxFlex="10" fxHide.sm style="text-align: center">{{ data.t * 100}}% </span>
-                <span class="text-color-item" fxFlex="30" fxHide.sm fxHide.xs>{{ data.church_name }}</span>
-                <span class="text-color-item" fxFlex="30" fxHide.sm fxHide.xs>{{ data.district_name }}</span>
-                <mat-divider></mat-divider>
-            </mat-list-item>
-        </div>
-    </mat-list>
+    <div infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
+        <mat-card *ngFor="let data of avaliationReport; index as i">
+            <span class="text-color-item" fxFlex="10" fxFlex.sm="50" fxFlex.xs="50">{{ data.position }}º</span>
+            <span fxFlex="30" fxFlex.sm="50" fxFlex.xs="50" style="padding-right: 10px">{{ data.name }}</span>
+            <span fxFlex="10" fxHide.sm fxHide.xs style="text-align: center">{{ data.notes }}/{{ data.score }}</span>
+            <span fxFlex="10" fxHide.sm style="text-align: center">{{ data.t * 100 | number: '1.0-0' }}% </span>
+            <span fxFlex="30" fxHide.sm fxHide.xs>{{ data.church_name }}</span>
+            <span fxFlex="30" fxHide.sm fxHide.xs>{{ data.district_name }}</span>
+        </mat-card>
+    </div>
 </div>

@@ -1,0 +1,44 @@
+<div fxLayout="row" fxFlexFill fxLayoutAlign="center" *ngIf="loading" style="padding-top: 25vh;">
+    <mat-spinner></mat-spinner>
+</div>
+<form fxLayout="column" [formGroup]="formProfile" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="!loading">
+    <app-header-form [title]="labelTitle()"></app-header-form>
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center">
+        <div fxLayout="column" fxFlex="50%">
+            <mat-form-field fxFlex>
+                <input matInput type="text" formControlName="name" placeholder="Nome do Papel" required minlength="3" maxlength="200">
+                <mat-error *ngIf="formProfile.get('name').hasError('required')">Este campo é obrigatório</mat-error>
+                <mat-error *ngIf="formProfile.get('name').hasError('minlength')">Nome do papel pequeno, digite um nome com mais de 3 dígitos</mat-error>
+                <mat-error *ngIf="formProfile.get('name').hasError('maxlenght')">Nome do papel grande, digite um nome com menos de 200 dígitos</mat-error>
+                <mat-error *ngIf="formProfile.get('name').hasError('pattern')">Digite um nome válido.</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Módulo" (valueChange)="changeModuleOfProfile($event)" formControlName="software" required>
+                    <mat-option *ngIf="modules === undefined || modules === null || modules.length === 0" selected value="">Nenhum módulo disponível</mat-option>
+                    <mat-option *ngIf="modules !== undefined && modules !== null && modules.length !== 0" selected value="">Selecione um módulo</mat-option>
+                    <ng-container *ngFor="let module of modules">
+                        <mat-option *ngIf="module > 5" [value]="module">
+                            {{ getModuleName(module) }}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <div fxLayout="column" class="padding-form card">
+                <p class="section-form">Permissões das Funcionalidades</p>
+                <mat-divider></mat-divider>
+                <ng-container *ngIf="modules === undefined || modules === null || modules.length === 0; else hasModules">
+                    <div class="title" fxFlex fxLayout="column" fxLayoutAlign="start center">
+                        <p>A sua unidade atual não possuí nenhum módulo disponível.</p>
+                    </div>
+                </ng-container>
+                <ng-template #hasModules>
+                    <app-tree-permission-form [module]="module" [profile]="profile" [formSubmittedOnce]="formSubmittedOnce"></app-tree-permission-form>
+                </ng-template>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between end">
+                <a mat-button routerLink="/administracao/papeis">CANCELAR</a>
+                <button class="positionButtom" mat-raised-button type="submit" (click)="saveProfile()" color="primary" [disabled]="isSending">SALVAR</button>
+            </div>
+        </div>
+    </div>
+</form>

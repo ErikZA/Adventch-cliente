@@ -4,14 +4,14 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
-
 import { Districts } from '../../../models/districts';
 import { AuthService } from '../../../../../shared/auth.service';
 import { TreasuryService } from '../../../treasury.service';
 import { auth } from '../../../../../auth/auth';
 import { User } from '../../../../../shared/models/user.model';
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
+import { switchMap, tap, skipWhile, delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-districts-form',
@@ -43,12 +43,13 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initForm();
     this.sub1 = this.loadAnalysts()
-      .switchMap(() => this.route.params)
-      .do(({ id }) => this.loading = !!id)
-      .skipWhile(({ id }) => !id)
-      .switchMap(({ id }) => this.editDistrict(id))
-      .delay(300)
-      .subscribe(() => { this.loading = false; });
+      .pipe(
+        switchMap(() => this.route.params),
+        tap(({ id }) => this.loading = !!id),
+        skipWhile(({ id }) => !id),
+        switchMap(({ id }) => this.editDistrict(id)),
+        delay(300)
+      ).subscribe(() => { this.loading = false; });
     this.districtsDataComponent.openSidenav();
   }
 
@@ -58,9 +59,11 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
 
   private loadAnalysts() {
     const unit = this.authService.getCurrentUnit();
-    return this.service.getUsers2(unit.id).do((data) => {
+    return this.service.getUsers2(unit.id).pipe(
+      tap((data) => {
       this.users = data;
-    });
+      })
+    );
   }
 
   private checkIsEdit(): boolean {
@@ -68,7 +71,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   }
 
   public labelTitle(): string {
-    return this.checkIsEdit() ? 'Editar' : 'Novo';
+    return this.checkIsEdit() ? 'Editar Distrito' : 'Novo Distrito';
   }
 
   initForm(): void {
@@ -98,26 +101,30 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
       id_unit: unit.id
     };
     this.treasuryService.saveDistricts(data)
-      .do(() => {
-        this.isSending = false;
-        this.formDistrict.markAsUntouched();
-        this.districtsDataComponent.closeSidenav();
-      })
-      .switchMap(() => this.districtsDataComponent.getData())
-      .do(() => this.snackBar.open('Distrito salvo com sucesso!', 'OK', { duration: 5000 }))
-      .subscribe(null, err => {
+      .pipe(
+        tap(() => {
+          this.isSending = false;
+          this.formDistrict.markAsUntouched();
+          this.districtsDataComponent.closeSidenav();
+        }),
+        switchMap(() => this.districtsDataComponent.getData()),
+        tap(() => this.snackBar.open('Distrito salvo com sucesso!', 'OK', { duration: 5000 }))
+      ).subscribe(null, err => {
         console.log(err);
         this.snackBar.open('Erro ao salvar distrito, tente novamente.', 'OK', { duration: 5000 });
       });
   }
   editDistrict(id: number) {
-    return this.treasuryService.getDistrict(id).do(res => {
-      this.district = res;
-      this.formDistrict.patchValue({
-        name: res.name,
-        analyst: res.analyst.id
-      });
-    });
+    return this.treasuryService.getDistrict(id)
+    .pipe(
+      tap(res => {
+        this.district = res;
+        this.formDistrict.patchValue({
+          name: res.name,
+          analyst: res.analyst.id
+        });
+      })
+    );
   }
   resetAllForms() {
     this.formDistrict.reset();

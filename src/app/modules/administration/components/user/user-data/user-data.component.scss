@@ -7,9 +7,8 @@
     color: gray;
 }
 
-.conteiner {
-    overflow: auto;
-    max-height: calc(100vh - 240px);
+.container {
+    overflow-y: auto;
 }
 
 .margin-top-small {
@@ -37,4 +36,13 @@
 
 .break-line {
     white-space: normal;
+}
+
+.title-description {
+    color: grey;
+    font-weight: bold;
+}
+
+.description {
+    margin: 0 3%;
 }

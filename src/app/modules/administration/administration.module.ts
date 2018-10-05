@@ -4,12 +4,13 @@ import { CommonModule } from '@angular/common';
 import { AdministrationService } from './administration.service';
 
 import { CoreModule } from '../../core/core.module';
-import { ProcessesStore } from '../scholarship/components/process/processes.store';
 import { AdministratioRoutingModule } from './administration-routing.module';
 import { UserDataComponent } from './components/user/user-data/user-data.component';
 import { UserFormComponent } from './components/user/user-form/user-form.component';
 import { ProfileDataComponent } from './components/profile/profile-data/profile-data.component';
-import { ProfileFormComponent } from './components/profile/profile-form/profile-form.component';
+import { ProfileFormComponent } from './components/profile/form/profile-form/profile-form.component';
+import { TreePermissionFormComponent } from './components/profile/form/tree-permission-form/tree-permission-form.component';
+import { PermissionFormComponent } from './components/profile/form/permission-form/permission-form.component';
 
 @NgModule({
   imports: [
@@ -18,15 +19,15 @@ import { ProfileFormComponent } from './components/profile/profile-form/profile-
     AdministratioRoutingModule,
   ],
   providers: [
-    AdministrationService,
-    // UserStore,
-    ProcessesStore
+    AdministrationService
   ],
   declarations: [
     ProfileDataComponent,
     UserDataComponent,
     UserFormComponent,
     ProfileFormComponent,
+    TreePermissionFormComponent,
+    PermissionFormComponent
   ]
 })
 export class AdministrationModule { }

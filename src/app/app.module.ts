@@ -45,7 +45,15 @@ import { AuthMainGuard } from './shared/guards/auth-main.guard';
 import { AuthResponsibleGuard } from './shared/guards/auth-responsible.guard';
 import { NgProgressModule } from '@ngx-progressbar/core';
 import { provideErrorHandler } from './shared/error/raven-error-handler';
+import { JwtModule } from '@auth0/angular-jwt';
+import { auth } from './auth/auth';
+import { NgProgressHttpModule } from '@ngx-progressbar/http';
+
 registerLocaleData(ptBr);
+
+export function tokenGetter() {
+  return auth.getMainToken();
+}
 
 @NgModule({
   declarations: [
@@ -68,6 +76,16 @@ registerLocaleData(ptBr);
     HttpClientModule,
     CoreModule,
     AuthModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: [
+          'localhost:29459',
+          'adventech-test-api.azurewebsites.net',
+          'adventech-api.azurewebsites.net'],
+        blacklistedRoutes: ['']
+      }
+    }),
     NgProgressModule.forRoot({
       trickleSpeed: 100,
       min: 5,
@@ -79,7 +97,7 @@ registerLocaleData(ptBr);
       spinner: false,
       debounceTime: 200
     }),
-
+    NgProgressHttpModule.forRoot(),
     // deixar AppRouting sempre por último
     AppRouting
   ],

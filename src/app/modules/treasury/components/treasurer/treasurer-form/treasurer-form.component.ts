@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -10,8 +10,9 @@ import { Treasurer } from '../../../models/treasurer';
 import * as moment from 'moment';
 import { TreasurerDataComponent } from '../treasurer-data/treasurer-data.component';
 import { auth } from '../../../../../auth/auth';
-import 'rxjs/add/operator/switchMap';
+
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { tap, switchMap, skipWhile, delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-treasurer-form',
@@ -42,13 +43,14 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
     this.initConfigurations();
     this.initForm();
     this.sub1 = this.getChurches()
-      .switchMap(() => this.activatedRoute.params)
-      .do(({ id }) => this.loading = !!id)
-      .skipWhile(({ id }) => !id)
-      .switchMap(({ id }) => this.treasuryService.getTreasurer(id))
-      .do(data => this.setDataToForm(data))
-      .delay(300)
-      .subscribe(() => { this.loading = false; });
+      .pipe(
+        switchMap(() => this.activatedRoute.params),
+        tap(({ id }) => this.loading = !!id),
+        skipWhile(({ id }) => !id),
+        switchMap(({ id }) => this.treasuryService.getTreasurer(id)),
+        tap(data => this.setDataToForm(data)),
+        delay(300)
+      ).subscribe(() => { this.loading = false; });
       this.treasurerDataComponent.openSidenav();
   }
   initConfigurations() {
@@ -156,9 +158,19 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
   getChurches() {
     return this.treasuryService
       .loadChurches(auth.getCurrentUnit().id)
-      .do((data: Church[]) => {
-        this.lstChurches = data;
-      });
+      .pipe(
+        tap((data: Church[]) => {
+          this.lstChurches = data.sort((a, b) => Number(a.code) - Number(b.code));
+        })
+      );
+      /*
+              skipWhile(data => !data),
+        map(data => data.sort((a, b) => Number(a.code) - Number(b.code))),
+        tap((data: ChurchAvaliationDataInterface[]) => {
+          this.churchesAvaliations = data;
+          this.churchesAvaliationsCache = data;
+        })
+       */
   }
   saveTreasurer() {
     if (!this.formTreasurer.valid) {
@@ -175,10 +187,11 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
     };
 
     this.treasuryService.saveTreasurer(treasurer)
-      .do(() => this.treasurerDataComponent.closeSidenav())
-      .switchMap(() => this.treasurerDataComponent.getData())
-      .do(() => this.snackBar.open('Tesoureiro salvo!', 'OK', { duration: 5000 }))
-      .subscribe(() => this.isSending = false, err => {
+      .pipe(
+        tap(() => this.treasurerDataComponent.closeSidenav()),
+        switchMap(() => this.treasurerDataComponent.getData()),
+        tap(() => this.snackBar.open('Tesoureiro salvo!', 'OK', { duration: 5000 }))
+      ).subscribe(() => this.isSending = false, err => {
         console.log(err);
         this.isSending = false;
         this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });

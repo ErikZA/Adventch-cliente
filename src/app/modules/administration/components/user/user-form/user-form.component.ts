@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription ,  of } from 'rxjs';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { AuthService } from './../../../../../shared/auth.service';
 import { School } from '../../../../scholarship/models/school';
@@ -17,9 +17,9 @@ import { UserDataComponent } from '../user-data/user-data.component';
 import { AdministrationService } from '../../../administration.service';
 import { MatSnackBar } from '@angular/material';
 import { ScholarshipService } from '../../../../scholarship/scholarship.service';
-import { of } from 'rxjs/observable/of';
-import 'rxjs/add/operator/delay';
+
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { switchMap, tap, skipWhile, delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-form',
@@ -68,13 +68,14 @@ export class UserFormComponent implements OnInit, OnDestroy {
     this.initForm();
 
     this.sub1 = this.loadSchools()
-      .switchMap(() => this.loadProfiles())
-      .switchMap(() => this.route.params)
-      .do(({ id }) => this.loading = !!id)
-      .skipWhile(({ id }) => !id)
-      .switchMap(({ id }) => this.editUser(id))
-      .delay(500)
-      .subscribe(() => this.loading = false);
+      .pipe(
+        switchMap(() => this.loadProfiles()),
+        switchMap(() => this.route.params),
+        tap(({ id }) => this.loading = !!id),
+        skipWhile(({ id }) => !id),
+        switchMap(({ id }) => this.editUser(id)),
+        delay(500)
+      ).subscribe(() => this.loading = false);
 
     this.userDataComponent.openSidenav();
   }
@@ -94,22 +95,28 @@ export class UserFormComponent implements OnInit, OnDestroy {
   private loadSchools() {
     const scholarship = this.modules.some(module => module === EModules.Scholarship);
     if (scholarship) {
-      return this.schoolarShipService.getSchools().do((data: School[]) => {
-          this.schools = data;
-        }, error => console.log('Could not load todos schools.'));
+      return this.schoolarShipService.getSchools()
+      .pipe(
+          tap((data: School[]) => {
+            this.schools = data;
+          }, error => console.log('Could not load todos schools.'))
+      );
     }
     return of(undefined);
   }
 
   private loadProfiles() {
     const { id } = auth.getCurrentUnit();
-    return this.administraionService.getProfiles(id).do((data: Profile[]) => {
-      this.profiles = data.sort((a, b) => a.name.localeCompare(b.name));
-    }, err => console.log('Could not load todos profiles.'));
+    return this.administraionService.getProfiles(id)
+    .pipe(
+      tap((data: Profile[]) => {
+        this.profiles = data.sort((a, b) => a.name.localeCompare(b.name));
+      }, err => console.log('Could not load todos profiles.'))
+    );
   }
 
   public labelTitle(): string {
-    return this.checkIsEdit() ? 'Editar' : 'Novo';
+    return this.checkIsEdit() ? 'Editar Usuário' : 'Novo Usuário';
   }
 
   private initForm(): void {
@@ -172,11 +179,14 @@ export class UserFormComponent implements OnInit, OnDestroy {
   }
 
   private editUser(id: number) {
-    return this.administraionService.getUser(id, auth.getCurrentUnit().id).do(data => {
-      this.user = data;
-      this.setValuesUserEdit(data);
-      this.setValuesUserProfiles(data.profiles);
-    });
+    return this.administraionService.getUser(id, auth.getCurrentUnit().id)
+    .pipe(
+        tap(data => {
+        this.user = data;
+        this.setValuesUserEdit(data);
+        this.setValuesUserProfiles(data.profiles);
+      })
+    );
   }
 
   private setValuesUserProfiles(profiles: Profile[]): void {
@@ -233,10 +243,10 @@ export class UserFormComponent implements OnInit, OnDestroy {
     const userData = this.getUserData();
     this.isSending = true;
     of(userData.id)
-      .switchMap(id => !!id ? this.administraionService.editUser(userData, id) : this.administraionService.saveUser(userData))
-      .switchMap(() => this.userDataComponent.getData())
-      .subscribe(() => this.handleSuccess(userData.id), error => this.handleFail(error));
-
+      .pipe(
+        switchMap(id => !!id ? this.administraionService.editUser(userData, id) : this.administraionService.saveUser(userData)),
+        switchMap(() => this.userDataComponent.getData())
+      ).subscribe(() => this.handleSuccess(userData.id), error => this.handleFail(error));
   }
 
   private getUserData(): any {

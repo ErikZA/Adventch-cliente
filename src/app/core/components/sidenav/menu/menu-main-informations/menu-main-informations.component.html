@@ -1,0 +1,16 @@
+<mat-list role="list" dense>
+    <h3 mat-subheader>Unidade</h3>
+    <ng-container *ngIf="!loading; else spinnerUnit">
+        <mat-list-item role="listitem">
+            <mat-icon mat-list-icon>business</mat-icon>
+            <h4 class="text-bold" mat-line>{{ unit?.name }}</h4>
+            <p *ngIf="false" mat-line>Papel: Administrador</p>
+        </mat-list-item>
+    </ng-container>
+    <mat-divider></mat-divider>
+</mat-list>
+<ng-template #spinnerUnit>
+    <div class="margin-spinner" fxLayout="row" fxLayoutAlign="center" fxLayoutGap="40px">
+        <mat-spinner [diameter]="40" [strokeWidth]="4" color="warn"></mat-spinner>
+    </div>
+</ng-template>

@@ -1,0 +1,114 @@
+<mat-toolbar color="primary" style="background-color: #0d248c" class="mat-elevation-z6">
+    <img src="../assets/img/logo_educacao.png" style="width: 30px; height: 30px; margin-left: 20px;" class="click" />
+    <div style="margin-left: 10px;" class="click">Adven.tech</div>
+    <span class="fill-space"></span>
+    <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
+            <mat-icon>account_circle</mat-icon>
+        </button>
+        <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
+            <table style="line-height: normal; text-align: right;">
+                <tr>
+                    <td>
+                        {{ responsible.name }}
+                    </td>
+                </tr>
+            </table>
+        </button>
+    </div>
+    <mat-menu [overlapTrigger]="false" xPosition="before" #appMenu="matMenu">
+        <button mat-menu-item (click)="logoff()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Sair</span>
+        </button>
+    </mat-menu>
+</mat-toolbar>
+<br/>
+<div class="page-container">
+    <div fxLayoutAlign="center">
+        <div fxFlex.gt-sm="95%" fxFlex="97%" class="conteiner">
+            <mat-divider></mat-divider>
+            <div fxFlex>
+                <div class="header">
+                    <mat-list>
+                        <mat-list-item>
+                            <h3 matLine fxLayout="row">
+                                <div fxLayout="row" fxFlex>
+                                    <span fxFlex="30%">Aluno</span>
+                                    <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">Escola</span>
+                                    <span fxFlex="15%" fxHide.lt-sm fxFlexAlign="center">Protocolo</span>
+                                    <span fxFlex="15%" fxHide.lt-sm fxFlexAlign="center">Data da matrícula</span>
+                                    <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">Status</span>
+                                </div>
+                            </h3>
+                        </mat-list-item>
+                    </mat-list>
+                    <mat-divider></mat-divider>
+                </div>
+                <div layout="column" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
+                    <div *ngFor="let process of (processes$ | async); index as i">
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-description fxLayout="row" fxFlex>
+                                    <span fxFlex="30%" style="white-space: nowrap;">
+                                        {{ process.nameStudent }}
+                                    </span>
+                                    <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">
+                                        {{ process.school.name }}
+                                    </span>
+                                    <span fxFlex="15%" fxHide.lt-sm fxFlexAlign="center">
+                                        {{ process.protocol }}
+                                    </span>
+                                    <span fxFlex="15%" fxHide.lt-sm fxFlexAlign="center">
+                                        {{ process.dateRegistration | date: 'dd/MM/yyyy' }}
+                                    </span>
+                                    <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">
+                                        {{ process.status.name }}
+                                    </span>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-list>
+                                <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                    <span class="text-bold" class="details-title"><b>Protocolo:</b> {{ process.protocol }}</span>
+                                </div>
+                                <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                    <span class="text-bold" class="details-title"><b>Escola:</b> {{ process.school.name }}</span>
+                                </div>
+                                <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                    <span class="text-bold" class="details-title"><b>Status:</b> {{ process.status.name }}</span>
+                                </div>
+                                <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
+                                    <span *ngIf="process.dateRegistration != null && (process.status.id == 5 || process.status.id ==6)" class="text-bold" class="details-title"><b>Matrícula
+                                            até:
+                                        </b> {{ process.dateRegistration | date: 'dd/MM/yyyy' }}</span>
+                                </div>
+                                <div *ngIf="process.pendency != null && process.status.id == 3" class="text-bold" class="details-title">
+                                    <b>Pendência: (Documento(s) <span *ngIf="!process.isSendDocument">Não</span> Enviado(s))</b>
+                                    <div class="style-text">{{ process.pendency }}</div>
+                                </div>
+                                <div *ngIf="process.motiveReject != null && (process.status.id == 7)" class="text-bold" class="details-title">
+                                    <b>{{ process.motiveReject }}: </b>
+                                    <div class="style-text">{{ getMotiveToReject(process.motiveReject) }}</div>
+                                </div>
+                            </mat-list>
+                        </mat-expansion-panel>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div fxLayoutAlign="center">
+    <div class="mat-elevation-z4" fxFlex.gt-sm="95%" fxFlex="97%">
+        <div [ngStyle]="{'position': 'relative'}">
+            <footer fxLayout="row">
+                <div fxFlex="155px" class="footer-unit">©FORLOGIC 2004 - {{year}}</div>
+                <div fxFlex="145px" class="footer-software">
+                    <div style="width: 90px; float: left">Adven.tech</div>
+                    <div style="width: 30px; float: right; text-align: right">v1.0</div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>

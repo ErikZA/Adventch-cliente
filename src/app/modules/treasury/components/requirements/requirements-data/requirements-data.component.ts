@@ -1,190 +1,205 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatSidenav } from '@angular/material';
+
+import { MatSnackBar } from '@angular/material';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+
+import { Subscription, Subject } from 'rxjs';
+
+import { RequirementDataInterface } from '../../../interfaces/requirement/requirement-data-interface';
 import { RequirementStore } from '../requirements.store';
-import { Requirement } from '../../../models/requirement';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
-import { AuthService } from '../../../../../shared/auth.service';
-import { Observation } from '../../../models/observation';
 import { auth } from '../../../../../auth/auth';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { ReportService } from '../../../../../shared/report.service';
-
+import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { map, tap, switchMap, skipWhile } from 'rxjs/operators';
+import { RequirementsService } from '../requirements.service';
+import { Filter } from '../../../../../core/components/filter/Filter.model';
+import { FilterService } from '../../../../../core/components/filter/service/filter.service';
+import { utils } from '../../../../../shared/utils';
 
 @Component({
   selector: 'app-requirements-data',
   templateUrl: './requirements-data.component.html',
   styleUrls: ['./requirements-data.component.scss']
 })
-export class RequirementDataComponent implements OnInit, OnDestroy {
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
+@AutoUnsubscribe()
+export class RequirementDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
+  protected componentUrl = '/tesouraria/requisitos';
 
-  requirements$: Observable<Requirement[]>;
   search$ = new Subject<string>();
   subscribeUnit: Subscription;
-  requirements: Requirement[];
-  showList = 15;
+  requirements: RequirementDataInterface[];
+  showList = 40;
   searchButton = false;
 
   filterText: string;
-  filterIsAnual: number;
-  years: number[] = new Array<number>();
-  filterYear = 2018;
+  requirementsCache: RequirementDataInterface[];
+  subGetData: Subscription;
+
+  // new filter
+  typesSelecteds: number[] = [];
+  typesData: Filter[] = [];
+  yearsSelecteds: number[] = [];
+  yearsData: Filter[] = [];
 
   constructor(
-    private authService: AuthService,
     private route: ActivatedRoute,
-    private router: Router,
-    private sidenavService: SidenavService,
+    public router: Router,
     public store: RequirementStore,
     private confirmDialogService: ConfirmDialogService,
-    private reportService: ReportService
-  ) { }
+    private reportService: ReportService,
+    private requirementsService: RequirementsService,
+    private snackBar: MatSnackBar,
+    private filterService: FilterService
+  ) { super(router); }
 
   ngOnInit() {
-    this.getData();
-    this.router.navigate([this.router.url.replace(/.*/, 'tesouraria/requisitos')]);
-    this.sidenavService.setSidenav(this.sidenavRight);
-    this.subscribeUnit = auth.currentUnit.subscribe(() => {
-      this.getData();
-    });
-    this.search$.subscribe(search => {
-      this.filterText = search;
-      this.search();
-    });
-
-    setTimeout(() => {
-      this.search();
-    }, 5000);
+    this.loadTypes();
+    this.loadPeriods();
+    this.subGetData = this.getData()
+      .pipe(
+      switchMap(() => this.search$)
+      ).subscribe(search => {
+        this.filterText = search;
+        this.search();
+      });
   }
 
+  ngOnDestroy(): void {
+  }
   public onScroll() {
-    this.showList += 15;
+    this.showList += 80;
   }
 
   public expandPanel(matExpansionPanel): void {
     matExpansionPanel.toggle();
   }
 
-  private getData() {
-    this.store.requirements$.subscribe(x => {
-      this.requirements$ = Observable.of(x);
-      this.search();
-    });
-    this.store.loadAll();
-    this.loadPeriods();
-    // VERIFICAR
-    // this.requirements = this.store.dataStore.requirements;
-    // this.requirements$.subscribe(() => {
-    //   this.setObservables();
-    //   this.store.loadFilters();
-    //   setTimeout(() => {
-    //     this.search();
-    //   }, 200);
-    // });
+  public getData() {
+    const { id } = auth.getCurrentUnit();
+    return this.requirementsService
+      .getRequirements(id)
+      .pipe(
+      map(p => p.sort((a, b) => a.position - b.position)),
+      tap((data: RequirementDataInterface[]) => {
+        this.requirements = data;
+        this.requirementsCache = data;
+      })
+      );
   }
 
   private loadPeriods() {
     const currentYear = new Date().getFullYear();
-
-    this.requirements$.subscribe(data => {
-      const year = [];
-      data.forEach(values => {
-        if (new Date(values.date).getFullYear() >= currentYear) {
-          year.push(new Date (values.date).getFullYear());
-        }
-      });
-      this.years = year.filter((elem, i, arr) => {
-        if (arr.indexOf(elem) === i) {
-          return elem;
-        }
-      });
-    });
+    for (let i = 2018; i <= currentYear; i++) {
+      this.yearsData.push(new Filter(i, i.toString()));
     }
-
-  /* Usados pelo component */
-  public closeSidenav() {
-    this.sidenavService.close();
-    this.router.navigate(['tesouraria/requisitos']);
   }
 
-  public openSidenav() {
-    this.sidenavService.open();
-  }
-
-  edit(requirement: Requirement) {
+  public edit(requirement: RequirementDataInterface) {
     if (requirement.id === undefined) {
       return;
     }
-    this.store.openRequirement(requirement);
-    this.router.navigate(['tesouraria/requisitos/' + requirement.id + '/editar']);
-    // this.searchButton = false;
-    this.requirements$ = this.store.requirements$;
-    this.sidenavRight.open();
+    this.router.navigate([requirement.id, 'editar'], { relativeTo: this.route });
   }
 
-  public remove(requirement: Requirement) {
+  public remove(requirement: RequirementDataInterface) {
     this.confirmDialogService
-      .confirm('Remover', 'Você deseja realmente remover esse requisito?', 'REMOVER')
-      .subscribe(res => {
-        if (res) {
-          this.store.remove(requirement);
-        }
-      });
+      .confirm('Remover registro', 'Você deseja realmente remover este requisito?', 'REMOVER')
+      .pipe(
+      skipWhile(res => res !== true),
+      switchMap(() => this.requirementsService.deleteRequirement(requirement.id)),
+      switchMap(() => this.getData()),
+      tap(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 30000 }))
+      ).subscribe();
   }
 
   public search() {
-    let requirements = this.store.searchText(this.filterText);
-    // tslint:disable-next-line:triple-equals
-    if (this.filterIsAnual !== undefined && this.filterIsAnual != null && this.filterIsAnual != 0) {
-      const filter = this.filterIsAnual === 1 ? true : false;
-      requirements = this.store.searchStatus(filter, requirements);
+    let requirementsFilttered = this.requirementsCache.filter(t =>
+      utils.buildSearchRegex(this.filterText).test(t.name.toUpperCase()) ||
+      utils.buildSearchRegex(this.filterText).test(t.description.toUpperCase()) ||
+      utils.buildSearchRegex(this.filterText).test(t.position.toString().toUpperCase()) ||
+      utils.buildSearchRegex(this.filterText).test(t.score.toString().toUpperCase())
+    );
+    requirementsFilttered = this.searchStatus(requirementsFilttered);
+    requirementsFilttered = this.searchYear(requirementsFilttered);
+    this.requirements = requirementsFilttered;
+  }
+
+  private searchStatus(requirementsFilttered): RequirementDataInterface[] {
+    if (this.typesSelecteds.length === 2 || this.typesSelecteds.length === 0) {// Todos ou nenhum
+      return requirementsFilttered;
     }
-    requirements = this.store.searchInPeriod(this.filterYear, requirements);
-    this.requirements$ = Observable.of(requirements);
+    if (this.typesSelecteds[0] === 1) {
+      return requirementsFilttered.filter(f => f.isAnual);
+    }
+    return requirementsFilttered.filter(f => !f.isAnual);
   }
 
-  ngOnDestroy() {
-
+  private searchYear(requirementsFilttered: RequirementDataInterface[]): RequirementDataInterface[] {
+    if (this.yearsSelecteds.length === 0) {
+      return requirementsFilttered;
+    }
+    return requirementsFilttered.filter(f =>  this.checkYear(f.date));
   }
 
-
+  private checkYear(date): boolean {
+    return this.yearsSelecteds.some(s => s === new Date(date).getFullYear());
+  }
 
   public generateGeneralReport(): void {
     const data = this.getDataParams();
     this.reportService.reportRequirementsGeral(data).subscribe(urlData => {
       const fileUrl = URL.createObjectURL(urlData);
-        let element;
-        element = document.createElement('a');
-        element.href = fileUrl;
-        element.download = 'requisitos-relatorio_geral.pdf';
-        element.target = '_blank';
-        element.click();
-        // this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+      let element;
+      element = document.createElement('a');
+      element.href = fileUrl;
+      element.download = 'requisitos-relatorio_geral.pdf';
+      element.target = '_blank';
+      element.click();
+      // this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
     }, err => {
       console.log(err);
-        // this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+      // this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
     });
   }
 
   private getDataParams(): any {
+    let type = new Filter(-1, 'TODOS');
+    const year = this.yearsData.find(f => f.id === this.typesSelecteds[0]);
+    if (this.typesSelecteds.length === 1) {
+      type = this.typesData.find(f => f.id === this.typesSelecteds[0]);
+    }
     return {
-      isAnual: this.filterIsAnual,
-      period: this.filterYear,
-      typeName: this.getTypeName()
+      isAnual: type.id,
+      period: year === undefined ? this.yearsData[0].id : year.id,
+      typeName: type.name
     };
   }
 
-  private getTypeName(): string {
-    if (this.filterIsAnual === 0) {
-      return 'TODOS';
+  checkTypes(type): void {
+    this.typesSelecteds = this.filterService.check(type, this.typesSelecteds);
+    this.search();
+  }
+
+  checkYears(year): void {
+    this.yearsSelecteds = this.filterService.check(year, this.yearsSelecteds);
+    this.search();
+  }
+
+  private loadTypes(): void {
+    this.typesData.push(new Filter(1, 'Anual'));
+    this.typesData.push(new Filter(0, 'Mensal'));
+  }
+
+  public disableReport(): boolean {
+    const types = this.typesSelecteds.length === 0
+    || this.typesSelecteds.length === 1
+    || this.typesSelecteds.length === this.typesData.length;
+    const years = (this.yearsData.length === 1 && this.yearsSelecteds.length === 0) || this.yearsSelecteds.length === 1;
+    if (types && years) {
+      return false;
     }
-    if (this.filterIsAnual === 1) {
-      return 'Anual';
-    }
-    return 'Mensal';
+    return true;
   }
 }

@@ -1,0 +1,40 @@
+<div fxLayout="column">
+    <div fxLayout="row" fxLayoutAlign="end start">
+        <button mat-stroked-button (click)="expandedObservations()" color="warn">
+          Observações
+        <mat-icon>info_outline</mat-icon>
+    </button>
+    </div>
+    <mat-accordion *ngIf="expanded">
+        <mat-expansion-panel expanded="true" hideToggle="true">
+            <mat-expansion-panel-header>
+                <mat-panel-description>
+                    <span fxFlex fxFlex.gt-sm="60%">Descrição</span>
+                    <span fxFlex fxFlex.gt-sm="20%">Status</span>
+                    <span fxFlex fxFlex.gt-sm="20%">Ação</span>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-divider></mat-divider>
+            <ng-container *ngIf="observations !== null && observations !== undefined && observations.length !== 0; else notObservations">
+                <div *ngFor="let observation of observations" fxLayout="row">
+                    <div fxFlex fxFlex.gt-sm="80%" style="white-space: line-wrap; text-align: justify; padding: 5px;">
+                        {{ observation.description }}
+                    </div>
+                    <div fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap; padding: 5px; text-align: center">
+                        {{ observation.status === 1 ? "Aberta" : "Finalizada" }}
+                    </div>
+                    <div fxFlex fxFlex.gt-sm="20%" style="white-space: line-wrap; padding: 5px; text-align: center">
+                        <ng-template [Feature]="50">
+                            <button mat-button style="background-color: #fff!important; color: #E8702A" matTooltip="Finalizar observação" (click)="finalizeObsevation(observation.id)">FINALIZAR</button>
+                        </ng-template>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #notObservations>
+                <div fxLayout="row" fxLayoutAlign="center">
+                    <p>Não existem observações em aberto nesta igreja!</p>
+                </div>
+            </ng-template>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>

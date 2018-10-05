@@ -1,17 +1,12 @@
 import { Injectable } from '@angular/core';
-import { forEach } from '@angular/router/src/utils/collection';
 import { MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/observable/of';
-import { map } from 'rxjs/operators';
+import { of, Observable, BehaviorSubject } from 'rxjs';
 
 import * as moment from 'moment';
-import { Release } from '../models/release.model';
+import { Release } from './../models/release.model';
 import { SharedService } from '../shared.service';
-import { ReleaseNote } from '../models/releaseNote.model';
 import { SidenavService } from '../../core/services/sidenav.service';
 
 @Injectable()
@@ -47,7 +42,7 @@ export class ReleaseNotesStore {
 
   public search(search): Observable<Release[]> {
     if (search === '' || search === undefined) {
-      return Observable.of(this.dataStore.releases);
+      return of(this.dataStore.releases);
     }
 
     const releasesFiltered = new Array<Release>();
@@ -64,7 +59,7 @@ export class ReleaseNotesStore {
         }
       }
     }
-    return Observable.of(releasesFiltered);
+    return of(releasesFiltered);
   }
 
   private searchInProperty(property: string, search: string): boolean {

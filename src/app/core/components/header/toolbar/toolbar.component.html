@@ -1,0 +1,12 @@
+<mat-toolbar [color]="color" class="mat-elevation-z4">
+    <button mat-icon-button *ngIf="menu" (click)="menuEventEmitter()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <ng-content select="[link-type=logo]"></ng-content>
+    <span class="fill-space"></span>
+    <div fxLayout="row" fxFlex fxLayoutAlign="end" fxLayoutGap.gt-md="8px">
+        <ng-content select="[button-type=unit]"></ng-content>
+        <ng-content select="[button-type=language]"></ng-content>
+        <ng-content select="[button-type=user]"></ng-content>
+    </div>
+</mat-toolbar>

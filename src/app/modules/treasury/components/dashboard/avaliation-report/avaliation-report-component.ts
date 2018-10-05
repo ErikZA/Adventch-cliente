@@ -3,14 +3,12 @@ import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject ,  Subscription } from 'rxjs';
 
 import { TreasuryService } from '../../../treasury.service';
-import { Subscription } from 'rxjs/Subscription';
 import { auth } from '../../../../../auth/auth';
 import { ReportService } from '../../../../../shared/report.service';
-
-
+import { utils } from '../../../../../shared/utils';
 
 @Component({
     selector: 'app-avaliation-report',
@@ -50,7 +48,7 @@ export class AvaliationReportComponent implements OnInit {
     }
 
     getAvaliationData(id) {
-        return this.service.getAvaliationRaking(id).subscribe((data) => {
+        return this.service.getAvaliationRaking(id).subscribe((data: any) => {
             let previousNote = 0;
             let position = 0;
             data.forEach(element => {
@@ -81,9 +79,15 @@ export class AvaliationReportComponent implements OnInit {
         if (search === '' || search === undefined || search === null) {
             return this.dataAvaliationReport;
         } else {
-            return this.avaliationReport.filter(data => {
-                return data.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
-            });
+            return this.dataAvaliationReport.filter(p =>
+                utils.buildSearchRegex(search).test(p.position) ||
+                utils.buildSearchRegex(search).test(p.name) ||
+                utils.buildSearchRegex(search).test(p.notes)  ||
+                utils.buildSearchRegex(search).test(p.score)  ||
+                utils.buildSearchRegex(search).test(p.t)  ||
+                utils.buildSearchRegex(search).test(p.church_name)  ||
+                utils.buildSearchRegex(search).test(p.district_name) 
+              );
         }
     }
 

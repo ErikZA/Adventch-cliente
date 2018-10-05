@@ -1,62 +1,57 @@
-
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatSidenav, MatSnackBar } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
 import { RequirementStore } from '../requirements.store';
-import { AuthService } from '../../../../../shared/auth.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription, Observable } from 'rxjs';
 import { auth } from '../../../../../auth/auth';
 import { Requirement } from '../../../models/requirement';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { SidenavService } from '../../../../../core/services/sidenav.service';
-import { TreasuryService } from '../../../treasury.service';
+import { tap, skipWhile, switchMap, delay } from 'rxjs/operators';
+import { RequirementDataComponent } from '../requirements-data/requirements-data.component';
+import { RequirementsService } from '../requirements.service';
+import { RequirementEditInterface } from '../../../interfaces/requirement/requirement-edit-interface';
+import { RequirementUpdateInterface } from '../../../interfaces/requirement/requirement-update-interface';
+import { RequirementNewInterface } from '../../../interfaces/requirement/requirement-new-interface';
+import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 
 @Component({
   selector: 'app-requirements-form',
   templateUrl: './requirements-form.component.html',
   styleUrls: ['./requirements-form.component.scss']
 })
+@AutoUnsubscribe()
 export class RequirementFormComponent implements OnInit, OnDestroy {
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
 
   formRequirement: FormGroup;
   routeSubscription: Subscription;
-  subscribeUnit: Subscription;
-  requirement: Requirement;
-  params: any;
+  requirement: RequirementEditInterface;
   values: any;
+  loading = true;
+  isSending = false;
 
   constructor(
-    private sidenavService: SidenavService,
     private formBuilder: FormBuilder,
     public store: RequirementStore,
     private route: ActivatedRoute,
-    private authService: AuthService,
-    private router: Router,
-    private service: TreasuryService,
     private snackBar: MatSnackBar,
+    private requirementDataComponent: RequirementDataComponent,
+    private requirementsService: RequirementsService
   ) { }
 
   ngOnInit() {
     this.initForm();
-    const unit = this.authService.getCurrentUnit();
-    // this.service.getUsers(unit.id).subscribe((data) => {
-    //   this.users = data;
-    // });
-
-    this.routeSubscription = this.route.params.subscribe((data) => {
-      if (data.id) {
-        this.editRequirements(this.store.requirements);
-      }
-    });
-
-    this.subscribeUnit = auth.currentUnit.subscribe(() => {
-      this.close();
-    });
+    this.routeSubscription = this.route.params
+      .pipe(
+        tap(({ id }) => this.loading = !!id),
+        skipWhile(({ id }) => !id),
+        switchMap(({ id }) => this.editRequirement(id)),
+        delay(500)
+      ).subscribe(() => this.loading = false);
+    this.requirementDataComponent.openSidenav();
   }
 
-  ngOnDestroy() {
-    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
+  ngOnDestroy(): void {
+    this.requirementDataComponent.closeSidenav();
   }
 
   private checkIsEdit(): boolean {
@@ -64,7 +59,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
   }
 
   public labelTitle(): string {
-    return this.checkIsEdit() ? 'Editar' : 'Novo';
+    return this.checkIsEdit() ? 'Editar Requisito' : 'Novo Requisito';
   }
 
   initForm(): void {
@@ -78,78 +73,74 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  closeSidenav() {
-    // this.treasureService.setDistrict(new Districts());
-    this.sidenavService.close();
-  }
-
-  saveRequirement() {
-    if (!this.formRequirement.valid) {
-      return;
-    }
-    this.routeSubscription = this.route.params.subscribe(params => {
-      this.params = params['id'];
-    });
-    const unit = auth.getCurrentUnit();
-    this.params && this.requirement.hasAvaliation ?
-      this.values = {
-        id: Number(this.params),
-        name: this.requirement.name,
-        position: Number(this.formRequirement.value.position),
-        score: Number(this.requirement.score),
-        date: this.requirement.date,
-        description: this.formRequirement.value.description,
-        isAnual: this.requirement.isAnual,
-        hasAvaliation: this.requirement.hasAvaliation,
-        unitId: unit.id
-      }
-      : this.params && !this.requirement.hasAvaliation ?
-        this.values = {
-          id: Number(this.params),
-          name: this.formRequirement.value.name,
-          position: Number(this.formRequirement.value.position),
-          score: Number(this.formRequirement.value.score),
-          date: this.formRequirement.value.date,
-          description: this.formRequirement.value.description,
-          isAnual: this.formRequirement.value.isAnual,
-          hasAvaliation: false,
-          unitId: unit.id
-        }
-        :
-        this.values = {
-          name: this.formRequirement.value.name,
-          position: Number(this.formRequirement.value.position),
-          score: Number(this.formRequirement.value.score),
-          date: this.formRequirement.value.date,
-          description: this.formRequirement.value.description,
-          isAnual: this.formRequirement.value.isAnual,
-          hasAvaliation: false,
-          unitId: unit.id
-        };
-
+  public saveRequirement(): void {
     if (this.formRequirement.valid) {
-      this.store.save(this.values);
-      this.formRequirement.markAsUntouched();
-      this.close();
-    } else {
-      return;
+      this.isSending = true;
+      this.sendData()
+        .pipe(
+          switchMap(() => this.requirementDataComponent.getData()),
+          tap(() => this.requirementDataComponent.closeSidenav(),
+          () => this.snackBar.open('Ocorreu um erro ao salar o requisito', 'OK', { duration: 3000 })),
+          tap(() => this.snackBar.open('Requisito salvo com sucesso!', 'OK', { duration: 3000 })),
+          tap(() => this.isSending = false)
+        ).subscribe();
     }
   }
 
-  editRequirements(requirement) {
-    this.requirement = requirement;
-    this.formRequirement.setValue({
-      position: requirement.position.toString(),
-      name: requirement.name,
-      description: requirement.description,
-      score: requirement.score.toString(),
-      isAnual: requirement.isAnual.toString(),
-      date: requirement.date,
-    });
+  private sendData() {
+    return this.checkIsEdit() ?
+        this.sendDataEdit() :
+        this.sendDataNew();
+  }
 
-    if (this.requirement.hasAvaliation) {
-      this.disable();
-    }
+  private sendDataNew(): Observable<boolean> {
+    return this.requirementsService.postRequirement(this.getDataNew());
+  }
+
+  private sendDataEdit(): Observable<boolean> {
+    const { id } = this.requirement;
+    return this.requirementsService.putRequirement(id, this.getDataEdit());
+  }
+
+  private getDataNew(): RequirementNewInterface {
+    const _requirement = this.formRequirement.value;
+    const { id } = auth.getCurrentUnit();
+    _requirement.unitId = id;
+    return _requirement as RequirementNewInterface;
+  }
+
+  private getDataEdit(): RequirementUpdateInterface {
+    const _requirement = this.formRequirement.value;
+    return {
+      position: this.requirement.position,
+      name: this.requirement.name,
+      description: _requirement.description,
+      score: this.requirement.score,
+      isAnual: this.requirement.isAnual,
+      date: this.requirement.date,
+    };
+  }
+
+  private editRequirement(id: number) {
+    return this.requirementsService.getRequirementEdit(id)
+    .pipe(
+      tap((data: Requirement) => {
+        this.requirement = data;
+        this.setValueRequirementEdit();
+      })
+    );
+  }
+
+  private setValueRequirementEdit() {
+    if (this.requirement.hasAvaliation) { this.disable(); }
+    this.formRequirement.setValue({
+      position: this.requirement.position,
+      name: this.requirement.name,
+      description: this.requirement.description,
+      score: this.requirement.score,
+      isAnual: this.requirement.isAnual.toString(),
+      date: this.requirement.date,
+    });
   }
 
   private disable() {
@@ -157,16 +148,5 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
     this.formRequirement.controls['score'].disable();
     this.formRequirement.controls['isAnual'].disable();
     this.formRequirement.controls['date'].disable();
-  }
-
-  close() {
-    this.store.openRequirement(new Requirement());
-    this.sidenavService.close();
-    this.router.navigate([this.router.url.replace('/novo', '').replace('requisitos/' + this.values.id + '/editar', 'requisitos')]);
-    this.resetAllForms();
-  }
-
-  resetAllForms() {
-    this.formRequirement.reset();
   }
 }

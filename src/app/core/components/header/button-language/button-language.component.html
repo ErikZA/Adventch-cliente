@@ -1,0 +1,12 @@
+<button mat-stroked-button [matMenuTriggerFor]="menuLanguage" fxShow fxHide.xs>
+    <mat-icon aria-label="Tradução">translate</mat-icon>
+      ENG
+</button>
+<button mat-icon-button [matMenuTriggerFor]="menuLanguage" fxHide fxShow.xs>
+    <mat-icon aria-label="Tradução">translate</mat-icon>
+</button>
+<mat-menu #menuLanguage="matMenu" [overlapTrigger]="false" xPosition="before">
+    <button mat-menu-item>ENG</button>
+    <button mat-menu-item>ESP</button>
+    <button mat-menu-item>POR</button>
+</mat-menu>

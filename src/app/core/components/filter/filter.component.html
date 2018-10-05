@@ -1,0 +1,10 @@
+<div *ngIf="data?.length > 0" fxLayout="row wrap" style="flex-wrap: wrap;">
+    <mat-form-field fxLayout="column" class="margin-search" style="padding: 8px">
+        <mat-select placeholder="{{placeholder}}" multiple [(ngModel)]="defaultValues">
+            <mat-option *ngFor="let d of data" [value]="d?.id" (click)="clickFilter(d.id)">{{ d?.name }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div *ngIf="data?.length === 0" fxLayout="row wrap" style="flex-wrap: wrap;">
+    <span style="padding: 8px;"><i>{{ emptyMessage }}</i></span>
+</div>

@@ -1,0 +1,33 @@
+<ng-container *ngIf="module && allFeatures.length !== 0; else notSelectedModule">
+    <div fxLayout="column" class="container-features" [ngClass]="{'container-features-error': featuresNotSelected() }" fxFlex>
+        <div fxLayout.gt-xs="row" fxLayout="column" fxLayoutAlign="space-around">
+            <div fxLayout="column" fxFlex fxLayoutAlign="start" *ngIf="features && features.length > 0">
+                <h4>Permissões Gerais</h4>
+                <div *ngFor="let feature of features">
+                    <app-permission-form (featureChange)="changePermissionFeature($event)" [featureEdit]="getFeatureEdit(feature)" [feature]="feature"></app-permission-form>
+                </div>
+            </div>
+            <div fxLayout="column" fxFlex fxLayoutAlign="start" *ngIf="formSpecial && formSpecial.controls.length > 0">
+                <h4>Permissões Especiais</h4>
+                <div class="permissions-specials" *ngFor="let feature of formSpecial.controls; let i = index">
+                    <div class="margin-top-10" [formGroup]="feature">
+                        <mat-checkbox (change)="checkFeatureSpecial($event, feature.value.id)" formControlName="isActive" class="text-bold">{{ feature.value.name }}</mat-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="margin-top-15" fxLayout="column" fxLayoutAlign="center center">
+            <mat-error *ngIf="featuresNotSelected()">Selecione ao menos uma funcionalidade para salvar o papel</mat-error>
+        </div>
+    </div>
+</ng-container>
+<ng-template #notSelectedModule>
+    <div *ngIf="module === null || module === undefined || module === 0" class="title" fxFlex fxLayout="column" fxLayoutAlign="center center">
+        <p>Selecione um módulo.</p>
+    </div>
+</ng-template>
+<ng-container *ngIf="allFeatures.length === 0 && module">
+    <div class="title" fxFlex fxLayout="column" fxLayoutAlign="center center">
+        <p>Nenhum funcionalidade encontrada, selecione outro módulo.</p>
+    </div>
+</ng-container>

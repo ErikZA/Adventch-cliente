@@ -14,11 +14,11 @@ export class Avaliation {
   unit: Unit;
   isMensal: boolean;
   church: Church;
-  avaliationsRequirements: Array<AvaliationRequirement>
+  avaliationsRequirements: Array<AvaliationRequirement>;
   constructor() { }
 }
 
-//Mapeado conforme viewModel
+// Mapeado conforme viewModel
 export class ChurchAvaliation {
   total: number;
   church: Church;

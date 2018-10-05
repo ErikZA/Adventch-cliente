@@ -1,0 +1,31 @@
+<div fxLayout="column" class="margin-top-small">
+    <app-header-title>
+        <div space-type="title" class="title" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" *ngIf="!searchButton">
+            <mat-icon aria-label="Lista">view_list</mat-icon>
+            <h2>Lista de {{ name }}</h2>
+        </div>
+        <mat-form-field space-type="search" *ngIf="searchButton" fxFlex>
+            <input matInput placeholder="Pesquisar..." [(ngModel)]="searchWord" (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
+        </mat-form-field>
+        <div space-type="buttons" class="buttons" fxLayoutAlign="start center">
+            <button mat-icon-button *ngIf="search" matTooltip="Pesquisar" (click)="searchButton = !searchButton">
+                <mat-icon aria-label="Pesquisar">search</mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="filter" matTooltip="Filtrar lista" (click)="filterTheList()">
+                <mat-icon aria-label="Filtrar lista">filter_list</mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="report" matTooltip="Relatório geral" (click)="generateReport()">
+              <mat-icon aria-label="Imprimir relatório geral">print</mat-icon>
+            </button>
+        </div>
+    </app-header-title>
+    <div fxLayout="column" fxLayoutAlign="start">
+        <mat-list>
+            <mat-list-item>
+                <ng-content select="[space-type=title]"></ng-content>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+        <ng-content select="[space-type=filter]"></ng-content>
+    </div>
+</div>

@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { LayoutComponent } from '../../shared/layout/layout.component';
-
 import { TreasurerDataComponent } from './components/treasurer/treasurer-data/treasurer-data.component';
 import { TreasurerFormComponent } from './components/treasurer/treasurer-form/treasurer-form.component';
 import { ChurchDataComponent } from './components/church/church-data/church-data.component';
@@ -13,7 +11,7 @@ import { ObservationDataComponent } from './components/observation/observation-d
 import { ObservationFormComponent } from './components/observation/observation-form/observation-form.component';
 import { DashboardTreasuryComponent } from './components/dashboard/dashboard-treasury-component';
 import { AvaliationDataComponent } from './components/avaliation/avaliation-data/avaliation-data.component';
-import { AvaliationFormComponent } from './components/avaliation/avaliation-form/avaliation-form.component';
+import { AvaliationFormComponent } from './components/avaliation/form/avaliation-form/avaliation-form.component';
 
 import { EFeatures } from '../../shared/models/EFeatures.enum';
 import { EPermissions } from '../../shared/models/permissions.enum';
@@ -25,9 +23,13 @@ import { RequirementFormComponent } from './components/requirements/requirements
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard' },
   {
-    path: 'tesoureiros', component: LayoutComponent, children: [
+    path: 'tesoureiros', children: [
       {
-        path: '', component: TreasurerDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
+        path: '',
+        component: TreasurerDataComponent,
+        canActivate: [FeatureGuard],
+        canLoad: [FeatureGuard],
+        children: [
           {
             path: 'novo', component: TreasurerFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard],
             data: {
@@ -51,7 +53,7 @@ const routes: Routes = [
     ],
   },
   {
-    path: 'igrejas', component: LayoutComponent, children: [
+    path: 'igrejas', children: [
       { path: '', component: ChurchDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
         { path: 'novo', component: ChurchFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
           feature: EFeatures.IGREJAS,
@@ -70,7 +72,7 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'distritos', component: LayoutComponent, children: [
+    path: 'distritos', children: [
       { path: '', component: DistrictsDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
         { path: 'novo', component: DistrictsFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
           feature: EFeatures.DISTRITOS,
@@ -88,7 +90,7 @@ const routes: Routes = [
     }]
   },
   {
-    path: 'observacoes', component: LayoutComponent, children: [
+    path: 'observacoes', children: [
       { path: '', component: ObservationDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
         { path: 'novo', component: ObservationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
           feature: EFeatures.OBSERVACOES,
@@ -106,14 +108,49 @@ const routes: Routes = [
     }]
   },
   {
-    path: 'avaliacoes', component: LayoutComponent, children: [
-      { path: '', component: AvaliationDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
-        { path: ':id/mensal', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.AVALIARMENSALMENTE
-        } },
-        { path: ':id/anual', component: AvaliationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.AVALIARANUALMENTE
-        } }
+    path: 'avaliacoes', children: [
+      {
+        path: '',
+        component: AvaliationDataComponent,
+        canActivate: [FeatureGuard],
+        canLoad: [FeatureGuard],
+        children: [
+          {
+            path: ':id/mensal/novo',
+            component: AvaliationFormComponent,
+            canActivate: [FeatureGuard],
+            canLoad: [FeatureGuard],
+            data: {
+              feature: EFeatures.AVALIARMENSALMENTE
+            }
+          },
+          {
+            path: ':id/mensal/:idAvaliation/editar',
+            component: AvaliationFormComponent,
+            canActivate: [FeatureGuard],
+            canLoad: [FeatureGuard],
+            data: {
+              feature: EFeatures.AVALIARMENSALMENTE
+            }
+          },
+          {
+            path: ':id/anual/novo',
+            component: AvaliationFormComponent,
+            canActivate: [FeatureGuard],
+            canLoad: [FeatureGuard],
+            data: {
+              feature: EFeatures.AVALIARANUALMENTE
+            }
+          },
+          {
+            path: ':id/anual/:idAvaliation/editar',
+            component: AvaliationFormComponent,
+            canActivate: [FeatureGuard],
+            canLoad: [FeatureGuard],
+            data: {
+              feature: EFeatures.AVALIARANUALMENTE
+            }
+          }
       ],
       data: {
         feature: EFeatures.LISTARAVALIACOES
@@ -121,23 +158,42 @@ const routes: Routes = [
     }]
   },
   {
-    path: 'dashboard', component: LayoutComponent, children: [
-      { path: '', component: DashboardTreasuryComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-        feature: EFeatures.DASHBOARDTESOURARIA
-      } }
+    path: 'dashboard', children: [
+      {
+        path: '',
+        component: DashboardTreasuryComponent,
+        canActivate: [FeatureGuard],
+        canLoad: [FeatureGuard],
+        data: {
+          feature: EFeatures.DASHBOARDTESOURARIA
+        }
+      }
     ]
   },
   {
-    path: 'requisitos', component: LayoutComponent, children: [
-      { path: '', component: RequirementDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children:
+    path: 'requisitos', children: [
+      {
+        path: '',
+        component: RequirementDataComponent,
+        canActivate: [FeatureGuard],
+        canLoad: [FeatureGuard],
+        children:
         [
-          { path: 'novo', component:  RequirementFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard],
+          {
+            path: 'novo',
+            component: RequirementFormComponent,
+            canActivate: [FeatureGuard],
+            canLoad: [FeatureGuard],
             data: {
               feature: EFeatures.REQUISITOS,
               permission: EPermissions.CRIAR
             }
           },
-          { path: ':id/editar', component: RequirementFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard],
+          {
+            path: ':id/editar',
+            component: RequirementFormComponent,
+            canActivate: [FeatureGuard],
+            canLoad: [FeatureGuard],
             data: {
               feature: EFeatures.REQUISITOS,
               permission: EPermissions.EDITAR

@@ -6,9 +6,8 @@
     color: gray;
 }
 
-.conteiner {
-    overflow: auto;
-    max-height: calc(100vh - 250px);
+.container {
+    overflow-y: auto;
 }
 
 .margin-top-small {

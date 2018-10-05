@@ -23,9 +23,17 @@ import { RequirementDataComponent } from './components/requirements/requirements
 import { RequirementFormComponent } from './components/requirements/requirements-form/requirements-form.component';
 import { RequirementStore } from './components/requirements/requirements.store';
 import { AvaliationDataComponent } from './components/avaliation/avaliation-data/avaliation-data.component';
-import { AvaliationFormComponent } from './components/avaliation/avaliation-form/avaliation-form.component';
+import { AvaliationFormComponent } from './components/avaliation/form/avaliation-form/avaliation-form.component';
 import { AvaliationStore } from './components/avaliation/avaliation.store';
 import { AvaliationReportComponent } from './components/dashboard/avaliation-report/avaliation-report-component';
+import { RequirementsService } from './components/requirements/requirements.service';
+import { AvaliationService } from './components/avaliation/avaliation.service';
+import {
+  AvaliationRequirementFormComponent
+} from './components/avaliation/form/avaliation-requirement-form/avaliation-requirement-form.component';
+import { ObservationsInformationComponent } from './components/avaliation/form/observations-information/observations-information.component';
+import { ChurchService } from './components/church/church.service';
+import { ObservationService } from './components/observation/observation.service';
 
 @NgModule({
   imports: [
@@ -49,8 +57,10 @@ import { AvaliationReportComponent } from './components/dashboard/avaliation-rep
     RequirementDataComponent,
     RequirementFormComponent,
     AvaliationDataComponent,
+    AvaliationReportComponent,
     AvaliationFormComponent,
-    AvaliationReportComponent
+    AvaliationRequirementFormComponent,
+    ObservationsInformationComponent
   ],
   providers: [
     TreasuryService,
@@ -60,7 +70,12 @@ import { AvaliationReportComponent } from './components/dashboard/avaliation-rep
     // DistrictsStore,
     // ObservationStore,
     RequirementStore,
+    RequirementsService,
+    AvaliationService,
+    ChurchService,
+    ObservationService,
     AvaliationStore,
+
   ],
   entryComponents: [
     AvaliationReportComponent

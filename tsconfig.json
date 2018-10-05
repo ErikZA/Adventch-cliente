@@ -17,7 +17,9 @@
     ],
     "types": [
       "hammerjs"
-    ]
+    ],
+    "module": "es2015",
+    "baseUrl": "./"
   },
   "exclude": [
     "node_modules",

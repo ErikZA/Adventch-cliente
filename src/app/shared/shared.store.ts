@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/observable/of';
+import { Observable ,  BehaviorSubject } from 'rxjs';
+
 
 import { Unit } from './models/unit.model';
 import { SharedService } from './shared.service';
@@ -37,13 +36,5 @@ export class SharedStore {
       this.dataStore.units = data;
       this._units.next(Object.assign({}, this.dataStore).units);
     }, err => console.log('Could not load todos roles.'));
-  }
-
-  public loadUnitModules(id: number): EModules[] {
-    let modules: EModules[];
-    this.service.getUnitModules(id).subscribe((data: EModules[]) => {
-        modules = data;
-    });
-    return modules;
   }
 }

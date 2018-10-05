@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 
-import 'rxjs/add/observable/of';
+
 
 import { TreasuryService } from '../../treasury.service';
 import { AuthService } from '../../../../shared/auth.service';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observation } from '../../models/observation';
+import { Observable ,  BehaviorSubject } from 'rxjs';
 import { Requirement } from '../../models/requirement';
 import * as moment from 'moment';
 import { auth } from '../../../../auth/auth';

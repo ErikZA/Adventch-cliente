@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ReleaseNotesDataComponent } from './../release-notes-data/release-notes-data.component';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { ReleaseNotesStore } from '../../release-notes.store';
 import { SidenavService } from '../../../../core/services/sidenav.service';
@@ -8,7 +9,8 @@ import { SidenavService } from '../../../../core/services/sidenav.service';
   templateUrl: './release-notes-form.component.html',
   styleUrls: ['./release-notes-form.component.scss']
 })
-export class ReleaseNotesFormComponent implements OnInit {
+export class ReleaseNotesFormComponent implements OnInit, OnDestroy {
+
   form: FormGroup;
   formNotes: FormArray;
   loading = false;
@@ -16,11 +18,17 @@ export class ReleaseNotesFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private store: ReleaseNotesStore,
-    private sidenavService: SidenavService
+    private sidenavService: SidenavService,
+    private releaseNotesDataComponent: ReleaseNotesDataComponent
   ) { }
 
   ngOnInit() {
     this.initForm();
+    this.releaseNotesDataComponent.openSidenav();
+  }
+
+  ngOnDestroy(): void {
+    this.releaseNotesDataComponent.closeSidenav();
   }
 
   private initForm(): void {

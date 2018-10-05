@@ -1,12 +1,12 @@
 import { Unit } from '../shared/models/unit.model';
-import { Router, NavigationEnd } from '@angular/router';
 
 import { EventEmitter } from '@angular/core';
 import { User } from '../shared/models/user.model';
 import { Responsible } from '../modules/scholarship/models/responsible';
 
 import * as Raven from 'raven-js';
-import { JwtHelper } from '../../../node_modules/angular2-jwt';
+
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { Profile } from '../modules/administration/models/profile/profile.model';
 
 const showApp: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -85,12 +85,20 @@ const getResponsibleToken = () => {
   return getLocalStorage('token');
 };
 
+const setUserUnits = (units: Unit[]) => {
+  setLocalStorage('user-units', units);
+};
+
+const getUserUnits = () => {
+  return getLocalStorage('user-units');
+};
+
 const decodeToken = (token: string): {
   userUnitId?: number,
   userId?: number,
   profiles: Profile[]
 } => {
-  const helper = new JwtHelper();
+  const helper = new JwtHelperService();
   // const token = auth.getMainToken();
 
   const decoded = helper.decodeToken(token);
@@ -162,10 +170,12 @@ export const auth = {
   getMainToken,
   setResponsibleToken,
   getResponsibleToken,
+  setUserUnits,
+  getUserUnits,
   loggedInMain,
   loggedInResponsible,
   logoffMain,
   logoffResponsible,
   decodeToken,
-  getCurrentDecodedToken
+  getCurrentDecodedToken,
 };

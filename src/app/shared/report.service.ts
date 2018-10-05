@@ -1,10 +1,10 @@
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/throw';
+
+
 
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
@@ -38,9 +38,9 @@ export class ReportService {
     // tslint:disable-next-line:max-line-length
     const url = `${environment.apiUrlReport}/reports/view/${reportName}?userId=${currentUserId}&module=${moduleId}&values=${params}&unitId=${currentUnit.id}&unitName=${currentUnit.name}`;
     return this.http
-      .get(url, { responseType: 'blob' })
-      .map(res => new Blob([res], { type: 'application/pdf' }))
-      .catch(err => Observable.throw(new Error(err)));
+      .get(url, { responseType: 'blob' });
+      // .map(res => new Blob([res], { type: 'application/pdf' }))
+      // .catch(err => observableThrowError(new Error(err)));
   }
 
   /* Relatório de tesouraria */

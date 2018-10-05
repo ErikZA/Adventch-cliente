@@ -1,15 +1,10 @@
 <div fxLayout="row" fxFlexFill fxLayoutAlign="center" *ngIf="loading" style="padding-top: 25vh;">
     <mat-spinner></mat-spinner>
 </div>
-<form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="!loading" (keydown.enter)="$event.preventDefault()">
-    <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
-        <div fxFlex>
-            <h2 class="title"> {{ labelTitle() }} Usuário</h2>
-            <mat-divider></mat-divider>
-        </div>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="center" fxLayout.lt-md="column" fxFlex class="margin-bottom-30">
-        <div fxLayout="column" fxLayoutGap="20px" ngStyle.gt-sm="margin: 50px 0" fxFlex="50%">
+<form [formGroup]="form" fxLayout="column" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="!loading" (keydown.enter)="$event.preventDefault()">
+    <app-header-form [title]="labelTitle()"></app-header-form>
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center">
+        <div fxLayout="column" fxFlex="50%">
             <mat-form-field fxFlex>
                 <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200">
                 <mat-error *ngIf="form.get('name').hasError('required')">Este campo é obrigatório</mat-error>
@@ -29,7 +24,7 @@
                     <mat-error *ngIf="form.get('password').hasError('required')">Este campo é obrigatório</mat-error>
                     <mat-error *ngIf="form.get('password').hasError('minlength')">Digite uma senha com tamanho maior que 6 dígitos</mat-error>
                 </mat-form-field>
-                <div *ngIf="form.get('password').value != null" style="margin-top: 5%" fxFlex>
+                <div *ngIf="form.get('password').value != null" style="margin-top: 3%" fxFlex>
                     <app-strength-meter [password]="form.get('password').value" (strength)="onStrength($event)"></app-strength-meter>
                     <mat-error [ngClass]="{'color-font-grey': strength >= 2, 'font-feedback': strength < 2 }">{{ getMensage() }}</mat-error>
                     <!-- <app-password-feedback *ngIf="form.get('password').errors?.strongPassword" [feedback]="form.get('password').errors.strongPassword.feedback">
@@ -56,8 +51,8 @@
             <mat-slide-toggle fxFlex fxFlexAlign="end" formControlName="isAdmin" class="example-margin" color="primary">Administrador</mat-slide-toggle>
             <div *ngIf="!!modules">
                 <div *ngFor="let formProfile of formProfiles.controls; let i = index">
-                    <div [formGroup]="formProfile" fxLayout="row" fxLayoutGap="20px" fxLayoutGap.gt-sm="20px" fxFlex>
-                        <p>{{ getModuleName(modules[i]) }}</p>
+                    <div [formGroup]="formProfile" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap.gt-sm="20px" fxFlex>
+                        <p class="text-bold">{{ getModuleName(modules[i]) }}</p>
                         <mat-form-field>
                             <mat-select (change)="enableSchoolSelected(modules[i])" formControlName="id" placeholder="Papel">
                                 <mat-option>Nenhum</mat-option>
@@ -70,11 +65,8 @@
                     </div>
                 </div>
             </div>
-
             <div fxLayout="row" ngStyle.gt-sm="margin-top: 60px" fxLayoutAlign="space-between">
-                <a routerLink="/administracao/usuarios">
-                    <back-button></back-button>
-                </a>
+                <a mat-button routerLink="/administracao/usuarios">CANCELAR</a>
                 <button mat-raised-button type="submit" (click)="saveUser()" color="primary" [disabled]="isSending">SALVAR</button>
             </div>
         </div>

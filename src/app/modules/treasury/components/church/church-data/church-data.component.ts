@@ -3,8 +3,8 @@ import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { MatSidenav, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
+import { Subject ,  Subscription } from 'rxjs';
+import { tap, skipWhile, switchMap } from 'rxjs/operators';
 
 import { Church } from '../../../models/church';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
@@ -16,6 +16,8 @@ import { TreasuryService } from '../../../treasury.service';
 import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { Filter } from '../../../../../core/components/filter/Filter.model';
+import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 
 
 @Component({
@@ -28,21 +30,22 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
   protected componentUrl = 'tesouraria/igrejas';
 
   searchButton = false;
-  showList = 15;
+  showList = 80;
   search$ = new Subject<string>();
   layout: String = 'row';
 
   churches: Church[] = [];
   churchesCache: Church[] = [];
 
-  cities: City[] = [];
-  analysts: User[] = [];
-  districts: Districts[] = [];
-
-  filterDistrict = 0;
-  filterCity = 0;
-  filterAnalyst = 0;
   filterText = '';
+
+  // new filter
+  districtsSelecteds: number[] = [];
+  districtsData: Filter[] = [];
+  citiesSelecteds: number[] = [];
+  citiesData: Filter[] = [];
+  analystsSelecteds: number[] = [];
+  analystsData: Filter[] = [];
 
   sub1: Subscription;
 
@@ -51,109 +54,110 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
     private confirmDialogService: ConfirmDialogService,
     private route: ActivatedRoute,
     private treasuryService: TreasuryService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private filterService: FilterService
   ) { super(router); }
 
   ngOnInit() {
     this.sub1 = this.getData()
-      .switchMap(() => this.search$)
-      .subscribe(search => {
+      .pipe(
+        switchMap(() => this.search$)
+      ).subscribe(search => {
         this.filterText = search;
         this.search();
       });
   }
-  getData() {
+  public getData() {
     this.search$.next('');
-    return this.treasuryService.getChurches(auth.getCurrentUnit().id).do(data => {
-      this.churches = data;
-      this.churchesCache = data;
-      this.loadAnalysts(data);
-      this.loadCities(data);
-      this.loadDistricts(data);
-    });
+    return this.treasuryService.getChurches(auth.getCurrentUnit().id)
+    .pipe(
+      tap(data => {
+        this.churches = data;
+        this.churchesCache = data;
+        this.loadAnalysts(data);
+        this.loadCities(data);
+        this.loadDistricts(data);
+        this.search();
+      })
+    );
   }
   private loadCities(data: Church[]): void {
+    this.citiesData = [];
     if (!Array.isArray(data)) {
       return;
     }
     data.forEach(church => {
-      if (this.cities.map(x => x.id).indexOf(church.city.id) === -1) {
-        this.cities.push(church.city);
+      if (this.citiesData.map(x => x.id).indexOf(church.city.id) === -1) {
+        this.citiesData.push(new Filter(Number(church.city.id), church.city.name));
       }
     });
-    this.cities.sort((a, b) => a.name.localeCompare(b.name));
+    this.citiesData.sort((a, b) => a.name.localeCompare(b.name));
   }
   private loadAnalysts(data: Church[]): void {
+    this.analystsData = [];
     if (!Array.isArray(data)) {
       return;
     }
     data.forEach(church => {
-      if (church.district.id !== 0 && this.analysts.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
-        this.analysts.push(church.district.analyst);
+      if (church.district.id !== 0 && this.analystsData.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
+        this.analystsData.push(church.district.analyst);
       }
     });
-    this.analysts.sort((a, b) => a.name.localeCompare(b.name));
+    this.analystsData.sort((a, b) => a.name.localeCompare(b.name));
   }
   private loadDistricts(data: Church[]): void {
+    this.districtsData = [];
     if (!Array.isArray(data)) {
       return;
     }
     data.forEach(church => {
-      if (church.district.id !== 0 && this.districts.map(x => x.id).indexOf(church.district.id) === -1) {
-        this.districts.push(church.district);
+      if (church.district.id !== 0 && this.districtsData.map(x => x.id).indexOf(church.district.id) === -1) {
+        this.districtsData.push(new Filter(Number(church.district.id), church.district.name));
       }
     });
-    this.districts.sort((a, b) => a.name.localeCompare(b.name));
+    this.districtsData.sort((a, b) => a.name.localeCompare(b.name));
   }
-  onScroll() {
-    this.showList += 15;
+  public onScroll() {
+    this.showList += 80;
   }
-  remove(church: Church) {
+
+  public remove(church: Church) {
     this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover a igreja?', 'REMOVER')
-      .skipWhile(res => res !== true)
-      .switchMap(() => this.treasuryService.deleteChurch(church.id))
-      .switchMap(() => this.getData())
-      .do(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 5000 }))
-      .subscribe();
+      .pipe(
+        skipWhile(res => res !== true),
+        switchMap(() => this.treasuryService.deleteChurch(church.id)),
+        switchMap(() => this.getData()),
+        tap(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 5000 }))
+      ).subscribe();
   }
-  edit(church: Church) {
+  public edit(church: Church) {
     this.router.navigate([church.id, 'editar'], { relativeTo: this.route });
   }
   public expandPanel(matExpansionPanel): void {
     matExpansionPanel.toggle();
   }
-  public searchDistricts(idDistrict: number, churches: Church[]): Church[] {
-    // tslint:disable-next-line:triple-equals
-    return churches.filter(x => x.district.id == idDistrict);
-  }
 
-  public searchCities(idCity: number, churches: Church[]): Church[] {
-    // tslint:disable-next-line:triple-equals
-    return churches.filter(x => x.city.id == idCity);
-  }
-
-  public searchAnalysts(idAnalyst: number, churches: Church[]): Church[] {
-    // tslint:disable-next-line:triple-equals
-    return churches.filter(x => x.district.analyst.id == idAnalyst);
-  }
   public search() {
-    let churchesFilttered = this.churchesCache.filter(c => utils.buildSearchRegex(this.filterText).test(c.name));
-
-    // tslint:disable-next-line:triple-equals
-    if (this.filterDistrict !== undefined && this.filterDistrict !== null && this.filterDistrict != 0) {
-      churchesFilttered = this.searchDistricts(this.filterDistrict, churchesFilttered);
-    }
-
-    // tslint:disable-next-line:triple-equals
-    if (this.filterCity !== undefined && this.filterCity !== null && this.filterCity != 0) {
-      churchesFilttered = this.searchCities(this.filterCity, churchesFilttered);
-    }
-
-    // tslint:disable-next-line:triple-equals
-    if (this.filterAnalyst !== undefined && this.filterAnalyst !== null && this.filterAnalyst != 0) {
-      churchesFilttered = this.searchAnalysts(this.filterAnalyst, churchesFilttered);
-    }
+    let churchesFilttered = this.churchesCache.filter(c => utils.buildSearchRegex(this.filterText).test(c.name.toUpperCase()));
+    churchesFilttered = this.filterService.filter(churchesFilttered, 'district.id', this.districtsSelecteds);
+    churchesFilttered = this.filterService.filter(churchesFilttered, 'city.id', this.citiesSelecteds);
+    churchesFilttered = this.filterService.filter(churchesFilttered, 'district.analyst.id', this.analystsSelecteds);
     this.churches = churchesFilttered;
+  }
+
+  public checkDistrict(district) {
+    this.districtsSelecteds = this.filterService.check(district, this.districtsSelecteds);
+    this.search();
+  }
+
+  public checkCity(city) {
+    this.citiesSelecteds = this.filterService.check(city, this.citiesSelecteds);
+    this.search();
+  }
+
+  public checkAnalyst(analyst) {
+    this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
+    this.search();
   }
 }

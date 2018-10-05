@@ -1,0 +1,14 @@
+<div [formGroup]="formFeature" fxLayout="column" fxLayoutAlign="start" fxLayoutGap="5px">
+    <div fxLayout="row" fxLayoutAlign="start center">
+        <button mat-icon-button color="accent" type="button" (click)="expandedPermissions()">
+            <mat-icon aria-label="More feature">{{ expanded ? 'remove' : 'add' }}</mat-icon>
+        </button>
+        <mat-checkbox formControlName="feature" class="text-bold" [checked]="featureChecked" [indeterminate]="indeterminate" (change)="changeCheckFeature($event)">{{ feature.name }}</mat-checkbox>
+    </div>
+    <div [formGroup]="formPermissions" *ngIf="expanded" fxLayout="column" fxLayoutGap="10px" class="permissions-checkers">
+        <mat-checkbox formControlName="create">CRIAR</mat-checkbox>
+        <mat-checkbox formControlName="read">VISUALIZAR</mat-checkbox>
+        <mat-checkbox formControlName="edit">EDITAR</mat-checkbox>
+        <mat-checkbox formControlName="delete">EXCLUIR</mat-checkbox>
+    </div>
+</div>

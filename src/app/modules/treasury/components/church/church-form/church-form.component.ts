@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ChurchDataComponent } from './../church-data/church-data.component';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
@@ -10,10 +10,11 @@ import { City } from '../../../../../shared/models/city.model';
 import { TreasuryService } from '../../../treasury.service';
 import { Church } from '../../../models/church';
 import { auth } from '../../../../../auth/auth';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/takeUntil';
+
+
+
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { switchMap, tap, delay, skipWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'app-church-form',
@@ -45,17 +46,19 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initForm();
     this.sub1 = this.loadDistricts()
-      .switchMap(() => this.loadStates())
-      .switchMap(() => this.route.params)
-      .do(({ id }) => this.loading = !!id)
-      .skipWhile(({ id }) => !id)
-      .switchMap(({ id }) => this.edit(id))
-      .subscribe(() => this.loading = false);
+      .pipe(
+        switchMap(() => this.loadStates()),
+        switchMap(() => this.route.params),
+        tap(({ id }) => this.loading = !!id),
+        skipWhile(({ id }) => !id),
+        switchMap(({ id }) => this.edit(id))
+      ).subscribe(() => this.loading = false);
     this.sub2 = this.form
       .get('state')
       .valueChanges
-      .switchMap(value => this.loadCities(value))
-      .subscribe();
+      .pipe(
+        switchMap(value => this.loadCities(value))
+      ).subscribe();
     this.churchDataComponent.openSidenav();
   }
 
@@ -79,10 +82,12 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   public loadCities(stateid) {
     return this.service
       .getCities(stateid)
-      .do((data: City[]) => {
-        this.form.get('city').enable();
-        this.cities = data;
-      });
+      .pipe(
+        tap((data: City[]) => {
+          this.form.get('city').enable();
+          this.cities = data;
+        })
+      );
   }
 
   public save(): void {
@@ -96,8 +101,9 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
       };
       this.service
         .saveChurch(data)
-        .switchMap(() => this.churchDataComponent.getData())
-        .subscribe(() => {
+        .pipe(
+          switchMap(() => this.churchDataComponent.getData())
+        ).subscribe(() => {
           this.isSending = false;
           this.churchDataComponent.closeSidenav();
           this.snackBar.open('Salvo com sucesso!', 'OK', { duration: 5000 });
@@ -109,7 +115,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   }
 
   public labelTitle(): string {
-    return this.checkIsEdit() ? 'Editar' : 'Nova';
+    return this.checkIsEdit() ? 'Editar Igreja' : 'Nova Igreja';
   }
 
   private checkIsEdit(): boolean {
@@ -119,24 +125,29 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   public edit(id: number) {
     return this.service
       .getChurch(id)
-      .delay(500)
-      .do(church => {
-        this.church = church;
-        this.setValues(church);
-      })
-      .delay(100);
+      .pipe(
+        delay(500),
+        tap(church => {
+          this.church = church;
+          this.setValues(church);
+        }),
+        delay(100)
+      );
   }
 
   private loadDistricts() {
     return this.service
       .getDistricts(auth.getCurrentUnit().id)
-      .do((data: Districts[]) => { this.districts = data; });
+      .pipe(
+        tap((data: Districts[]) => { this.districts = data; })
+      );
   }
 
   private loadStates() {
     return this.service
-      .getStates()
-      .do((data: State[]) => { this.states = data; });
+      .getStates().pipe(
+        tap((data: State[]) => { this.states = data; })
+      );
   }
 
   private setValues(church: Church): void {

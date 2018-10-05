@@ -1,0 +1,8 @@
+<div fxLayout="row" class="container-main mat-elevation-z2" fxLayoutAlign="center">
+    <div fxLayout="column" fxFlex.gt-sm="95%" fxFlex="97%">
+        <ng-content select="[space-type=header]"></ng-content>
+        <div fxLayout="column" class="container">
+            <ng-content select="[space-type=container]"></ng-content>
+        </div>
+    </div>
+</div>

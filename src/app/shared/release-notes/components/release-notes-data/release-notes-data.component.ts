@@ -3,28 +3,25 @@ import { MatSidenav } from '@angular/material';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable ,  Subject ,  BehaviorSubject ,  Subscription } from 'rxjs';
 
 import { SharedService } from '../../../shared.service';
 import { Release } from '../../../models/release.model';
 import { ReleaseNotesStore } from '../../release-notes.store';
 import { SidenavService } from '../../../../core/services/sidenav.service';
-import { AuthService } from '../../../auth.service';
 
 import * as moment from 'moment';
 import { auth } from '../../../../auth/auth';
-import { Subscription } from 'rxjs/Subscription';
+import { AbstractSidenavContainer } from '../../../abstract-sidenav-container.component';
 
 @Component({
   selector: 'app-release-notes-data',
   templateUrl: './release-notes-data.component.html',
   styleUrls: ['./release-notes-data.component.scss']
 })
-export class ReleaseNotesDataComponent implements OnInit, OnDestroy {
+export class ReleaseNotesDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
+  protected componentUrl = 'notas-daversao';
 
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
   searchButton = false;
   showList = 15;
   search$ = new Subject<string>();
@@ -32,21 +29,20 @@ export class ReleaseNotesDataComponent implements OnInit, OnDestroy {
   releases$: Observable<Release[]>;
   private _releases: BehaviorSubject<Release[]>;
 
+  private searchText = '';
+
   private releaseSub: Subscription;
 
   constructor(
     private service: SharedService,
     private store: ReleaseNotesStore,
     private sidenavService: SidenavService,
-    private authService: AuthService,
     private location: Location,
-    private router: Router
-  ) { }
+    public router: Router
+  ) { super(router); }
 
   ngOnInit() {
-    this.router.navigate([this.router.url.replace(/.*/, 'notas-da-versao')]);
     this.loadAllReleaseNotes();
-    this.sidenavService.setSidenav(this.sidenavRight);
     this.search$.subscribe(search => {
       this.search(search);
     });
@@ -57,16 +53,8 @@ export class ReleaseNotesDataComponent implements OnInit, OnDestroy {
     if (this.releaseSub) { this.releaseSub.unsubscribe(); }
   }
   private search(search: string) {
+    this.searchText  = search;
     this.releases$ = this.store.search(search);
-  }
-
-  public closeSidenav() {
-    this.location.back();
-    this.sidenavRight.close();
-  }
-
-  openSidenav() {
-    this.sidenavService.open();
   }
 
   private loadAllReleaseNotes(): void {

@@ -1,4 +1,4 @@
-<app-layout-container [title]="'Editar Perfil'" [buttonLabel]="'Alterar Senha'" (buttonHeader)="changeComponent($event)">
+<app-layout-container class="container" [title]="'Editar Perfil'" [buttonLabel]="'Alterar Senha'" (buttonHeader)="changeComponent($event)">
     <form method="post" [formGroup]="formUser" fxFlex *ngIf="loading">
         <div fxLayout="row" fxLayoutAlign="center">
             <div fxLayout="column" fxFlex fxFlex.gt-md="50%" class="padding-form card">

@@ -12,6 +12,7 @@ const checkRouteUrl = (router: Router, url: string, callback: (url?: string) => 
 };
 
 const buildSearchRegex = (str = '') => {
+  /*Rever este processo. Ele retornava, por exemplo, true 'curitiba' se pesquisasse por uma string 'ii'
   const strArray = Array.from(str);
   const regexArray = strArray.map(word => {
       if (word === 'a') { return '[à-úÀ-ÚaA]'; }
@@ -22,7 +23,8 @@ const buildSearchRegex = (str = '') => {
       return word;
   });
   const strRegex = regexArray.toString().split(',').join('');
-  return new RegExp(strRegex, 'ig');
+  return new RegExp(strRegex, 'ig');*/
+  return new RegExp(str.toUpperCase());
 };
 
 export const utils = {

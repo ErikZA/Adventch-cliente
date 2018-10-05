@@ -1,9 +1,9 @@
-import { MatSidenav } from '@angular/material';
 import { ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormSidenavRightComponent } from '../core/components/sidenav/form/form-sidenav-right/form-sidenav-right.component';
 
 export abstract class AbstractSidenavContainer {
-  @ViewChild('sidenavRight') sidenavRight: MatSidenav;
+  @ViewChild('sidenavRight') sidenavRight: FormSidenavRightComponent;
   protected abstract componentUrl: string;
 
   constructor(protected router: Router) {}

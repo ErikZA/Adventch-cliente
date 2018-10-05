@@ -1,10 +1,9 @@
-import { of } from 'rxjs/observable/of';
+import { tap, switchMap, skipWhile, delay } from 'rxjs/operators';
+import { of ,  Subscription } from 'rxjs';
 import { ProcessDataComponent } from './../process-data/process-data.component';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-
-import { Subscription } from 'rxjs/Subscription';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 
 import { MatSnackBar } from '@angular/material';
 import { ScholarshipService } from '../../../scholarship.service';
@@ -18,9 +17,7 @@ import { auth } from '../../../../../auth/auth';
 import { ProcessDocument } from '../../../models/processDocument';
 import { School } from '../../../models/school';
 import { NewProcessViewModel, EditProcessViewModel } from '../../../interfaces/process-view-models';
-import 'rxjs/add/operator/skipWhile';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/distinctUntilChanged';
+
 import { ReportService } from '../../../../../shared/report.service';
 
 @Component({
@@ -66,35 +63,47 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     private processDataComponent: ProcessDataComponent,
     private reportService: ReportService
   ) { }
+
+
   ngOnInit() {
     this.initForm();
     this.checkCpf();
     this.sub1 = this.scholarshipService.getStudentSeries()
-      .do(series => {
-        this.studentSeries = series;
-      })
-      .switchMap(() => this.scholarshipService.getAllDocuments())
-      .do(documents => this.processDocuments = documents)
-      .switchMap(() => this.route.params)
-      .do(({ id }) => this.loading = !!id)
-      .skipWhile(({ id }) => {
-        if (this.scholarshipService.schoolSelected <= 0 && !id) {
-          this.processDataComponent.closeSidenav();
-          return true;
-        }
-        return !id;
-      })
-      .switchMap(({ id }) => this.scholarshipService.getProcessById(id))
-      .do(process => this.process = process)
-      .do(process => this.setValuesToFormProcess(process))
-      .do(process => this.setValuesToFormDocuments(process.documents))
-      .delay(500)
-      .subscribe(() => this.loading = false);
+      .pipe(
+        tap(series => {
+          this.studentSeries = series;
+        }),
+        switchMap(() => this.scholarshipService.getAllDocuments()),
+        tap(documents => this.processDocuments = documents),
+        switchMap(() => this.route.params),
+        tap(({ id }) => this.loading = !!id),
+        skipWhile(({ id }) => {
+          this.setSchoolSelectedToNewProcess();
+          if (this.scholarshipService.schoolSelected <= 0 && !id) {
+            this.processDataComponent.closeSidenav();
+            this.snackBar.open('Selecione uma escola na dashboard para criar um novo processo', 'OK', { duration: 5000 });
+            return true;
+          }
+          return !id;
+        }),
+        switchMap(({ id }) => this.scholarshipService.getProcessById(id)),
+        tap(process => this.process = process),
+        tap(process => this.setValuesToFormProcess(process)),
+        tap(process => this.setValuesToFormDocuments(process.documents)),
+        delay(500)
+      ).subscribe(() => this.loading = false);
     this.processDataComponent.openSidenav();
   }
+
   ngOnDestroy() {
     this.processDataComponent.closeSidenav();
   }
+
+  private setSchoolSelectedToNewProcess(): void {
+    const { idSchool } = auth.getCurrentUser();
+    this.scholarshipService.schoolSelected = idSchool === 0 ? this.scholarshipService.schoolSelected : idSchool;
+  }
+
   private createFormGroupForTypes(types: any[]): FormGroup {
     const obj = {};
     types.forEach(t => {
@@ -102,6 +111,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     });
     return this.formBuilder.group(obj);
   }
+
   private initForm(): void {
     this.processDocumentsForm = this.createFormGroupForTypes(this.types);
     this.formProcess = this.formBuilder.group({
@@ -280,7 +290,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     });
   }
   public labelTitleProcess(): string {
-    return this.process !== undefined && this.process !== undefined ? 'Editar' : 'Novo';
+    return this.process !== undefined && this.process !== undefined ? 'Editar Processo' : 'Novo Processo';
   }
   public setStudent(student: Student): void {
     if (Number.isInteger(student.rc)) {
@@ -297,14 +307,16 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     this.isSending = true;
     if (typeof this.process === 'undefined') {
       this.scholarshipService.saveProcess(data)
-        .do(id => this.handleSaveSuccess(id))
-        .switchMap(() => this.processDataComponent.getProcesses())
-        .subscribe(() => this.isSending = false);
+        .pipe(
+          tap(id => this.handleSaveSuccess(id)),
+          switchMap(() => this.processDataComponent.getProcesses())
+        ).subscribe(() => this.isSending = false);
     } else {
       this.scholarshipService.editProcess(this.process.id, data)
-        .do(() => this.handleSaveSuccess(this.process.id))
-        .switchMap(() => this.processDataComponent.getProcesses())
-        .subscribe(() => this.isSending = false);
+        .pipe(
+          tap(() => this.handleSaveSuccess(this.process.id)),
+          switchMap(() => this.processDataComponent.getProcesses())
+        ).subscribe(() => this.isSending = false);
     }
   }
   public maskPhone(phone): string {

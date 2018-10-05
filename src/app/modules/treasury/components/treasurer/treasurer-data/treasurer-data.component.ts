@@ -1,8 +1,7 @@
-import * as moment from 'moment';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
-import {MatSnackBar } from '@angular/material';
+import { Subject, Subscription } from 'rxjs';
+import { MatSnackBar } from '@angular/material';
 
 import { TreasuryService } from '../../../treasury.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
@@ -13,9 +12,11 @@ import { Districts } from '../../../models/districts';
 import { User } from '../../../../../shared/models/user.model';
 import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
-import 'rxjs/add/observable/of';
-import { Subscription } from 'rxjs/Subscription';
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import * as moment from 'moment';
+import { switchMap, tap, map, skipWhile } from 'rxjs/operators';
+import { Filter } from '../../../../../core/components/filter/Filter.model';
+import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 
 @Component({
   selector: 'app-treasurer-data',
@@ -26,19 +27,20 @@ import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorato
 export class TreasurerDataComponent extends AbstractSidenavContainer implements OnInit {
   protected componentUrl = 'tesouraria/tesoureiros';
   searchButton = false;
-  showList = 15;
+  showList = 40;
   search$ = new Subject<string>();
   filterText = '';
 
   treasurers: Treasurer[] = [];
   treasurersCache: Treasurer[] = [];
 
-  filterDistrict = 0;
-  filterAnalyst = 0;
-  filterFunction = 0;
-  districts: Districts[] = [];
-  analysts: User[] = [];
-
+  // new filter
+  districtsSelecteds: number[] = [];
+  districtsData: Filter[] = [];
+  analystsSelecteds: number[] = [];
+  analystsData: Filter[] = [];
+  functionsSelecteds: number[] = [];
+  functionsData: Filter[] = [];
 
   sub1: Subscription;
 
@@ -47,14 +49,19 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     private treasureService: TreasuryService,
     private confirmDialogService: ConfirmDialogService,
     private snackBar: MatSnackBar,
+    private filterService: FilterService
   ) { super(router); }
 
   ngOnInit() {
-   this.sub1 = this.getData().switchMap(() => this.search$).subscribe(search => {
+   this.sub1 = this.getData()
+   .pipe(
+    switchMap(() => this.search$)
+   ).subscribe(search => {
       this.filterText = search;
       this.search();
     });
   }
+
   getFunctionName(treasurer: Treasurer) {
     if (treasurer.function === 1) {
       return 'Tesoureiro (a)';
@@ -64,22 +71,26 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     }
     return 'Tesoureiro (a) Assistente';
   }
+
   getData() {
     this.search$.next('');
+    this.loadFunctions();
     return this.treasureService
       .getTreasurers(auth.getCurrentUnit().id)
-      .map(data => data.map(d => ({
-        ...d,
-        functionName: this.getFunctionName(d),
-        dateRegisterFormatted: !!d.dateRegister ? moment(d.dateRegister).fromNow() : null
-      })) as Treasurer[])
-      .do(data => {
-        this.treasurersCache = data;
-        this.treasurers = data;
-        this.search();
-      })
-      .switchMap(() => this.loadAnalysts())
-      .switchMap(() => this.loadDistricts());
+      .pipe(
+        map(data => data.map(d => ({
+          ...d,
+          functionName: this.getFunctionName(d),
+          dateRegisterFormatted: !!d.dateRegister ? moment(d.dateRegister).fromNow() : null
+        })) as Treasurer[]),
+        tap(data => {
+          this.treasurersCache = data;
+          this.treasurers = data;
+          this.search();
+        }),
+        switchMap(() => this.loadAnalysts()),
+        switchMap(() => this.loadDistricts())
+      );
   }
 
   editTreasurer(treasurer): void {
@@ -93,62 +104,74 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   removeTreasurer(treasurer: Treasurer) {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este tesoureiro?', 'REMOVER')
-      .skipWhile(res => res !== true)
-      .switchMap(() => this.treasureService.deleteTreasurer(treasurer.id))
-      .switchMap(() => this.getData())
-      .do(() => this.snackBar.open('Tesoureiro removido!', 'OK', { duration: 5000 }))
-      .subscribe(null, err => {
+      .pipe(
+        skipWhile(res => res !== true),
+        switchMap(() => this.treasureService.deleteTreasurer(treasurer.id)),
+        switchMap(() => this.getData()),
+        tap(() => this.snackBar.open('Tesoureiro removido!', 'OK', { duration: 5000 }))
+      ).subscribe(null, err => {
         console.log(err);
         this.snackBar.open('Erro ao remover tesoureiro, tente novamente.', 'OK', { duration: 5000 });
       });
   }
 
   onScroll() {
-    this.showList += 15;
+    this.showList += 80;
   }
 
   public expandPanel(matExpansionPanel): void {
     matExpansionPanel.toggle();
   }
 
-  public searchAnalyst(idAnalyst: number, treasurers: Treasurer[]): Treasurer[] {
-    // tslint:disable-next-line:triple-equals
-    return treasurers.filter(x => x.church.district.analyst.id == idAnalyst);
-  }
-
-  public searchDistricts(idDistrict: number, treasurers: Treasurer[]): Treasurer[] {
-    // tslint:disable-next-line:triple-equals
-    return treasurers.filter(x => x.church.district.id == idDistrict);
-  }
-
-  public searchFunction(idFunction: number, treasurers: Treasurer[]): Treasurer[] {
-    // tslint:disable-next-line:triple-equals
-    return treasurers.filter(x => x.function == idFunction);
-  }
   public search() {
-    let treasurersFilttered = this.treasurersCache.filter(t => utils.buildSearchRegex(this.filterText).test(t.name));
-    // tslint:disable-next-line:triple-equals
-    if (this.filterDistrict !== undefined && this.filterDistrict != null && this.filterDistrict != 0) {
-      treasurersFilttered = this.searchDistricts(this.filterDistrict, treasurersFilttered);
-    }
-    // tslint:disable-next-line:triple-equals
-    if (this.filterAnalyst !== undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
-      treasurersFilttered = this.searchAnalyst(this.filterAnalyst, treasurersFilttered);
-    }
-    // tslint:disable-next-line:triple-equals
-    if (this.filterFunction !== undefined && this.filterFunction != null && this.filterFunction != 0) {
-      treasurersFilttered = this.searchFunction(this.filterFunction, treasurersFilttered);
-    }
+    let treasurersFilttered = this.treasurersCache.filter(t => utils.buildSearchRegex(this.filterText).test(t.name.toUpperCase()));
+    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'church.district.id', this.districtsSelecteds);
+    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'church.district.analyst.id', this.analystsSelecteds);
+    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'function', this.functionsSelecteds);  
     this.treasurers = treasurersFilttered;
   }
   private loadDistricts() {
-    return this.treasureService.getDistricts(auth.getCurrentUnit().id).do((data: Districts[]) => {
-      this.districts = data;
-    });
+    this.districtsData = [];
+    return this.treasureService.getDistricts(auth.getCurrentUnit().id)
+    .pipe(
+      tap((data: Districts[]) => {
+        data.forEach(d => {
+          this.districtsData.push(new Filter(Number(d.id), d.name));
+        });
+      })
+    );
   }
   private loadAnalysts() {
-    return this.treasureService.loadAnalysts(auth.getCurrentUnit().id).do((data: User[]) => {
-      this.analysts = data;
-    });
+    this.analystsData = [];
+    return this.treasureService.loadAnalysts(auth.getCurrentUnit().id)
+    .pipe(
+      tap((data: User[]) => {
+        data.forEach(d => {
+          this.analystsData.push(new Filter(Number(d.id), d.name));
+        });
+      })
+    );
+  }
+
+  private loadFunctions() {
+    this.functionsData = [];
+    this.functionsData.push(new Filter(1, 'Tesoureiro (a)'));
+    this.functionsData.push(new Filter(2, 'Tesoureiro (a) Associado (a)'));
+    this.functionsData.push(new Filter(3, 'Tesoureiro (a) Assistente'));
+  }
+
+  checkDistrict(district) {
+    this.districtsSelecteds = this.filterService.check(district, this.districtsSelecteds);
+    this.search();
+  }
+
+  checkAnalyst(analyst) {
+    this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);   
+    this.search();
+  }
+
+  checkFunction(func) {
+    this.functionsSelecteds = this.filterService.check(func, this.functionsSelecteds);
+    this.search();
   }
 }

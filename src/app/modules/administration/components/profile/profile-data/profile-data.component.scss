@@ -10,9 +10,8 @@
     color: gray;
 }
 
-.conteiner {
-    overflow: auto;
-    max-height: calc(100vh - 250px);
+.container {
+    overflow-y: auto;
 }
 
 .margin-top-small {
@@ -23,10 +22,6 @@
     position: fixed;
     bottom: 45px;
     right: 24px;
-}
-
-.sidenav-right {
-    width: 99%;
 }
 
 .text-bold {

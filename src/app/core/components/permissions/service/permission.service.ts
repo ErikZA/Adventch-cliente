@@ -1,22 +1,19 @@
 import { Injectable } from '@angular/core';
+import { JwtHelperService } from '@auth0/angular-jwt';
+
 import { Permission } from '../../../../shared/models/permission.model';
 import { Profile } from '../../../../modules/administration/models/profile/profile.model';
 import { User } from '../../../../shared/models/user.model';
 import { Feature } from '../../../../modules/administration/models/feature.model';
 import { auth } from '../../../../auth/auth';
-import { JwtHelper } from 'angular2-jwt';
 @Injectable()
 export class PermissionService {
 
   private user: User;
 
-  constructor() {
-    auth.currentUser.subscribe(user => {
-      if (user) {
-        this.user = user;
-      }
-    });
-  }
+  constructor(
+    public jwtHelper: JwtHelperService
+  ) { }
 
   private getUser(): void {
     this.user = auth.getCurrentUser();
@@ -51,8 +48,7 @@ export class PermissionService {
   public getProfilesUser(): Profile[] {
     const token = auth.getMainToken();
     if (!!token) {
-      const helper = new JwtHelper();
-      const decoded = helper.decodeToken(token);
+      const decoded = this.jwtHelper.decodeToken(token);
       const profiles = JSON.parse(decoded['user-profiles']) as Profile[];
       return Array.isArray(profiles) ? profiles : [];
     }
@@ -60,7 +56,6 @@ export class PermissionService {
   }
 
   public checkFeatureAccess(feature: number): boolean {
-    // this.getUser();
     const features = this.getFeaturesArrayUser();
     if (!features || !Array.isArray(features) || features.length === 0) {
       return false;

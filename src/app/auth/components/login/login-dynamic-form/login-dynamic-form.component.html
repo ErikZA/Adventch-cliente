@@ -10,5 +10,5 @@
         <mat-icon matSuffix (click)="hide = !hide">{{ hide ? 'visibility' : 'visibility_off'}}</mat-icon>
     </mat-form-field>
     <mat-checkbox color="primary" [checked]="remember" (change)="rememberMe($event.checked)">Lembrar-me</mat-checkbox>
-    <button fxFlex mat-flat-button color="primary" type="submit" [disabled]="loading" (click)="login()">ENTRAR</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="loading" (click)="login()">ENTRAR</button>
 </form>

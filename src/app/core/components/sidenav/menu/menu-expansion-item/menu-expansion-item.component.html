@@ -1,0 +1,14 @@
+<mat-expansion-panel #panel [class.expanded]="panel.expanded" [expanded]="expanded" [disabled]="disabled">
+    <mat-expansion-panel-header [class.expanded-title]="panel.expanded">
+        <mat-panel-title fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <mat-icon [ngClass]="{'icon': !panel.disabled, 'icon-disabled': panel.disabled}">{{ icon }}</mat-icon>
+            <p class="title">{{ title }}</p>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-nav-list>
+        <ng-content select="[list-type=item]"></ng-content>
+    </mat-nav-list>
+    <mat-action-row *ngIf="actions">
+        <ng-content select="[list-type=action]"></ng-content>
+    </mat-action-row>
+</mat-expansion-panel>

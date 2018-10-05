@@ -3,8 +3,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 
 // core
-import { LayoutComponent } from './shared/layout/layout.component';
-
+import { LayoutMainComponent } from './core/components/container/layout-main/layout-main.component';
 import { AdminGuard } from './shared/guards/admin.guard';
 import { ModuleGuard } from './shared/guards/module.guard';
 
@@ -18,46 +17,46 @@ import { ChangePasswordComponent } from './shared/change-password/change-passwor
 
 import { EModules } from './shared/models/modules.enum';
 import { AuthMainGuard } from './shared/guards/auth-main.guard';
-
-// components
-// import { BonificationTypesComponent } from 'app/bonification/bonification-types/bonification-types/bonification-types.component';
-// import { BonificationTypesDataComponent }
-// from 'app/bonification/bonification-types/bonification-types-data/bonification-types-data.component';
+import { AuthResponsibleGuard } from './shared/guards/auth-responsible.guard';
 
 const appRoutes: Routes = [
-  { path: '', component: LayoutComponent, canActivate: [AuthMainGuard], canLoad: [AuthMainGuard], children: [
+  { path: '', component: LayoutMainComponent, canActivate: [AuthMainGuard], canLoad: [AuthMainGuard], children: [
     { path: '', component: DashboardComponent },
     { path: 'perfil/editar', component: EditUserComponent },
     { path: 'alterar-senha', component: ChangePasswordComponent },
     { path: 'notas-da-versao', component: ReleaseNotesDataComponent, children: [
       { path: 'novo', component: ReleaseNotesFormComponent }
-    ]}
-  ]},
-  // { path: '', loadChildren: '../app/auth/auth.module#AuthModule' },
-  {
-    path: '', loadChildren: '../app/modules/scholarship/scholarship.module#ScholarshipModule',
-    // canActivate: [AuthMainGuard],
-    // canLoad: [AuthMainGuard],
-    // data: {
-      //   module: EModules.Scholarship
-      // }
+    ]},
+    {
+      path: 'bolsas', loadChildren: '../app/modules/scholarship/scholarship.module#ScholarshipModule',
+      canActivate: [AuthMainGuard, ModuleGuard],
+      canLoad: [AuthMainGuard, ModuleGuard],
+      data: {
+        module: EModules.Scholarship
+      }
     },
     {
       path: 'tesouraria',
       loadChildren: '../app/modules/treasury/treasury.module#TreasuryModule',
       canActivate: [AuthMainGuard, ModuleGuard],
       canLoad: [AuthMainGuard, ModuleGuard],
-    data: {
-      module: EModules.Treasury
+      data: {
+        module: EModules.Treasury
+      },
     },
-  },
+    {
+      path: 'administracao',
+      canActivate: [AuthMainGuard, AdminGuard],
+      canLoad: [AuthMainGuard, AdminGuard],
+      loadChildren: '../app/modules/administration/administration.module#AdministrationModule'
+    },
+  ]},
   {
-    path: 'administracao',
-    canActivate: [AuthMainGuard, AdminGuard],
-    canLoad: [AuthMainGuard, AdminGuard],
-    loadChildren: '../app/modules/administration/administration.module#AdministrationModule'
+    path: 'educacao',
+    canActivate: [AuthResponsibleGuard],
+    canLoad: [AuthResponsibleGuard],
+    loadChildren: '../app/modules/scholarship/responsible/responsible.module#ResponsibleModule',
   },
-  // { path: 'login', component: LoginComponent },
   { path: 'resetar-senha/:recover_pass', component: RedefinePasswordComponent },
   { path: '**', component: PageNotFoundComponent },
 

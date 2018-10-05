@@ -1,4 +1,6 @@
-<mat-toolbar color="primary" style="background-color: #2094c8" class="mat-elevation-z6">
+<app-layout-main></app-layout-main>
+
+<!-- <mat-toolbar color="primary" style="background-color: #2094c8" class="mat-elevation-z6">
     <button mat-icon-button (click)="sidenav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
@@ -33,17 +35,12 @@
 
         <button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
       <mat-icon>account_circle</mat-icon>
-        <!-- <img class="material-icons mat-36 circle-18" src="{{app.currentUser.photoUrl}}?size=36" *ngIf="app.currentUser.photoDate !== ''">-->
       </button>
         <button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
             {{ user?.firstName }}
         </button>
     </div>
     <mat-menu [overlapTrigger]="false" xPosition="before" #appMenu="matMenu">
-        <!-- <button mat-menu-item>
-            <mat-icon>person</mat-icon>
-            <span>Editar perfil</span>
-        </button> -->
         <button mat-menu-item (click)="changeProfile()">
       <mat-icon>person</mat-icon>
       <span>Editar perfil</span>
@@ -64,18 +61,18 @@
         <mat-nav-list id="nav-list-menu" [ngClass]="{'nav-list-mobile': isMobile, 'nav-list-web': !isMobile}">
             <mat-accordion>
                 <ng-container *ngIf="checkUserIsAdmin()">
-                    <mat-expansion-panel [expanded]="isRouteActive('/administracao')">
-                        <!--Novo Módulo-->
-                        <mat-expansion-panel-header class="background-side-nav">
+                    <mat-expansion-panel [expanded]="isRouteActive('/administracao')"> -->
+<!--Novo Módulo-->
+<!-- <mat-expansion-panel-header class="background-side-nav">
                             <mat-panel-title>Administração</mat-panel-title>
                         </mat-expansion-panel-header>
                         <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/administracao/papeis']">Papéis</a>
                         <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/administracao/usuarios']">Usuários</a>
                     </mat-expansion-panel>
                 </ng-container>
-                <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!this.checkPermissionSoftware(6)" matTooltip="Sessão indisponível" [matTooltipDisabled]="this.checkPermissionSoftware(6)" matTooltipPosition="below">
-                    <!--Novo Módulo-->
-                    <mat-expansion-panel-header class="background-side-nav">
+                <mat-expansion-panel [expanded]="isRouteActive('/tesouraria')" [disabled]="!this.checkPermissionSoftware(6)" matTooltip="Sessão indisponível" [matTooltipDisabled]="this.checkPermissionSoftware(6)" matTooltipPosition="below"> -->
+<!--Novo Módulo-->
+<!-- <mat-expansion-panel-header class="background-side-nav">
                         <mat-panel-title (click)="redirectToTreasury()">Tesouraria</mat-panel-title>
                     </mat-expansion-panel-header>
                     <ng-template [Feature]="47">
@@ -97,9 +94,9 @@
                         <a mat-list-item routerLinkActive="active-sub-menu" [routerLink]="['/tesouraria/avaliacoes']">Avaliações</a>
                     </ng-template>
                 </mat-expansion-panel>
-                <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!this.checkPermissionSoftware(7)" matTooltip="Sessão indisponível" [matTooltipDisabled]="this.checkPermissionSoftware(7)" matTooltipPosition="below">
-                    <!--Novo Módulo-->
-                    <mat-expansion-panel-header class="background-side-nav">
+                <mat-expansion-panel [expanded]="isRouteActive('/bolsas')" [disabled]="!this.checkPermissionSoftware(7)" matTooltip="Sessão indisponível" [matTooltipDisabled]="this.checkPermissionSoftware(7)" matTooltipPosition="below"> -->
+<!--Novo Módulo-->
+<!-- <mat-expansion-panel-header class="background-side-nav">
                         <mat-panel-title (click)="redirectToDashboard()">Bolsas de Estudo</mat-panel-title>
                     </mat-expansion-panel-header>
                     <ng-template [Feature]="40" permission="2">
@@ -114,7 +111,7 @@
         </mat-nav-list>
     </mat-drawer>
 
-    <div class="page-container mat-elevation-z4" fxFlex.gt-md="94%" fxFlex="100%">
+    <div fxLayout="column" class="page-container mat-elevation-z4" fxFlex.gt-md="94%" fxFlex="100%">
         <router-outlet></router-outlet>
         <footer fxLayout="row" [ngStyle]="{'position': 'relative'}">
             <div fxFlex="155px" class="footer-unit" fxHide.xs>©FORLOGIC 2004 - {{year}}</div>
@@ -126,4 +123,4 @@
             </div>
         </footer>
     </div>
-</mat-drawer-container>
+</mat-drawer-container> -->

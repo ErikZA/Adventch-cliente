@@ -1,22 +1,21 @@
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription ,  Subject } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Subject } from 'rxjs/Subject';
-
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { ReportService } from '../../../../../shared/report.service';
 import { Observation } from '../../../models/observation';
-import { Church } from '../../../models/church';
-import { User } from '../../../../../shared/models/user.model';
 import { auth } from '../../../../../auth/auth';
 import { TreasuryService } from '../../../treasury.service';
 import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
-import 'rxjs/add/operator/skipWhile';
+import { Filter } from '../../../../../core/components/filter/Filter.model';
+import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+
 import * as moment from 'moment';
+import { tap, switchMap, skipWhile } from 'rxjs/operators';
 @Component({
   selector: 'app-observation-data',
   templateUrl: './observation-data.component.html',
@@ -27,22 +26,25 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   protected componentUrl = 'tesouraria/observacoes';
 
   searchButton = false;
-  showList = 15;
+  showList = 40;
   search$ = new Subject<string>();
 
   observations: Observation[] = [];
   observationsCache: Observation[] = [];
-  churches: Church[] = [];
-  analysts: User[] = [];
-  responsibles: User[] = [];
 
   filterText: string;
-  filterStatus = 1;
-  filterChurch = 0;
-  filterAnalyst = 0;
-  filterResponsible = 0;
   filterPeriodStart: Date = new Date(new Date().getFullYear(), 0, 1);
   filterPeriodEnd: Date = new Date(new Date().getFullYear(), 11, 31);
+
+  // new filter
+  statusSelecteds: number[] = [];
+  statusData: Filter[] = [];
+  churchesSelecteds: number[] = [];
+  churchesData: Filter[] = [];
+  analystsSelecteds: number[] = [];
+  analystsData: Filter[] = [];
+  responsiblesSelecteds: number[] = [];
+  responsiblesData: Filter[] = [];
 
   sub1: Subscription;
 
@@ -52,14 +54,17 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     private route: ActivatedRoute,
     private reportService: ReportService,
     private snackBar: MatSnackBar,
-    private treasuryService: TreasuryService
+    private treasuryService: TreasuryService,
+    private filterService: FilterService
   ) {  super(router); }
 
   ngOnInit() {
+    this.loadStatus();
     this.sub1 = this
       .getData()
-      .switchMap(() => this.search$)
-      .subscribe(search => {
+      .pipe(
+        switchMap(() => this.search$)
+      ).subscribe(search => {
         this.filterText = search;
         this.search();
       });
@@ -68,14 +73,16 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     this.search$.next('');
     return this.treasuryService
       .getObservations(auth.getCurrentUnit().id)
-      .do(data => {
-        this.observations = data.sort(this.sortByDate);
-        this.observationsCache = data.sort(this.sortByDate);
-        this.loadAnalysts(data);
-        this.loadChurches(data);
-        this.loadResponsibles(data);
-        this.search();
-      });
+      .pipe(
+        tap(data => {
+          this.observations = data.sort(this.sortByDate);
+          this.observationsCache = data.sort(this.sortByDate);
+          this.loadAnalysts(data);
+          this.loadChurches(data);
+          this.loadResponsibles(data);
+          this.search();
+        })
+      );
   }
   private sortByDate(a: Observation, b: Observation) {
     if (a.date === b.date) {
@@ -88,44 +95,48 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     }
   }
   private loadChurches(observations: Observation[]) {
+    this.churchesData = [];
     observations.forEach(observation => {
-      if (this.churches.map(x => x.id).indexOf(observation.church.id) === -1) {
-        this.churches.push(observation.church);
+      if (this.churchesData.map(x => x.id).indexOf(observation.church.id) === -1) {
+        this.churchesData.push(observation.church);
       }
     });
-    this.churches.sort((a, b) => a.name.localeCompare(b.name));
+    this.churchesData.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   private loadAnalysts(observations: Observation[]) {
+    this.analystsData = [];
     observations.forEach(observation => {
-      if (this.analysts.map(x => x.id).indexOf(observation.church.district.analyst.id) === -1) {
-        this.analysts.push(observation.church.district.analyst);
+      if (this.analystsData.map(x => x.id).indexOf(observation.church.district.analyst.id) === -1) {
+        this.analystsData.push(observation.church.district.analyst);
       }
     });
-    this.analysts.sort((a, b) => a.name.localeCompare(b.name));
+    this.analystsData.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   private loadResponsibles(observations: Observation[]) {
+    this.responsiblesData = [];
     observations.forEach(observation => {
-      if (this.responsibles.map(x => x.id).indexOf(observation.responsible.id) === -1) {
-        this.responsibles.push(observation.responsible);
+      if (this.responsiblesData.map(x => x.id).indexOf(observation.responsible.id) === -1) {
+        this.responsiblesData.push(observation.responsible);
       }
     });
-    this.responsibles.sort((a, b) => a.name.localeCompare(b.name));
+    this.responsiblesData.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   public onScroll() {
-    this.showList += 15;
+    this.showList += 80;
   }
 
   public remove(observation: Observation) {
     this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover a observação?', 'REMOVER')
-      .skipWhile(res => res !== true)
-      .switchMap(() => this.treasuryService.deleteObservation(observation.id))
-      .switchMap(() => this.getData())
-      .do(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 2000 }))
-      .subscribe();
+      .pipe(
+        skipWhile(res => res !== true),
+        switchMap(() => this.treasuryService.deleteObservation(observation.id)),
+        switchMap(() => this.getData()),
+        tap(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 2000 }))
+      ).subscribe();
   }
   public edit(observation: Observation) {
     this.router.navigate([observation.id, 'editar'], { relativeTo: this.route });
@@ -133,11 +144,12 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   public finalize(observation: Observation) {
     this.confirmDialogService
       .confirm('Finalizar', 'Você deseja realmente finalizar a observação?', 'FINALIZAR')
-      .skipWhile(res => res !== true)
-      .switchMap(() => this.treasuryService.finalizeObservation(observation))
-      .switchMap(() => this.getData())
-      .do(() => this.snackBar.open('Finalizado com sucesso', 'OK', { duration: 2000 }))
-      .subscribe();
+      .pipe(
+        skipWhile(res => res !== true),
+        switchMap(() => this.treasuryService.finalizeObservation(observation)),
+        switchMap(() => this.getData()),
+        tap(() => this.snackBar.open('Finalizado com sucesso', 'OK', { duration: 2000 }))
+      ).subscribe();
   }
   public getStatus(status): string {
     if (status === 1) {
@@ -145,47 +157,16 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     }
     return 'Finalizada';
   }
-  public searchStatus(status: number, observations: Observation[]): Observation[] {
-    // tslint:disable-next-line:triple-equals
-    return Array.isArray(observations) ? observations.filter(f => f.status == status) : [];
-  }
-
-  public searchChurches(church: number, observations: Observation[]): Observation[] {
-    // tslint:disable-next-line:triple-equals
-    return Array.isArray(observations) ? observations.filter(f => f.church.id == church) : [];
-  }
-
-  public searchAnalysts(analyst: number, observations: Observation[]): Observation[] {
-    // tslint:disable-next-line:triple-equals
-    return Array.isArray(observations) ? observations.filter(f => f.church.district.analyst.id == analyst) : [];
-  }
-
-  public searchResponsibles(responsible: number, observations: Observation[]): Observation[] {
-    // tslint:disable-next-line:triple-equals
-    return Array.isArray(observations) ? observations.filter(f => f.responsible.id == responsible) : [];
-  }
 
   public searchInDates(startDate: Date, endDate: Date, observations: Observation[]) {
     return Array.isArray(observations) ? observations.filter(f => new Date(f.date) > startDate && new Date(f.date) < endDate) : [];
   }
   public search() {
-    let observations = this.observationsCache.filter(o => utils.buildSearchRegex(this.filterText).test(o.church.name));
-    // tslint:disable-next-line:triple-equals
-    if (this.filterStatus !== undefined && this.filterStatus != null && this.filterStatus != 0) {
-      observations = this.searchStatus(this.filterStatus, observations);
-    }
-    // tslint:disable-next-line:triple-equals
-    if (this.filterChurch !== undefined && this.filterChurch != null && this.filterChurch != 0) {
-      observations = this.searchChurches(this.filterChurch, observations);
-    }
-    // tslint:disable-next-line:triple-equals
-    if (this.filterAnalyst !== undefined && this.filterAnalyst != null && this.filterAnalyst != 0) {
-      observations = this.searchAnalysts(this.filterAnalyst, observations);
-    }
-    // tslint:disable-next-line:triple-equals
-    if (this.filterResponsible !== undefined && this.filterResponsible != null && this.filterResponsible != 0) {
-      observations = this.searchResponsibles(this.filterResponsible, observations);
-    }
+    let observations = this.observationsCache.filter(o => utils.buildSearchRegex(this.filterText).test(o.church.name.toUpperCase()));
+    observations = this.filterService.filter(observations, 'status', this.statusSelecteds);
+    observations = this.filterService.filter(observations, 'church.id', this.churchesSelecteds);
+    observations = this.filterService.filter(observations, 'church.district.analyst.id', this.analystsSelecteds);
+    observations = this.filterService.filter(observations, 'responsible.id', this.responsiblesSelecteds);
     observations = this.searchInDates(this.filterPeriodStart, this.filterPeriodEnd, observations);
     this.observations = observations;
   }
@@ -212,28 +193,40 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   }
 
   private getStatusName(): string {
-    if (this.filterStatus === undefined || this.filterStatus === null || this.filterStatus === 0) {
+    if (this.statusSelecteds.length === 0 || this.statusSelecteds.length === 2) {
       return 'TODOS';
     }
-    return this.getStatus(this.filterStatus);
+    if (this.statusSelecteds[0] === 1) {
+      return 'Aberta';
+    }
+    return 'Finalizada';
   }
 
   private getDataParams(): any {
-    const church = this.churches.find(f => f.id === this.filterChurch);
-    const analyst = this.analysts.find(f => f.id === this.filterAnalyst);
-    const responsible = this.analysts.find(f => f.id === this.filterResponsible);
+    const status = this.getParam(this.statusData, this.statusSelecteds);
+    const church = this.getParam(this.churchesData, this.churchesSelecteds);
+    const analyst = this.getParam(this.analystsData, this.analystsSelecteds);
+    const responsible = this.getParam(this.responsiblesData, this.responsiblesSelecteds);
+
     return {
-      statusId: this.filterStatus,
-      statusName: this.getStatusName(),
-      churchId: this.filterChurch,
-      churchName: church === undefined ? 'TODAS' : church.name,
-      analystId: this.filterAnalyst,
-      analystName: analyst === undefined ? 'TODOS' : analyst.name,
-      responsibleId: this.filterResponsible,
-      responsibleName: responsible === undefined ? 'TODOS' : responsible.name,
+      statusId: status.id,
+      statusName: status.name,
+      churchId: church.id,
+      churchName: church.name,
+      analystId: analyst.id,
+      analystName: analyst.name,
+      responsibleId: responsible.id,
+      responsibleName: responsible.name,
       dateStart: this.filterPeriodStart,
       dateEnd: this.filterPeriodEnd,
     };
+  }
+
+  private getParam(data, selecteds): Filter {
+    if (selecteds.length === 1) {
+      return data.find(f => Number(f.id) === selecteds[0]);
+    }
+    return new Filter(0, 'Todos');
   }
 
   public checkAttention(observation: Observation): boolean {
@@ -243,5 +236,53 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       return true;
     }
     return false;
+  }
+
+  checkStatus(type): void {
+    this.statusSelecteds = this.filterService.check(type, this.statusSelecteds);
+    this.search();
+  }
+
+  checkChurch(church): void {
+    this.churchesSelecteds = this.filterService.check(church, this.churchesSelecteds);
+    this.search();
+  }
+
+  checkAnalyst(analyst): void {
+    this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
+    this.search();
+  }
+
+  checkResponsible(responsible): void {
+    this.responsiblesSelecteds = this.filterService.check(responsible, this.responsiblesSelecteds);
+    this.search();
+  }
+
+  private loadStatus(): void {
+    this.statusData.push(new Filter(1, 'Aberta'));
+    this.statusData.push(new Filter(2, 'Finalizada'));
+  }
+
+  public disableReport(): boolean {
+    const status = this.statusSelecteds.length === 0 ||
+      this.statusSelecteds.length === 1 ||
+      this.statusSelecteds.length === this.statusData.length;
+
+    const churches = this.churchesSelecteds.length === 0 ||
+      this.churchesSelecteds.length === 1 ||
+      this.churchesSelecteds.length === this.churchesData.length;
+
+    const analysts = this.analystsSelecteds.length === 0 ||
+      this.analystsSelecteds.length === 1 ||
+      this.analystsSelecteds.length === this.analystsData.length;
+
+    const responsibles = this.responsiblesSelecteds.length === 0 ||
+      this.responsiblesSelecteds.length === 1 ||
+      this.responsiblesSelecteds.length === this.responsiblesData.length;
+
+    if (status && churches && analysts && responsibles) {
+      return false;
+    }
+    return true;
   }
 }

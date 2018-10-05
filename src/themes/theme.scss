@@ -1,0 +1,7 @@
+@import '~@angular/material/theming';
+@import 'assets/scss/theming/adventech';
+@include mat-core();
+@import 'themes/default-theme.scss';
+.default-theme {
+    @include angular-material-theme($adventech-theme);
+}

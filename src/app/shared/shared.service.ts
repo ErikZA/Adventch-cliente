@@ -1,11 +1,9 @@
+import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
-
+import { Release } from './models/release.model';
 import { Unit } from './models/unit.model';
-import { EModules } from './models/modules.enum';
 import { User } from './models/user.model';
 import { Profile } from '../modules/administration/models/profile/profile.model';
 
@@ -19,50 +17,37 @@ export class SharedService {
   public getUnits(id): Observable<Unit[]> {
     const url = `/shared/getUnits/${id}`;
     return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
-  }
-
-  public getUnitModules(unitId: number): Observable<EModules[]> {
-    const url = `/shared/getModules/${unitId}`;
-    return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+      .get<Unit[]>(url);
   }
 
   generateReport(data) {
     const url = '/shared/generateReport';
     return this.http
-      .post(url, data)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+      .post<any>(url, data);
   }
 
   getReleaseNotes() {
     const url = '/shared/getReleasesNotes/';
     return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+      .get<Release[]>(url);
   }
 
-  getCurrentRelease() {
+  public getCurrentRelease(): Observable<Release> {
     const url = '/shared/getCurrentRelease/';
     return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+      .get<Release>(url);
   }
 
   insertReleaseNotes(data) {
     const url = '/shared/insertReleaseNotes';
     return this.http
-      .post(url, data)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+      .post<any>(url, data);
   }
 
   public getUser(id: number): Observable<User> {
     const url = `/usermanagement/${id}/`;
     return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+      .get<User>(url);
   }
 
   public saveUser(user: any): Observable<User> {
@@ -71,21 +56,18 @@ export class SharedService {
     }
     const url = `/usermanagement/${user.id}/`;
     return this.http
-      .put(url, user)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+      .put<User>(url, user);
   }
 
   public getProfilesUser(id: number, unitId: number): Observable<Profile[]> {
     const url = `/usermanagement/${id}/profile/unit/${unitId}`;
     return this.http
-      .get(url)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+      .get<Profile[]>(url);
   }
 
   public passwordReset(password: { token: string, password: string }): Observable<any> {
     const url = '/auth/password-reset';
     return this.http
-      .post(url, password)
-      .catch((error: any) => Observable.throw(error || 'Server error'));
+      .post<any>(url, password);
   }
 }

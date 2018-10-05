@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, Route } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { tokenNotExpired } from 'angular2-jwt';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { Observable } from 'rxjs';
 import { Responsible } from '../../modules/scholarship/models/responsible';
 import { auth } from '../../auth/auth';
 
@@ -9,7 +9,8 @@ import { auth } from '../../auth/auth';
 export class AuthResponsibleGuard implements CanActivate {
 
   constructor(
-    private router: Router
+    private router: Router,
+    public jwtHelper: JwtHelperService
   ) { }
 
   canActivate(
@@ -23,7 +24,8 @@ export class AuthResponsibleGuard implements CanActivate {
   }
 
   private checkAccess() {
-    if (tokenNotExpired('token')) {
+    const token = auth.getMainToken();
+    if (!this.jwtHelper.isTokenExpired(token)) {
       const responsible: Responsible = auth.getCurrentResponsible();
       if (responsible === null || responsible === undefined) {
         this.router.navigate(['/educacao']);

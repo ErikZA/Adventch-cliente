@@ -1,0 +1,20 @@
+<button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
+  <mat-icon>account_circle</mat-icon>
+</button>
+<button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
+  {{ user?.firstName }}
+</button>
+<mat-menu [overlapTrigger]="false" xPosition="before" #appMenu="matMenu">
+    <button mat-menu-item (click)="changeProfile()">
+  <mat-icon>person</mat-icon>
+  <span>Editar perfil</span>
+</button>
+    <button mat-menu-item (click)="logoff()">
+  <mat-icon>exit_to_app</mat-icon>
+  <span>Sair</span>
+</button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="releaseNotes()">
+  <mat-icon>speaker_notes</mat-icon>
+  <span>Notas da Versão</span>
+</button>

@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TreasuryService } from '../../../treasury.service';
@@ -11,9 +11,10 @@ import { MatSnackBar } from '@angular/material';
 import { EObservationStatus } from '../../../models/Enums';
 import { auth } from '../../../../../auth/auth';
 import { ObservationDataComponent } from '../observation-data/observation-data.component';
-import 'rxjs/add/operator/takeLast';
+
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 import { Church } from '../../../models/church';
+import { tap, switchMap, skipWhile, delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-observation-form',
@@ -47,13 +48,14 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
 
     this.sub1 = this.service
       .loadChurches(auth.getCurrentUnit().id)
-      .do((data) => { this.churches = data; })
-      .switchMap(() => this.route.params)
-      .do(({ id }) => this.loading = !!id)
-      .skipWhile(({ id }) => !id)
-      .switchMap(({ id }) => this.editObservation(id))
-      .delay(300)
-      .subscribe(() => { this.loading = false; });
+      .pipe(
+        tap((data) => { this.churches = data; }),
+        switchMap(() => this.route.params),
+        tap(({ id }) => this.loading = !!id),
+        skipWhile(({ id }) => !id),
+        switchMap(({ id }) => this.editObservation(id)),
+        delay(300)
+      ).subscribe(() => { this.loading = false; });
 
     this.observationDataComponent.openSidenav();
   }
@@ -96,27 +98,31 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
     };
     this.treasuryService
       .saveObservation(data)
-      .do(() => {
-        this.isSending = false;
-        this.formObservation.markAsUntouched();
-        this.observationDataComponent.closeSidenav();
-      })
-      .switchMap(() => this.observationDataComponent.getData())
-      .do(() => this.snackBar.open('Observação armazenado com sucesso!', 'OK', { duration: 5000 }))
-      .subscribe(() => {}, error => {
+      .pipe(
+        tap(() => {
+          this.isSending = false;
+          this.formObservation.markAsUntouched();
+          this.observationDataComponent.closeSidenav();
+        }),
+        switchMap(() => this.observationDataComponent.getData()),
+        tap(() => this.snackBar.open('Observação armazenado com sucesso!', 'OK', { duration: 5000 }))
+      ).subscribe(() => {}, error => {
         console.log(error);
         this.snackBar.open('Erro ao salvar observação, tente novamente.', 'OK', { duration: 5000 });
       });
   }
   editObservation(id: number) {
-    return this.treasuryService.getObservation(id).do(data => {
-      this.observation = data;
-      this.formObservation.patchValue({
-        description: data.description,
-        date: data.date,
-        church: data.church.id
-      });
-    });
+    return this.treasuryService.getObservation(id)
+    .pipe(
+      tap(data => {
+        this.observation = data;
+        this.formObservation.patchValue({
+          description: data.description,
+          date: data.date,
+          church: data.church.id
+        });
+      })
+    );
   }
   resetAllForms() {
     this.formObservation.reset();

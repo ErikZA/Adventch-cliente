@@ -4,7 +4,7 @@ import { RequestOptionsArgs, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 
 import * as _ from 'lodash';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 

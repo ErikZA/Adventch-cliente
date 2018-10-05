@@ -1,41 +1,44 @@
 .page-container {
     height: calc(100vh - 92px);
-  }
-  
-  .title {
+}
+
+.title {
     color: gray;
-  }
-  
-  .conteiner {
+}
+
+.conteiner {
     overflow: auto;
-    max-height: calc(100vh - 240px);
-  }
-  
-  .margin-top-small {
+    max-height: calc(80vh - 160px);
+}
+
+.margin-top-small {
     margin-top: 1%;
-  }
-  
-  .mat-fab-right {
+}
+
+.mat-fab-right {
     position: fixed;
     bottom: 45px;
     right: 24px;
     z-index: 1;
-  }
-  
-  .sidenav-right {
+}
+
+.sidenav-right {
     width: 99%;
-  }
-  
-  .text-bold {
+}
+
+.text-bold {
     font-weight: bold;
-  }
-  
-  .margin-minus-20 {
+}
+
+.margin-minus-20 {
     margin-left: -20px;
-  }
-  
-  .style-text {
+}
+
+.style-text {
     white-space: pre-line;
     padding-left: 30px;
-  }
-  
+}
+
+.container {
+    overflow-y: auto;
+}

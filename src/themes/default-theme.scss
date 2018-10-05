@@ -1,0 +1,5 @@
+$adventech-primary: mat-palette($mat-light-blue, 700, 300, 900);
+$adventech-accent: mat-palette($mat-cyan, 700, 300, 900);
+$adventech-warn: mat-palette($mat-adventech-warn, 900, 300, 900);
+$adventech-theme: mat-light-theme($adventech-primary, $adventech-accent, $adventech-warn);
+@include angular-material-theme($adventech-theme);

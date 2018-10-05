@@ -1,33 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject, Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { Module } from '../../../../../shared/models/modules.enum';
 import { EModules } from '../../../../../shared/models/modules.enum';
-import { utils } from '../../../../../shared/utils';
 import { Profile } from '../../../models/profile/profile.model';
 import { AdministrationService } from '../../../administration.service';
 import { auth } from '../../../../../auth/auth';
-import { Subscription } from 'rxjs/Subscription';
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
-import 'rxjs/add/operator/switchMap';
+import { utils } from '../../../../../shared/utils';
+import { skipWhile, switchMap, tap, map } from 'rxjs/operators';
+import { FilterService } from '../../../../../core/components/filter/service/filter.service';
+import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
+import { HeaderDataComponent } from '../../../../../core/components/container/data/header-data/header-data.component';
+
 @Component({
   selector: 'app-profile-data',
   templateUrl: './profile-data.component.html',
   styleUrls: ['./profile-data.component.scss']
 })
 @AutoUnsubscribe()
-export class ProfileDataComponent extends AbstractSidenavContainer implements OnInit {
+export class ProfileDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
   protected componentUrl = '/administracao/papeis';
-  showList = 15;
+
+  searchText = '';
+  showList = 80;
   searchButton = false;
   search$ = new Subject<string>();
   layout: String = 'row';
   profiles: Profile[] = [];
-  profilesCache: Profile[] = [];
 
   sub1: Subscription;
 
@@ -36,37 +40,43 @@ export class ProfileDataComponent extends AbstractSidenavContainer implements On
     private confirmDialogService: ConfirmDialogService,
     private route: ActivatedRoute,
     private administrationService: AdministrationService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private filterService: FilterService
   ) { super(router); }
 
   ngOnInit() {
-    this.sub1 = this.getData().switchMap(() => this.search$).subscribe(search => {
-      this.searchProfile(search);
-    });
+    this.sub1 = this.getData().subscribe();
   }
+
+  ngOnDestroy(): void {
+    this.filterService.destroy();
+  }
+
   getData() {
-    this.search$.next('');
     const { id } = auth.getCurrentUnit();
     return this.administrationService
       .getProfiles(id)
-      .map(p => p.sort((a, b) => a.name.localeCompare(b.name)))
-      .do((data: Profile[]) => {
-        this.profiles =  data;
-        this.profilesCache = data;
-      });
-  }
-  public onScroll(): void {
-    this.showList += 15;
-  }
-  public getModuleName(module: EModules): string {
-    return new Module(module).getModuleName();
+      .pipe(
+        map(p => p.sort((a, b) => a.name.localeCompare(b.name))),
+        tap((data: Profile[]) => {
+          this.profiles =  data;
+          this.filterService.setConfiguration(data, ['name'], ['software']);
+          this.searchProfile(this.searchText);
+        })
+      );
   }
 
   public searchProfile(search: string) {
-    this.profiles = this.profilesCache.filter(p =>
-      utils.buildSearchRegex(search).test(p.name) ||
-      utils.buildSearchRegex(search).test(new Module(p.software).getModuleName())
-    );
+    this.searchText = search;
+    this.profiles = this.filterService.search(search);
+  }
+
+  public onScroll(): void {
+    this.showList += 80;
+  }
+
+  public getModuleName(module: EModules): string {
+    return new Module(module).getModuleName();
   }
 
   public editProfile(role: Profile): void {
@@ -76,10 +86,11 @@ export class ProfileDataComponent extends AbstractSidenavContainer implements On
   public removeProfile(role: Profile): void {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este papel?', 'REMOVER')
-      .skipWhile(res => res !== true)
-      .switchMap(() => this.administrationService.deleteProfile(role.id))
-      .switchMap(() => this.getData())
-      .do(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 30000 }))
-      .subscribe();
+      .pipe(
+        skipWhile(res => res !== true),
+        switchMap(() => this.administrationService.deleteProfile(role.id)),
+        switchMap(() => this.getData()),
+        tap(() => this.snackBar.open('Papel removido com sucesso!', 'OK', { duration: 30000 }))
+      ).subscribe();
   }
 }

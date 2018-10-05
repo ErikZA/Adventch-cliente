@@ -1,15 +1,10 @@
 <div fxLayout="row" fxFlexFill fxLayoutAlign="center" *ngIf="!!loading" style="padding-top: 25vh;">
     <mat-spinner></mat-spinner>
 </div>
-<form [formGroup]="form" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="!loading" (keydown.enter)="$event.preventDefault()">
-    <div fxLayout="row" fxLayoutAlign="start" class="margin-bottom-50">
-        <div fxFlex>
-            <h2 class="title"> {{ labelTitle() }} Igreja</h2>
-            <mat-divider></mat-divider>
-        </div>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="center" fxLayout.lt-md="column" fxFlex class="margin-bottom-30">
-        <div fxLayout="column" fxFlex="50%">
+<form [formGroup]="form" fxLayout="column" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="!loading" (keydown.enter)="$event.preventDefault()">
+    <app-header-form [title]="labelTitle()"></app-header-form>
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center">
+        <div fxLayout="column wrap" fxFlex="50%">
             <mat-form-field>
                 <input matInput type="text" formControlName="name" placeholder="Nome" required minlength="3" maxlength="200" pattern="^[^ ]+( [^ ]+)*$">
                 <mat-error *ngIf="form.get('name').hasError('required')">Este campo é obrigatório</mat-error>
@@ -20,7 +15,7 @@
             <mat-form-field>
                 <input matInput type="text" formControlName="code" placeholder="Código" required maxlength="100" pattern="^[^ ]+( [^ ]+)*$">
                 <mat-error *ngIf="form.get('code').hasError('required')">Este campo é obrigatório</mat-error>
-                <mat-error *ngIf="form.get('name').hasError('pattern')">Este campo é inválido</mat-error>
+                <mat-error *ngIf="form.get('code').hasError('pattern')">Este campo é inválido</mat-error>
                 <mat-error *ngIf="form.get('code').hasError('maxlenght')">Digite um código com até 100 dígitos</mat-error>
             </mat-form-field>
             <mat-form-field>
@@ -31,7 +26,7 @@
                 </mat-select>
                 <mat-error *ngIf="form.get('district').hasError('required')">Este campo é obrigatório</mat-error>
             </mat-form-field>
-            <div fxLayoutGap.gt-md="20px">
+            <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap.gt-sm="20px">
                 <mat-form-field fxFlex="30%">
                     <mat-select placeholder="Estado" formControlName="state" required name="Estado">
                         <mat-option *ngFor="let state of states" [value]="state.id">
@@ -40,7 +35,7 @@
                     </mat-select>
                     <mat-error *ngIf="form.get('state').hasError('required')">Este campo é obrigatório</mat-error>
                 </mat-form-field>
-                <mat-form-field fxFlex="70%">
+                <mat-form-field fxFlex>
                     <mat-select placeholder="Cidade" formControlName="city" required>
                         <mat-option *ngFor="let city of cities" [value]="city.id">
                             {{ city.name }}
@@ -60,19 +55,17 @@
                 <mat-error *ngIf="form.get('complement').hasError('pattern')">Este campo é inválido</mat-error>
                 <mat-error *ngIf="form.get('complement').hasError('maxlenght')">Digite um complemento com até 200 dígitos</mat-error>
             </mat-form-field>
-            <mat-form-field fxFlex>
+            <mat-form-field>
                 <input matInput type="text" formControlName="cep" placeholder="CEP" required maxlength="20" pattern="^[^ ]+( [^ ]+)*$">
                 <mat-error *ngIf="form.get('cep').hasError('required')">Este campo é obrigatório</mat-error>
                 <mat-error *ngIf="form.get('cep').hasError('pattern')">Este campo é inválido (considere o padrão: 12345-678)</mat-error>
                 <mat-error *ngIf="form.get('cep').hasError('maxlenght')">Digite um CEP com até 20 dígitos</mat-error>
             </mat-form-field>
-            <div fxFlex="100%" fxFlexOffset="40px">
-                <div fxLayout="row" fxLayoutAlign="space-between" class="margin-buttons margin-bottom-50">
-                    <a routerLink="/tesouraria/igrejas">
-                        <back-button></back-button>
-                    </a>
-                    <button mat-raised-button type="submit" (click)="save()" color="primary" [disabled]="isSending">SALVAR</button>
-                </div>
+            <div fxLayout="row" fxLayoutAlign="space-between" fxFlexOffset="40px">
+                <a routerLink="/tesouraria/igrejas">
+                    <back-button></back-button>
+                </a>
+                <button mat-raised-button type="submit" (click)="save()" color="primary" [disabled]="isSending">SALVAR</button>
             </div>
         </div>
     </div>

@@ -17,5 +17,5 @@ export enum EObservationStatus {
 export enum EAvaliationStatus {
   Waiting = 1,
   Valued = 2,
-  Finished = 3 
+  Finished = 3
 }

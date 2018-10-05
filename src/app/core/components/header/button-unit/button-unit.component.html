@@ -1,0 +1,20 @@
+<ng-container *ngIf="!loading && units && units.length !== 0 && units !== null && units !== undefined; else spinner">
+    <button mat-button [matMenuTriggerFor]="buttonUnit" [disabled]="units.length === 1" [class.color-white]="units.length === 1" fxShow fxHide.xs>
+    <span>{{ unit.name }}</span>
+    <mat-icon aria-label="Unidade" class="margin-left-10">business</mat-icon>
+  </button>
+    <button mat-icon-button [matMenuTriggerFor]="buttonUnit" [class.color-white]="units.length === 1" [disabled]="units.length === 1" *ngIf="units.length > 1" fxHide fxShow.xs>
+  <mat-icon aria-label="Unidade">business</mat-icon>
+  </button>
+    <mat-menu [overlapTrigger]="false" #buttonUnit="matMenu">
+        <ng-container *ngFor="let item of units">
+            <button mat-menu-item (click)="updateUnit(item)" [class.selected]="unit?.id === item.id" [disabled]="unit?.id === item.id">
+                <mat-icon>fiber_manual_record</mat-icon>
+                <span>{{ item.name }}</span>
+              </button>
+        </ng-container>
+    </mat-menu>
+</ng-container>
+<ng-template #spinner>
+    <mat-spinner [diameter]="30" [strokeWidth]="4" color="warn"></mat-spinner>
+</ng-template>

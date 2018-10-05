@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { TreasuryService } from '../../treasury.service';
 import { auth } from '../../../../auth/auth';

@@ -1,3 +1,5 @@
+@import 'themes/theme.scss';
+
 /* You can add global styles to this file, and also import other style files */
 
 html,
@@ -57,8 +59,6 @@ mat-toolbar {
     background-attachment: fixed;
     background-size: cover;
 }
-
-.mat-drawer-opened {}
 
 .mat-drawer-closed {
     width: 0px !important;

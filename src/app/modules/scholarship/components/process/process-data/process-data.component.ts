@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { Subject } from 'rxjs/Subject';
-
-import { Subscription } from 'rxjs/Subscription';
+import { Subject ,  Subscription } from 'rxjs';
 
 import { AuthService } from '../../../../../shared/auth.service';
 import { ScholarshipService } from '../../../scholarship.service';
@@ -23,12 +21,12 @@ import { auth } from './../../../../../auth/auth';
 import { ProcessDataInterface } from '../../../interfaces/process-data-interface';
 import { EStatus } from '../../../models/enums';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/switchMap';
 import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 import { utils } from '../../../../../shared/utils';
+import { Filter } from '../../../../../core/components/filter/Filter.model';
+
+import { distinctUntilChanged, tap, skipWhile, switchMap } from 'rxjs/operators';
+import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 
 
 @Component({
@@ -37,12 +35,12 @@ import { utils } from '../../../../../shared/utils';
   styleUrls: ['./process-data.component.scss']
 })
 @AutoUnsubscribe()
-export class ProcessDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
+export class ProcessDataComponent extends AbstractSidenavContainer implements OnInit {
   protected componentUrl = '/bolsas/processos';
 
   searchButton = false;
   search$ = new Subject<string>();
-  showList = 15;
+  showList = 80;
   idSchool = -1;
   showSchool = false;
 
@@ -54,13 +52,16 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   // New
   processes: ProcessDataInterface[] = [];
   processesCache: ProcessDataInterface[] = [];
-  schools: School[] = [];
-  schoolsFilters: number[] = [];
-  statusFilters: number[] = [];
   private query = '';
   inSearch: boolean;
 
-  subscribeUnit: Subscription;
+  // new filter
+  schoolSelecteds: number[] = [];
+  schoolData: Filter[] = [];
+  schoolDefault: number[] = [];
+  statusSelecteds: number[] = [];
+  statusData: Filter[] = [];
+  statusDefault: number[] = [];
 
   // Verificar tipo de usuário que pode modificar projeto ou não
   isScholarship: boolean;
@@ -76,7 +77,8 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private reportService: ReportService,
-    private confirmDialogService: ConfirmDialogService
+    private confirmDialogService: ConfirmDialogService,
+    private filterService: FilterService
   ) {
     super(router);
     if (window.screen.width < 450) {
@@ -85,26 +87,57 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   }
 
   ngOnInit() {
+    this.loadStatus();
     this.isScholarship = auth.getCurrentUser().isScholarship;
     this.schoolIsVisible();
     this.setAllFilters();
     this.sub1 = this.getInitialData().subscribe();
     this.search$
-      .distinctUntilChanged()
-      .do(search => this.processes = this.searchFilter(search))
-      .subscribe();
+      .pipe(
+        distinctUntilChanged(),
+        tap(search => this.processes = this.searchFilter(search))
+      ).subscribe();
   }
 
-  ngOnDestroy() {
-    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
+  private loadSchools(schools): void {
+    this.schoolDefault = [this.scholarshipService.schoolSelected];
+    this.schoolData = [];
+    schools.forEach(school => {
+      this.schoolData.push(new Filter(school.id, school.name));
+    });
   }
+
+  private loadStatus(): void {
+    this.statusDefault = [this.scholarshipService.statusSelected];
+    this.statusData = [];
+    this.statusData.push(new Filter(1, 'Aguardando Análise'));
+    this.statusData.push(new Filter(2, 'Em Análise'));
+    this.statusData.push(new Filter(3, 'Pendência'));
+    this.statusData.push(new Filter(4, 'Aguardando Vaga de Bolsa'));
+    this.statusData.push(new Filter(5, 'Vaga Liberada (50%)'));
+    this.statusData.push(new Filter(6, 'Vaga Liberada (100%)'));
+    this.statusData.push(new Filter(7, 'Bolsa Indeferida'));
+    this.statusData.push(new Filter(8, 'Não Matriculado'));
+  }
+
+  checkSchool(school): void {
+    this.schoolSelecteds = this.filterService.check(school, this.schoolSelecteds);
+    this.refetchData();
+  }
+
+  checkStatus(status): void {
+    this.statusSelecteds = this.filterService.check(status, this.statusSelecteds);
+    this.refetchData();
+  }
+
   private searchFilter(value: string) {
     return this.processesCache.filter(p =>
-      utils.buildSearchRegex(value).test(p.protocol) ||
-      utils.buildSearchRegex(value).test(p.student.name) ||
-      utils.buildSearchRegex(value).test(p.responsible.name)
+      utils.buildSearchRegex(value).test(p.protocol.toUpperCase()) ||
+      utils.buildSearchRegex(value).test(p.student.name.toUpperCase()) ||
+      utils.buildSearchRegex(value).test(p.responsible.name.toUpperCase())
     );
   }
+
   public enableDocuments(process: ProcessDataInterface): void {
     if (process && (process.documents === null || process.documents === undefined)) {
       this.scholarshipService.getProcessDocuments(process.id).subscribe(documents => {
@@ -129,25 +162,26 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   private setInitialFilterStatus() {
     if (this.scholarshipService.statusSelected !== 0) {
-      if (!this.statusFilters.some(x => x === this.scholarshipService.statusSelected)) {
-        this.statusFilters.push(this.scholarshipService.statusSelected);
-      }
+      this.statusSelecteds.push(this.scholarshipService.statusSelected);
     }
   }
 
   private setInitialFilterSchool() {
     if (this.scholarshipService.schoolSelected !== -1) {
-      if (!this.schoolsFilters.some(x => x === this.scholarshipService.schoolSelected)) {
+      this.schoolSelecteds.push(this.scholarshipService.schoolSelected);
+      /*if (!this.schoolsFilters.some(x => x === this.scholarshipService.schoolSelected)) {
         this.schoolsFilters.push(this.scholarshipService.schoolSelected);
-      }
+      }*/
     }
   }
   private getInitialData() {
     const user = auth.getCurrentUser();
     return this.getProcesses()
-      .skipWhile(() => user.idSchool !== 0)
-      .switchMap(() => this.scholarshipService.getSchools())
-      .do(schools => this.schools = schools);
+      .pipe(
+        skipWhile(() => user.idSchool !== 0),
+        switchMap(() => this.scholarshipService.getSchools()),
+        tap(schools => this.loadSchools(schools))
+      );
   }
   private refetchData() {
     this.sub2 = this.getProcesses().subscribe();
@@ -165,22 +199,26 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     const user = auth.getCurrentUser();
     if (user.idSchool === 0) {
       return this.scholarshipService
-        .getProcessesByUnit(this.schoolsFilters, this.statusFilters, this.query)
-        .do(processes => {
-          this.processes = this.orderByStudentName(processes);
-          this.processesCache = this.orderByStudentName(processes);
-        });
+        .getProcessesByUnit(this.schoolSelecteds, this.statusSelecteds, this.query)
+        .pipe(
+          tap(processes => {
+            this.processes = this.orderByStudentName(processes);
+            this.processesCache = this.orderByStudentName(processes);
+          })
+        );
     }
     return this.scholarshipService
-      .getProcessesBySchool(user.idSchool, this.statusFilters, this.query)
-      .do(processes => {
-        this.processes = this.orderByStudentName(processes);
-        this.processesCache = this.orderByStudentName(processes);
-      });
+      .getProcessesBySchool(user.idSchool, this.statusSelecteds, this.query)
+      .pipe(
+        tap(processes => {
+          this.processes = this.orderByStudentName(processes);
+          this.processesCache = this.orderByStudentName(processes);
+        })
+      );
 
   }
 
-  public filterStatus(id: number, checked: boolean): void {
+  /*public filterStatus(id: number, checked: boolean): void {
     if (checked && !this.statusFilters.some(x => x === id)) {
       this.statusFilters.push(id);
     } else if (!checked && this.statusFilters.some(x => x === id)) {
@@ -197,14 +235,14 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       this.schoolsFilters.splice(index, 1);
     }
     this.refetchData();
-  }
+  }*/
   public schoolIsVisible(): void {
     const { idSchool } = auth.getCurrentUser();
     this.showSchool = idSchool === 0 ? true : false;
   }
 
   public onScroll(): void {
-    this.showList += 15;
+    this.showList += 80;
   }
 
   public getMotiveToReject(motive): string {
@@ -258,7 +296,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   public generateGeneralProcessReport(): void {
     const data = {
       school2: this.getSchoolParams(),
-      status2: String(this.statusFilters.length === 0 ? [1, 2, 3, 4, 5, 6, 7, 8] : this.statusFilters)
+      status2: String(this.statusSelecteds.length === 0 ? [1, 2, 3, 4, 5, 6, 7, 8] : this.statusSelecteds)
     };
     this.reportService.reportProcesses(data).subscribe(urlData => {
       const fileUrl = URL.createObjectURL(urlData);
@@ -277,13 +315,13 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   private getSchoolParams(): string {
     const school = this.authService.getCurrentUser().idSchool;
-    if (school > 0) { //Secretária
+    if (school > 0) { // Secretária
       return school.toString();
     }
-    if (this.schoolsFilters.length === 0) { //Assistente que não selecionou nenhum item
-      return String(this.schools.map(m => m.id));
+    if (this.schoolSelecteds.length === 0) { // Assistente que não selecionou nenhum item
+      return String(this.schoolData.map(m => m.id));
     }
-    return String(this.schoolsFilters); //assistante que selecionou um ou mais itens
+    return String(this.schoolSelecteds); // assistante que selecionou um ou mais itens
   }
 
   public changeStatusToProcess(process: ProcessDataInterface, status: number): void {
@@ -384,7 +422,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     if (this.layout === 'row') {
-        dialogConfig.width = '60%';
+      dialogConfig.width = '50%';
     }
     dialogConfig.data = {
         process: process
@@ -393,7 +431,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   public toReject(process: ProcessDataInterface, idMotive: number): void {
     const user = auth.getCurrentUser();
-    if (user.idSchool === 0 && (process.status.id > 1 && process.status.id < 7)) {
+    if (process.status.id > 1 && process.status.id < 7) {
       this.scholarshipService.saveReject(process.id, {
         userId: user.id,
         motiveReject: this.setReasonForRejection(idMotive)
@@ -440,10 +478,11 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   public removeProcess(process: ProcessDataInterface): void {
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este processo?', 'REMOVER')
-      .skipWhile(res => res !== true)
-      .switchMap(() => this.scholarshipService.deleteProcess(process.id))
-      .switchMap(() => this.getProcesses())
-      .subscribe(() => {
+      .pipe(
+        skipWhile(res => res !== true),
+        switchMap(() => this.scholarshipService.deleteProcess(process.id)),
+        switchMap(() => this.getProcesses())
+      ).subscribe(() => {
             this.snackBar.open('Processo removido!', 'OK', { duration: 5000 });
           }, err => {
             console.log(err);
