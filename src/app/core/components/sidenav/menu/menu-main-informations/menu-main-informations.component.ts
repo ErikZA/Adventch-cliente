@@ -1,15 +1,16 @@
 import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Unit } from '../../../../../shared/models/unit.model';
-import { auth } from './../../../../../auth/auth';
 import { UnitService } from '../../../../services/unit.service';
-import { takeWhile, tap, debounceTime } from 'rxjs/operators';
+import { tap, debounceTime } from 'rxjs/operators';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @Component({
   selector: 'app-menu-main-informations',
   templateUrl: './menu-main-informations.component.html',
   styleUrls: ['./menu-main-informations.component.scss']
 })
+@AutoUnsubscribe()
 export class MenuMainInformationsComponent implements OnInit, OnDestroy {
 
   loading = true;
@@ -24,7 +25,7 @@ export class MenuMainInformationsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscribeUnit.unsubscribe();
+
   }
 
   public getCurrentUnit(): void {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Observable ,  Subscription } from 'rxjs';
@@ -17,15 +17,12 @@ import { takeWhile, distinctUntilChanged } from 'rxjs/operators';
   templateUrl: './scholarship.component.html',
   styleUrls: ['./scholarship.component.scss']
 })
-export class ScholarshipComponent implements OnInit, OnDestroy {
+export class ScholarshipComponent implements OnInit {
   idSchool = -1;
   schools$: Observable<School[]>;
   processes$: Observable<Process[]>;
   processesCountStatus: ProcessCountStatusInterface;
   loading = true;
-
-  subscribeProcessesCount: Subscription;
-  subscribeUnit: Subscription;
 
   constructor(
     public scholarshipService: ScholarshipService,
@@ -38,11 +35,6 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
     this.getAllDatas();
   }
 
-  ngOnDestroy() {
-    if (this.subscribeUnit) { this.subscribeUnit.unsubscribe(); }
-    if (this.subscribeProcessesCount) { this.subscribeProcessesCount.unsubscribe(); }
-  }
-
   private getAllDatas(): void {
     this.schools$ = this.scholarshipService.getSchools();
     this.getCountProcesses();
@@ -52,7 +44,7 @@ export class ScholarshipComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.processesCountStatus = null;
     const unit = auth.getCurrentUnit();
-    this.subscribeProcessesCount = this.scholarshipService
+    this.scholarshipService
       .getProcessCountStatus(unit.id)
       .pipe(
         takeWhile(p => p !== null && p !== undefined),

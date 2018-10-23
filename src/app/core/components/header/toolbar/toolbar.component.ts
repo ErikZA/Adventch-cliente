@@ -11,6 +11,8 @@ export class ToolbarComponent implements OnInit {
   color = 'primary';
   @Input()
   menu = true;
+  @Input()
+  responsible = false;
   private menuOpened = true;
 
   @Output()

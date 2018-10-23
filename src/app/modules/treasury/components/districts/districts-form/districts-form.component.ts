@@ -9,7 +9,7 @@ import { AuthService } from '../../../../../shared/auth.service';
 import { TreasuryService } from '../../../treasury.service';
 import { auth } from '../../../../../auth/auth';
 import { User } from '../../../../../shared/models/user.model';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
 import { switchMap, tap, skipWhile, delay } from 'rxjs/operators';
 
@@ -80,9 +80,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
       analyst: [null, Validators.required]
     });
   }
-  closeSidenav() {
-    this.districtsDataComponent.closeSidenav();
-  }
+
   saveDistrict() {
     if (!this.formDistrict.valid) {
       return;

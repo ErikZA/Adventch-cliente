@@ -9,7 +9,6 @@ import { ConfirmDialogService } from '../../../../../core/components/confirm-dia
 
 import { PendencyComponent } from '../pendency/pendency.component';
 import { VacancyComponent } from '../vacancy/vacancy.component';
-import { School } from '../../../models/school';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef,
   MatDialog,
@@ -21,13 +20,13 @@ import { auth } from './../../../../../auth/auth';
 import { ProcessDataInterface } from '../../../interfaces/process-data-interface';
 import { EStatus } from '../../../models/enums';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { utils } from '../../../../../shared/utils';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
+import { FilterService } from '../../../../../core/components/filter/service/filter.service';
+import { ProcessDataDownloadComponent } from '../process-data-download/process-data-download.component';
 
 import { distinctUntilChanged, tap, skipWhile, switchMap } from 'rxjs/operators';
-import { FilterService } from '../../../../../core/components/filter/service/filter.service';
-
 
 @Component({
   selector: 'app-process-data',
@@ -35,7 +34,7 @@ import { FilterService } from '../../../../../core/components/filter/service/fil
   styleUrls: ['./process-data.component.scss']
 })
 @AutoUnsubscribe()
-export class ProcessDataComponent extends AbstractSidenavContainer implements OnInit {
+export class ProcessDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
   protected componentUrl = '/bolsas/processos';
 
   searchButton = false;
@@ -46,6 +45,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   dialogRef: MatDialogRef<PendencyComponent>;
   dialogRef2: MatDialogRef<VacancyComponent>;
+  dialogRef3: MatDialogRef<ProcessDataDownloadComponent>;
 
   layout: String = 'row';
 
@@ -68,6 +68,10 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   documentsIsVisible = false;
   sub1: Subscription;
   sub2: Subscription;
+  subsSearch: Subscription;
+  subsConfirmRemove: Subscription;
+  subsDialogApprove: Subscription;
+  subsDialogPendency: Subscription;
 
   constructor(
     protected router: Router,
@@ -92,11 +96,15 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.schoolIsVisible();
     this.setAllFilters();
     this.sub1 = this.getInitialData().subscribe();
-    this.search$
+    this.subsSearch = this.search$
       .pipe(
         distinctUntilChanged(),
         tap(search => this.processes = this.searchFilter(search))
       ).subscribe();
+  }
+
+  ngOnDestroy(): void {
+
   }
 
   private loadSchools(schools): void {
@@ -140,7 +148,9 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   public enableDocuments(process: ProcessDataInterface): void {
     if (process && (process.documents === null || process.documents === undefined)) {
-      this.scholarshipService.getProcessDocuments(process.id).subscribe(documents => {
+      this.scholarshipService
+      .getProcessDocuments(process.id)
+      .subscribe(documents => {
         if (documents) {
           process.documents = documents;
           this.documentsIsVisible = !this.documentsIsVisible;
@@ -169,9 +179,6 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   private setInitialFilterSchool() {
     if (this.scholarshipService.schoolSelected !== -1) {
       this.schoolSelecteds.push(this.scholarshipService.schoolSelected);
-      /*if (!this.schoolsFilters.some(x => x === this.scholarshipService.schoolSelected)) {
-        this.schoolsFilters.push(this.scholarshipService.schoolSelected);
-      }*/
     }
   }
   private getInitialData() {
@@ -194,7 +201,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       return a.student.name.localeCompare(b.student.name);
     });
   }
-  getProcesses() {
+  public getProcesses() {
     this.search$.next('');
     const user = auth.getCurrentUser();
     if (user.idSchool === 0) {
@@ -218,24 +225,6 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   }
 
-  /*public filterStatus(id: number, checked: boolean): void {
-    if (checked && !this.statusFilters.some(x => x === id)) {
-      this.statusFilters.push(id);
-    } else if (!checked && this.statusFilters.some(x => x === id)) {
-      this.statusFilters = this.statusFilters.filter(f => f !== id);
-    }
-    this.refetchData();
-  }
-
-  public filterSchools(id: number, checked: boolean): void {
-    if (checked && !this.schoolsFilters.some(x => x === id) && this.showSchool) {
-      this.schoolsFilters.push(id);
-    } else if (!checked && this.schoolsFilters.some(x => x === id) && this.showSchool) {
-      const index = this.schoolsFilters.indexOf(id);
-      this.schoolsFilters.splice(index, 1);
-    }
-    this.refetchData();
-  }*/
   public schoolIsVisible(): void {
     const { idSchool } = auth.getCurrentUser();
     this.showSchool = idSchool === 0 ? true : false;
@@ -279,7 +268,9 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   }
 
   public generateReportToProcess(process: ProcessDataInterface): void {
-    this.reportService.reportProcess(process.id).subscribe(dataURL => {
+    this.reportService
+    .reportProcess(process.id)
+    .subscribe(dataURL => {
       const fileUrl = URL.createObjectURL(dataURL);
       const element = document.createElement('a');
       element.href = fileUrl;
@@ -298,7 +289,9 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       school2: this.getSchoolParams(),
       status2: String(this.statusSelecteds.length === 0 ? [1, 2, 3, 4, 5, 6, 7, 8] : this.statusSelecteds)
     };
-    this.reportService.reportProcesses(data).subscribe(urlData => {
+    this.reportService
+    .reportProcesses(data)
+    .subscribe(urlData => {
       const fileUrl = URL.createObjectURL(urlData);
         let element;
         element = document.createElement('a');
@@ -327,7 +320,8 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   public changeStatusToProcess(process: ProcessDataInterface, status: number): void {
     const user = auth.getCurrentUser();
     this.scholarshipService
-    .changeProcessStatus(process.id, status, { userId: user.id }).subscribe(res => {
+    .changeProcessStatus(process.id, status, { userId: user.id })
+    .subscribe(res => {
       if (res) {
         process.status.id = status;
         process.status.name = this.getNameStatus(status);
@@ -364,9 +358,11 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     } else {
       const dialogConfig = new MatDialogConfig();
 
-      this.setDialogAprove(dialogConfig, process);
+      this.setDialogApprove(dialogConfig, process);
       const dialogRef = this.dialog.open(VacancyComponent, dialogConfig);
-      dialogRef.afterClosed().subscribe(vacancy => {
+      this.subsDialogApprove = dialogRef
+      .afterClosed()
+      .subscribe(vacancy => {
         if (vacancy) {
           const { id } = auth.getCurrentUser();
           this.scholarshipService
@@ -384,7 +380,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     }
   }
 
-  private setDialogAprove(dialogConfig: MatDialogConfig<any>, process: ProcessDataInterface): void {
+  private setDialogApprove(dialogConfig: MatDialogConfig<any>, process: ProcessDataInterface): void {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     if (this.layout === 'row') {
@@ -395,12 +391,21 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     };
   }
 
+  public download(process: ProcessDataInterface): void {
+    const dialogConfig = new MatDialogConfig();
+
+    this.setDialogPendecy(dialogConfig, process);
+    const dialogRef = this.dialog.open(ProcessDataDownloadComponent, dialogConfig);
+  }
+
   public toPendency(process: ProcessDataInterface): void {
     const dialogConfig = new MatDialogConfig();
 
     this.setDialogPendecy(dialogConfig, process);
     const dialogRef = this.dialog.open(PendencyComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(data => {
+    this.subsDialogPendency = dialogRef
+    .afterClosed()
+    .subscribe(data => {
       if (data) {
         const { id } = auth.getCurrentUser();
         this.scholarshipService
@@ -411,6 +416,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
               process.status.name = this.getNameStatus(EStatus.Pendency);
               process.pendency = data.pendency;
               process.isSendDocument = false;
+              process.hasUploads = false;
               this.snackBar.open('Pendência salva com sucesso.', 'OK', { duration: 5000 });
             }
           }, err => this.snackBar.open('Erro ao salvar pendência do processo, tente novamente.', 'OK', { duration: 5000 }));
@@ -440,7 +446,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
           process.status.id = EStatus.Dismissed;
           process.status.name = this.getNameStatus(EStatus.Dismissed);
           process.motiveReject = this.setReasonForRejection(idMotive);
-          this.snackBar.open('Pendência salva com sucesso.', 'OK', { duration: 5000 });
+          this.snackBar.open('Indeferimento salvo com sucesso.', 'OK', { duration: 5000 });
         }
       }, err => this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 }));
     }
@@ -476,7 +482,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   }
 
   public removeProcess(process: ProcessDataInterface): void {
-    this.confirmDialogService
+    this.subsConfirmRemove = this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este processo?', 'REMOVER')
       .pipe(
         skipWhile(res => res !== true),

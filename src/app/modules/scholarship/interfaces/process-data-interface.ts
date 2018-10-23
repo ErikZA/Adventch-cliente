@@ -16,4 +16,5 @@ export interface ProcessDataInterface {
   isSendDocument: boolean;
   dateRegistration: Date;
   documents: DocumentProcessDataInterface[];
+  hasUploads: boolean;
 }

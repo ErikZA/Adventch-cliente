@@ -11,7 +11,7 @@ import * as moment from 'moment';
 import { TreasurerDataComponent } from '../treasurer-data/treasurer-data.component';
 import { auth } from '../../../../../auth/auth';
 
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { tap, switchMap, skipWhile, delay } from 'rxjs/operators';
 
 @Component({
@@ -163,14 +163,6 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
           this.lstChurches = data.sort((a, b) => Number(a.code) - Number(b.code));
         })
       );
-      /*
-              skipWhile(data => !data),
-        map(data => data.sort((a, b) => Number(a.code) - Number(b.code))),
-        tap((data: ChurchAvaliationDataInterface[]) => {
-          this.churchesAvaliations = data;
-          this.churchesAvaliationsCache = data;
-        })
-       */
   }
   saveTreasurer() {
     if (!this.formTreasurer.valid) {

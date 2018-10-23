@@ -8,15 +8,16 @@ import * as _ from 'lodash';
 
 import { auth } from './auth/auth';
 import { User } from './shared/models/user.model';
-import { AuthService } from './shared/auth.service';
 import { MatIconRegistry } from '@angular/material';
 import { Responsible } from './modules/scholarship/models/responsible';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import * as Raven from 'raven-js';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
+@AutoUnsubscribe()
 export class AppComponent implements OnInit, OnDestroy {
 
   subscribe1: Subscription;
@@ -29,7 +30,6 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'Adven.tech';
 
   constructor(
-    private authService: AuthService,
     private router: Router,
     private matIconRegistry: MatIconRegistry
     // private translate: TranslateService
@@ -67,9 +67,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    this.subscribe1.unsubscribe();
-    this.subscribe2.unsubscribe();
+  ngOnDestroy(): void {
+
   }
 
   logoff() {

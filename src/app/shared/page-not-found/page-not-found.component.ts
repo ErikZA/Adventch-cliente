@@ -7,7 +7,7 @@ import { auth } from '../../auth/auth';
 @Component({
   selector: 'app-page-not-found',
   templateUrl: './page-not-found.component.html',
-  styleUrls: ['../layout/layout.component.scss', 'page-not-found.component.scss']
+  styleUrls: ['page-not-found.component.scss']
 })
 export class PageNotFoundComponent implements OnInit {
 
@@ -15,7 +15,6 @@ export class PageNotFoundComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    private dialog: MatDialog,
     private router: Router
   ) { }
 

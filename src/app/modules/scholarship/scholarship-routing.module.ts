@@ -49,7 +49,7 @@ const routes: Routes = [
       permission: EPermissions.VISUALISAR
     }
   }
-]
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

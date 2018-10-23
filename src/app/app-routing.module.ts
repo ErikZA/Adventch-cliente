@@ -18,6 +18,7 @@ import { ChangePasswordComponent } from './shared/change-password/change-passwor
 import { EModules } from './shared/models/modules.enum';
 import { AuthMainGuard } from './shared/guards/auth-main.guard';
 import { AuthResponsibleGuard } from './shared/guards/auth-responsible.guard';
+import { LayoutResponsibleComponent } from './core/components/container/layout-responsible/layout-responsible.component';
 
 const appRoutes: Routes = [
   { path: '', component: LayoutMainComponent, canActivate: [AuthMainGuard], canLoad: [AuthMainGuard], children: [
@@ -51,12 +52,16 @@ const appRoutes: Routes = [
       loadChildren: '../app/modules/administration/administration.module#AdministrationModule'
     },
   ]},
-  {
-    path: 'educacao',
+  { path: 'educacao',
+    component: LayoutResponsibleComponent,
     canActivate: [AuthResponsibleGuard],
     canLoad: [AuthResponsibleGuard],
-    loadChildren: '../app/modules/scholarship/responsible/responsible.module#ResponsibleModule',
-  },
+    children: [
+      {
+        path: '',
+        loadChildren: '../app/modules/scholarship/responsible/responsible.module#ResponsibleModule',
+      },
+  ]},
   { path: 'resetar-senha/:recover_pass', component: RedefinePasswordComponent },
   { path: '**', component: PageNotFoundComponent },
 

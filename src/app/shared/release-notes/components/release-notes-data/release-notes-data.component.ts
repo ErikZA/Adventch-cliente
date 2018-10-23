@@ -1,24 +1,22 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatSidenav } from '@angular/material';
-import { Location } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Observable ,  Subject ,  BehaviorSubject ,  Subscription } from 'rxjs';
 
-import { SharedService } from '../../../shared.service';
 import { Release } from '../../../models/release.model';
 import { ReleaseNotesStore } from '../../release-notes.store';
-import { SidenavService } from '../../../../core/services/sidenav.service';
 
 import * as moment from 'moment';
 import { auth } from '../../../../auth/auth';
 import { AbstractSidenavContainer } from '../../../abstract-sidenav-container.component';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @Component({
   selector: 'app-release-notes-data',
   templateUrl: './release-notes-data.component.html',
   styleUrls: ['./release-notes-data.component.scss']
 })
+@AutoUnsubscribe()
 export class ReleaseNotesDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
   protected componentUrl = 'notas-daversao';
 
@@ -32,18 +30,16 @@ export class ReleaseNotesDataComponent extends AbstractSidenavContainer implemen
   private searchText = '';
 
   private releaseSub: Subscription;
+  private subsSearch: Subscription;
 
   constructor(
-    private service: SharedService,
     private store: ReleaseNotesStore,
-    private sidenavService: SidenavService,
-    private location: Location,
     public router: Router
   ) { super(router); }
 
   ngOnInit() {
     this.loadAllReleaseNotes();
-    this.search$.subscribe(search => {
+    this.subsSearch = this.search$.subscribe(search => {
       this.search(search);
     });
     moment.locale('pt');

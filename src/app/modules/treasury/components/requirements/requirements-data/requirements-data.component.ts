@@ -11,7 +11,7 @@ import { auth } from '../../../../../auth/auth';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { ReportService } from '../../../../../shared/report.service';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { map, tap, switchMap, skipWhile } from 'rxjs/operators';
 import { RequirementsService } from '../requirements.service';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
@@ -28,14 +28,13 @@ export class RequirementDataComponent extends AbstractSidenavContainer implement
   protected componentUrl = '/tesouraria/requisitos';
 
   search$ = new Subject<string>();
-  subscribeUnit: Subscription;
   requirements: RequirementDataInterface[];
   showList = 40;
   searchButton = false;
 
   filterText: string;
   requirementsCache: RequirementDataInterface[];
-  subGetData: Subscription;
+  subsConfirmRemove: Subscription;
 
   // new filter
   typesSelecteds: number[] = [];
@@ -57,7 +56,7 @@ export class RequirementDataComponent extends AbstractSidenavContainer implement
   ngOnInit() {
     this.loadTypes();
     this.loadPeriods();
-    this.subGetData = this.getData()
+    this.getData()
       .pipe(
       switchMap(() => this.search$)
       ).subscribe(search => {
@@ -104,7 +103,7 @@ export class RequirementDataComponent extends AbstractSidenavContainer implement
   }
 
   public remove(requirement: RequirementDataInterface) {
-    this.confirmDialogService
+    this.subsConfirmRemove = this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este requisito?', 'REMOVER')
       .pipe(
       skipWhile(res => res !== true),

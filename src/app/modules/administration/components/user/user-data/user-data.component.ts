@@ -10,7 +10,7 @@ import { ConfirmDialogService } from '../../../../../core/components/confirm-dia
 import { auth } from '../../../../../auth/auth';
 import { AdministrationService } from '../../../administration.service';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { switchMap, tap, skipWhile } from 'rxjs/operators';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 import { Filter } from '../../../../../core/components/filter/Filter.model';

@@ -1,0 +1,11 @@
+<button mat-icon-button [matMenuTriggerFor]="appMenu" fxHide fxShow.xs>
+  <mat-icon>account_circle</mat-icon>
+</button>
+<button mat-button [matMenuTriggerFor]="appMenu" fxShow fxHide.xs>
+  {{ responsible.name }}
+</button>
+<mat-menu [overlapTrigger]="false" xPosition="before" #appMenu="matMenu">
+    <button mat-menu-item (click)="logoff()">
+  <mat-icon>exit_to_app</mat-icon>
+  <span>Sair</span>
+</button>

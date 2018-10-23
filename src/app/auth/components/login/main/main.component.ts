@@ -1,20 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { auth } from '../../../auth';
-import { LoginStore } from '../login.store';
 import { AuthService } from '../../../auth.service';
 import { User } from '../../../../shared/models/user.model';
 import { MatSnackBar } from '@angular/material';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit {
+@AutoUnsubscribe()
+export class MainComponent implements OnInit, OnDestroy {
 
   loading = false;
+
+  subsLogin: Subscription;
 
   constructor(
     private service: AuthService,
@@ -26,6 +30,10 @@ export class MainComponent implements OnInit {
     auth.logoffMain();
   }
 
+  ngOnDestroy(): void {
+
+  }
+
   public submitForm(loginForm: { login: string, password: string, remember: boolean}): void {
     this.loading = true;
     this.setLastLogin(loginForm);
@@ -33,7 +41,8 @@ export class MainComponent implements OnInit {
   }
 
   private sendRequest(loginForm: { login: string; password: string; remember: boolean; }) {
-    this.service.loginMain({ email: loginForm.login, password: loginForm.password })
+    this.subsLogin = this.service
+    .loginMain({ email: loginForm.login, password: loginForm.password })
       .subscribe((data: {
         user: User;
         token: string;
@@ -47,8 +56,7 @@ export class MainComponent implements OnInit {
   private setLastLogin(loginForm: { login: string; password: string; remember: boolean; }) {
     if (loginForm.remember) {
       auth.setLastLogin(loginForm.login);
-    }
-    else {
+    } else {
       auth.setLastLogin('');
     }
   }
@@ -58,8 +66,7 @@ export class MainComponent implements OnInit {
     const { token } = data;
     if (user && token) {
       this.setUserLoggedSuccess(user, token);
-    }
-    else {
+    } else {
       this.setUserLoggedFail();
     }
     this.loading = false;
@@ -70,8 +77,7 @@ export class MainComponent implements OnInit {
     console.log(err);
     if (err.status === 500) {
       this.snackBar.open('Usuário/senha inválido!', 'OK', { duration: 3000 });
-    }
-    else {
+    } else {
       this.snackBar.open('Erro no login', 'OK', { duration: 3000 });
     }
   }

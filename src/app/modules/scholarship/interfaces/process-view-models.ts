@@ -37,3 +37,8 @@ export interface EditProcessViewModel {
   student: StudentProcessViewModel;
   responsible: ResponsibleProcessViewModel;
 }
+
+export interface ProcessUploadViewModel {
+  id: number;
+  name: string;
+}

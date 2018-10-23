@@ -41,9 +41,7 @@
                 <mat-error *ngIf="formRequirement.get('date').hasError('required')">Este campo é obrigatório</mat-error>
             </mat-form-field>
             <div fxLayout="row" fxLayoutAlign="space-between" fxFlexOffset="40px">
-                <a routerLink="/tesouraria/requisitos">
-                    <back-button></back-button>
-                </a>
+                <a mat-button type="button" routerLink="/tesouraria/requisitos">CANCELAR</a>
                 <button mat-raised-button type="submit" (click)="saveRequirement()" color="primary" [disabled]="isSending">SALVAR</button>
             </div>
         </div>

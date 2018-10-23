@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
-import { MatSidenav, MatSnackBar } from '@angular/material';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Subject ,  Subscription } from 'rxjs';
@@ -8,14 +7,11 @@ import { tap, skipWhile, switchMap } from 'rxjs/operators';
 
 import { Church } from '../../../models/church';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
-import { User } from '../../../../../shared/models/user.model';
-import { City } from '../../../../../shared/models/city.model';
-import { Districts } from '../../../models/districts';
 import { auth } from '../../../../../auth/auth';
 import { TreasuryService } from '../../../treasury.service';
 import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 
@@ -26,7 +22,7 @@ import { FilterService } from '../../../../../core/components/filter/service/fil
   styleUrls: ['./church-data.component.scss']
 })
 @AutoUnsubscribe()
-export class ChurchDataComponent extends AbstractSidenavContainer implements OnInit {
+export class ChurchDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
   protected componentUrl = 'tesouraria/igrejas';
 
   searchButton = false;
@@ -48,6 +44,7 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
   analystsData: Filter[] = [];
 
   sub1: Subscription;
+  subsConfirmFinalize: Subscription;
 
   constructor(
     protected router: Router,
@@ -66,6 +63,10 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
         this.filterText = search;
         this.search();
       });
+  }
+
+  ngOnDestroy(): void {
+
   }
   public getData() {
     this.search$.next('');
@@ -122,7 +123,7 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
   }
 
   public remove(church: Church) {
-    this.confirmDialogService
+    this.subsConfirmFinalize = this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover a igreja?', 'REMOVER')
       .pipe(
         skipWhile(res => res !== true),

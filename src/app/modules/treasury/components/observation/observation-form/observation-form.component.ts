@@ -12,7 +12,7 @@ import { EObservationStatus } from '../../../models/Enums';
 import { auth } from '../../../../../auth/auth';
 import { ObservationDataComponent } from '../observation-data/observation-data.component';
 
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Church } from '../../../models/church';
 import { tap, switchMap, skipWhile, delay } from 'rxjs/operators';
 

@@ -17,13 +17,10 @@ import { CoreModule } from './core/core.module';
 // shared components
 import { DashboardComponent } from './shared/dashboard/dashboard.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
-import { EmptyPageComponent } from './shared/empty-page/empty-page.component';
 import { EditUserComponent } from './shared/profile/edit-user/edit-user.component';
 import { LayoutContainerComponent } from './shared/layout-container/layout-container.component';
 import { RedefinePasswordComponent } from './shared/redefine-password/redefine-password.component';
 import { ChangePasswordComponent } from './shared/change-password/change-password.component';
-
-// components
 
 // services
 import { SharedService } from './shared/shared.service';
@@ -60,7 +57,6 @@ export function tokenGetter() {
     AppComponent,
     DashboardComponent,
     PageNotFoundComponent,
-    EmptyPageComponent,
     ReleaseNotesDataComponent,
     ReleaseNotesFormComponent,
     EditUserComponent,
@@ -105,7 +101,6 @@ export function tokenGetter() {
     AppComponent,
     DashboardComponent,
     PageNotFoundComponent,
-    EmptyPageComponent,
     LayoutContainerComponent
   ],
   providers: [
@@ -116,10 +111,6 @@ export function tokenGetter() {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
-    },
-    {
-      provide: LOCALE_ID,
-      useValue: 'pt-PT'
     },
     ReportService,
     SharedService,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { FormGroup, Validators, FormBuilder, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,13 +7,16 @@ import { ChangePasswordService } from './change-password.service';
 import { StrongPasswordValidator } from '../../core/components/password/strong-password.directive';
 import { AuthService } from '../auth.service';
 import { auth } from '../../auth/auth';
+import { Subscription } from 'rxjs';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss']
 })
-export class ChangePasswordComponent implements OnInit {
+@AutoUnsubscribe()
+export class ChangePasswordComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   hideNew = true;
@@ -24,18 +27,23 @@ export class ChangePasswordComponent implements OnInit {
   user_inputs: string[] = ['foobar', 'barfoo'];
   level = '2';
 
+  subsFormPassword: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
     public snackBar: MatSnackBar,
-    private changePasswordService: ChangePasswordService,
-    private authService: AuthService
+    private changePasswordService: ChangePasswordService
   ) {
     this.valFn = StrongPasswordValidator(this.level, this.user_inputs);
   }
 
   ngOnInit() {
     this.initForm();
+  }
+
+  ngOnDestroy(): void {
+
   }
 
   initForm() {
@@ -85,7 +93,9 @@ export class ChangePasswordComponent implements OnInit {
     }
     this.changePasswordService.changePassword(auth.getCurrentUser().id,
       this.form.get('currentPassword').value,
-      this.form.get('passwords').value['new']).subscribe((data) => {
+      this.subsFormPassword = this.form
+      .get('passwords').value['new'])
+      .subscribe((data) => {
       if (data && data.status && data.status === 105) {
         this.snackBar.open('Senha atual está errada!', 'OK', { duration: 10000 });
       } else {

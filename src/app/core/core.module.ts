@@ -20,7 +20,6 @@ import { MaterialModule } from './material/material.module';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import { SidenavService } from './services/sidenav.service';
 import { InputMaskDirective } from './components/input-mask.directive';
-import { LayoutComponent } from '../shared/layout/layout.component';
 import { PasswordFeedbackComponent } from './components/password/password-feedback/password-feedback.component';
 import { StrengthMeterComponent } from './components/password/strength-meter/strength-meter.component';
 import { FeatureDirective } from './components/permissions/directive/feature.directive';
@@ -47,6 +46,11 @@ import { FilterComponent } from './components/filter/filter.component';
 import { FilterService } from './components/filter/service/filter.service';
 import { ScholarshipService } from '../modules/scholarship/scholarship.service';
 import { SharedService } from '../shared/shared.service';
+import { LayoutResponsibleComponent } from './components/container/layout-responsible/layout-responsible.component';
+import { LogoResponsibleComponent } from './components/header/responsible/logo-responsible/logo-responsible.component';
+import { ButtonResponsibleUserComponent } from './components/header/responsible/button-responsible-user/button-responsible-user.component';
+import { FooterResponsibleComponent } from './components/footer/responsible/footer-responsible/footer-responsible.component';
+import { MAT_DATE_LOCALE } from '@angular/material';
 
 // const globalRippleConfig: RippleGlobalOptions = {
 //   disabled: false,
@@ -73,7 +77,6 @@ import { SharedService } from '../shared/shared.service';
     ColorPickerComponent,
     ConfirmDialogComponent,
     IconPickerComponent,
-    LayoutComponent,
 
     // new Components
     StrongPasswordDirective,
@@ -98,6 +101,7 @@ import { SharedService } from '../shared/shared.service';
     HeaderTitleComponent,
     HeaderFormComponent,
     FilterComponent,
+    LayoutResponsibleComponent,
 
     // modules Generics
     FlexLayoutModule,
@@ -115,7 +119,6 @@ import { SharedService } from '../shared/shared.service';
     ColorPickerComponent,
     ConfirmDialogComponent,
     IconPickerComponent,
-    LayoutComponent,
 
     // new Declarations
     PasswordFeedbackComponent,
@@ -140,7 +143,11 @@ import { SharedService } from '../shared/shared.service';
     ButtonLanguageComponent,
     HeaderTitleComponent,
     HeaderFormComponent,
-    FilterComponent
+    FilterComponent,
+    LayoutResponsibleComponent,
+    LogoResponsibleComponent,
+    ButtonResponsibleUserComponent,
+    FooterResponsibleComponent
   ],
   providers: [
     ConfirmDialogService,
@@ -149,10 +156,10 @@ import { SharedService } from '../shared/shared.service';
     PermissionService,
     UnitService,
     FilterService,
-    SharedService
+    SharedService,
     // { provide: DateAdapter, useClass: CustomDateAdapter },
     // { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
-    // { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     // { provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: globalRippleConfig }
   ],
   entryComponents: [

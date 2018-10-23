@@ -10,7 +10,7 @@ import { TreasuryService } from '../../../treasury.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { skipWhile, switchMap, tap } from 'rxjs/operators';
 
 @Component({
@@ -30,6 +30,7 @@ export class DistrictsDataComponent extends AbstractSidenavContainer implements 
   districts: Districts[] = [];
 
   sub1: Subscription;
+  subsConfirm: Subscription;
 
   constructor(
     protected router: Router,
@@ -66,7 +67,7 @@ export class DistrictsDataComponent extends AbstractSidenavContainer implements 
     );
   }
   remove(district: Districts) {
-    this.confirmDialogService
+    this.subsConfirm = this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover este distrito?', 'REMOVER')
       .pipe(
         skipWhile(res => res !== true),

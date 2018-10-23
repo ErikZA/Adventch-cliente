@@ -1,9 +1,9 @@
 import { tap, switchMap, skipWhile, delay } from 'rxjs/operators';
-import { of ,  Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ProcessDataComponent } from './../process-data/process-data.component';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { MatSnackBar } from '@angular/material';
 import { ScholarshipService } from '../../../scholarship.service';
@@ -19,12 +19,14 @@ import { School } from '../../../models/school';
 import { NewProcessViewModel, EditProcessViewModel } from '../../../interfaces/process-view-models';
 
 import { ReportService } from '../../../../../shared/report.service';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @Component({
   selector: 'app-process-form',
   templateUrl: './process-form.component.html',
   styleUrls: ['./process-form.component.scss']
 })
+@AutoUnsubscribe()
 export class ProcessFormComponent implements OnInit, OnDestroy {
   formProcess: FormGroup;
   responsible: Responsible;
@@ -53,7 +55,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     { id: 6, description: 'Rendimento Acadêmico', controlName: 'doc6' },
   ];
   selectStudent: Student;
-  sub1: Subscription;
+  subsCheckCpf: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -68,7 +70,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initForm();
     this.checkCpf();
-    this.sub1 = this.scholarshipService.getStudentSeries()
+    this.scholarshipService.getStudentSeries()
       .pipe(
         tap(series => {
           this.studentSeries = series;
@@ -127,9 +129,13 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   }
   private checkCpf(): void {
     const responsibleCpfForm = this.formProcess.get('cpf');
-    responsibleCpfForm.valueChanges.subscribe((cpf: string) => {
+    this.subsCheckCpf = responsibleCpfForm
+    .valueChanges
+    .subscribe((cpf: string) => {
       if (responsibleCpfForm.valid) {
-        this.scholarshipService.getResponsible(cpf).subscribe(responsible => {
+        this.scholarshipService
+        .getResponsible(cpf)
+        .subscribe(responsible => {
           if (!responsible) {
             return;
           }
@@ -264,7 +270,9 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   }
 
   public generateReport(id: number) {
-    this.reportService.reportProcess(id).subscribe(dataURL => {
+    this.reportService
+    .reportProcess(id)
+    .subscribe(dataURL => {
       const fileUrl = URL.createObjectURL(dataURL);
       const element = document.createElement('a');
       element.href = fileUrl;

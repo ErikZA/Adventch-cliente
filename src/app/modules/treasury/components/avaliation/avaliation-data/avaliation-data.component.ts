@@ -13,7 +13,6 @@ import { Districts } from '../../../models/districts';
 import { User } from '../../../../../shared/models/user.model';
 import { ReportService } from '../../../../../shared/report.service';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
 import { AvaliationService } from '../avaliation.service';
 import { map, tap, switchMap, skipWhile } from 'rxjs/operators';
 import { ChurchAvaliationDataInterface } from '../../../interfaces/avaliation/church-avaliation-data-interface';
@@ -27,16 +26,12 @@ import { AvaliationDataInterface } from '../../../interfaces/avaliation/avaliati
   templateUrl: './avaliation-data.component.html',
   styleUrls: ['./avaliation-data.component.scss']
 })
-@AutoUnsubscribe()
 export class AvaliationDataComponent extends AbstractSidenavContainer implements OnInit {
   protected componentUrl = '/tesouraria/avaliacoes';
 
-  subFinalizeMonthly: Subscription;
-  subFinalizeYearly: Subscription;
   searchButton = false;
   showList = 80;
   search$ = new Subject<string>();
-  subscribeUnit: Subscription;
   layout: String = 'row';
 
   filterText: string;
@@ -128,7 +123,8 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   }
 
   private loadDistricts() {
-    this.oldService.getDistricts(auth.getCurrentUnit().id).subscribe((data: Districts[]) => {
+    this.oldService
+    .getDistricts(auth.getCurrentUnit().id).subscribe((data: Districts[]) => {
       data.forEach(d => {
         this.districtsData.push(new Filter(Number(d.id), d.name));
       });
@@ -205,7 +201,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   }
 
   public search() {
-    const filtered = this.churchesAvaliationsCache.filter(o =>         
+    const filtered = this.churchesAvaliationsCache.filter(o =>
       utils.buildSearchRegex(this.filterText).test(o.name.toUpperCase()) ||
       utils.buildSearchRegex(this.filterText).test(o.code.toUpperCase())
     );
@@ -349,7 +345,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   private finalizeMonthlyEvaluation(churchAvaliation: ChurchAvaliationDataInterface): void {
     const { id } = auth.getCurrentUser();
     const avaliation = this.getAvaliationMonthly(churchAvaliation);
-    this.subFinalizeMonthly = this.avaliationService
+    this.avaliationService
       .finalizeMonthlyAvaliation(avaliation.id, { userId: id })
       .pipe(
       skipWhile(res => !res),
@@ -367,7 +363,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   private finalizeAnnualEvaluation(churchAvaliation: ChurchAvaliationDataInterface): void {
     const { id } = auth.getCurrentUser();
     const avaliation = this.getAvaliationYearly(churchAvaliation);
-    this.subFinalizeYearly = this.avaliationService
+    this.avaliationService
       .finalizeAnnualAvaliation(avaliation.id, { userId: id })
       .pipe(
       skipWhile(res => !res),

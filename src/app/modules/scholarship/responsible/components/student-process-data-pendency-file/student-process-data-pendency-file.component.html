@@ -1,0 +1,30 @@
+<form enctype="multipart/form-data" *ngIf="!process.hasUploads">
+    <div fxLayout="row wrap" fxLayoutGap="5px">
+        <mat-button-toggle (click)="openWindow(process)">
+            <mat-icon>attach_file</mat-icon>
+            <label>Enviar documentos</label>
+            <input type="file" [id]="process.protocol" #input (change)="inputChanged(input)" multiple class="inputfile" style="display: none" />
+        </mat-button-toggle>
+    </div>
+
+    <div fxLayout="row wrap" fxLayoutGap="5px">
+        <mat-list>
+            <mat-list-item *ngFor="let file of filesSelecteds; index as i">
+                <button mat-button style="min-width: 40px" (click)="download(file)">
+          <mat-icon color="primary">archive</mat-icon>
+        </button>
+                <button mat-button style="min-width: 40px" (click)="remove(file, i)" [disabled]="isSending">
+          <mat-icon color="warn">clear</mat-icon>
+        </button>
+                <p style="word-break: break-all">{{ file.name }}</p>
+            </mat-list-item>
+        </mat-list>
+    </div>
+
+    <div fxLayout="row wrap" fxLayoutGap="5px" *ngIf="filesSelecteds?.length > 0">
+        <button mat-raised-button type="submit" color="primary" (click)="save()" [disabled]="isSending">ENVIAR</button>
+    </div>
+</form>
+<div *ngIf="process.hasUploads">
+    <i>Arquivos enviados</i>
+</div>

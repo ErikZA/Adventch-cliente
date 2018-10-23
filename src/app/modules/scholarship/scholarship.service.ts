@@ -12,7 +12,7 @@ import { ProcessResponsibleInterface } from './interfaces/process-responsible-in
 import { ProcessCountStatusInterface } from './interfaces/process-count-status-interface';
 import { SchoolProcessInterface } from './interfaces/school-process-interface';
 import { ProcessDataInterface } from './interfaces/process-data-interface';
-import { EditProcessViewModel, NewProcessViewModel } from './interfaces/process-view-models';
+import { EditProcessViewModel, NewProcessViewModel, ProcessUploadViewModel } from './interfaces/process-view-models';
 import { DocumentProcessDataInterface } from './interfaces/document-process-data-interface';
 
 @Injectable()
@@ -193,6 +193,18 @@ export class ScholarshipService {
     const url = `/scholarship/process/${processId}/documents`;
     return this.http
       .get<DocumentProcessDataInterface[]>(url);
+  }
+
+  public getProcessUploads(processId: number): Observable<ProcessUploadViewModel[]> {
+    const url = `/scholarship/process/${processId}/files`;
+    return this.http
+      .get<ProcessUploadViewModel[]>(url);
+  }
+
+  public getFile(fileId: number, unitId: number): Observable<any> {
+    const url = `/scholarship/process/download/${fileId}/container/${unitId}`;
+    return this.http
+      .get(url, { responseType: 'blob' });
   }
   /*
   Consult

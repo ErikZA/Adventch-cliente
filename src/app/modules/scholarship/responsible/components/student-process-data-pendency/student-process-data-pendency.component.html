@@ -1,0 +1,16 @@
+<div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="15px">
+    <div class="box-description" fxLayout="column wrap" fxFlex>
+        <p>
+            <b>Pendência: (Documento(s)
+        <span *ngIf="!process.isSendDocument">Não</span> Enviado(s))</b>
+        </p>
+        <div class="container-description" fxLayout="column" fxLayoutAlign="space-between">
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+                <p class="style-text">{{ process.pendency }}</p>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+                <app-student-process-data-pendency-file [process]="process"></app-student-process-data-pendency-file>
+            </div>
+        </div>
+    </div>
+</div>

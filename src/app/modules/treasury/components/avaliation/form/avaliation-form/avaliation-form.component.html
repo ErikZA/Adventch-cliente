@@ -14,9 +14,7 @@
             </mat-form-field>
             <app-avaliation-requirement-form [avaliation]="avaliation" [type]="type"></app-avaliation-requirement-form>
             <div fxLayout="row" fxLayoutAlign="space-between" fxFlexOffset="40px">
-                <a routerLink="/tesouraria/avaliacoes">
-                    <back-button></back-button>
-                </a>
+                <a mat-button type="button" routerLink="/tesouraria/avaliacoes">CANCELAR</a>
                 <button mat-raised-button type="submit" (click)="saveAvaliation()" color="primary" [disabled]="isSending">SALVAR</button>
             </div>
         </div>

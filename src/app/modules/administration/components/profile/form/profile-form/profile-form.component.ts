@@ -14,12 +14,14 @@ import { FeatureFormSendInterface } from '../../../../interfaces/feature-form-se
 import { TreePermissionFormComponent } from './../tree-permission-form/tree-permission-form.component';
 import { MatSnackBar } from '@angular/material';
 import { AdministrationService } from '../../../../administration.service';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @Component({
   selector: 'app-profile-form',
   templateUrl: './profile-form.component.html',
   styleUrls: ['./profile-form.component.scss']
 })
+@AutoUnsubscribe()
 export class ProfileFormComponent implements OnInit, OnDestroy {
 
   @ViewChild(TreePermissionFormComponent)

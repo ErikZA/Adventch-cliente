@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @Component({
   selector: 'app-header-data',
@@ -8,7 +8,7 @@ import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorato
   styleUrls: ['./header-data.component.scss']
 })
 @AutoUnsubscribe()
-export class HeaderDataComponent implements OnInit {
+export class HeaderDataComponent implements OnInit, OnDestroy {
 
   @Input()
   public name: string;
@@ -41,6 +41,10 @@ export class HeaderDataComponent implements OnInit {
     .subscribe(search => {
       this.searchTheList(search);
     });
+  }
+
+  ngOnDestroy(): void {
+
   }
 
   private searchTheList(search: string): void {

@@ -1,20 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, ValidatorFn, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { MatSnackBar } from '@angular/material';
 
-import { AuthService } from '../auth.service';
 import { SharedService } from '../shared.service';
 import { StrongPasswordValidator } from '../../core/components/password/strong-password.directive';
 import { auth } from '../../auth/auth';
+import { Subscription } from 'rxjs';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @Component({
   selector: 'app-redefine-password',
   templateUrl: './redefine-password.component.html',
   styleUrls: ['./redefine-password.component.scss']
 })
-export class RedefinePasswordComponent implements OnInit {
+@AutoUnsubscribe()
+export class RedefinePasswordComponent implements OnInit, OnDestroy {
 
   hideNew = true;
   hideConfirm = true;
@@ -25,11 +27,13 @@ export class RedefinePasswordComponent implements OnInit {
   user_inputs: string[] = ['foobar', 'barfoo'];
   level = '2';
 
+  subsRoute: Subscription;
+
   private token: string;
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     public snackBar: MatSnackBar,
-    private authService: AuthService,
     private sharedService: SharedService,
     private route: ActivatedRoute,
     private router: Router
@@ -40,6 +44,10 @@ export class RedefinePasswordComponent implements OnInit {
     this.initForm();
   }
 
+  ngOnDestroy(): void {
+
+  }
+
   private initForm(): void {
     this.formPassword =  this.fb.group({
         new: [null, [Validators.required, Validators.minLength(6), this.valFn]],
@@ -47,7 +55,7 @@ export class RedefinePasswordComponent implements OnInit {
       }, {
         validator: this.matchingPasswords('new', 'confirm')
       });
-    this.route.params.subscribe(token => {
+    this.subsRoute = this.route.params.subscribe(token => {
       this.token = token.recover_pass;
     });
   }
@@ -84,7 +92,9 @@ export class RedefinePasswordComponent implements OnInit {
   public onSubmit(): void {
     if (this.formPassword.valid) {
       const data = this.setDataPassword();
-      this.sharedService.passwordReset(data).subscribe((res) => {
+      this.sharedService
+      .passwordReset(data)
+      .subscribe((res) => {
           this.snackBar.open('Senha alterada! Agora, utilize a nova senha para acessar o sistema', 'OK', { duration: 10000 });
           this.router.navigate(['/login']);
           auth.logoffMain();

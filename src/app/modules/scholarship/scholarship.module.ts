@@ -10,7 +10,6 @@ import { MatGridListModule } from '@angular/material';
 import { ScholarshipComponent } from './components/process/scholarship.component';
 import { ProcessFormComponent } from './components/process/process-form/process-form.component';
 import { ProcessDataComponent } from './components/process/process-data/process-data.component';
-import { ResponsibleDataComponent } from './components/responsible/responsible-data/responsible-data.component';
 import { PendencyComponent } from './components/process/pendency/pendency.component';
 import { VacancyComponent } from './components/process/vacancy/vacancy.component';
 
@@ -19,6 +18,7 @@ import { ProcessFormDocumentInfoComponent } from './components/process/process-f
 import { ProcessDataDocumentInfoComponent } from './components/process/process-data-document-info/process-data-document-info.component';
 import { ProcessCardCountComponent } from './components/process/process-card-count/process-card-count.component';
 import { FeatureGuard } from '../../shared/guards/feature.guard';
+import { ProcessDataDownloadComponent } from './components/process/process-data-download/process-data-download.component';
 
 @NgModule({
   imports: [
@@ -38,14 +38,15 @@ import { FeatureGuard } from '../../shared/guards/feature.guard';
     ProcessFormComponent,
     PendencyComponent,
     VacancyComponent,
-    ResponsibleDataComponent,
     ProcessFormDocumentInfoComponent,
     ProcessDataDocumentInfoComponent,
-    ProcessCardCountComponent
+    ProcessCardCountComponent,
+    ProcessDataDownloadComponent
   ],
   entryComponents: [
     PendencyComponent,
-    VacancyComponent
+    VacancyComponent,
+    ProcessDataDownloadComponent
   ]
 })
 export class ScholarshipModule { }

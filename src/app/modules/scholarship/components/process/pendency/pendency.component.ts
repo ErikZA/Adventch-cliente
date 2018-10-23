@@ -20,7 +20,6 @@ export class PendencyComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<PendencyComponent>,
-    private snackBar: MatSnackBar,
     public scholarshipService: ScholarshipService,
     @Inject(MAT_DIALOG_DATA) data
   ) {

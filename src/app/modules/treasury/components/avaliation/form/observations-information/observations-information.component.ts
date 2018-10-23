@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { skipWhile, switchMap, tap } from 'rxjs/operators';
 import { ObservationService } from '../../../observation/observation.service';
 import { Observable, Subscription } from 'rxjs';
 import { ObservationAvaliationFormInterface } from '../../../../interfaces/observation/observation-avaliation-form-interface';
 import { ConfirmDialogService } from '../../../../../../core/components/confirm-dialog/confirm-dialog.service';
-import { AutoUnsubscribe } from '../../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { MatSnackBar } from '@angular/material';
 
 @Component({
@@ -14,9 +14,10 @@ import { MatSnackBar } from '@angular/material';
   styleUrls: ['./observations-information.component.scss']
 })
 @AutoUnsubscribe()
-export class ObservationsInformationComponent implements OnInit {
+export class ObservationsInformationComponent implements OnInit, OnDestroy {
 
   subObservations: Subscription;
+  subsConfirmFinalize: Subscription;
   expanded = false;
   observations: ObservationAvaliationFormInterface[];
   alreadySearched = false;
@@ -29,6 +30,10 @@ export class ObservationsInformationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy(): void {
+
   }
 
   public expandedObservations(): void {
@@ -59,7 +64,7 @@ export class ObservationsInformationComponent implements OnInit {
   }
 
   private finalizeObsevation(observationId: number): void {
-    this.confirmDialogService
+    this.subsConfirmFinalize = this.confirmDialogService
       .confirm('Finalizar observação', 'Você deseja realmente finalizar a observação?', 'FINALIZAR')
       .pipe(
         skipWhile(res => res !== true),

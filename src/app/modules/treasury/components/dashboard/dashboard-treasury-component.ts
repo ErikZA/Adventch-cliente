@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 
 import { Subscription } from 'rxjs';
@@ -7,13 +7,15 @@ import { TreasuryService } from '../../treasury.service';
 import { auth } from '../../../../auth/auth';
 import { MatDialog } from '@angular/material';
 import { AvaliationReportComponent } from './avaliation-report/avaliation-report-component';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @Component({
   selector: 'app-dashboard-treasury',
   templateUrl: './dashboard-treasury-component.html',
   styleUrls: ['./dashboard-treasury.component.scss']
 })
-export class DashboardTreasuryComponent implements OnInit {
+@AutoUnsubscribe()
+export class DashboardTreasuryComponent implements OnInit, OnDestroy {
 
   isMobile: boolean;
   users: any;
@@ -49,7 +51,7 @@ export class DashboardTreasuryComponent implements OnInit {
   // Subscription
   getDataSubscription: Subscription;
   mediaSubscription: Subscription;
-  getAvaliationSubscription: Subscription;
+  subsDialog: Subscription;
 
   pieChartOptions: any = {
     options: {
@@ -104,11 +106,15 @@ export class DashboardTreasuryComponent implements OnInit {
 
   ngOnInit() {
     const unit = auth.getCurrentUnit();
-    this.mediaSubscription = this.media.subscribe((change: MediaChange) => setTimeout(() => this.isMobile = change.mqAlias === 'xs'));
+    this.mediaSubscription = this.media
+      .subscribe((change: MediaChange) => setTimeout(() => this.isMobile = change.mqAlias === 'xs'));
     this.service.getUsers(unit.id).subscribe((data) => {
       this.users = data;
     });
     this.getDataSubscription = this.getDashboardData(0);
+  }
+
+  ngOnDestroy(): void {
 
   }
 
@@ -130,7 +136,7 @@ export class DashboardTreasuryComponent implements OnInit {
       height: '90%',
       width: '90%',
     });
-    dialogRef.afterClosed().subscribe(result => {
+    this.subsDialog = dialogRef.afterClosed().subscribe(result => {
       if (!result) {
         return;
       }

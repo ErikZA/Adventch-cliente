@@ -18,7 +18,7 @@ import { AdministrationService } from '../../../administration.service';
 import { MatSnackBar } from '@angular/material';
 import { ScholarshipService } from '../../../../scholarship/scholarship.service';
 
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { switchMap, tap, skipWhile, delay } from 'rxjs/operators';
 
 @Component({

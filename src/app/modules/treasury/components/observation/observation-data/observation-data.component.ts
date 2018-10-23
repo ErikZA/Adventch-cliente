@@ -1,5 +1,5 @@
 import { Subscription ,  Subject } from 'rxjs';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -12,7 +12,7 @@ import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 import * as moment from 'moment';
 import { tap, switchMap, skipWhile } from 'rxjs/operators';
@@ -22,7 +22,7 @@ import { tap, switchMap, skipWhile } from 'rxjs/operators';
   styleUrls: ['./observation-data.component.scss']
 })
 @AutoUnsubscribe()
-export class ObservationDataComponent extends AbstractSidenavContainer implements OnInit {
+export class ObservationDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
   protected componentUrl = 'tesouraria/observacoes';
 
   searchButton = false;
@@ -47,6 +47,9 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   responsiblesData: Filter[] = [];
 
   sub1: Subscription;
+  subsConfirmRemove: Subscription;
+  subsConfirmFinalize: Subscription;
+  subsReport: Subscription;
 
   constructor(
     protected router: Router,
@@ -69,6 +72,11 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
         this.search();
       });
   }
+
+  ngOnDestroy(): void {
+
+  }
+
   getData() {
     this.search$.next('');
     return this.treasuryService
@@ -129,7 +137,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   }
 
   public remove(observation: Observation) {
-    this.confirmDialogService
+    this.subsConfirmRemove = this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover a observação?', 'REMOVER')
       .pipe(
         skipWhile(res => res !== true),
@@ -142,7 +150,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     this.router.navigate([observation.id, 'editar'], { relativeTo: this.route });
   }
   public finalize(observation: Observation) {
-    this.confirmDialogService
+    this.subsConfirmFinalize = this.confirmDialogService
       .confirm('Finalizar', 'Você deseja realmente finalizar a observação?', 'FINALIZAR')
       .pipe(
         skipWhile(res => res !== true),
@@ -177,7 +185,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
 
   public generateGeneralReport(): void {
     const data = this.getDataParams();
-    this.reportService.reportObservationsGeral(data).subscribe(urlData => {
+    this.subsReport = this.reportService.reportObservationsGeral(data).subscribe(urlData => {
       const fileUrl = URL.createObjectURL(urlData);
         let element;
         element = document.createElement('a');

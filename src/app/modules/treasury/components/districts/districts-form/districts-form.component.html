@@ -20,9 +20,7 @@
                 </mat-select>
             </mat-form-field>
             <div fxLayout="row" fxLayoutAlign="space-between" fxFlexOffset="40px">
-                <a (click)="closeSidenav()">
-                    <back-button></back-button>
-                </a>
+                <a mat-button type="button" routerLink="/tesouraria/distritos">CANCELAR</a>
                 <button mat-raised-button type="submit" (click)="saveDistrict()" color="primary" [disabled]="isSending">SALVAR</button>
             </div>
         </div>

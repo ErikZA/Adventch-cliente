@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Observable, Subscription } from 'rxjs';
@@ -7,7 +7,7 @@ import { auth } from '../../../../../../auth/auth';
 import { RequirementAvaliationChurchInterface } from '../../../../interfaces/requirement/requirement-avaliation-church-interface';
 import { RequirementsService } from '../../../requirements/requirements.service';
 import { EFeatures } from '../../../../../../shared/models/EFeatures.enum';
-import { AutoUnsubscribe } from '../../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { AvaliationEditInterface } from '../../../../interfaces/avaliation/avaliation-edit-interface';
 import {
   AvaliationRequirementAvaliationFormInterface
@@ -20,7 +20,7 @@ import { AvaliationRequirementEditInterface } from '../../../../interfaces/avali
   styleUrls: ['./avaliation-requirement-form.component.scss']
 })
 @AutoUnsubscribe()
-export class AvaliationRequirementFormComponent implements OnInit {
+export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 
   sub1: Subscription;
 
@@ -49,6 +49,11 @@ export class AvaliationRequirementFormComponent implements OnInit {
         tap(() => this.editRequirement())
       ).subscribe();
   }
+
+  ngOnDestroy(): void {
+
+  }
+
   private editRequirement() {
     if (this.checkIsEdit()) {
       this.avaliation.avaliationsRequirements.forEach(e => {

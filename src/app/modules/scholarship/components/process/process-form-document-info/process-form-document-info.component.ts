@@ -6,7 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./process-form-document-info.component.scss']
 })
 export class ProcessFormDocumentInfoComponent implements OnInit {
-  @Input('type') type: number;
+  @Input() type: number;
   infos  = [
     {
       type: 1,

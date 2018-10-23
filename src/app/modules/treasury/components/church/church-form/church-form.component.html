@@ -62,9 +62,7 @@
                 <mat-error *ngIf="form.get('cep').hasError('maxlenght')">Digite um CEP com até 20 dígitos</mat-error>
             </mat-form-field>
             <div fxLayout="row" fxLayoutAlign="space-between" fxFlexOffset="40px">
-                <a routerLink="/tesouraria/igrejas">
-                    <back-button></back-button>
-                </a>
+                <a mat-button type="button" routerLink="/tesouraria/igrejas">CANCELAR</a>
                 <button mat-raised-button type="submit" (click)="save()" color="primary" [disabled]="isSending">SALVAR</button>
             </div>
         </div>

@@ -1,0 +1,34 @@
+<div space-type="header" fxLayout="column" style="min-width: 300px">
+  <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
+    <h2 class="title">Arquivos enviados</h2>
+  </div>
+  <mat-divider></mat-divider>
+  <div fxFlex>
+    <div class="header">
+      <mat-list>
+        <mat-list-item>
+          <h3 matLine fxLayout="row">
+            <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex>
+              <span style="min-width: 100px">Download</span>
+              <span fxFlex>Arquivo</span>
+            </div>
+          </h3>
+        </mat-list-item>
+      </mat-list>
+      <mat-divider></mat-divider>
+    </div>
+  </div>
+</div>
+<div space-type="container" fxLayout="column" class="container" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+  (scrolled)="onScroll()" [scrollWindow]="false">
+  <mat-list-item class="break-line" *ngFor="let file of files;" fxFlex>
+    <button mat-button style="min-width: 100px" (click)="download(file)">
+      <mat-icon color="primary">archive</mat-icon>
+    </button>
+    <span fxFlex>{{ file.name }}</span>
+  </mat-list-item>
+</div>
+<br />
+<div fxLayout="row" fxLayoutAlign="space-between">
+  <button mat-button type="button" (click)="cancel()">CANCELAR</button>
+</div>

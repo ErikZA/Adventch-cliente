@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { StudentProcessDataComponent } from './components/student-process-data/student-process-data.component';
-import { AuthResponsibleGuard } from '../../../shared/guards/auth-responsible.guard';
 
 const routes: Routes = [
   {

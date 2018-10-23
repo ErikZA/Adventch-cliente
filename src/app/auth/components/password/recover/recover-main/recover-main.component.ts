@@ -14,6 +14,7 @@ export class RecoverMainComponent implements OnInit {
   formEmail: FormGroup;
   emailSend = false;
   isSendEmail = false;
+
   constructor(
     private store: RecoverStore,
     private router: Router,

@@ -1,6 +1,7 @@
 import { StatusProcessInterface } from './status-process-interface';
 import { School } from '../models/school';
 export interface ProcessResponsibleInterface {
+  id: number;
   protocol: string;
   nameStudent: string;
   status: StatusProcessInterface;
@@ -9,4 +10,5 @@ export interface ProcessResponsibleInterface {
   isSendDocument: boolean;
   dateRegistration: Date;
   school: School;
+  hasUploads: boolean;
 }

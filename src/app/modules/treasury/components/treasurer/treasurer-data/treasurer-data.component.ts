@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
@@ -12,7 +12,7 @@ import { Districts } from '../../../models/districts';
 import { User } from '../../../../../shared/models/user.model';
 import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import * as moment from 'moment';
 import { switchMap, tap, map, skipWhile } from 'rxjs/operators';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
@@ -24,7 +24,7 @@ import { FilterService } from '../../../../../core/components/filter/service/fil
   styleUrls: ['./treasurer-data.component.scss']
 })
 @AutoUnsubscribe()
-export class TreasurerDataComponent extends AbstractSidenavContainer implements OnInit {
+export class TreasurerDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
   protected componentUrl = 'tesouraria/tesoureiros';
   searchButton = false;
   showList = 40;
@@ -43,6 +43,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   functionsData: Filter[] = [];
 
   sub1: Subscription;
+  subsConfirmRemove: Subscription;
 
   constructor(
     protected router: Router,
@@ -60,6 +61,10 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       this.filterText = search;
       this.search();
     });
+  }
+
+  ngOnDestroy(): void {
+
   }
 
   getFunctionName(treasurer: Treasurer) {
@@ -102,7 +107,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   }
 
   removeTreasurer(treasurer: Treasurer) {
-    this.confirmDialogService
+    this.subsConfirmRemove = this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este tesoureiro?', 'REMOVER')
       .pipe(
         skipWhile(res => res !== true),
@@ -127,7 +132,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     let treasurersFilttered = this.treasurersCache.filter(t => utils.buildSearchRegex(this.filterText).test(t.name.toUpperCase()));
     treasurersFilttered = this.filterService.filter(treasurersFilttered, 'church.district.id', this.districtsSelecteds);
     treasurersFilttered = this.filterService.filter(treasurersFilttered, 'church.district.analyst.id', this.analystsSelecteds);
-    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'function', this.functionsSelecteds);  
+    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'function', this.functionsSelecteds);
     this.treasurers = treasurersFilttered;
   }
   private loadDistricts() {
@@ -166,7 +171,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   }
 
   checkAnalyst(analyst) {
-    this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);   
+    this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
     this.search();
   }
 

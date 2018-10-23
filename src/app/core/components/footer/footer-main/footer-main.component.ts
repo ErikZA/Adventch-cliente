@@ -1,8 +1,8 @@
 import { takeWhile, tap } from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SharedService } from '../../../../shared/shared.service';
 import { Release } from '../../../../shared/models/release.model';
-import { AutoUnsubscribe } from '../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./footer-main.component.scss']
 })
 @AutoUnsubscribe()
-export class FooterMainComponent implements OnInit {
+export class FooterMainComponent implements OnInit, OnDestroy {
 
   get year(): number { return new Date().getFullYear(); }
 
@@ -25,6 +25,10 @@ export class FooterMainComponent implements OnInit {
   ngOnInit() {
     this.subVersion = this.getData()
       .subscribe();
+  }
+
+  ngOnDestroy(): void {
+
   }
 
   private getData() {

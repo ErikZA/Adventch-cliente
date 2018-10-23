@@ -17,6 +17,9 @@ export class TokenInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let myHeaders = new HttpHeaders().set('Content-Type', 'application/json');
+    if (req.url.indexOf('upload') > 0) { // TO DO: checar o motivo do formData não ser enviado no HttpClient
+      return next.handle(req);
+    }
     if (!_.endsWith(this._router.url, 'shared/login')) {
       myHeaders = myHeaders.append('Authorization', 'Bearer ' + localStorage.getItem('token'));
     }

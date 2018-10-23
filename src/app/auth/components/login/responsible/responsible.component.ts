@@ -1,19 +1,25 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { auth } from '../../../auth';
 import { Responsible } from '../../../../modules/scholarship/models/responsible';
 import { AuthService } from '../../../auth.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-responsible',
   templateUrl: './responsible.component.html',
   styleUrls: ['./responsible.component.scss']
 })
-export class ResponsibleComponent implements OnInit {
+@AutoUnsubscribe()
+export class ResponsibleComponent implements OnInit, OnDestroy {
 
   @Input()
   loading = false;
+
+  subsLogin: Subscription;
+
   constructor(
     private service: AuthService,
     private router: Router,
@@ -24,6 +30,9 @@ export class ResponsibleComponent implements OnInit {
     auth.logoffResponsible();
   }
 
+  ngOnDestroy(): void {
+  }
+
   public submitForm(loginForm: { login: string, password: string, remember: boolean}): void {
     this.loading = true;
     this.setLastLogin(loginForm);
@@ -31,7 +40,8 @@ export class ResponsibleComponent implements OnInit {
   }
 
   private sendResquest(loginForm: { login: string; password: string; remember: boolean; }) {
-    this.service.loginResponsible({ cpf: loginForm.login, password: loginForm.password })
+    this.subsLogin = this.service
+    .loginResponsible({ cpf: loginForm.login, password: loginForm.password })
       .subscribe((data: {
         responsible: Responsible;
         token: string;

@@ -9,7 +9,7 @@ import { EModules } from '../../../../../shared/models/modules.enum';
 import { Profile } from '../../../models/profile/profile.model';
 import { AdministrationService } from '../../../administration.service';
 import { auth } from '../../../../../auth/auth';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
 import { utils } from '../../../../../shared/utils';
 import { skipWhile, switchMap, tap, map } from 'rxjs/operators';

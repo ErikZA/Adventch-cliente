@@ -1,10 +1,9 @@
-import { Avaliation } from './../../../../models/avaliation';
-import { Component, OnInit, OnDestroy, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { AvaliationEditInterface } from './../../../../interfaces/avaliation/avaliation-edit-interface';
 import { AvaliationDataComponent } from './../../avaliation-data/avaliation-data.component';
-import { AutoUnsubscribe } from '../../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { skipWhile, tap, delay, switchMap } from 'rxjs/operators';
 import { Subscription, Observable } from 'rxjs';

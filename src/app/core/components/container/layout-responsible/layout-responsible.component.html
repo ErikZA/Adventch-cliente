@@ -1,0 +1,21 @@
+<app-toolbar responsible="true" [menu]="false">
+    <app-logo-responsible link-type="logo"></app-logo-responsible>
+    <!-- <app-button-unit button-type="unit"></app-button-unit> -->
+    <!-- <app-button-language button-type="language"></app-button-language> -->
+    <app-button-responsible-user button-type="user"></app-button-responsible-user>
+</app-toolbar>
+<mat-drawer-container class="container" autosize>
+    <!-- <mat-drawer #drawer class="sidenav-left mat-elevation-z5" [mode]="isMobile ? 'over' : 'side'" [opened]="isOpen">
+        <app-menu-main></app-menu-main>
+    </mat-drawer> -->
+    <mat-drawer-content class="sidenav-content mat-elevation-z4" fxLayout="row" fxLayoutAlign="center">
+        <div class="page-container" fxLayout="column" fxFlex.gt-md="98%" fxFlex="100%">
+            <div class="content">
+                <router-outlet></router-outlet>
+            </div>
+            <div class="footer">
+                <app-footer-responsible></app-footer-responsible>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

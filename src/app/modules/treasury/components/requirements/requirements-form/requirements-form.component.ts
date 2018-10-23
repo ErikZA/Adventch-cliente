@@ -12,7 +12,7 @@ import { RequirementsService } from '../requirements.service';
 import { RequirementEditInterface } from '../../../interfaces/requirement/requirement-edit-interface';
 import { RequirementUpdateInterface } from '../../../interfaces/requirement/requirement-update-interface';
 import { RequirementNewInterface } from '../../../interfaces/requirement/requirement-new-interface';
-import { AutoUnsubscribe } from '../../../../../shared/auto-unsubscribe-decorator';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @Component({
   selector: 'app-requirements-form',
