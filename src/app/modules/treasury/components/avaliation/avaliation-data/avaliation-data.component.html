@@ -64,8 +64,8 @@
                     <h3 matLine fxLayout="row" fxLayoutAlign="start center">
                         <span fxFlex fxFlex.gt-sm="10%">Código</span>
                         <span fxFlex.gt-sm="30%" fxFlex>Igreja</span>
-                        <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Distrito</span>
-                        <span fxFlex fxFlex.gt-sm="16%" fxHide.lt-sm>Pontuação</span>
+                        <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Distrito</span>
+                        <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Pontuação</span>
                         <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
                     </h3>
                 </mat-list-item>
@@ -85,7 +85,7 @@
                             <p fxFlex.gt-sm="30%">
                                 {{ churchAvaliations.name }}
                             </p>
-                            <p fxFlex.gt-sm="30%" fxHide.lt-sm>
+                            <p fxFlex.gt-sm="22%" fxHide.lt-sm>
                                 <ng-container *ngIf="churchAvaliations.district !== undefined && churchAvaliations.district !== null; else notDisctrict">
                                     <span>{{ churchAvaliations.district.name }}</span>
                                 </ng-container>
@@ -93,10 +93,10 @@
                                     <div class="text-italic text-bold">Não Informado</div>
                                 </ng-template>
                             </p>
-                            <p fxFlex fxFlex.gt-sm="15%" fxHide.lt-sm>
-                                {{ getChurchScoreInTheYear(churchAvaliations) }}
+                            <p fxFlex fxFlexAlign="center" fxFlex.gt-sm="22%" fxHide.lt-sm>
+                                {{ getChurchScoreInTheYear(churchAvaliations) }} / {{ getChurchTotalInTheYear(churchAvaliations) }}
                             </p>
-                            <div fxFlex.gt-sm="16%" fxFlexAlign="center" fxHide.lt-sm>
+                            <div fxFlex.gt-sm="10%" fxHide.lt-sm>
                                 <div style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;" [className]="getStatusColor(churchAvaliations)">{{ getStatusString(churchAvaliations) }}</div>
                             </div>
                         </mat-panel-description>
@@ -116,7 +116,7 @@
                         </div>
                         <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
                             <span class="text-bold">Pontuação:</span>
-                            <span>{{ getChurchScoreInTheYear(churchAvaliations) }}</span>
+                            <span>{{ getChurchScoreInTheYear(churchAvaliations) }} / {{ getChurchTotalInTheYear(churchAvaliations) }}</span>
                         </div>
                         <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="5px" fxHide.gt-xs>
                             <span class="text-bold">Status:</span>

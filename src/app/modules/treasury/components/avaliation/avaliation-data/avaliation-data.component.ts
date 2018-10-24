@@ -108,6 +108,12 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
       .reduce((a, b) => a + b.total, 0);
   }
 
+  public getChurchTotalInTheYear(churchAvaliations: ChurchAvaliationDataInterface): number {
+    const avaliations = churchAvaliations.avaliations.filter(a => this.getYear(a.date) === this.filterYear);
+    return !avaliations ? 0 : avaliations
+      .reduce((a, b) => a + b.totalRating, 0);
+  }
+
   private loadFilters() {
     this.loadStatus();
     this.loadDistricts();

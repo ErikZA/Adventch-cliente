@@ -4,4 +4,5 @@ export interface AvaliationDataInterface {
   date: Date;
   isMensal: boolean;
   total: number;
+  totalRating: number;
 }
