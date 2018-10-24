@@ -39,6 +39,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   // new filter
   statusSelecteds: number[] = [];
   statusData: Filter[] = [];
+  statusDefault: number[] = [1];
   churchesSelecteds: number[] = [];
   churchesData: Filter[] = [];
   analystsSelecteds: number[] = [];
@@ -63,6 +64,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
 
   ngOnInit() {
     this.loadStatus();
+    this.statusSelecteds = this.statusDefault;
     this.sub1 = this
       .getData()
       .pipe(
