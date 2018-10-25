@@ -6,7 +6,7 @@ export enum EModules {
   Telephony = 5,
   Treasury = 6,
   Scholarship = 7,
-  Administration = 8
+  Configuration = 8
   /*Mapping from dbo.software*/
 }
 
@@ -33,7 +33,7 @@ export class Module {
       case 7:
         return 'Bolsas';
       case 8:
-        return 'Administração';
+        return 'Configurações';
       default:
         return 'Nenhum';
     }

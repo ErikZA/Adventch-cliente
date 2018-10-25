@@ -33,20 +33,20 @@ const routes: Routes = [
           {
             path: 'novo', component: TreasurerFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard],
             data: {
-              feature: EFeatures.TESOUREIRO,
+              feature: EFeatures.Tesoureiro,
               permission: EPermissions.CRIAR
             }
           },
           {
             path: ':id/editar', component: TreasurerFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard],
             data: {
-              feature: EFeatures.TESOUREIRO,
+              feature: EFeatures.Tesoureiro,
               permission: EPermissions.EDITAR
             }
           }
         ],
         data: {
-          feature: EFeatures.TESOUREIRO,
+          feature: EFeatures.Tesoureiro,
           permission: EPermissions.VISUALISAR
         }
       },
@@ -56,16 +56,16 @@ const routes: Routes = [
     path: 'igrejas', children: [
       { path: '', component: ChurchDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
         { path: 'novo', component: ChurchFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.IGREJAS,
+          feature: EFeatures.Igrejas,
           permission: EPermissions.CRIAR
         } },
         { path: ':id/editar', component: ChurchFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.IGREJAS,
+          feature: EFeatures.Igrejas,
           permission: EPermissions.EDITAR
         } }
         ],
         data: {
-          feature: EFeatures.IGREJAS,
+          feature: EFeatures.Igrejas,
           permission: EPermissions.VISUALISAR
         }
       }
@@ -75,16 +75,16 @@ const routes: Routes = [
     path: 'distritos', children: [
       { path: '', component: DistrictsDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
         { path: 'novo', component: DistrictsFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.DISTRITOS,
+          feature: EFeatures.Distritos,
           permission: EPermissions.CRIAR
         } },
         { path: ':id/editar', component: DistrictsFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.DISTRITOS,
+          feature: EFeatures.Distritos,
           permission: EPermissions.EDITAR
         } }
       ],
       data: {
-        feature: EFeatures.DISTRITOS,
+        feature: EFeatures.Distritos,
         permission: EPermissions.VISUALISAR
       }
     }]
@@ -93,16 +93,16 @@ const routes: Routes = [
     path: 'observacoes', children: [
       { path: '', component: ObservationDataComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], children: [
         { path: 'novo', component: ObservationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.OBSERVACOES,
+          feature: EFeatures.Observacoes,
           permission: EPermissions.CRIAR
         } },
         { path: ':id/editar', component: ObservationFormComponent, canActivate: [FeatureGuard], canLoad: [FeatureGuard], data: {
-          feature: EFeatures.OBSERVACOES,
+          feature: EFeatures.Observacoes,
           permission: EPermissions.EDITAR
         } }
       ],
       data: {
-        feature: EFeatures.OBSERVACOES,
+        feature: EFeatures.Observacoes,
         permission: EPermissions.VISUALISAR
       }
     }]
@@ -121,7 +121,7 @@ const routes: Routes = [
             canActivate: [FeatureGuard],
             canLoad: [FeatureGuard],
             data: {
-              feature: EFeatures.AVALIARMENSALMENTE
+              feature: EFeatures.AvaliarMensalmente
             }
           },
           {
@@ -130,7 +130,7 @@ const routes: Routes = [
             canActivate: [FeatureGuard],
             canLoad: [FeatureGuard],
             data: {
-              feature: EFeatures.AVALIARMENSALMENTE
+              feature: EFeatures.AvaliarMensalmente
             }
           },
           {
@@ -139,7 +139,7 @@ const routes: Routes = [
             canActivate: [FeatureGuard],
             canLoad: [FeatureGuard],
             data: {
-              feature: EFeatures.AVALIARANUALMENTE
+              feature: EFeatures.AvaliarAnualmente
             }
           },
           {
@@ -148,12 +148,12 @@ const routes: Routes = [
             canActivate: [FeatureGuard],
             canLoad: [FeatureGuard],
             data: {
-              feature: EFeatures.AVALIARANUALMENTE
+              feature: EFeatures.AvaliarAnualmente
             }
           }
       ],
       data: {
-        feature: EFeatures.LISTARAVALIACOES
+        feature: EFeatures.ListarAvaliacoes
       }
     }]
   },
@@ -165,7 +165,7 @@ const routes: Routes = [
         canActivate: [FeatureGuard],
         canLoad: [FeatureGuard],
         data: {
-          feature: EFeatures.DASHBOARDTESOURARIA
+          feature: EFeatures.DashboardTesouraria
         }
       }
     ]
@@ -185,7 +185,7 @@ const routes: Routes = [
             canActivate: [FeatureGuard],
             canLoad: [FeatureGuard],
             data: {
-              feature: EFeatures.REQUISITOS,
+              feature: EFeatures.Requisitos,
               permission: EPermissions.CRIAR
             }
           },
@@ -195,13 +195,13 @@ const routes: Routes = [
             canActivate: [FeatureGuard],
             canLoad: [FeatureGuard],
             data: {
-              feature: EFeatures.REQUISITOS,
+              feature: EFeatures.Requisitos,
               permission: EPermissions.EDITAR
             }
           }
         ],
         data: {
-          feature: EFeatures.REQUISITOS
+          feature: EFeatures.Requisitos
         }
       }
     ]

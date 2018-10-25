@@ -40,7 +40,7 @@ export class MenuMainComponent implements OnInit {
   }
 
   private checkIfNewProcessIsActive(): boolean {
-    return !this.permissionService.checkPermissionAccess(EFeatures.PROCESSOS, EPermissions.CRIAR);
+    return !this.permissionService.checkPermissionAccess(EFeatures.Processos, EPermissions.CRIAR);
   }
 
 }

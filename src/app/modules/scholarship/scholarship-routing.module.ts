@@ -15,7 +15,7 @@ const routes: Routes = [
     canActivate: [FeatureGuard],
     canLoad: [FeatureGuard],
     data: {
-      feature: EFeatures.DASHBOARDBOLSAS
+      feature: EFeatures.DashboardBolsas
     }
   },
   {
@@ -29,7 +29,7 @@ const routes: Routes = [
             canActivate: [FeatureGuard],
             canLoad: [FeatureGuard],
             data: {
-              feature: EFeatures.PROCESSOS,
+              feature: EFeatures.Processos,
               permission: EPermissions.CRIAR
             }
           },
@@ -39,13 +39,13 @@ const routes: Routes = [
             canActivate: [FeatureGuard],
             canLoad: [FeatureGuard],
             data: {
-              feature: EFeatures.PROCESSOS,
+              feature: EFeatures.Processos,
               permission: EPermissions.EDITAR
             }
           }
       ],
     data: {
-      feature: EFeatures.PROCESSOS,
+      feature: EFeatures.Processos,
       permission: EPermissions.VISUALISAR
     }
   }

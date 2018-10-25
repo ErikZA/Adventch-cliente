@@ -126,9 +126,9 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
 
   public getTitleLabel() {
     switch (this.type) {
-      case EFeatures.AVALIARANUALMENTE:
+      case EFeatures.AvaliarAnualmente:
         return `${this.church.name} - ANUAL (${this.year})`;
-      case EFeatures.AVALIARMENSALMENTE:
+      case EFeatures.AvaliarMensalmente:
         return `${this.church.name} - MENSAL (${this.month}/${this.year})`;
       default:
         break;
@@ -160,7 +160,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   }
 
   private sendDataUpdate(): Observable<boolean> {
-    return this.type === EFeatures.AVALIARANUALMENTE ? this.sendDataUpdateYearly() : this.sendDataUpdateMonthly();
+    return this.type === EFeatures.AvaliarAnualmente ? this.sendDataUpdateYearly() : this.sendDataUpdateMonthly();
   }
 
   private sendDataUpdateMonthly(): Observable<boolean> {
@@ -186,7 +186,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   }
 
   private sendDataNew(): Observable<boolean> {
-    return this.type === EFeatures.AVALIARANUALMENTE ? this.sendDataNewYearly() : this.sendDataNewMonthly();
+    return this.type === EFeatures.AvaliarAnualmente ? this.sendDataNewYearly() : this.sendDataNewMonthly();
   }
 
   private sendDataNewYearly(): Observable<boolean> {

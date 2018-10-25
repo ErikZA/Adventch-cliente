@@ -80,7 +80,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 
   private getRequirementsForm(year: number): Observable<RequirementAvaliationChurchInterface[]> {
     const { id } = auth.getCurrentUnit();
-    return this.type === EFeatures.AVALIARANUALMENTE ? this.requirementService
+    return this.type === EFeatures.AvaliarAnualmente ? this.requirementService
       .getRequirementsByUnitYearly(id, year) : this.requirementService
         .getRequirementsByUnitMonthly(id, year);
   }
