@@ -14,6 +14,7 @@ import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
+import { ReportService } from '../../../../../shared/report.service';
 
 
 @Component({
@@ -52,7 +53,8 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
     private route: ActivatedRoute,
     private treasuryService: TreasuryService,
     private snackBar: MatSnackBar,
-    private filterService: FilterService
+    private filterService: FilterService,
+    private reportService: ReportService
   ) { super(router); }
 
   ngOnInit() {
@@ -160,5 +162,35 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
   public checkAnalyst(analyst) {
     this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
     this.search();
+  }
+
+  public generateReport() {
+    const data = this.getReportData();
+    this.reportService
+    .reportChurchesGeral(data)
+    .subscribe(urlData => {
+      const fileUrl = URL.createObjectURL(urlData);
+        let element;
+        element = document.createElement('a');
+        element.href = fileUrl;
+        element.download = 'igrejas.pdf';
+        element.target = '_blank';
+        element.click();
+      this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+    }, err => {
+      console.log(err);
+      this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
+    });
+  }
+
+  private getReportData() {
+    const ids = this.churches.map(m => m.id);
+    return {
+      filter: this.filterText.length === 0 ? '[VAZIO]' : this.filterText,
+      churchesIds: String(ids.length === 0 ? 0 : ids),
+      districts: this.reportService.getParams(this.districtsSelecteds, this.districtsData),
+      cities: this.reportService.getParams(this.citiesSelecteds, this.citiesData),
+      analysts: this.reportService.getParams(this.analystsSelecteds, this.analystsData),
+    };
   }
 }

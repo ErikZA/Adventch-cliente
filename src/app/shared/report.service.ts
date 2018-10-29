@@ -10,6 +10,7 @@ import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { EModules } from './models/modules.enum';
 import { auth } from '../auth/auth';
+import { Filter } from '../core/components/filter/Filter.model';
 
 @Injectable()
 export class ReportService {
@@ -64,9 +65,34 @@ export class ReportService {
     return this.viewReport('requirementsGeral', EModules.Treasury, params);
   }
 
+  public reportChurchesGeral(data: any): Observable<any> {
+    const params = JSON.stringify(data);
+    return this.viewReport('churchesGeral', EModules.Treasury, params);
+  }
+
   public reportAvaliationDashboard(data: any): Observable<any> {
     const params = JSON.stringify(data);
     return this.viewReport('avaliationsDashboard', EModules.Treasury, params);
+  }
+
+
+  /**
+   * Método para selecionar e formatar os parâmetros dos filtros avançados. O retorno será [TODOS] ou [Filtro1, Filtro2]
+   * @param selecteds lista de ids selecionados
+   * @param data lista com o conteúdo do filtro
+   */
+  public getParams(selecteds: number[], data: Filter[]): string {
+    if (selecteds.length === 0 || selecteds.length === data.length) {
+      return '[TODOS]';
+    }
+    const cities = data.filter(f => selecteds.includes(Number(f.id)));
+
+    return this.formatString(String(cities.map(m => m.name)));
+  }
+
+  private formatString(str: string): string {
+    const newStr = str.replace(new RegExp(',', 'g'), ', ');
+    return `[${newStr}]`;
   }
 
 }

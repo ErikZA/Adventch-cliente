@@ -1,117 +1,122 @@
 <app-form-sidenav-right (closeEmitted)="closeSidenav()" #sidenavRight></app-form-sidenav-right>
 <app-layout-data>
-    <div space-type="header">
-        <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
-            <h2 class="title" *ngIf="!searchButton">Lista de Igrejas</h2>
-            <mat-form-field *ngIf="searchButton" fxFlex>
-                <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
-            </mat-form-field>
-            <div class="buttons" fxLayoutAlign="start center">
-                <button mat-icon-button (click)="searchButton = !searchButton">
+  <div space-type="header">
+    <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
+      <h2 class="title" *ngIf="!searchButton">Lista de Igrejas</h2>
+      <mat-form-field *ngIf="searchButton" fxFlex>
+        <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
+      </mat-form-field>
+      <div class="buttons" fxLayoutAlign="start center">
+        <button mat-icon-button (click)="searchButton = !searchButton">
           <mat-icon aria-label="Pesquisar Igreja">search</mat-icon>
         </button>
-                <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
+        <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
           <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
         </button>
-            </div>
-        </div>
-        <mat-accordion class="example-headers-align" #matExpansionPanel>
-            <mat-expansion-panel #matExpansionPanel hideToggle="true">
-                <div fxLayout.gt-xs="row wrap" fxLayout="column">
-                    <div fxLayout.gt-xs="row" fxLayout="column">
-                        <app-filter flex="35" [data]="districtsData" placeholder="Distritos" (filterEmitted)="checkDistrict($event)"></app-filter>
-                        <app-filter flex="35" [data]="citiesData" placeholder="Cidades" (filterEmitted)="checkCity($event)"></app-filter>
-                        <app-filter flex="35" [data]="analystsData" placeholder="Analistas" (filterEmitted)="checkAnalyst($event)"></app-filter>
-                    </div>
-                </div>
-            </mat-expansion-panel>
-        </mat-accordion>
-        <mat-divider></mat-divider>
-        <div class="header">
-            <mat-list>
-                <mat-list-item>
-                    <h3 matLine fxLayout="row" fxLayoutAlign="start center">
-                        <span fxFlex fxFlex.gt-sm="25%">Igreja</span>
-                        <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Distrito</span>
-                        <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Analista</span>
-                        <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Cidade</span>
-                    </h3>
-                </mat-list-item>
-            </mat-list>
-            <mat-divider></mat-divider>
-        </div>
+        <button mat-icon-button color="basic" (click)="generateReport(process)" matTooltip="Imprimir relatório">
+          <mat-icon>print</mat-icon>
+        </button>
+      </div>
     </div>
-    <div space-type="container" fxLayout="column" class="container" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScroll()" [scrollWindow]="false">
-        <mat-accordion>
-            <div *ngFor="let church of churches; index as i">
-                <mat-expansion-panel hideToggle *ngIf="i <= showList">
-                    <mat-expansion-panel-header>
-                        <mat-panel-description fxLayout="row" fxFlex>
-                            <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
+    <mat-accordion class="example-headers-align" #matExpansionPanel>
+      <mat-expansion-panel #matExpansionPanel hideToggle="true">
+        <div fxLayout.gt-xs="row wrap" fxLayout="column">
+          <div fxLayout.gt-xs="row" fxLayout="column">
+            <app-filter flex="35" [data]="districtsData" placeholder="Distritos" (filterEmitted)="checkDistrict($event)"></app-filter>
+            <app-filter flex="35" [data]="citiesData" placeholder="Cidades" (filterEmitted)="checkCity($event)"></app-filter>
+            <app-filter flex="35" [data]="analystsData" placeholder="Analistas" (filterEmitted)="checkAnalyst($event)"></app-filter>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <mat-divider></mat-divider>
+    <div class="header">
+      <mat-list>
+        <mat-list-item>
+          <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+            <span fxFlex fxFlex.gt-sm="25%">Igreja</span>
+            <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Distrito</span>
+            <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Analista</span>
+            <span fxFlex fxFlex.gt-sm="25%" fxHide.lt-sm>Cidade</span>
+          </h3>
+        </mat-list-item>
+      </mat-list>
+      <mat-divider></mat-divider>
+    </div>
+  </div>
+  <div space-type="container" fxLayout="column" class="container" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300"
+    (scrolled)="onScroll()" [scrollWindow]="false">
+    <mat-accordion>
+      <div *ngFor="let church of churches; index as i">
+        <mat-expansion-panel hideToggle *ngIf="i <= showList">
+          <mat-expansion-panel-header>
+            <mat-panel-description fxLayout="row" fxFlex>
+              <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
                 {{ church.name }}
               </span>
-                            <span class="text-bold" *ngIf="!church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+              <span class="text-bold" *ngIf="!church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
                 <i>Não Informado</i>
               </span>
-                            <span *ngIf="church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+              <span *ngIf="church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
                 {{ church.district.name }}
               </span>
-                            <span class="text-bold" *ngIf="!church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+              <span class="text-bold" *ngIf="!church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;"
+                fxHide.lt-sm>
                 <i>Não Informado</i>
               </span>
-                            <span *ngIf="church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+              <span *ngIf="church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
                 {{ church.district?.analyst?.name }}
               </span>
-                            <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
+              <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
                 {{ church.city.name }} - {{ church.city.state.acronym }}
               </span>
-                        </mat-panel-description>
-                    </mat-expansion-panel-header>
-                    <div fxLayout="column" class="description">
-                        <div fxLayout="row">
-                            <p class="title-description">Informações da Igreja</p>
-                        </div>
-
-                        <div fxLayout="row wrap" fxLayoutGap="5px">
-                            <span class="text-bold">Código:</span>
-                            <span>{{ church.code }}</span>
-                        </div>
-                        <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
-                            <span class="text-bold">Distrito:</span>
-                            <span>{{ church.district.name }}</span>
-                        </div>
-                        <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
-                            <span class="text-bold">Analista:</span>
-                            <span>{{ church.district.analyst.name }}</span>
-                        </div>
-                        <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
-                            <span class="text-bold">Cidade:</span>
-                            <span>{{ church.city.name }} - {{ church.city.state.acronym }}</span>
-                        </div>
-                        <div fxLayout="row wrap" fxLayoutGap="5px">
-                            <span class="text-bold">Endereço:</span>
-                            <span>{{ church.address }} ({{ church.complement == '' ? 'Sem complemento' : church.complement }})</span>
-                        </div>
-                        <div fxLayout="row wrap" fxLayoutGap="5px">
-                            <span class="text-bold">CEP:</span>
-                            <span>{{ church.cep }}</span>
-                        </div>
-                    </div>
-                    <mat-action-row fxLayout="row" fxLayout.xs="column">
-                        <ng-template [Feature]="48" permission="4">
-                            <button mat-button color="warn" matTooltip="Excluir" (click)="remove(church)">REMOVER</button>
-                        </ng-template>
-                        <ng-template [Feature]="48" permission="3">
-                            <button mat-button color="primary" matTooltip="Editar" (click)="edit(church)">EDITAR</button>
-                        </ng-template>
-                    </mat-action-row>
-                </mat-expansion-panel>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div fxLayout="column" class="description">
+            <div fxLayout="row">
+              <p class="title-description">Informações da Igreja</p>
             </div>
-        </mat-accordion>
-    </div>
+
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+              <span class="text-bold">Código:</span>
+              <span>{{ church.code }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Distrito:</span>
+              <span>{{ church.district.name }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Analista:</span>
+              <span>{{ church.district.analyst.name }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Cidade:</span>
+              <span>{{ church.city.name }} - {{ church.city.state.acronym }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+              <span class="text-bold">Endereço:</span>
+              <span>{{ church.address }} ({{ church.complement == '' ? 'Sem complemento' : church.complement }})</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+              <span class="text-bold">CEP:</span>
+              <span>{{ church.cep }}</span>
+            </div>
+          </div>
+          <mat-action-row fxLayout="row" fxLayout.xs="column">
+            <ng-template [Feature]="48" permission="4">
+              <button mat-button color="warn" matTooltip="Excluir" (click)="remove(church)">REMOVER</button>
+            </ng-template>
+            <ng-template [Feature]="48" permission="3">
+              <button mat-button color="primary" matTooltip="Editar" (click)="edit(church)">EDITAR</button>
+            </ng-template>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </div>
+    </mat-accordion>
+  </div>
 </app-layout-data>
 <ng-template [Feature]="48" permission="1">
-    <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo">
+  <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo">
     <mat-icon aria-label="Adicionar">add</mat-icon>
   </button>
 </ng-template>
