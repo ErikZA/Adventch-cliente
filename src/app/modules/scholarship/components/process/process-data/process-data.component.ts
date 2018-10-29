@@ -55,6 +55,8 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   private query = '';
   inSearch: boolean;
 
+  searchText = '';
+
   // new filter
   schoolSelecteds: number[] = [];
   schoolData: Filter[] = [];
@@ -99,6 +101,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.subsSearch = this.search$
       .pipe(
         distinctUntilChanged(),
+        tap(search => this.searchText = search),
         tap(search => this.processes = this.searchFilter(search))
       ).subscribe();
   }
@@ -136,6 +139,10 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   checkStatus(status): void {
     this.statusSelecteds = this.filterService.check(status, this.statusSelecteds);
     this.refetchData();
+  }
+
+  private searchFilterStatus(): void {
+    this.processes = this.processes.filter(p => this.statusSelecteds.some(s => s === p.status.id));
   }
 
   private searchFilter(value: string) {
@@ -222,8 +229,9 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
           this.processesCache = this.orderByStudentName(processes);
         })
       );
-
   }
+
+
 
   public schoolIsVisible(): void {
     const { idSchool } = auth.getCurrentUser();
@@ -325,6 +333,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       if (res) {
         process.status.id = status;
         process.status.name = this.getNameStatus(status);
+        this.searchFilterStatus();
       }
     }, err => this.snackBar.open('Erro ao alterar o status do processo, tente novamente.', 'OK', { duration: 5000 }));
   }
@@ -371,6 +380,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
               if (res) {
                 process.status.id = vacancy.idStatus;
                 process.status.name = this.getNameStatus(vacancy.idStatus);
+                this.searchFilterStatus();
                 process.dateRegistration = vacancy.dateRegistration;
                 this.snackBar.open('Processo aprovado com sucesso.', 'OK', { duration: 5000 });
               }
@@ -414,6 +424,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
             if (res) {
               process.status.id = EStatus.Pendency;
               process.status.name = this.getNameStatus(EStatus.Pendency);
+              this.searchFilterStatus();
               process.pendency = data.pendency;
               process.isSendDocument = false;
               process.hasUploads = false;
@@ -445,6 +456,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
         if (res) {
           process.status.id = EStatus.Dismissed;
           process.status.name = this.getNameStatus(EStatus.Dismissed);
+          this.searchFilterStatus();
           process.motiveReject = this.setReasonForRejection(idMotive);
           this.snackBar.open('Indeferimento salvo com sucesso.', 'OK', { duration: 5000 });
         }
