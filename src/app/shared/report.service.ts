@@ -54,6 +54,11 @@ export class ReportService {
     return this.viewReport('avaliationsGeral', EModules.Treasury, params);
   }
 
+  public reportAvaliationsDetail(data: any): Observable<any> {
+    const params = JSON.stringify(data);
+    return this.viewReport('avaliationsDetails', EModules.Treasury, params);
+  }
+
   public reportRequirementsGeral(data: any): Observable<any> {
     const params = JSON.stringify(data);
     return this.viewReport('requirementsGeral', EModules.Treasury, params);

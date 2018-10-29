@@ -104,6 +104,9 @@
                     <div fxLayout="column" class="description">
                         <div fxLayout="row">
                             <p class="title-description">Informações da Avaliação</p>
+                            <button mat-icon-button color="basic" (click)="generateDetailReport(churchAvaliations)" matTooltip="Imprimir processo">
+                              <mat-icon>print</mat-icon>
+                            </button>
                         </div>
                         <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
                             <span class="text-bold">Distrito:</span>

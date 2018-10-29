@@ -438,4 +438,30 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
     this.search();
   }
+
+  public generateDetailReport(avaliation): void {
+    const data = this.getReportParams(avaliation.id);
+    this.reportService
+    .reportAvaliationsDetail(data)
+    .subscribe(dataURL => {
+      const fileUrl = URL.createObjectURL(dataURL);
+      const element = document.createElement('a');
+      element.href = fileUrl;
+      element.download = 'detalhe-avaliacao.pdf';
+      element.target = '_blank';
+      element.click();
+      this.snackBar.open('Relatório gerado com sucesso.', 'OK', { duration: 5000 });
+    }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
+    });
+  }
+
+  private getReportParams(id): any {
+    return {
+      month: this.filterMonth,
+      year: this.filterYear,
+      churchId: id
+    };
+  }
 }
