@@ -335,6 +335,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
         process.status.name = this.getNameStatus(status);
         this.searchFilterStatus();
       }
+      this.getProcesses();
     }, err => this.snackBar.open('Erro ao alterar o status do processo, tente novamente.', 'OK', { duration: 5000 }));
   }
 
