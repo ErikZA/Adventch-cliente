@@ -9,7 +9,7 @@
         </mat-error>
     </mat-form-field>
 
-    <div fxLayout="row" fxLayoutAlign="space-between">
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between">
         <button mat-button type="button" (click)="cancel()">CANCELAR</button>
         <button mat-raised-button color="primary" type="submit" (click)="savePendency()" [disabled]="formPendency.invalid || isValid()">SALVAR</button>
     </div>
