@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @Component({
   selector: 'app-layout-main',
   templateUrl: './layout-main.component.html',
   styleUrls: ['./layout-main.component.scss']
 })
-export class LayoutMainComponent implements OnInit {
+@AutoUnsubscribe()
+export class LayoutMainComponent implements OnInit, OnDestroy {
 
   isOpen = true;
   isMobile = false;
@@ -20,11 +22,20 @@ export class LayoutMainComponent implements OnInit {
   ngOnInit() {
     this.subscribe = this.media.subscribe((change: MediaChange) => {
       this.isMobile = (change.mqAlias === 'xs');
-      this.isOpen = !(this.isMobile || (change.mqAlias === 'sm') || (change.mqAlias === 'md'));
+      this.isOpen = !((this.isMobile && !this.isOpen)
+      || ((change.mqAlias === 'sm') && !this.isOpen)
+      || ((change.mqAlias === 'md') && !this.isOpen));
     });
+  }
+
+  ngOnDestroy(): void {
   }
 
   public openMenu(menuToggle): void {
     this.isOpen = menuToggle;
+  }
+
+  public setAsOff(): void {
+    this.isOpen = false;
   }
 }

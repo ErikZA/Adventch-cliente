@@ -5,7 +5,7 @@
     <app-button-user button-type="user"></app-button-user>
 </app-toolbar>
 <mat-drawer-container class="container" autosize>
-    <mat-drawer #drawer class="sidenav-left mat-elevation-z5" [mode]="isMobile ? 'over' : 'side'" [opened]="isOpen">
+    <mat-drawer #drawer class="sidenav-left mat-elevation-z5" [mode]="isMobile ? 'over' : 'side'" [opened]="isOpen" (closedStart)="setAsOff()">
         <app-menu-main></app-menu-main>
     </mat-drawer>
     <mat-drawer-content class="sidenav-content mat-elevation-z4" fxLayout="row" fxLayoutAlign="center">
