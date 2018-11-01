@@ -92,7 +92,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         tap(process => this.process = process),
         tap(process => this.setValuesToFormProcess(process)),
         tap(process => this.setValuesToFormDocuments(process.documents)),
-        delay(500)
+        delay(100)
       ).subscribe(() => this.loading = false);
     this.processDataComponent.openSidenav();
   }
@@ -204,12 +204,14 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   private setValuesToFormDocuments(documents: number[]) {
     documents.forEach(d => {
       const doc = this.processDocuments.find(pd => pd.id === d);
-      const type = this.types.find(t => t.id === doc.type);
-      const control = this.processDocumentsForm.get(type.controlName);
-      control.setValue([
-        ...control.value,
-        d
-      ]);
+      if (doc) {
+        const type = this.types.find(t => t.id === doc.type);
+        const control = this.processDocumentsForm.get(type.controlName);
+        control.setValue([
+          ...control.value,
+          d
+        ]);
+      }
     });
   }
   private getAllDocumentsFromTypes(): number[] {
