@@ -1,4 +1,4 @@
 export interface IFilterInterface {
-  id: Number;
+  id: number;
   name: string;
 }

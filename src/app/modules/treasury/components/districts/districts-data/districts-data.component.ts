@@ -1,5 +1,5 @@
 import { auth } from './../../../../../auth/auth';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Subject ,  Subscription } from 'rxjs';
 
@@ -19,7 +19,8 @@ import { skipWhile, switchMap, tap } from 'rxjs/operators';
   styleUrls: ['./districts-data.component.scss']
 })
 @AutoUnsubscribe()
-export class DistrictsDataComponent extends AbstractSidenavContainer implements OnInit {
+export class DistrictsDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
+
   protected componentUrl = 'tesouraria/distritos';
 
   searchButton = false;
@@ -45,6 +46,10 @@ export class DistrictsDataComponent extends AbstractSidenavContainer implements 
         switchMap(() => this.search$)
       ).subscribe(value => this.districts = this.searchFilter(value));
   }
+
+  ngOnDestroy(): void {
+  }
+
   getData() {
     this.search$.next('');
     return this.treasureService

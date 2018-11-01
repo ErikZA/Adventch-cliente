@@ -189,13 +189,13 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     const data = this.getDataParams();
     this.subsReport = this.reportService.reportObservationsGeral(data).subscribe(urlData => {
       const fileUrl = URL.createObjectURL(urlData);
-        let element;
-        element = document.createElement('a');
-        element.href = fileUrl;
-        element.download = 'observacoes.pdf';
-        element.target = '_blank';
-        element.click();
-        this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+      let element;
+      element = document.createElement('a');
+      element.href = fileUrl;
+      element.download = 'observacoes.pdf';
+      element.target = '_blank';
+      element.click();
+      this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
     }, err => {
       console.log(err);
         this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });

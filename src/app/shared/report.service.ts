@@ -3,9 +3,6 @@ import {throwError as observableThrowError,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-
-
-
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { EModules } from './models/modules.enum';
@@ -40,8 +37,6 @@ export class ReportService {
     const url = `${environment.apiUrlReport}/reports/view/${reportName}?userId=${currentUserId}&module=${moduleId}&values=${params}&unitId=${currentUnit.id}&unitName=${currentUnit.name}`;
     return this.http
       .get(url, { responseType: 'blob' });
-      // .map(res => new Blob([res], { type: 'application/pdf' }))
-      // .catch(err => observableThrowError(new Error(err)));
   }
 
   /* Relatório de tesouraria */
@@ -75,7 +70,6 @@ export class ReportService {
     return this.viewReport('avaliationsDashboard', EModules.Treasury, params);
   }
 
-
   /**
    * Método para selecionar e formatar os parâmetros dos filtros avançados. O retorno será [TODOS] ou [Filtro1, Filtro2]
    * @param selecteds lista de ids selecionados
@@ -93,6 +87,11 @@ export class ReportService {
   private formatString(str: string): string {
     const newStr = str.replace(new RegExp(',', 'g'), ', ');
     return `[${newStr}]`;
+  }
+
+  public reportTreasurersGeral(data: any): Observable<any> {
+    const params = JSON.stringify(data);
+    return this.viewReport('treasurersGeral', EModules.Treasury, params);
   }
 
 }

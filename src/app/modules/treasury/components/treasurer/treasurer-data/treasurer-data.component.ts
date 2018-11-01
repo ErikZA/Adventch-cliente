@@ -14,9 +14,12 @@ import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import * as moment from 'moment';
-import { switchMap, tap, map, skipWhile } from 'rxjs/operators';
+import { switchMap, tap, skipWhile } from 'rxjs/operators';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
+import { ReportService } from '../../../../../shared/report.service';
+import { TreasurerService } from '../treasurer.service';
+import { TreasurerDataInterface } from '../../../interfaces/treasurer/treasurer-data-interface';
 
 @Component({
   selector: 'app-treasurer-data',
@@ -31,8 +34,8 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   search$ = new Subject<string>();
   filterText = '';
 
-  treasurers: Treasurer[] = [];
-  treasurersCache: Treasurer[] = [];
+  treasurers: TreasurerDataInterface[];
+  treasurersCache: TreasurerDataInterface[];
 
   // new filter
   districtsSelecteds: number[] = [];
@@ -48,19 +51,21 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   constructor(
     protected router: Router,
     private treasureService: TreasuryService,
+    private treasurerService: TreasurerService,
     private confirmDialogService: ConfirmDialogService,
     private snackBar: MatSnackBar,
-    private filterService: FilterService
+    private filterService: FilterService,
+    private reportService: ReportService
   ) { super(router); }
 
   ngOnInit() {
-   this.sub1 = this.getData()
-   .pipe(
-    switchMap(() => this.search$)
-   ).subscribe(search => {
-      this.filterText = search;
-      this.search();
-    });
+    this.getData()
+      .pipe(
+        switchMap(() => this.search$)
+      ).subscribe(search => {
+        this.filterText = search;
+        this.search();
+      });
   }
 
   ngOnDestroy(): void {
@@ -77,28 +82,29 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     return 'Tesoureiro (a) Assistente';
   }
 
-  getData() {
+  public getData() {
     this.search$.next('');
-    this.loadFunctions();
-    return this.treasureService
-      .getTreasurers(auth.getCurrentUnit().id)
+    return this.getTreasurers().pipe(
+      switchMap(() => this.loadAnalysts()),
+      switchMap(() => this.loadDistricts()),
+      tap(() => this.loadFunctions())
+    );
+  }
+
+  private getTreasurers() {
+    const { id } = auth.getCurrentUnit();
+    return this.treasurerService
+      .getTreasurers(id)
       .pipe(
-        map(data => data.map(d => ({
-          ...d,
-          functionName: this.getFunctionName(d),
-          dateRegisterFormatted: !!d.dateRegister ? moment(d.dateRegister).fromNow() : null
-        })) as Treasurer[]),
         tap(data => {
           this.treasurersCache = data;
           this.treasurers = data;
-          this.search();
         }),
-        switchMap(() => this.loadAnalysts()),
-        switchMap(() => this.loadDistricts())
+        tap(() => this.search())
       );
   }
 
-  editTreasurer(treasurer): void {
+  public editTreasurer(treasurer: TreasurerDataInterface): void {
     const id = treasurer.id;
     if (id === undefined) {
       return;
@@ -106,13 +112,13 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     this.router.navigate([`tesouraria/tesoureiros/${id}/editar`]);
   }
 
-  removeTreasurer(treasurer: Treasurer) {
+  public removeTreasurer(treasurer: TreasurerDataInterface) {
     this.subsConfirmRemove = this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este tesoureiro?', 'REMOVER')
       .pipe(
         skipWhile(res => res !== true),
         switchMap(() => this.treasureService.deleteTreasurer(treasurer.id)),
-        switchMap(() => this.getData()),
+        switchMap(() => this.getTreasurers()),
         tap(() => this.snackBar.open('Tesoureiro removido!', 'OK', { duration: 5000 }))
       ).subscribe(null, err => {
         console.log(err);
@@ -120,7 +126,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       });
   }
 
-  onScroll() {
+  public onScroll() {
     this.showList += 80;
   }
 
@@ -128,13 +134,14 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     matExpansionPanel.toggle();
   }
 
-  public search() {
+  private search() {
     let treasurersFilttered = this.treasurersCache.filter(t => utils.buildSearchRegex(this.filterText).test(t.name.toUpperCase()));
-    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'church.district.id', this.districtsSelecteds);
-    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'church.district.analyst.id', this.analystsSelecteds);
-    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'function', this.functionsSelecteds);
+    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'districtId', this.districtsSelecteds);
+    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'analystId', this.analystsSelecteds);
+    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'function.id', this.functionsSelecteds);
     this.treasurers = treasurersFilttered;
   }
+
   private loadDistricts() {
     this.districtsData = [];
     return this.treasureService.getDistricts(auth.getCurrentUnit().id)
@@ -160,23 +167,68 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
 
   private loadFunctions() {
     this.functionsData = [];
-    this.functionsData.push(new Filter(1, 'Tesoureiro (a)'));
-    this.functionsData.push(new Filter(2, 'Tesoureiro (a) Associado (a)'));
-    this.functionsData.push(new Filter(3, 'Tesoureiro (a) Assistente'));
+    this.functionsData.push(new Filter(1, 'Tesoureiro(a)'));
+    this.functionsData.push(new Filter(2, 'Tesoureiro(a) Associado(a)'));
+    this.functionsData.push(new Filter(3, 'Tesoureiro(a) Assistente'));
   }
 
-  checkDistrict(district) {
+  public checkDistrict(district) {
     this.districtsSelecteds = this.filterService.check(district, this.districtsSelecteds);
     this.search();
   }
 
-  checkAnalyst(analyst) {
+  public checkAnalyst(analyst) {
     this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
     this.search();
   }
 
-  checkFunction(func) {
+  public checkFunction(func) {
     this.functionsSelecteds = this.filterService.check(func, this.functionsSelecteds);
     this.search();
+  }
+
+  public generateGeneralReport(): void {
+    const data = this.getDataParams();
+    this.reportService.reportTreasurersGeral(data).subscribe(urlData => {
+      const fileUrl = URL.createObjectURL(urlData);
+      let element;
+      element = document.createElement('a');
+      element.href = fileUrl;
+      element.download = 'tesoureiros-relatorio_geral.pdf';
+      element.target = '_blank';
+      element.click();
+      this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+    }, err => {
+      console.log(err);
+      this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+    });
+  }
+
+  private getDataParams(): any {
+    return {
+      treasurersIds: this.treasurers.map(t => t.id).join(),
+      functions: this.getFunctionsNames(),
+      districts: this.getDistrictsNames(),
+      analysts: this.getAnalystsNames()
+    };
+  }
+
+  private getFunctionsNames(): string {
+    const functions = this.functionsData.filter((data: Filter) => this.functionsSelecteds.some(x => x === data.id));
+    return functions.length === 0 ? 'TODOS' : functions.map(f => f.name).join();
+  }
+
+  private getDistrictsNames(): string {
+    const functions = this.districtsData.filter((data: Filter) => this.districtsSelecteds.some(x => x === data.id));
+    return functions.length === 0 ? 'TODOS' : functions.map(f => f.name).join();
+  }
+
+  private getAnalystsNames(): string {
+    const functions = this.analystsData.filter((data: Filter) => this.analystsSelecteds.some(x => x === data.id));
+    return functions.length === 0 ? 'TODOS' : functions.map(f => f.name).join();
+  }
+
+  public getTimeInCharge(treasurer: TreasurerDataInterface): string {
+    return treasurer.dateRegister ? ` - Aproximadamente ${moment(treasurer.dateRegister).fromNow()}` : '';
   }
 }
