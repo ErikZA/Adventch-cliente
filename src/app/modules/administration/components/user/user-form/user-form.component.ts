@@ -20,6 +20,9 @@ import { ScholarshipService } from '../../../../scholarship/scholarship.service'
 
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { switchMap, tap, skipWhile, delay } from 'rxjs/operators';
+import { UserService } from '../user.service';
+import { UserEditInterface } from '../../../interfaces/user/user-edit-interface';
+import { ProfileUserEditInterface } from '../../../interfaces/user/profile-user-edit-interface';
 
 @Component({
   selector: 'app-user-form',
@@ -34,7 +37,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
   formProfiles: FormArray;
 
-  user: User;
+  user: UserEditInterface;
   profiles: Profile[] = [];
   schools: School[] = [];
   modules: EModules[] = [];
@@ -55,6 +58,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private userDataComponent: UserDataComponent,
     private administraionService: AdministrationService,
+    private userService: UserService,
     private snackBar: MatSnackBar
   ) {
     this.valFn = StrongPasswordValidator(this.level, this.user_inputs);
@@ -178,8 +182,10 @@ export class UserFormComponent implements OnInit, OnDestroy {
     group.controls[field].updateValueAndValidity();
   }
 
-  private editUser(id: number) {
-    return this.administraionService.getUser(id, auth.getCurrentUnit().id)
+  private editUser(idUser: number) {
+    const { id } = auth.getCurrentUnit();
+    return this.userService
+    .getUserEdit(idUser, id)
     .pipe(
         tap(data => {
         this.user = data;
@@ -189,7 +195,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  private setValuesUserProfiles(profiles: Profile[]): void {
+  private setValuesUserProfiles(profiles: ProfileUserEditInterface[]): void {
     if (!Array.isArray(profiles)) { return; }
     this.formProfiles.controls.forEach((control: FormGroup) => {
       const profile = profiles.find(data => data.software === control.value.module);
@@ -201,13 +207,13 @@ export class UserFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setValuesUserEdit(user: User): void {
+  private setValuesUserEdit(user: UserEditInterface): void {
     this.form.setValue({
       name: user.name,
       email: user.email,
       birthday: user.birthday ? user.birthday : null,
       password: 'password_!change-now',
-      isAdmin: user.isSysAdmin,
+      isAdmin: user.isAdmin,
       school: user.idSchool
     });
   }

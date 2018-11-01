@@ -38,7 +38,7 @@ export class FilterService {
    * @param search string de busca
    */
   public search(search: string): any {
-    return this.data.filter(f =>
+    return search === '' ? this.data : this.data.filter(f =>
       this.checkObject(f, search.toLowerCase())
     );
   }

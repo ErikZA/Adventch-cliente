@@ -1,7 +1,7 @@
 <app-form-sidenav-right (closeEmitted)="closeSidenav()" #sidenavRight></app-form-sidenav-right>
 <app-layout-data>
     <div space-type="header" fxLayout="column" fxLayoutAlign="space-between">
-        <app-header-data space-type="header" name="Usuários" (searchEmitted)="search($event)" filter="true" (filterEmitted)="expandPanel(matExpansionPanel)">
+        <app-header-data space-type="header" name="Usuários" (searchEmitted)="searchString($event)" filter="true" (filterEmitted)="expandPanel(matExpansionPanel)">
             <div space-type="title" fxLayout="row" fxLayoutAlign="space-between center" fxFlex>
                 <span fxFlex.gt-sm="50%" fxFlex>Nome</span>
                 <span fxFlex.gt-md="30%" fxFlex.lt-md="50%" fxHide.lt-sm>E-mail</span>

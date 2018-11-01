@@ -11,6 +11,7 @@ import { ProfileDataComponent } from './components/profile/profile-data/profile-
 import { ProfileFormComponent } from './components/profile/form/profile-form/profile-form.component';
 import { TreePermissionFormComponent } from './components/profile/form/tree-permission-form/tree-permission-form.component';
 import { PermissionFormComponent } from './components/profile/form/permission-form/permission-form.component';
+import { UserService } from './components/user/user.service';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { PermissionFormComponent } from './components/profile/form/permission-fo
     AdministratioRoutingModule,
   ],
   providers: [
-    AdministrationService
+    AdministrationService,
+    UserService
   ],
   declarations: [
     ProfileDataComponent,

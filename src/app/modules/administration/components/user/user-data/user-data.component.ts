@@ -14,6 +14,8 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { switchMap, tap, skipWhile } from 'rxjs/operators';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
+import { UserService } from '../user.service';
+import { UserDataInterface } from '../../../interfaces/user/user-data-interface';
 
 @Component({
   selector: 'app-user-data',
@@ -29,7 +31,8 @@ export class UserDataComponent extends AbstractSidenavContainer implements OnIni
   filter: Filter[] = [];
   searchText = '';
 
-  users: User[] = [];
+  users: UserDataInterface[];
+  usersCache: UserDataInterface[];
 
   sub1: Subscription;
   constructor(
@@ -39,6 +42,7 @@ export class UserDataComponent extends AbstractSidenavContainer implements OnIni
     private administrationService: AdministrationService,
     private snackBar: MatSnackBar,
     private filterService: FilterService,
+    private userService: UserService
   ) { super(router); }
 
   ngOnInit() {
@@ -51,15 +55,23 @@ export class UserDataComponent extends AbstractSidenavContainer implements OnIni
     this.filterService.destroy();
   }
 
-  getData() {
-    return this.administrationService
-      .getUsers(auth.getCurrentUnit().id)
+  public getData() {
+    return this.getUsers()
       .pipe(
-      tap(data => {
-        this.users = data;
-        this.filterService.setConfiguration(data, ['name', 'email', 'birthday']);
-        this.search(this.searchText);
-      })
+        tap(data => this.filterService.setConfiguration(data, ['name', 'email', 'birthday'])),
+        tap(() => this.search())
+      );
+  }
+
+  private getUsers() {
+    const { id } = auth.getCurrentUnit();
+    return this.userService
+      .getUsers(id)
+      .pipe(
+        tap(data => {
+          this.users = data;
+          this.usersCache = data;
+        })
       );
   }
 
@@ -76,7 +88,7 @@ export class UserDataComponent extends AbstractSidenavContainer implements OnIni
     } else {
       this.modulesFilter.push(module);
     }
-    this.search(this.searchText);
+    this.search();
   }
 
   private getModulesUnit(): EModules[] {
@@ -88,13 +100,17 @@ export class UserDataComponent extends AbstractSidenavContainer implements OnIni
     return new Module(module).getModuleName();
   }
 
-  public search(search: string): void {
+  public searchString(search: string): void {
     this.searchText = search;
-    this.users = this.filterService.search(search);
-    this.users = this.filterUsersProfilesModules(this.users);
+    this.search();
   }
 
-  private filterUsersProfilesModules(users: User[]): User[] {
+  private search(): void {
+    const usersSearch = this.filterService.search(this.searchText);
+    this.users = this.filterUsersProfilesModules(usersSearch);
+  }
+
+  private filterUsersProfilesModules(users: UserDataInterface[]): UserDataInterface[] {
     if (this.modulesFilter.length > 0) {
       return users.filter(user => {
         if (Array.isArray(user.profiles)) {
@@ -140,9 +156,9 @@ export class UserDataComponent extends AbstractSidenavContainer implements OnIni
     this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este usuário?', 'REMOVER')
       .pipe(
-      skipWhile(res => res !== true),
-      switchMap(() => this.administrationService.deleteUser(user.id)),
-      switchMap(() => this.getData())
+        skipWhile(res => res !== true),
+        switchMap(() => this.administrationService.deleteUser(user.id)),
+        switchMap(() => this.getData())
       ).subscribe(() => {
         this.snackBar.open('Removido com sucesso', 'OK', { duration: 3000 });
       });
