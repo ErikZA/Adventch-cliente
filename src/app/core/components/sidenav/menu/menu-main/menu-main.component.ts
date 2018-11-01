@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './../../../../../shared/auth.service';
-import { auth } from './../../../../../auth/auth';
-import { ScholarshipService } from './../../../../../modules/scholarship/scholarship.service';
 import { PermissionService } from '../../../permissions/service/permission.service';
 import { EFeatures } from '../../../../../shared/models/EFeatures.enum';
 import { EPermissions } from '../../../../../shared/models/permissions.enum';
@@ -39,7 +37,7 @@ export class MenuMainComponent implements OnInit {
     return this.permissionService.checkProfileContaisSoftware(module);
   }
 
-  private checkIfNewProcessIsActive(): boolean {
+  public checkIfNewProcessIsActive(): boolean {
     return !this.permissionService.checkPermissionAccess(EFeatures.Processos, EPermissions.CRIAR);
   }
 
