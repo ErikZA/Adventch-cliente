@@ -206,7 +206,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
 
   private getDataParams(): any {
     return {
-      treasurersIds: this.treasurers.map(t => t.id).join(),
+      treasurersIds: this.treasurers.length === 0 ? '' : this.treasurers.map(t => t.id).join(),
       functions: this.getFunctionsNames(),
       districts: this.getDistrictsNames(),
       analysts: this.getAnalystsNames()
