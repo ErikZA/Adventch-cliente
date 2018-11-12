@@ -10,8 +10,11 @@ import { TreasuryService } from '../../../treasury.service';
 import { auth } from '../../../../../auth/auth';
 import { User } from '../../../../../shared/models/user.model';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { switchMap, tap, skipWhile, delay } from 'rxjs/operators';
+import { DistrictService } from '../district.service';
+import { DistrictNewInterface } from '../../../interfaces/district/district-new-interface';
+import { DistrictUpdateInterface } from '../../../interfaces/district/district-update-interface';
 
 @Component({
   selector: 'app-districts-form',
@@ -37,7 +40,8 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private authService: AuthService,
     private service: TreasuryService,
-    private districtsDataComponent: DistrictsDataComponent
+    private districtsDataComponent: DistrictsDataComponent,
+    private districtService: DistrictService
   ) { }
 
   ngOnInit() {
@@ -77,41 +81,50 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   initForm(): void {
     this.formDistrict = this.formBuilder.group({
       name: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
-      analyst: [null, Validators.required]
+      analystId: [null, Validators.required]
     });
   }
 
-  saveDistrict() {
-    if (!this.formDistrict.valid) {
-      return;
+  public saveDistrict(): void {
+    if (this.formDistrict.valid) {
+      this.isSending = true;
+      this.sendData()
+        .pipe(
+          switchMap(() => this.districtsDataComponent.getData()),
+          tap(() => this.districtsDataComponent.closeSidenav(),
+          () => this.snackBar.open('Ocorreu um erro ao salvar o distrito', 'OK', { duration: 3000 })),
+          tap(() => this.snackBar.open('Distrito salvo com sucesso!', 'OK', { duration: 3000 })),
+          tap(() => this.isSending = false)
+        ).subscribe();
     }
-    this.isSending = true;
-    const unit = auth.getCurrentUnit();
-    // modificar para id, caso de conflito
-    const valor = this.users.filter(x => x.id === this.formDistrict.value.analyst);
-    const data = {
-      id: this.checkIsEdit() ? this.district.id : 0,
-      name: this.formDistrict.value.name,
-      analyst: {
-        id: this.formDistrict.value.analyst,
-        name: valor[0].name,
-      },
-      id_unit: unit.id
-    };
-    this.treasuryService.saveDistricts(data)
-      .pipe(
-        tap(() => {
-          this.isSending = false;
-          this.formDistrict.markAsUntouched();
-          this.districtsDataComponent.closeSidenav();
-        }),
-        switchMap(() => this.districtsDataComponent.getData()),
-        tap(() => this.snackBar.open('Distrito salvo com sucesso!', 'OK', { duration: 5000 }))
-      ).subscribe(null, err => {
-        console.log(err);
-        this.snackBar.open('Erro ao salvar distrito, tente novamente.', 'OK', { duration: 5000 });
-      });
   }
+
+  private sendData() {
+    return this.checkIsEdit() ?
+        this.sendDataEdit() :
+        this.sendDataNew();
+  }
+
+  private sendDataNew(): Observable<boolean> {
+    return this.districtService.postDistrict(this.getDataNew());
+  }
+
+  private getDataNew(): DistrictNewInterface {
+    const _district = this.formDistrict.value;
+    const { id } = auth.getCurrentUnit();
+    _district.unitId = id;
+    return _district as DistrictNewInterface;
+  }
+
+  private sendDataEdit(): Observable<boolean> {
+    const { id } = this.district;
+    return this.districtService.putDistrict(id, this.getDataEdit());
+  }
+
+  private getDataEdit(): DistrictUpdateInterface {
+    return this.formDistrict.value as DistrictUpdateInterface;
+  }
+
   editDistrict(id: number) {
     return this.treasuryService.getDistrict(id)
     .pipe(
@@ -119,7 +132,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
         this.district = res;
         this.formDistrict.patchValue({
           name: res.name,
-          analyst: res.analyst.id
+          analystId: res.analyst.id
         });
       })
     );
