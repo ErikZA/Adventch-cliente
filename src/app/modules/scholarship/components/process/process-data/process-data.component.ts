@@ -131,18 +131,24 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.statusData.push(new Filter(8, 'Não Matriculado'));
   }
 
-  checkSchool(school): void {
+  public checkSchool(school): void {
     this.schoolSelecteds = this.filterService.check(school, this.schoolSelecteds);
     this.refetchData();
   }
 
-  checkStatus(status): void {
+  public checkStatus(status): void {
     this.statusSelecteds = this.filterService.check(status, this.statusSelecteds);
     this.refetchData();
   }
 
+  private searchProcesses(): void {
+    this.processes = this.searchFilter(this.searchText);
+    this.searchFilterStatus();
+  }
+
   private searchFilterStatus(): void {
-    this.processes = this.processes.filter(p => this.statusSelecteds.some(s => s === p.status.id));
+    this.processes = this.statusSelecteds.length === 0 ?
+    this.processes : this.processes.filter(p => this.statusSelecteds.some(s => s === p.status.id));
   }
 
   private searchFilter(value: string) {
@@ -217,7 +223,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
         .pipe(
           tap(processes => {
             this.processes = this.orderByStudentName(processes);
-            this.processesCache = this.orderByStudentName(processes);
+            this.processesCache = processes;
           })
         );
     }
@@ -226,12 +232,10 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       .pipe(
         tap(processes => {
           this.processes = this.orderByStudentName(processes);
-          this.processesCache = this.orderByStudentName(processes);
+          this.processesCache = processes;
         })
       );
   }
-
-
 
   public schoolIsVisible(): void {
     const { idSchool } = auth.getCurrentUser();
@@ -329,13 +333,13 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     const user = auth.getCurrentUser();
     this.scholarshipService
     .changeProcessStatus(process.id, status, { userId: user.id })
-    .subscribe(res => {
-      if (res) {
+    .pipe(
+      skipWhile((res) => !res),
+      tap(() => {
         process.status.id = status;
         process.status.name = this.getNameStatus(status);
         this.searchFilterStatus();
-      }
-      this.getProcesses();
+    })).subscribe(() => {
     }, err => this.snackBar.open('Erro ao alterar o status do processo, tente novamente.', 'OK', { duration: 5000 }));
   }
 
@@ -377,14 +381,15 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
           const { id } = auth.getCurrentUser();
           this.scholarshipService
             .saveVacancy(process.id, { userId: id, status: vacancy.idStatus, dataRegistration: vacancy.dateRegistration })
-            .subscribe(res => {
-              if (res) {
+            .pipe(
+              skipWhile((res) => !res),
+              tap(() => {
                 process.status.id = vacancy.idStatus;
                 process.status.name = this.getNameStatus(vacancy.idStatus);
                 this.searchFilterStatus();
                 process.dateRegistration = vacancy.dateRegistration;
+            })).subscribe(() => {
                 this.snackBar.open('Processo aprovado com sucesso.', 'OK', { duration: 5000 });
-              }
             }, err => this.snackBar.open('Erro ao salvar a aprovação do processo, tente novamente.', 'OK', { duration: 5000 }));
         }
       });
@@ -411,7 +416,6 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   public toPendency(process: ProcessDataInterface): void {
     const dialogConfig = new MatDialogConfig();
-
     this.setDialogPendecy(dialogConfig, process);
     const dialogRef = this.dialog.open(PendencyComponent, dialogConfig);
     this.subsDialogPendency = dialogRef
@@ -421,16 +425,17 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
         const { id } = auth.getCurrentUser();
         this.scholarshipService
           .savePendency(process.id, { userId: id, pendency: data.pendency })
-          .subscribe(res => {
-            if (res) {
+          .pipe(
+            skipWhile((res) => !res),
+            tap(() => {
               process.status.id = EStatus.Pendency;
               process.status.name = this.getNameStatus(EStatus.Pendency);
               this.searchFilterStatus();
               process.pendency = data.pendency;
               process.isSendDocument = false;
               process.hasUploads = false;
-              this.snackBar.open('Pendência salva com sucesso.', 'OK', { duration: 5000 });
-            }
+          })).subscribe(() => {
+            this.snackBar.open('Pendência salva com sucesso.', 'OK', { duration: 5000 });
           }, err => this.snackBar.open('Erro ao salvar pendência do processo, tente novamente.', 'OK', { duration: 5000 }));
       }
     });
@@ -453,14 +458,15 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       this.scholarshipService.saveReject(process.id, {
         userId: user.id,
         motiveReject: this.setReasonForRejection(idMotive)
-      }).subscribe(res => {
-        if (res) {
+      }).pipe(
+        skipWhile((res) => !res),
+        tap(() => {
           process.status.id = EStatus.Dismissed;
           process.status.name = this.getNameStatus(EStatus.Dismissed);
           this.searchFilterStatus();
           process.motiveReject = this.setReasonForRejection(idMotive);
+      })).subscribe(() => {
           this.snackBar.open('Indeferimento salvo com sucesso.', 'OK', { duration: 5000 });
-        }
       }, err => this.snackBar.open('Erro ao indeferir processo, tente novamente.', 'OK', { duration: 5000 }));
     }
   }
@@ -502,12 +508,12 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
         switchMap(() => this.scholarshipService.deleteProcess(process.id)),
         switchMap(() => this.getProcesses())
       ).subscribe(() => {
-            this.snackBar.open('Processo removido!', 'OK', { duration: 5000 });
-          }, err => {
-            console.log(err);
-            this.snackBar.open('Erro ao remover processo, tente novamente.', 'OK', { duration: 5000 });
-          });
-        }
+      this.snackBar.open('Processo removido!', 'OK', { duration: 5000 });
+    }, err => {
+      console.log(err);
+      this.snackBar.open('Erro ao remover processo, tente novamente.', 'OK', { duration: 5000 });
+    });
+  }
 
   public generateNewPasswordResponsible(process: ProcessDataInterface): void {
     const { id } = auth.getCurrentUser();

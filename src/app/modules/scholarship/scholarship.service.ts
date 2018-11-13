@@ -141,31 +141,31 @@ export class ScholarshipService {
       .get<Process>(url);
   }
 
-  public changeProcessStatus(processId: number, status: number, model: { userId: number }): Observable<any> {
+  public changeProcessStatus(processId: number, status: number, model: { userId: number }): Observable<boolean> {
     const url = `/scholarship/process/${processId}/status/${status}`;
     return this.http
-      .put<any>(url, model);
+      .put<boolean>(url, model);
   }
 
-  public saveVacancy(processId: number, model: { userId: number, status: number, dataRegistration: Date }): Observable<any> {
+  public saveVacancy(processId: number, model: { userId: number, status: number, dataRegistration: Date }): Observable<boolean> {
     const url = `/scholarship/process/${processId}/status/approve`;
     return this.http
-      .put<any>(url, model);
+      .put<boolean>(url, model);
   }
 
-  public savePendency(processId: number, model: { userId: number, pendency: string }): Observable<Process> {
+  public savePendency(processId: number, model: { userId: number, pendency: string }): Observable<boolean> {
     const url = `/scholarship/process/${processId}/status/pending/`;
     return this.http
-      .put<any>(url, model);
+      .put<boolean>(url, model);
   }
 
-  public saveReject(processId: number, model: { userId: number, motiveReject: string }) {
+  public saveReject(processId: number, model: { userId: number, motiveReject: string }): Observable<boolean> {
     const url = `/scholarship/process/${processId}/status/rejected/`;
     return this.http
-      .put<any>(url, model);
+      .put<boolean>(url, model);
   }
 
-  public sentDocuments(processId: number, model: { userId: number }): Observable<any> {
+  public sentDocuments(processId: number, model: { userId: number }): Observable<boolean> {
     const url = `/scholarship/process/${processId}/sentDocuments/`;
     return this.http
       .put<any>(url, model);
