@@ -27,6 +27,7 @@ import { FilterService } from '../../../../../core/components/filter/service/fil
 import { ProcessDataDownloadComponent } from '../process-data-download/process-data-download.component';
 
 import { distinctUntilChanged, tap, skipWhile, switchMap } from 'rxjs/operators';
+import { Rejected } from '../../../enums/rejected.enum';
 
 @Component({
   selector: 'app-process-data',
@@ -246,20 +247,23 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.showList += 80;
   }
 
-  public getMotiveToReject(motive): string {
-    if (motive === 'Acadêmico') {
-      return 'O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.';
+  public getMotiveToReject(motive: string): string {
+    switch (motive) {
+      case 'Acadêmico':
+        return 'O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.';
+      case 'Financeiro':
+        return 'Indeferido em virtude de pendências junto ao setor financeiro.';
+      case 'Renda':
+        return 'Indeferido em virtude da renda familiar não se enquadrar no perfil de carência apropriado à avaliação correspondente.';
+      case 'Disciplinar':
+        return 'O perfil global foi analisado e em especial os aspectos disciplinares levados em conta para o indeferimento.';
+      case 'Documentação':
+        return 'Indeferido pela apresentação da documentação inconsistente à análise correspondente.';
+      case 'Desistência':
+        return 'Indeferido por abdicação do processo de bolsa solicitado.';
+      default:
+        break;
     }
-    if (motive === 'Financeiro') {
-      return 'Indeferido em virtude de pendências junto ao setor financeiro.';
-    }
-    if (motive === 'Renda') {
-      return 'Indeferido em virtude da renda familiar não se enquadrar no perfil de carência apropriado à avaliação correspondente.';
-    }
-    if (motive === 'Disciplinar') {
-      return 'O perfil global foi analisado e em especial os aspectos disciplinares levados em conta para o indeferimento.';
-    }
-    return 'Indeferido pela apresentação da documentação inconsistente à análise correspondente.';
   }
 
   public editProcess(process: ProcessDataInterface): void {
@@ -472,16 +476,21 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   }
 
   private setReasonForRejection(idMotive: number): string {
-    if (idMotive === 1) {
-      return 'Acadêmico';
-    } else if (idMotive === 2) {
-      return 'Financeiro';
-    } else if (idMotive === 3) {
-      return 'Renda';
-    } else if (idMotive === 4) {
-      return 'Disciplinar';
-    } else {
-      return 'Documentação';
+    switch (idMotive) {
+      case Rejected.Academic:
+        return 'Acadêmico';
+      case Rejected.Financial:
+        return 'Financeiro';
+      case Rejected.Income:
+        return 'Renda';
+      case Rejected.Disciplinary:
+        return 'Disciplinar';
+      case Rejected.Documentation:
+        return 'Documentação';
+      case Rejected.Withdrawal:
+        return 'Desistência';
+      default:
+        break;
     }
   }
 

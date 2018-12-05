@@ -1,211 +1,204 @@
 <app-form-sidenav-right (closeEmitted)="closeSidenav()" #sidenavRight></app-form-sidenav-right>
 <app-layout-data>
-  <div space-type="header">
-    <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
-      <h2 class="title" *ngIf="!searchButton">Lista de Processos</h2>
-      <mat-form-field *ngIf="searchButton" fxFlex>
-        <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
-      </mat-form-field>
-      <div class="buttons" fxLayoutAlign="start center">
-        <button mat-icon-button (click)="searchButton = !searchButton">
+    <div space-type="header">
+        <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
+            <h2 class="title" *ngIf="!searchButton">Lista de Processos</h2>
+            <mat-form-field *ngIf="searchButton" fxFlex>
+                <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
+            </mat-form-field>
+            <div class="buttons" fxLayoutAlign="start center">
+                <button mat-icon-button (click)="searchButton = !searchButton">
           <mat-icon aria-label="Pesquisar Processo">search</mat-icon>
         </button>
-        <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
+                <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
           <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
         </button>
-        <div matTooltip="Relatório geral">
-          <button mat-icon-button (click)="generateGeneralProcessReport()">
+                <div matTooltip="Relatório geral">
+                    <button mat-icon-button (click)="generateGeneralProcessReport()">
             <mat-icon>print</mat-icon>
           </button>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <mat-accordion class="example-headers-align" #matExpansionPanel>
-      <mat-expansion-panel #matExpansionPanel hideToggle="true">
-        <div fxLayout.gt-xs="row wrap" fxLayout="column">
-          <app-filter *ngIf="authService.getCurrentUser().idSchool === 0" [defaultValues]="schoolDefault" flex="35" [data]="schoolData"
-            placeholder="Escolas" (filterEmitted)="checkSchool($event)">
-          </app-filter>
-          <app-filter flex="35" [defaultValues]="statusDefault" [data]="statusData" placeholder="Status" (filterEmitted)="checkStatus($event)"></app-filter>
+        <mat-accordion class="example-headers-align" #matExpansionPanel>
+            <mat-expansion-panel #matExpansionPanel hideToggle="true">
+                <div fxLayout.gt-xs="row wrap" fxLayout="column">
+                    <app-filter *ngIf="authService.getCurrentUser().idSchool === 0" [defaultValues]="schoolDefault" flex="35" [data]="schoolData" placeholder="Escolas" (filterEmitted)="checkSchool($event)">
+                    </app-filter>
+                    <app-filter flex="35" [defaultValues]="statusDefault" [data]="statusData" placeholder="Status" (filterEmitted)="checkStatus($event)"></app-filter>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+        <mat-divider></mat-divider>
+        <div class="header">
+            <mat-list>
+                <mat-list-item>
+                    <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+                        <span *ngIf="showSchool && schoolSelecteds.length !== 1" fxFlex="26%" fxHide.lt-sm>Escola</span>
+                        <span fxFlex>Aluno</span>
+                        <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">Protocolo</span>
+                        <span fxFlex="16%" fxHide.lt-sm>Status</span>
+                    </h3>
+                </mat-list-item>
+            </mat-list>
+            <mat-divider></mat-divider>
         </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-    <mat-divider></mat-divider>
-    <div class="header">
-      <mat-list>
-        <mat-list-item>
-          <h3 matLine fxLayout="row" fxLayoutAlign="start center">
-            <span *ngIf="showSchool && schoolSelecteds.length !== 1" fxFlex="26%" fxHide.lt-sm>Escola</span>
-            <span fxFlex>Aluno</span>
-            <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center">Protocolo</span>
-            <span fxFlex="16%" fxHide.lt-sm>Status</span>
-          </h3>
-        </mat-list-item>
-      </mat-list>
-      <mat-divider></mat-divider>
     </div>
-  </div>
-  <div space-type="container" fxLayout="column" class="container" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
-    (scrolled)="onScroll()" [scrollWindow]="false">
-    <mat-accordion>
-      <div *ngFor="let process of processes; index as i">
-        <mat-expansion-panel hideToggle *ngIf="i <= showList" (expandedChange)="disableVisibilityDocuments()">
-          <mat-expansion-panel-header>
-            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2px" fxFlex>
-              <p *ngIf="showSchool && schoolSelecteds?.length !== 1" fxFlex="26%" fxHide.lt-sm>
-                {{ process.school }}
-              </p>
-              <p fxFlex>
-                {{ process.student.name }}
-              </p>
-              <p fxFlex="20%" fxHide.lt-sm>
-                {{ process.protocol }}
-              </p>
-              <p fxFlex="15%" fxHide.lt-sm>
-                {{ process.status.name }}
-              </p>
-              <p fxFlex="1%" fxFlex.lt-md="3%">
-                <mat-icon *ngIf="process.status.id === 3 && process.hasUploads" style="color:#76d275">attachment</mat-icon>
-              </p>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          <div fxLayout="column" fxLayoutGap="10px" class="description">
-            <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap.gt-md="10px" fxLayoutAlign="space-between center" fxLayoutAlign.gt-md="space-between center">
-              <div fxLayout="row" fxLayoutAlign="start center">
-                <div class="title-description">Informações do Processo</div>
-                <div *ngIf="process.pendency != null && process.status.id === 3 && process.hasUploads">
-                  <button mat-icon-button color="basic" (click)="download(process)" matTooltip="Ver documentos enviados">
+    <div space-type="container" fxLayout="column" class="container" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()" [scrollWindow]="false">
+        <mat-accordion>
+            <div *ngFor="let process of processes; index as i">
+                <mat-expansion-panel hideToggle *ngIf="i <= showList" (expandedChange)="disableVisibilityDocuments()">
+                    <mat-expansion-panel-header>
+                        <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2px" fxFlex>
+                            <p *ngIf="showSchool && schoolSelecteds?.length !== 1" fxFlex="26%" fxHide.lt-sm>
+                                {{ process.school }}
+                            </p>
+                            <p fxFlex>
+                                {{ process.student.name }}
+                            </p>
+                            <p fxFlex="20%" fxHide.lt-sm>
+                                {{ process.protocol }}
+                            </p>
+                            <p fxFlex="15%" fxHide.lt-sm>
+                                {{ process.status.name }}
+                            </p>
+                            <p fxFlex="1%" fxFlex.lt-md="3%">
+                                <mat-icon *ngIf="process.status.id === 3 && process.hasUploads" style="color:#76d275">attachment</mat-icon>
+                            </p>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div fxLayout="column" fxLayoutGap="10px" class="description">
+                        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap.gt-md="10px" fxLayoutAlign="space-between center" fxLayoutAlign.gt-md="space-between center">
+                            <div fxLayout="row" fxLayoutAlign="start center">
+                                <div class="title-description">Informações do Processo</div>
+                                <div *ngIf="process.pendency != null && process.status.id === 3 && process.hasUploads">
+                                    <button mat-icon-button color="basic" (click)="download(process)" matTooltip="Ver documentos enviados">
                     <mat-icon>attach_file</mat-icon>
                   </button>
-                </div>
-                <button mat-icon-button color="basic" (click)="generateReportToProcess(process)" matTooltip="Imprimir processo">
+                                </div>
+                                <button mat-icon-button color="basic" (click)="generateReportToProcess(process)" matTooltip="Imprimir processo">
                   <mat-icon>print</mat-icon>
                 </button>
-                <button mat-button color="basic" (click)="generateNewPasswordResponsible(process)" matTooltip="Gerar nova senha para o responsável">
+                                <button mat-button color="basic" (click)="generateNewPasswordResponsible(process)" matTooltip="Gerar nova senha para o responsável">
                   Gerar senha
                 </button>
-              </div>
-              <mat-button-toggle (change)="enableDocuments(process)">
-                {{ !documentsIsVisible ? 'Documentos Enviados' : 'Informações do Processo' }}
-                <mat-icon>assignment</mat-icon>
-              </mat-button-toggle>
-            </div>
-            <ng-container *ngIf="!documentsIsVisible; else documentsDescription">
-              <div fxLayout="column" fxHide.gt-xs fxLayoutGap="10px">
-                <div fxLayout="row" fxLayoutGap="10px">
-                  <div class="text-bold">Escola: </div>
-                  <div>{{ process.school }}</div>
-                </div>
-                <div fxLayout="row" fxLayoutGap="10px">
-                  <div class="text-bold">Protocolo: </div>
-                  <div>{{ process.protocol }}</div>
-                </div>
-                <div fxLayout="row" fxLayoutGap="10px">
-                  <div class="text-bold">Status: </div>
-                  <div>{{ process.status.name }}</div>
-                </div>
-              </div>
-              <div fxLayout="column" fxLayoutGap="10px">
-                <div fxLayout="row" fxLayoutGap="10px">
-                  <div class="text-bold">Nome do responsável: </div>
-                  <div>{{ process.responsible.name }}</div>
-                </div>
-                <div fxLayout="row" fxLayoutGap="10px">
-                  <div class="text-bold">RC do aluno: </div>
-                  <div>{{ process.student.rc }}</div>
-                </div>
-                <div fxLayout="row" fxLayoutGap="10px">
-                  <div class="text-bold">Bolsa Pretendida: </div>
-                  <div>{{ process.bagPorcentage }}%</div>
-                </div>
-                <div fxLayout="row" fxLayoutGap="10px">
-                  <div class="text-bold">Série pretendida: </div>
-                  <div>{{ process.serie }}</div>
-                </div>
-                <div *ngIf="process.pendency != null && process.status.id === 3">
-                  <div class="text-bold">
-                    Pendência:
-                    <mat-slide-toggle class="padding-left-medium" [checked]="process.isSendDocument" (change)="sentDocuments($event, process)"
-                      color="primary">Documento(s) Enviado(s)
-                    </mat-slide-toggle>
-                  </div>
-                  <div class="style-text">{{ process.pendency }}</div>
-                </div>
-                <div fxLayout="row" fxLayoutGap="10px" *ngIf="process.dateRegistration != null && (process.status.id == 5 || process.status.id === 6)">
-                  <div class="text-bold">Matrícula: </div>
-                  <div>até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</div>
-                </div>
-                <div fxLayout="column" fxLayoutGap="10px" *ngIf="process.motiveReject != null && (process.status.id === 7)">
-                  <div fxLayout="row" fxLayoutGap="10px">
-                    <div class="text-bold">
-                      Bolsa Indeferida:
+                            </div>
+                            <mat-button-toggle (change)="enableDocuments(process)">
+                                {{ !documentsIsVisible ? 'Documentos Enviados' : 'Informações do Processo' }}
+                                <mat-icon>assignment</mat-icon>
+                            </mat-button-toggle>
+                        </div>
+                        <ng-container *ngIf="!documentsIsVisible; else documentsDescription">
+                            <div fxLayout="column" fxHide.gt-xs fxLayoutGap="10px">
+                                <div fxLayout="row" fxLayoutGap="10px">
+                                    <div class="text-bold">Escola: </div>
+                                    <div>{{ process.school }}</div>
+                                </div>
+                                <div fxLayout="row" fxLayoutGap="10px">
+                                    <div class="text-bold">Protocolo: </div>
+                                    <div>{{ process.protocol }}</div>
+                                </div>
+                                <div fxLayout="row" fxLayoutGap="10px">
+                                    <div class="text-bold">Status: </div>
+                                    <div>{{ process.status.name }}</div>
+                                </div>
+                            </div>
+                            <div fxLayout="column" fxLayoutGap="10px">
+                                <div fxLayout="row" fxLayoutGap="10px">
+                                    <div class="text-bold">Nome do responsável: </div>
+                                    <div>{{ process.responsible.name }}</div>
+                                </div>
+                                <div fxLayout="row" fxLayoutGap="10px">
+                                    <div class="text-bold">RC do aluno: </div>
+                                    <div>{{ process.student.rc }}</div>
+                                </div>
+                                <div fxLayout="row" fxLayoutGap="10px">
+                                    <div class="text-bold">Bolsa Pretendida: </div>
+                                    <div>{{ process.bagPorcentage }}%</div>
+                                </div>
+                                <div fxLayout="row" fxLayoutGap="10px">
+                                    <div class="text-bold">Série pretendida: </div>
+                                    <div>{{ process.serie }}</div>
+                                </div>
+                                <div *ngIf="process.pendency != null && process.status.id === 3">
+                                    <div class="text-bold">
+                                        Pendência:
+                                        <mat-slide-toggle class="padding-left-medium" [checked]="process.isSendDocument" (change)="sentDocuments($event, process)" color="primary">Documento(s) Enviado(s)
+                                        </mat-slide-toggle>
+                                    </div>
+                                    <div class="style-text">{{ process.pendency }}</div>
+                                </div>
+                                <div fxLayout="row" fxLayoutGap="10px" *ngIf="process.dateRegistration != null && (process.status.id == 5 || process.status.id === 6)">
+                                    <div class="text-bold">Matrícula: </div>
+                                    <div>até {{ process.dateRegistration | date: "dd/MM/yyyy" }}</div>
+                                </div>
+                                <div fxLayout="column" fxLayoutGap="10px" *ngIf="process.motiveReject != null && (process.status.id === 7)">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <div class="text-bold">
+                                            Bolsa Indeferida:
+                                        </div>
+                                        <div>Motivo {{ process.motiveReject }}</div>
+                                    </div>
+                                    <div class="style-text">{{ getMotiveToReject(process.motiveReject) }}</div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #documentsDescription>
+                            <app-process-data-document-info [type]="1" [documents]="process.documents"></app-process-data-document-info>
+                            <app-process-data-document-info [type]="2" [documents]="process.documents"></app-process-data-document-info>
+                            <app-process-data-document-info [type]="3" [documents]="process.documents"></app-process-data-document-info>
+                            <app-process-data-document-info [type]="4" [documents]="process.documents"></app-process-data-document-info>
+                            <app-process-data-document-info [type]="5" [documents]="process.documents"></app-process-data-document-info>
+                            <app-process-data-document-info [type]="6" [documents]="process.documents"></app-process-data-document-info>
+                        </ng-template>
                     </div>
-                    <div>Motivo {{ process.motiveReject }}</div>
-                  </div>
-                  <div class="style-text">{{ getMotiveToReject(process.motiveReject) }}</div>
-                </div>
-              </div>
-            </ng-container>
-            <ng-template #documentsDescription>
-              <app-process-data-document-info [type]="1" [documents]="process.documents"></app-process-data-document-info>
-              <app-process-data-document-info [type]="2" [documents]="process.documents"></app-process-data-document-info>
-              <app-process-data-document-info [type]="3" [documents]="process.documents"></app-process-data-document-info>
-              <app-process-data-document-info [type]="4" [documents]="process.documents"></app-process-data-document-info>
-              <app-process-data-document-info [type]="5" [documents]="process.documents"></app-process-data-document-info>
-              <app-process-data-document-info [type]="6" [documents]="process.documents"></app-process-data-document-info>
-            </ng-template>
-          </div>
-          <mat-action-row fxLayout="row" fxLayout.xs="column">
-            <ng-template [Feature]="41">
-              <button *ngIf="process.status.id === 1" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar"
-                (click)="changeStatusToProcess(process, 2)">INICIAR</button>
-            </ng-template>
-            <ng-template [Feature]="42">
-              <button *ngIf="process.status.id === 2 || process.status.id === 3" mat-button style="background-color: #f44336!important; color: #fff"
-                matTooltip="Pendência" (click)="toPendency(process)">PENDÊNCIA</button>
-            </ng-template>
-            <ng-template [Feature]="43">
-              <button *ngIf="process.status.id > 1 && process.status.id < 7" mat-button style="background-color: #607d8b!important; color: #fff"
-                matTooltip="Indeferir" [matMenuTriggerFor]="menu">
+                    <mat-action-row fxLayout="row" fxLayout.xs="column">
+                        <ng-template [Feature]="41">
+                            <button *ngIf="process.status.id === 1" mat-button style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar" (click)="changeStatusToProcess(process, 2)">INICIAR</button>
+                        </ng-template>
+                        <ng-template [Feature]="42">
+                            <button *ngIf="process.status.id === 2 || process.status.id === 3" mat-button style="background-color: #f44336!important; color: #fff" matTooltip="Pendência" (click)="toPendency(process)">PENDÊNCIA</button>
+                        </ng-template>
+                        <ng-template [Feature]="43">
+                            <button *ngIf="process.status.id > 1 && process.status.id < 7" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu">
                 <mat-icon>list</mat-icon>INDEFERIR</button>
-              <mat-menu #menu="matMenu">
-                <button (click)="toReject(process, 1)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.">Acadêmico</button>
-                <button (click)="toReject(process, 2)" mat-menu-item matTooltip="Indeferido em virtude de pendências junto ao setor financeiro.">Financeiro</button>
-                <button (click)="toReject(process, 3)" mat-menu-item matTooltip="Indeferido em virtude da renda familiar não se enquadrar no perfil de carência apropriado à avaliação correspondente.">Renda</button>
-                <button (click)="toReject(process, 4)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos disciplinares levados em conta para o indeferimento.">Disciplinar</button>
-                <button (click)="toReject(process, 5)" mat-menu-item matTooltip="Indeferido pela apresentação da documentação inconsistente à análise correspondente.">Documentação</button>
-              </mat-menu>
-            </ng-template>
-            <ng-template [Feature]="45">
-              <button *ngIf="process.status.id === 5 || process.status.id === 6" mat-button style="background-color: #a30000!important; color: #fff"
-                matTooltip="Não Matriculou" (click)="changeStatusToProcess(process, 8)">NÃO MATRICULOU</button>
-            </ng-template>
-            <ng-template [Feature]="44">
-              <button *ngIf="process.status.id > 1" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar"
-                (click)="toApprove(process)">APROVAR</button>
-            </ng-template>
+                            <mat-menu #menu="matMenu">
+                                <button (click)="toReject(process, 1)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos pedagógicos levados em conta para o indeferimento.">Acadêmico</button>
+                                <button (click)="toReject(process, 2)" mat-menu-item matTooltip="Indeferido em virtude de pendências junto ao setor financeiro.">Financeiro</button>
+                                <button (click)="toReject(process, 3)" mat-menu-item matTooltip="Indeferido em virtude da renda familiar não se enquadrar no perfil de carência apropriado à avaliação correspondente.">Renda</button>
+                                <button (click)="toReject(process, 4)" mat-menu-item matTooltip="O perfil global foi analisado e em especial os aspectos disciplinares levados em conta para o indeferimento.">Disciplinar</button>
+                                <button (click)="toReject(process, 5)" mat-menu-item matTooltip="Indeferido pela apresentação da documentação inconsistente à análise correspondente.">Documentação</button>
+                                <button (click)="toReject(process, 6)" mat-menu-item matTooltip="Indeferido por abdicação do processo de bolsa solicitado.">Desistência</button>
+                            </mat-menu>
+                        </ng-template>
+                        <ng-template [Feature]="45">
+                            <button *ngIf="process.status.id === 5 || process.status.id === 6" mat-button style="background-color: #a30000!important; color: #fff" matTooltip="Não Matriculou" (click)="changeStatusToProcess(process, 8)">NÃO MATRICULOU</button>
+                        </ng-template>
+                        <ng-template [Feature]="44">
+                            <button *ngIf="process.status.id > 1" mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Aprovar" (click)="toApprove(process)">APROVAR</button>
+                        </ng-template>
 
-            <ng-template [Feature]="58">
-              <button *ngIf="process.status.id != 1" mat-button style="background-color: #993399!important; color: #fff" matTooltip="Alterar status" [matMenuTriggerFor]="menu">
+                        <ng-template [Feature]="58">
+                            <button *ngIf="process.status.id != 1" mat-button style="background-color: #993399!important; color: #fff" matTooltip="Alterar status" [matMenuTriggerFor]="menu">
                 <mat-icon>list</mat-icon>STATUS
               </button>
-              <mat-menu #menu="matMenu">
-                <button *ngIf="process.status.id > 1" (click)="changeStatusToProcess(process, 1)" mat-menu-item>Aguardando Análise</button>
-                <button *ngIf="process.status.id > 2" (click)="changeStatusToProcess(process, 2)" mat-menu-item>Análise</button>
-                <button *ngIf="process.status.id > 3" (click)="changeStatusToProcess(process, 3)" mat-menu-item>Pendente</button>
-                <button *ngIf="process.status.id > 7" (click)="changeStatusToProcess(process, 7)" mat-menu-item>Bolsa Indeferida</button>
-              </mat-menu>
-            </ng-template>
+                            <mat-menu #menu="matMenu">
+                                <button *ngIf="process.status.id > 1" (click)="changeStatusToProcess(process, 1)" mat-menu-item>Aguardando Análise</button>
+                                <button *ngIf="process.status.id > 2" (click)="changeStatusToProcess(process, 2)" mat-menu-item>Análise</button>
+                                <button *ngIf="process.status.id > 3" (click)="changeStatusToProcess(process, 3)" mat-menu-item>Pendente</button>
+                                <button *ngIf="process.status.id > 7" (click)="changeStatusToProcess(process, 7)" mat-menu-item>Bolsa Indeferida</button>
+                            </mat-menu>
+                        </ng-template>
 
-            <ng-template [Feature]="40" permission="4">
-              <button mat-button color="warn" matTooltip="Excluir" (click)="removeProcess(process)">REMOVER</button>
-            </ng-template>
-            <ng-template [Feature]="40" permission="3">
-              <button mat-button color="primary" matTooltip="Editar" (click)="editProcess(process)">EDITAR</button>
-            </ng-template>
-          </mat-action-row>
-        </mat-expansion-panel>
-      </div>
-    </mat-accordion>
-  </div>
+                        <ng-template [Feature]="40" permission="4">
+                            <button mat-button color="warn" matTooltip="Excluir" (click)="removeProcess(process)">REMOVER</button>
+                        </ng-template>
+                        <ng-template [Feature]="40" permission="3">
+                            <button mat-button color="primary" matTooltip="Editar" (click)="editProcess(process)">EDITAR</button>
+                        </ng-template>
+                    </mat-action-row>
+                </mat-expansion-panel>
+            </div>
+        </mat-accordion>
+    </div>
 </app-layout-data>
