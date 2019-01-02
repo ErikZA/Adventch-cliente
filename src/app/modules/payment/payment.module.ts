@@ -8,6 +8,7 @@ import { FeatureGuard } from '../../shared/guards/feature.guard';
 
 import { PaymentRoutingModule } from './payment-routing.module';
 import { BudgetDataComponent } from './components/budget/budget-data/budget-data.component';
+import { PaymentService } from './payment.service';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { BudgetDataComponent } from './components/budget/budget-data/budget-data
   ],
   providers: [
     ModuleGuard,
-    FeatureGuard
+    FeatureGuard,
+    PaymentService
   ],
   declarations: [
     BudgetDataComponent

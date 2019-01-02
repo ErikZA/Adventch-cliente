@@ -1,3 +1,88 @@
-<p>
-  budget-data works!
-</p>
+<app-form-sidenav-right (closeEmitted)="closeSidenav()" #sidenavRight></app-form-sidenav-right>
+<app-layout-data>
+  <div space-type="header" fxLayout="column">
+    <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
+      <h2 class="title" *ngIf="!searchButton">Lista de Orçamentos</h2>
+      <mat-form-field *ngIf="searchButton" fxFlex>
+        <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
+      </mat-form-field>
+      <div class="buttons" fxLayoutAlign="start center">
+        <button mat-icon-button (click)="searchButton = !searchButton">
+          <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
+        </button>
+        <!-- <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
+          <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
+        </button> -->
+      </div>
+    </div>
+    <!-- <mat-accordion class="example-headers-align" #matExpansionPanel>
+      <mat-expansion-panel #matExpansionPanel hideToggle="true">
+        <div fxLayout.gt-xs="row" fxLayout="column">
+          <app-filter flex="35" [data]="typesData" placeholder="Tipo" (filterEmitted)="checkTypes($event)"></app-filter>
+          <app-filter flex="35" [data]="yearsData" placeholder="Período" (filterEmitted)="checkYears($event)"></app-filter>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion> -->
+    <mat-divider></mat-divider>
+    <div class="header">
+      <mat-list>
+        <mat-list-item>
+          <h3 matLine fxLayout="row">
+            <span fxFlex fxFlex.gt-sm="10">Entidade</span>
+            <span fxFlex fxFlex.gt-sm="25">Departamento</span>
+            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Saldo do ano anterior</span>
+            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Orçamento do ano</span>
+            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Entradas</span>
+            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Saídas</span>
+            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Disponível</span>
+            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Responsáveis</span>
+          </h3>
+        </mat-list-item>
+      </mat-list>
+      <mat-divider></mat-divider>
+    </div>
+  </div>
+  <div space-type="container" fxLayout="column" class="container" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+    (scrolled)="onScroll()" [scrollWindow]="false">
+    <mat-accordion>
+      <div *ngFor="let budget of budgets">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-description fxLayout="row" fxFlex>
+              <span fxFlex fxFlex.gt-sm="10" style="white-space: line-wrap;">{{ budget.entityCode }}</span>
+              <span fxFlex fxFlex.gt-sm="25" style="white-space: line-wrap;">{{ budget.departmentCode }} - {{ budget.departmentName }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.previous }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.value }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.incoming }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.outflows }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.realized }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.departmentResponsibles }}</span>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div fxLayout="column" class="description">
+            <div fxLayout="row">
+              <p class="title-description">Informações do Requisito</p>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Nota:</span>
+              <span>{{ budget.Previous }}</span>
+            </div>
+          </div>
+          <mat-action-row>
+            <ng-template [Feature]="20" permission="4">
+              <button mat-button color="warn" matTooltip="Excluir" (click)="remove(budget)">REMOVER</button>
+            </ng-template>
+            <ng-template [Feature]="20" permission="3">
+              <button mat-button color="primary" matTooltip="Editar" (click)="edit(budget)">EDITAR</button>
+            </ng-template>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </div> 
+    </mat-accordion>
+  </div>
+</app-layout-data>
+<ng-template [Feature]="55" permission="1">
+  <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo" (click)="openSidenav()">
+    <mat-icon aria-label="Adicionar">add</mat-icon>
+  </button>
+</ng-template>
