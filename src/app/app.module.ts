@@ -45,7 +45,6 @@ import { provideErrorHandler } from './shared/error/raven-error-handler';
 import { JwtModule } from '@auth0/angular-jwt';
 import { auth } from './auth/auth';
 import { NgProgressHttpModule } from '@ngx-progressbar/http';
-import { BudgetDataComponent } from './modules/payment/components/budget/budget-data/budget-data.component';
 
 registerLocaleData(ptBr);
 
@@ -63,8 +62,7 @@ export function tokenGetter() {
     EditUserComponent,
     LayoutContainerComponent,
     RedefinePasswordComponent,
-    ChangePasswordComponent,
-    BudgetDataComponent
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,

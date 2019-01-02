@@ -50,4 +50,12 @@
             </ng-template>
         </div>
     </app-menu-expansion-item>
+    <app-menu-expansion-item [expanded]="isRouteActive('/pagamentos')" [disabled]="!this.checkPermissionSoftware(2)" matTooltip="Sessão indisponível" [matTooltipDisabled]="this.checkPermissionSoftware(2)" matTooltipPosition="below" icon="monetization_on"
+        title="Pagamentos">
+        <div list-type="item">
+            <ng-template [Feature]="20">
+                <a mat-list-item class="mat-list-item-menu" routerLinkActive="active-sub-menu" [routerLink]="['/pagamentos/orcamentos']"> Orçamentos </a>
+            </ng-template>
+        </div>
+    </app-menu-expansion-item>
 </mat-accordion>

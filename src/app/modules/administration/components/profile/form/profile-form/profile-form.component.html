@@ -17,7 +17,7 @@
                     <mat-option *ngIf="modules === undefined || modules === null || modules.length === 0" selected value="">Nenhum módulo disponível</mat-option>
                     <mat-option *ngIf="modules !== undefined && modules !== null && modules.length !== 0" selected value="">Selecione um módulo</mat-option>
                     <ng-container *ngFor="let module of modules">
-                        <mat-option *ngIf="module > 5" [value]="module">
+                        <mat-option *ngIf="module > 5 || module == 2" [value]="module">
                             {{ getModuleName(module) }}
                         </mat-option>
                     </ng-container>
