@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CoreModule } from '../../core/core.module';
+import { LOCALE_ID } from '@angular/core';
 import { MatGridListModule } from '@angular/material';
+import { CoreModule } from '../../core/core.module';
 
 import { ModuleGuard } from '../../shared/guards/module.guard';
 import { FeatureGuard } from '../../shared/guards/feature.guard';
@@ -20,6 +21,7 @@ import { PaymentService } from './payment.service';
   providers: [
     ModuleGuard,
     FeatureGuard,
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
     PaymentService
   ],
   declarations: [

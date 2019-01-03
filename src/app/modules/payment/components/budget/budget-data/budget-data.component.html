@@ -10,32 +10,31 @@
         <button mat-icon-button (click)="searchButton = !searchButton">
           <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
         </button>
-        <!-- <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
+        <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
           <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
-        </button> -->
+        </button>
       </div>
     </div>
-    <!-- <mat-accordion class="example-headers-align" #matExpansionPanel>
+    <mat-accordion class="example-headers-align" #matExpansionPanel>
       <mat-expansion-panel #matExpansionPanel hideToggle="true">
         <div fxLayout.gt-xs="row" fxLayout="column">
-          <app-filter flex="35" [data]="typesData" placeholder="Tipo" (filterEmitted)="checkTypes($event)"></app-filter>
-          <app-filter flex="35" [data]="yearsData" placeholder="Período" (filterEmitted)="checkYears($event)"></app-filter>
+          <app-filter flex="35" [data]="yearsData" placeholder="Ano" (filterEmitted)="checkYear($event)"></app-filter>
         </div>
       </mat-expansion-panel>
-    </mat-accordion> -->
+    </mat-accordion>
     <mat-divider></mat-divider>
     <div class="header">
       <mat-list>
         <mat-list-item>
           <h3 matLine fxLayout="row">
             <span fxFlex fxFlex.gt-sm="10">Entidade</span>
-            <span fxFlex fxFlex.gt-sm="25">Departamento</span>
-            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Saldo do ano anterior</span>
-            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Orçamento do ano</span>
-            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Entradas</span>
-            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Saídas</span>
-            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Disponível</span>
-            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Responsáveis</span>
+            <span fxFlex fxFlex.gt-sm="23">Departamento</span>
+            <span fxFlex fxFlex.gt-sm="13" fxHide.lt-sm class="currency">Saldo do ano anterior</span>
+            <span fxFlex fxFlex.gt-sm="13" fxHide.lt-sm class="currency">Orçamento do ano</span>
+            <span fxFlex fxFlex.gt-sm="13" fxHide.lt-sm class="currency">Entradas</span>
+            <span fxFlex fxFlex.gt-sm="13" fxHide.lt-sm class="currency">Saídas</span>
+            <span fxFlex fxFlex.gt-sm="13" fxHide.lt-sm class="currency">Disponível</span>
+            <span fxFlex fxFlex.gt-sm="13" fxHide.lt-sm class="currency">Realizado</span>
           </h3>
         </mat-list-item>
       </mat-list>
@@ -51,18 +50,24 @@
             <mat-panel-description fxLayout="row" fxFlex>
               <span fxFlex fxFlex.gt-sm="10" style="white-space: line-wrap;">{{ budget.entityCode }}</span>
               <span fxFlex fxFlex.gt-sm="25" style="white-space: line-wrap;">{{ budget.departmentCode }} - {{ budget.departmentName }}</span>
-              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.previous }}</span>
-              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.value }}</span>
-              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.incoming }}</span>
-              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.outflows }}</span>
-              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.realized }}</span>
-              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;">{{ budget.departmentResponsibles }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;" class="currency">{{ budget.previous | currency:'BRL':true:'1.2-2' }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;" class="currency">{{ budget.value | currency:'BRL':true:'1.2-2' }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;" class="currency">{{ budget.incoming | currency:'BRL':true:'1.2-2' }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;" class="currency">{{ budget.outflows | currency:'BRL':true:'1.2-2' }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;" class="currency">{{ budget.avaliable | currency:'BRL':true:'1.2-2' }}</span>
+              <span fxFlex fxFlex.gt-sm="15" style="white-space: line-wrap;" class="currency">{{ budget.realized | currency:'BRL':true:'1.2-2' }}</span>
             </mat-panel-description>
           </mat-expansion-panel-header>
           <div fxLayout="column" class="description">
             <div fxLayout="row">
-              <p class="title-description">Informações do Requisito</p>
+              <p class="title-description">Informações do Orçamento</p>
             </div>
+
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+                <span class="text-bold">Responsáveis:</span>
+                <span>{{ budget.departmentResponsibles }}</span>
+            </div>
+
             <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
               <span class="text-bold">Nota:</span>
               <span>{{ budget.Previous }}</span>

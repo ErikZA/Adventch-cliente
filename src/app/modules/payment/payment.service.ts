@@ -11,8 +11,8 @@ export class PaymentService {
     private http: HttpClient
   ) { }
 
-  getBudgets(id: number): Observable<BudgetDataInterface[]> {
-    const url = '/payment/budget/getBudgets/1/year/2018';
+  getBudgets(idUnit: number, year: number): Observable<BudgetDataInterface[]> {
+    const url = `/payment/budget/getBudgets/${idUnit}/year/${2018}`;
     return this.http
       .get<BudgetDataInterface[]>(url);
   }
