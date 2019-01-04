@@ -58,7 +58,7 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
     .pipe(
       tap(data => {
         this.budgetsCache = data;
-        this.budgets = data.filter(f => f.Year === new Date().getFullYear());
+        this.budgets = data;//.filter(f => f.Year === new Date().getFullYear());
       })
     );
     /**

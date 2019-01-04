@@ -10,6 +10,7 @@ import { FeatureGuard } from '../../shared/guards/feature.guard';
 import { PaymentRoutingModule } from './payment-routing.module';
 import { BudgetDataComponent } from './components/budget/budget-data/budget-data.component';
 import { PaymentService } from './payment.service';
+import { BudgetDataValuesComponent } from './components/budget/budget-data-values/budget-data-values.component';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { PaymentService } from './payment.service';
     PaymentService
   ],
   declarations: [
-    BudgetDataComponent
+    BudgetDataComponent,
+    BudgetDataValuesComponent
   ]/*,
   entryComponents: [
     PendencyComponent,

@@ -1,3 +1,15 @@
+.clearfix:after {
+    display: block;
+    clear: both;
+    content: "";
+}
+ 
+.badge{
+    float: left;
+    color: #b71212;
+}
+
+
 .currency{
     text-align: right;
 }
