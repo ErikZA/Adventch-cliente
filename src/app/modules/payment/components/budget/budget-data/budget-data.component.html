@@ -19,6 +19,7 @@
       <mat-expansion-panel #matExpansionPanel hideToggle="true">
         <div fxLayout.gt-xs="row" fxLayout="column">
           <app-filter flex="35" [data]="yearsData" placeholder="Ano" (filterEmitted)="checkYear($event)"></app-filter>
+          <app-filter flex="35" [data]="responsiblesData" placeholder="Responsável" (filterEmitted)="checkResponsible($event)"></app-filter>
         </div>
       </mat-expansion-panel>
     </mat-accordion>

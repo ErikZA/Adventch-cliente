@@ -27,6 +27,8 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
 
   yearsSelecteds: number[] = [];
   yearsData: Filter[] = [];
+  responsiblesSelecteds: number[] = [];
+  responsiblesData: Filter[] = [];
 
   // New
   budgets: BudgetDataInterface[] = [];
@@ -58,7 +60,8 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
     .pipe(
       tap(data => {
         this.budgetsCache = data;
-        this.budgets = data;//.filter(f => f.Year === new Date().getFullYear());
+        this.budgets = data.filter(f => f.Year === new Date().getFullYear());
+        this.loadResponsibles(data);
       })
     );
     /**
@@ -77,13 +80,46 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
     this.yearsSelecteds.push(new Date().getFullYear());
   }
 
+  private loadResponsibles(data): void {
+    console.log(data);
+    this.responsiblesData = [];
+    if (!Array.isArray(data)) {
+      return;
+    }
+    data.forEach(budget => {
+      const responsibles = budget.departmentResponsibles;
+      if (responsibles != null && responsibles !== undefined) {
+      responsibles.split(',').forEach(responsible => {
+        if (this.responsiblesData.map(m => m.name).indexOf(responsible) === -1) {
+          this.responsiblesData.push(new Filter(this.responsiblesData.length, responsible));
+        }
+      });
+    }
+    });
+    console.log(this.responsiblesData);
+  }
+
   public search() {
-    const budgetsFilttered = this.filterService.filter(this.budgetsCache, 'year', this.yearsSelecteds);
+    const responsibles = this.getResponsibles();
+    // debugger;
+    let budgetsFilttered = this.budgetsCache.filter(f => responsibles.indexOf(f.departmentResponsibles) !== -1);
+    budgetsFilttered = this.filterService.filter(budgetsFilttered, 'year', this.yearsSelecteds);
     this.budgets = budgetsFilttered;
+  }
+
+  private getResponsibles(): string {
+    let responsibles = '';
+    responsibles = this.responsiblesData.filter(f => this.responsiblesSelecteds.indexOf(f.id) !== -1).map(m => m.name).toString();
+    return responsibles;
   }
 
   public checkYear(year) {
     this.yearsSelecteds = this.filterService.check(year, this.yearsSelecteds);
+    this.search();
+  }
+
+  public checkResponsible(responsible) {
+    this.responsiblesSelecteds = this.filterService.check(responsible, this.responsiblesSelecteds);
     this.search();
   }
 

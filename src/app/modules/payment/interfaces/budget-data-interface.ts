@@ -1,15 +1,15 @@
 export interface BudgetDataInterface {
   id: number;
   entityCode: string;
-  DepartmentName: string;
-  DepartmentCode: string;
-  DepartmentResponsibles: string;
-  Previous: number;
-  Incoming: number;
-  Outflows: number;
-  Realized: number;
-  Avaliable: number;
-  Description: string;
-  Value: number;
-  Year: number;
+  departmentName: string;
+  departmentCode: string;
+  departmentResponsibles: string;
+  previous: number;
+  incoming: number;
+  outflows: number;
+  realized: number;
+  avaliable: number;
+  description: string;
+  value: number;
+  year: number;
 }
