@@ -29,22 +29,11 @@
     (scrolled)="onScroll()" [scrollWindow]="false">
     <div *ngFor="let budget of budgets">
       <mat-card class="clearfix">
-        <div style="float: left; width: 50%">
-          <mat-card-title>{{ budget.departmentName }}</mat-card-title>
+        <div>
+          <mat-card-title>{{ budget.departmentName }} ({{budget.year}})</mat-card-title>
           <mat-card-subtitle>
             <b>Responsáveis:</b> {{ budget.departmentResponsibles }}
           </mat-card-subtitle>
-
-          <div style="float: left; width: 50%">
-            <app-budget-data-values label="Saldo do ano anterior" [value]="budget.previous"></app-budget-data-values>
-            <app-budget-data-values label="Orçamento anual" [value]="budget.value"></app-budget-data-values>
-            <app-budget-data-values label="Entradas" [value]="budget.incoming"></app-budget-data-values>
-            <app-budget-data-values label="Saídas" [value]="budget.outflows"></app-budget-data-values>
-            <app-budget-data-values label="Saldo disponível" [value]="budget.avaliable"></app-budget-data-values>
-            <app-budget-data-values label="Realizado" [value]="budget.realized"></app-budget-data-values>
-          </div>
-        </div>
-        <div style="float: left; width: 50%">
           <mat-chip-list>
             <span *ngIf="budget.avaliable < 0" class="badge">
               <mat-icon class="badge">error</mat-icon>
@@ -54,96 +43,20 @@
             </span>
           </mat-chip-list>
         </div>
+
+        <div fxLayout="column">
+          <div>
+            <app-budget-data-values label="Saldo do ano anterior" [value]="budget.previous"></app-budget-data-values>
+            <app-budget-data-values label="Saldo disponível" [value]="budget.avaliable"></app-budget-data-values>
+            <app-budget-data-values label="Entradas" [value]="budget.incoming"></app-budget-data-values>
+            <app-budget-data-values label="Saídas" [value]="budget.outflows"></app-budget-data-values>
+            <app-budget-data-values label="Orçamento anual" [value]="budget.value"></app-budget-data-values>
+            <app-budget-data-values label="Realizado" [value]="budget.realized"></app-budget-data-values>
+          </div>
+        </div>
       </mat-card>
       <br/>
-      <!-- <mat-card class="clearfix">
-        <mat-card-content style="margin-left: 15px">
-          <div style="width: 255px; float: left">
-            <p class="budget-label">
-              <b>Saldo do ano anterior: </b>
-            </p>
-            <p class="budget-value">{{ budget.previous | currency:'BRL':true:'1.2-2' }}</p>
-            <br/>
-
-            <p class="budget-label">
-              <b>Orçamento do ano: </b>
-            </p>
-            <p class="budget-value">{{ budget.value | currency:'BRL':true:'1.2-2' }}</p>
-            <br/>
-
-            <p class="budget-label">
-              <b>Entradas: </b>
-            </p>
-            <p class="budget-value">{{ budget.incoming | currency:'BRL':true:'1.2-2' }}</p>
-            <br/>
-
-            <p class="budget-label">
-              <b>Saídas: </b>
-            </p>
-            <p class="budget-value">{{ budget.outflows | currency:'BRL':true:'1.2-2' }}</p>
-            <br/>
-
-            <p class="budget-label">
-              <b>Disponível: </b>
-            </p>
-            <p class="budget-value">{{ budget.avaliable | currency:'BRL':true:'1.2-2' }}</p>
-            <br/>
-
-            <p class="budget-label">
-              <b>Realizado: </b>
-            </p>
-            <p class="budget-value">{{ budget.realized | currency:'BRL':true:'1.2-2' }}</p>
-          </div>
-          <div style="width: 200px; float: right">
-
-            <mat-chip-list>
-              <mat-chip selected color="warn">No vermelho</mat-chip>
-            </mat-chip-list>
-          </div>
-        </mat-card-content>
-      </mat-card> -->
     </div>
-    <!-- <mat-accordion>
-      <div *ngFor="let budget of budgets">
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-description fxLayout="row" fxFlex>
-              <span fxFlex fxFlex.gt-sm="10" fxHide.lt-sm style="white-space: line-wrap;">{{ budget.entityCode }}</span>
-              <span fxFlex fxFlex.gt-sm="25" style="white-space: line-wrap;">{{ budget.departmentCode }} - {{ budget.departmentName }}</span>
-              <span fxFlex fxFlex.gt-sm="11" fxHide.lt-sm style="white-space: line-wrap;" class="currency">{{ budget.previous | currency:'BRL':true:'1.2-2' }}</span>
-              <span fxFlex fxFlex.gt-sm="11" fxHide.lt-sm style="white-space: line-wrap;" class="currency">{{ budget.value | currency:'BRL':true:'1.2-2' }}</span>
-              <span fxFlex fxFlex.gt-sm="11" fxHide.lt-sm style="white-space: line-wrap;" class="currency">{{ budget.incoming | currency:'BRL':true:'1.2-2' }}</span>
-              <span fxFlex fxFlex.gt-sm="11" fxHide.lt-sm style="white-space: line-wrap;" class="currency">{{ budget.outflows | currency:'BRL':true:'1.2-2' }}</span>
-              <span fxFlex fxFlex.gt-sm="11" fxHide.lt-sm style="white-space: line-wrap;" class="currency">{{ budget.avaliable | currency:'BRL':true:'1.2-2' }}</span>
-              <span fxFlex fxFlex.gt-sm="10" style="white-space: line-wrap;" class="currency">{{ budget.realized | currency:'BRL':true:'1.2-2' }}</span>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          <div fxLayout="column" class="description">
-            <div fxLayout="row">
-              <p class="title-description">Informações do Orçamento</p>
-            </div>
-
-            <div fxLayout="row wrap" fxLayoutGap="5px">
-                <span class="text-bold">Responsáveis:</span>
-                <span>{{ budget.departmentResponsibles }}</span>
-            </div>
-
-            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
-              <span class="text-bold">Nota:</span>
-              <span>{{ budget.Previous }}</span>
-            </div>
-          </div>
-          <mat-action-row>
-            <ng-template [Feature]="20" permission="4">
-              <button mat-button color="warn" matTooltip="Excluir" (click)="remove(budget)">REMOVER</button>
-            </ng-template>
-            <ng-template [Feature]="20" permission="3">
-              <button mat-button color="primary" matTooltip="Editar" (click)="edit(budget)">EDITAR</button>
-            </ng-template>
-          </mat-action-row>
-        </mat-expansion-panel>
-      </div> 
-    </mat-accordion> -->
   </div>
 </app-layout-data>
 <ng-template [Feature]="55" permission="1">
