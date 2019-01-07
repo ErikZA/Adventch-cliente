@@ -11,6 +11,7 @@ import { PaymentRoutingModule } from './payment-routing.module';
 import { BudgetDataComponent } from './components/budget/budget-data/budget-data.component';
 import { PaymentService } from './payment.service';
 import { BudgetDataValuesComponent } from './components/budget/budget-data-values/budget-data-values.component';
+import { BudgetFormComponent } from './components/budget/budget-form/budget-form.component';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { BudgetDataValuesComponent } from './components/budget/budget-data-value
   ],
   declarations: [
     BudgetDataComponent,
-    BudgetDataValuesComponent
+    BudgetDataValuesComponent,
+    BudgetFormComponent
   ]/*,
   entryComponents: [
     PendencyComponent,
