@@ -12,6 +12,7 @@ import { PaymentService } from '../../../payment.service';
 import { auth } from '../../../../../auth/auth';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
+import { utils } from '../../../../../shared/utils';
 
 @Component({
   selector: 'app-budget-data',
@@ -25,6 +26,7 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
   showList = 40;
   searchButton = false;
 
+  filterText = '';
   yearsSelecteds: number[] = [];
   yearsData: Filter[] = [];
   responsiblesSelecteds: number[] = [];
@@ -48,6 +50,8 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
     .pipe(
       switchMap(() => this.search$)
     ).subscribe(search => {
+      this.filterText = search;
+      this.search();
     });
   }
   ngOnDestroy(): void {
@@ -60,7 +64,7 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
     .pipe(
       tap(data => {
         this.budgetsCache = data;
-        this.budgets = data.filter(f => f.Year === new Date().getFullYear());
+        this.budgets = data.filter(f => f.year === new Date().getFullYear());
         this.loadResponsibles(data);
       })
     );
@@ -77,11 +81,10 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
     for (let i = 2014; i <= new Date().getFullYear(); i++) {
       this.yearsData.push(new Filter(i, i.toString()));
     }
-    this.yearsSelecteds.push(new Date().getFullYear());
+    this.checkYear(new Date().getFullYear());
   }
 
   private loadResponsibles(data): void {
-    console.log(data);
     this.responsiblesData = [];
     if (!Array.isArray(data)) {
       return;
@@ -96,14 +99,16 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
       });
     }
     });
-    console.log(this.responsiblesData);
   }
 
   public search() {
-    const responsibles = this.getResponsibles();
-    // debugger;
-    let budgetsFilttered = this.budgetsCache.filter(f => responsibles.indexOf(f.departmentResponsibles) !== -1);
+    let budgetsFilttered = this.budgetsCache.filter(c => utils.buildSearchRegex(this.filterText).test(c.departmentName.toUpperCase()));
     budgetsFilttered = this.filterService.filter(budgetsFilttered, 'year', this.yearsSelecteds);
+
+    const responsibles = this.getResponsibles();
+    if (responsibles !== '') {
+      budgetsFilttered = budgetsFilttered.filter(f => responsibles.indexOf(f.departmentResponsibles) !== -1);
+    }
     this.budgets = budgetsFilttered;
   }
 
