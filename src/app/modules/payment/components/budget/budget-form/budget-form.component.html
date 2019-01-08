@@ -19,15 +19,15 @@
       </div>
 
       <mat-form-field>
-        <mat-select placeholder="Departamento" formControlName="department" required>
+        <mat-select placeholder="Departamento" formControlName="departmentId" required>
           <mat-option *ngFor="let department of departments" [value]="department.id">
             {{ department.name }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="form.get('department').hasError('required')">Este campo é obrigatório</mat-error>
+        <mat-error *ngIf="form.get('departmentId').hasError('required')">Este campo é obrigatório</mat-error>
       </mat-form-field>
       <div fxLayout="row" fxLayoutAlign="space-between" fxFlexOffset="40px">
-        <a mat-button type="button" routerLink="/pagamentos/orcamento">CANCELAR</a>
+        <a mat-button type="button" routerLink="/pagamentos/orcamentos">CANCELAR</a>
         <button mat-raised-button type="submit" (click)="save()" color="primary" [disabled]="isSending">SALVAR</button>
       </div>
     </div>
