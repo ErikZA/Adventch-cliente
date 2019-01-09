@@ -128,7 +128,9 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
     this.search();
   }
 
-  public edit(): void {
+  public edit(budget): void {
+    this.router.navigate([budget.id, 'editar'], { relativeTo: this.route });
+    this.openSidenav();
 
   }
   public remove(): void {

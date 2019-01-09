@@ -8,6 +8,7 @@ import { Validators } from '@angular/forms';
 import { OnDestroy } from '@angular/core';
 
 import { tap } from 'rxjs/internal/operators/tap';
+import { skipWhile } from 'rxjs/internal/operators/skipWhile';
 
 import { PaymentService } from '../../../payment.service';
 import { auth } from '../../../../../auth/auth';
@@ -15,6 +16,7 @@ import { ComboInterface } from '../../../interfaces/combo-interface';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { delay } from 'rxjs/internal/operators/delay';
 import { BudgetDataComponent } from '../budget-data/budget-data.component';
+import { take } from 'rxjs/internal/operators/take';
 
 @Component({
   selector: 'app-budget-form',
@@ -43,18 +45,20 @@ export class BudgetFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading = false;
     this.initForm();
-    this.subLoad = this.route.data
+    this.subLoad = this.route.params
     .pipe(
+      tap(({ id }) => this.loading = !!id),
+      tap(({id}) => this.editBudget(id)),
+      skipWhile(({ id }) => !id),
       switchMap(() => this.loadDepartments()),
       delay(500)
     ).subscribe(() => this.loading = false);
 
     this.loadDepartments();
-    console.log(this.departments);
   }
 
   ngOnDestroy() {
-    // this.churchDataComponent.closeSidenav();
+    this.budgetDataComponent.closeSidenav();
   }
 
   initForm(): void {
@@ -70,6 +74,17 @@ export class BudgetFormComponent implements OnInit, OnDestroy {
       .loadDepartments(auth.getCurrentUnit().id).pipe(
         tap((data: ComboInterface[]) => { this.departments = data; })
       );
+  }
+
+  private editBudget(id): void {
+    this.budget = this.budgetDataComponent.budgetsCache.filter(f => f.id === Number(id))[0];
+    if (this.budget) {
+      this.form.patchValue({
+        year: this.budget.year,
+        value: this.budget.value,
+        departmentId: this.budget.departmentId
+      });
+    }
   }
 
   public save(): void {

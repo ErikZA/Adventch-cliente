@@ -31,7 +31,10 @@
     <div *ngFor="let budget of budgets">
       <mat-card class="clearfix">
         <div>
-          <mat-card-title>{{ budget.departmentName }} ({{budget.year}})</mat-card-title>
+          <mat-card-title>
+            {{ budget.departmentName }} ({{budget.year}}) 
+            <mat-icon class="edit" (click)="edit(budget);">edit</mat-icon>
+          </mat-card-title>
           <mat-card-subtitle>
             <b>Responsáveis:</b> {{ budget.departmentResponsibles }}
           </mat-card-subtitle>
@@ -48,10 +51,10 @@
         <div fxLayout="column">
           <div>
             <app-budget-data-values label="Saldo do ano anterior" [value]="budget.previous"></app-budget-data-values>
-            <app-budget-data-values label="Saldo disponível" [value]="budget.avaliable"></app-budget-data-values>
+            <app-budget-data-values label="Orçamento anual" [value]="budget.value"></app-budget-data-values>
             <app-budget-data-values label="Entradas" [value]="budget.incoming"></app-budget-data-values>
             <app-budget-data-values label="Saídas" [value]="budget.outflows"></app-budget-data-values>
-            <app-budget-data-values label="Orçamento anual" [value]="budget.value"></app-budget-data-values>
+            <app-budget-data-values label="Saldo disponível" [value]="budget.avaliable"></app-budget-data-values>
             <app-budget-data-values label="Realizado" [value]="budget.realized"></app-budget-data-values>
           </div>
         </div>
