@@ -20,11 +20,13 @@
       </mat-form-field>
       <mat-form-field fxLayout="column" class="margin-search" style="padding: 8px; width: 300px">
         <mat-select placeholder="Responsável">
+          <mat-option value="-1" (click)="searchResponsible(undefined)">[TODOS]</mat-option>
           <mat-option *ngFor="let responsible of responsiblesData" [value]="responsible.id" (click)="searchResponsible(responsible)">{{ responsible.name }}</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field fxLayout="column" class="margin-search" style="padding: 8px; width: 300px">
         <mat-select placeholder="Agrupador">
+          <mat-option value="-1" (click)="searchParent(undefined)">[TODOS]</mat-option>
           <mat-option *ngFor="let department of departmentsData" [value]="department.id" (click)="searchParent(department)">{{ department.name }}</mat-option>
         </mat-select>
       </mat-form-field>
