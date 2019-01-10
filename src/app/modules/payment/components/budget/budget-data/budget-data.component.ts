@@ -64,6 +64,7 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
   }
 
   public getData() {
+    console.log(this.yearFilter);
     this.search$.next('');
     return this.paymentService.getBudgets(auth.getCurrentUnit().id, this.yearFilter)
     .pipe(

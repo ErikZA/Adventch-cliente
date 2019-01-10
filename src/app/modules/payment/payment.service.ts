@@ -14,7 +14,7 @@ export class PaymentService {
   ) { }
 
   getBudgets(idUnit: number, year: number): Observable<BudgetDataInterface[]> {
-    const url = `/payment/budget/getBudgets/${idUnit}/year/${2018}`;
+    const url = `/payment/budget/getBudgets/${idUnit}/year/${year}`;
     return this.http
       .get<BudgetDataInterface[]>(url);
   }
