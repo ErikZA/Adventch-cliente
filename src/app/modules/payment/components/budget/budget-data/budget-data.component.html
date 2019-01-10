@@ -12,7 +12,7 @@
         </button>
       </div>
     </div>
-    <div fxLayout="row">
+    <div fxLayout="row wrap" style="flex-wrap: wrap;">
       <mat-form-field fxLayout="column" class="margin-search" style="padding: 8px; width: 300px">
         <mat-select placeholder="Ano" [(ngModel)]="yearFilter">
           <mat-option *ngFor="let year of years" [value]="year" (click)="searchYear(year)">{{ year }}</mat-option>
@@ -21,6 +21,11 @@
       <mat-form-field fxLayout="column" class="margin-search" style="padding: 8px; width: 300px">
         <mat-select placeholder="Responsável">
           <mat-option *ngFor="let responsible of responsiblesData" [value]="responsible.id" (click)="searchResponsible(responsible)">{{ responsible.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxLayout="column" class="margin-search" style="padding: 8px; width: 300px">
+        <mat-select placeholder="Agrupador">
+          <mat-option *ngFor="let department of departmentsData" [value]="department.id" (click)="searchParent(department)">{{ department.name }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
@@ -38,7 +43,8 @@
               <!-- <mat-icon class="edit" (click)="edit(budget);">edit</mat-icon> -->
             </mat-card-title>
             <mat-card-subtitle>
-              <b>Responsáveis:</b> {{ budget.departmentResponsibles }}
+              <b>Responsáveis:</b> {{ budget.departmentResponsibles }}<br/>
+              <b>Agrupador:</b> {{ budget.parent }}
             </mat-card-subtitle>
             <mat-chip-list>
               <span *ngIf="budget?.avaliable < 0" class="badge">

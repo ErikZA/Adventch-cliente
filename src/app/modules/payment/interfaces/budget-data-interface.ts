@@ -1,6 +1,7 @@
 export interface BudgetDataInterface {
   id: number;
   entityCode: string;
+  parent: string;
   departmentId: number;
   departmentName: string;
   departmentCode: string;

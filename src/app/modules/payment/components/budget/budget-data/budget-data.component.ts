@@ -32,6 +32,8 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
   yearFilter: number;
   responsiblesData: Filter[] = [];
   responsibleFilter: Filter;
+  departmentsData: Filter[] = [];
+  departmentFilter: Filter;
 
   // New
   budgets: BudgetDataInterface[] = [];
@@ -72,6 +74,7 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
           this.budgets.push(data[i]);
         }
         this.loadResponsibles(data);
+        this.loadParents(data);
         this.search();
       })
     );
@@ -85,6 +88,7 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
 
   private loadResponsibles(data): void {
     this.responsiblesData = [];
+    const responsibleAux = [];
     if (!Array.isArray(data)) {
       return;
     }
@@ -92,12 +96,31 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
       const responsibles = budget.departmentResponsibles;
       if (responsibles != null && responsibles !== undefined) {
       responsibles.split(',').forEach(responsible => {
-        if (this.responsiblesData.map(m => m.name).indexOf(responsible) === -1) {
-          this.responsiblesData.push(new Filter(this.responsiblesData.length, responsible));
+        if (responsibleAux.map(m => m.name).indexOf(responsible) === -1) {
+          if (responsible !== '') {
+            responsibleAux.push(new Filter(responsibleAux.length, responsible));
+          }
         }
       });
     }
     });
+    this.responsiblesData = responsibleAux.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  private loadParents(data): void {
+    this.departmentsData = [];
+    const departmentAux = [];
+    if (!Array.isArray(data)) {
+      return;
+    }
+    data.forEach(budget => {
+      if (budget.parent != null) {
+        if (departmentAux.map(m => m.name).indexOf(budget.parent) === -1) {
+          departmentAux.push(new Filter(departmentAux.length, budget.parent));
+        }
+      }
+    });
+    this.departmentsData = departmentAux.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   public searchYear(year): void {
@@ -108,7 +131,11 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
 
   public searchResponsible(responsible): void {
     this.responsibleFilter = responsible;
-    this.budgets = [];
+    this.search();
+  }
+
+  public searchParent(department): void {
+    this.departmentFilter = department;
     this.search();
   }
 
@@ -117,6 +144,9 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
     let budgetsFilttered = this.budgetsCache.filter(c => utils.buildSearchRegex(this.filterText).test(c.departmentName.toUpperCase()));
     if (this.responsibleFilter !== undefined) {
       budgetsFilttered = budgetsFilttered.filter(f => f.departmentResponsibles.indexOf(this.responsibleFilter.name) !== -1);
+    }
+    if (this.departmentFilter !== undefined) {
+      budgetsFilttered = budgetsFilttered.filter(f => f.parent === this.departmentFilter.name);
     }
     this.onDemand(budgetsFilttered);
   }
