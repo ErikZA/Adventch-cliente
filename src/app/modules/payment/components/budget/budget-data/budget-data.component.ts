@@ -13,6 +13,7 @@ import { auth } from '../../../../../auth/auth';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 import { utils } from '../../../../../shared/utils';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-budget-data',
@@ -23,20 +24,21 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
   protected componentUrl = '/pagamentos/orcamentos';
 
   search$ = new Subject<string>();
-  showList = 40;
+  showList = 20;
   searchButton = false;
 
   filterText = '';
-  yearsSelecteds: number[] = [];
-  yearsData: Filter[] = [];
-  responsiblesSelecteds: number[] = [];
+  years: Number[] = [];
+  yearFilter: number;
   responsiblesData: Filter[] = [];
+  responsibleFilter: Filter;
 
   // New
   budgets: BudgetDataInterface[] = [];
   budgetsCache: BudgetDataInterface[] = [];
 
   subLoad: Subscription;
+  subFilter: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,6 +48,8 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
   ) { super(router); }
 
   ngOnInit() {
+    this.yearFilter = new Date().getFullYear();
+    this.loadYears();
     this.subLoad = this.getData()
     .pipe(
       switchMap(() => this.search$)
@@ -59,29 +63,24 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
 
   public getData() {
     this.search$.next('');
-    this.loadYears();
-    return this.paymentService.getBudgets(auth.getCurrentUnit().id, 2018)
+    return this.paymentService.getBudgets(auth.getCurrentUnit().id, this.yearFilter)
     .pipe(
       tap(data => {
         this.budgetsCache = data;
-        this.budgets = data.filter(f => f.year === new Date().getFullYear());
+        const budgetsAux = data;
+        for (let i = 0; i < this.showList; i++) {
+          this.budgets.push(data[i]);
+        }
         this.loadResponsibles(data);
+        this.search();
       })
     );
-    /**
-     *       .getChurchAvaliationForm(id)
-      .pipe(
-        skipWhile(church => !church),
-        tap(church => this.church = church)
-      );
-     */
   }
 
   private loadYears(): void {
-    for (let i = 2014; i <= new Date().getFullYear(); i++) {
-      this.yearsData.push(new Filter(i, i.toString()));
+    for (let i = 2014; i <= this.yearFilter; i++) {
+      this.years.push(i);
     }
-    this.checkYear(new Date().getFullYear());
   }
 
   private loadResponsibles(data): void {
@@ -101,31 +100,25 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
     });
   }
 
-  public search() {
+  public searchYear(year): void {
+    this.yearFilter = year;
+    this.budgets = [];
+    this.subFilter = this.getData().subscribe();
+  }
+
+  public searchResponsible(responsible): void {
+    this.responsibleFilter = responsible;
+    this.budgets = [];
+    this.search();
+  }
+
+  private search() {
+    this.budgets = [];
     let budgetsFilttered = this.budgetsCache.filter(c => utils.buildSearchRegex(this.filterText).test(c.departmentName.toUpperCase()));
-    budgetsFilttered = this.filterService.filter(budgetsFilttered, 'year', this.yearsSelecteds);
-
-    const responsibles = this.getResponsibles();
-    if (responsibles !== '') {
-      budgetsFilttered = budgetsFilttered.filter(f => responsibles.indexOf(f.departmentResponsibles) !== -1);
+    if (this.responsibleFilter !== undefined) {
+      budgetsFilttered = budgetsFilttered.filter(f => f.departmentResponsibles.indexOf(this.responsibleFilter.name) !== -1);
     }
-    this.budgets = budgetsFilttered;
-  }
-
-  private getResponsibles(): string {
-    let responsibles = '';
-    responsibles = this.responsiblesData.filter(f => this.responsiblesSelecteds.indexOf(f.id) !== -1).map(m => m.name).toString();
-    return responsibles;
-  }
-
-  public checkYear(year) {
-    this.yearsSelecteds = this.filterService.check(year, this.yearsSelecteds);
-    this.search();
-  }
-
-  public checkResponsible(responsible) {
-    this.responsiblesSelecteds = this.filterService.check(responsible, this.responsiblesSelecteds);
-    this.search();
+    this.onDemand(budgetsFilttered);
   }
 
   public edit(budget): void {
@@ -138,7 +131,19 @@ export class BudgetDataComponent extends AbstractSidenavContainer implements OnI
   }
 
   public onScroll() {
-    this.showList += 80;
+    this.showList += 20;
+    this.search();
+    // this.onDemand(this.budgetsCache);
+  }
+
+  private onDemand(budgetsFilttered) {
+    const currentDemand = this.showList - 20;
+    const solicitedDemand = this.showList;
+    for (let i = 0; i < solicitedDemand; i++) {
+      if (budgetsFilttered[i] != null) {
+      this.budgets.push(budgetsFilttered[i]);
+      }
+    }
   }
 
   public expandPanel(matExpansionPanel): void {

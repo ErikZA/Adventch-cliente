@@ -10,61 +10,64 @@
         <button mat-icon-button (click)="searchButton = !searchButton">
           <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
         </button>
-        <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
-          <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
-        </button>
       </div>
     </div>
-    <mat-accordion class="example-headers-align" #matExpansionPanel>
-      <mat-expansion-panel #matExpansionPanel hideToggle="true">
-        <div fxLayout.gt-xs="row" fxLayout="column">
-          <app-filter flex="35" [data]="yearsData" placeholder="Ano" (filterEmitted)="checkYear($event)"></app-filter>
-          <app-filter flex="35" [data]="responsiblesData" placeholder="Responsável" (filterEmitted)="checkResponsible($event)"></app-filter>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
+    <div fxLayout="row">
+      <mat-form-field fxLayout="column" class="margin-search" style="padding: 8px; width: 300px">
+        <mat-select placeholder="Ano" [(ngModel)]="yearFilter">
+          <mat-option *ngFor="let year of years" [value]="year" (click)="searchYear(year)">{{ year }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxLayout="column" class="margin-search" style="padding: 8px; width: 300px">
+        <mat-select placeholder="Responsável">
+          <mat-option *ngFor="let responsible of responsiblesData" [value]="responsible.id" (click)="searchResponsible(responsible)">{{ responsible.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
     <mat-divider></mat-divider>
   </div>
 
   <div space-type="container" fxLayout="column" class="container" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
     (scrolled)="onScroll()" [scrollWindow]="false">
-    <div *ngFor="let budget of budgets">
-      <mat-card class="clearfix">
-        <div>
-          <mat-card-title>
-            {{ budget.departmentName }} ({{budget.year}}) 
-            <mat-icon class="edit" (click)="edit(budget);">edit</mat-icon>
-          </mat-card-title>
-          <mat-card-subtitle>
-            <b>Responsáveis:</b> {{ budget.departmentResponsibles }}
-          </mat-card-subtitle>
-          <mat-chip-list>
-            <span *ngIf="budget.avaliable < 0" class="badge">
-              <mat-icon class="badge">error</mat-icon>
-              <p class="badge" style="margin: 3px">
-                <b> Saldo negativo</b>
-              </p>
-            </span>
-          </mat-chip-list>
-        </div>
-
-        <div fxLayout="column">
+    <div *ngFor="let budget of budgets; index as i">
+      <div *ngIf="i < showList">
+        <mat-card class="clearfix">
           <div>
-            <app-budget-data-values label="Saldo do ano anterior" [value]="budget.previous"></app-budget-data-values>
-            <app-budget-data-values label="Orçamento anual" [value]="budget.value"></app-budget-data-values>
-            <app-budget-data-values label="Entradas" [value]="budget.incoming"></app-budget-data-values>
-            <app-budget-data-values label="Saídas" [value]="budget.outflows"></app-budget-data-values>
-            <app-budget-data-values label="Saldo disponível" [value]="budget.avaliable"></app-budget-data-values>
-            <app-budget-data-values label="Realizado" [value]="budget.realized"></app-budget-data-values>
+            <mat-card-title>
+              {{ budget.departmentName }}
+              <!-- <mat-icon class="edit" (click)="edit(budget);">edit</mat-icon> -->
+            </mat-card-title>
+            <mat-card-subtitle>
+              <b>Responsáveis:</b> {{ budget.departmentResponsibles }}
+            </mat-card-subtitle>
+            <mat-chip-list>
+              <span *ngIf="budget?.avaliable < 0" class="badge">
+                <mat-icon class="badge">error</mat-icon>
+                <p class="badge" style="margin: 3px">
+                  <b> Saldo negativo</b>
+                </p>
+              </span>
+            </mat-chip-list>
           </div>
-        </div>
-      </mat-card>
+
+          <div fxLayout="column">
+            <div>
+              <app-budget-data-values label="Saldo do ano anterior" [value]="budget?.previous"></app-budget-data-values>
+              <app-budget-data-values label="Orçamento anual" [value]="budget?.value"></app-budget-data-values>
+              <app-budget-data-values label="Entradas" [value]="budget?.incoming"></app-budget-data-values>
+              <app-budget-data-values label="Saídas" [value]="budget?.outflows"></app-budget-data-values>
+              <app-budget-data-values label="Saldo disponível" [value]="budget?.avaliable"></app-budget-data-values>
+              <app-budget-data-values label="Realizado" [value]="budget?.realized"></app-budget-data-values>
+            </div>
+          </div>
+        </mat-card>
+      </div>
       <br/>
     </div>
   </div>
 </app-layout-data>
-<ng-template [Feature]="20" permission="1">
+<!-- <ng-template [Feature]="20" permission="1">
   <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo" (click)="openSidenav()">
     <mat-icon aria-label="Adicionar">add</mat-icon>
   </button>
-</ng-template>
+</ng-template> -->
