@@ -4,17 +4,15 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
-import { Districts } from '../../../models/districts';
-import { AuthService } from '../../../../../shared/auth.service';
-import { TreasuryService } from '../../../treasury.service';
 import { auth } from '../../../../../auth/auth';
-import { User } from '../../../../../shared/models/user.model';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription, Observable } from 'rxjs';
 import { switchMap, tap, skipWhile, delay } from 'rxjs/operators';
 import { DistrictService } from '../district.service';
 import { DistrictNewInterface } from '../../../interfaces/district/district-new-interface';
 import { DistrictUpdateInterface } from '../../../interfaces/district/district-update-interface';
+import { UserDistrictListInterface } from '../../../interfaces/district/user-district-list-interface';
+import { DistrictEditInterface } from '../../../interfaces/district/district-edit-interface';
 
 @Component({
   selector: 'app-districts-form',
@@ -26,8 +24,8 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
 
   formDistrict: FormGroup;
   params: any;
-  users: User[] = [];
-  district: Districts;
+  users: UserDistrictListInterface[] = [];
+  district: DistrictEditInterface;
   sub1: Subscription;
 
   loading = true;
@@ -35,11 +33,8 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private treasuryService: TreasuryService,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
-    private authService: AuthService,
-    private service: TreasuryService,
     private districtsDataComponent: DistrictsDataComponent,
     private districtService: DistrictService
   ) { }
@@ -62,11 +57,9 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
   }
 
   private loadAnalysts() {
-    const unit = this.authService.getCurrentUnit();
-    return this.service.getUsers2(unit.id).pipe(
-      tap((data) => {
-      this.users = data;
-      })
+    const { id } = auth.getCurrentUnit();
+    return this.districtService.getUsersDistrictsList(id).pipe(
+      tap((data) => this.users = data)
     );
   }
 
@@ -78,7 +71,7 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     return this.checkIsEdit() ? 'Editar Distrito' : 'Novo Distrito';
   }
 
-  initForm(): void {
+  private initForm(): void {
     this.formDistrict = this.formBuilder.group({
       name: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
       analystId: [null, Validators.required]
@@ -125,19 +118,20 @@ export class DistrictsFormComponent implements OnInit, OnDestroy {
     return this.formDistrict.value as DistrictUpdateInterface;
   }
 
-  editDistrict(id: number) {
-    return this.treasuryService.getDistrict(id)
+  private editDistrict(id: number) {
+    return this.districtService.getDistrictEdit(id)
     .pipe(
       tap(res => {
         this.district = res;
-        this.formDistrict.patchValue({
-          name: res.name,
-          analystId: res.analyst.id
-        });
+        this.setValuesEdit(res);
       })
     );
   }
-  resetAllForms() {
-    this.formDistrict.reset();
+
+  private setValuesEdit(res: DistrictEditInterface) {
+    this.formDistrict.patchValue({
+      name: res.name,
+      analystId: res.analystId
+    });
   }
 }

@@ -13,11 +13,13 @@
                 <mat-error *ngIf="formDistrict.get('name').hasError('pattern')">Digite um nome válido.</mat-error>
             </mat-form-field>
             <mat-form-field>
-                <mat-select placeholder="Analista" formControlName="analystId" required>
+                <mat-select placeholder="Analista do Distrito" formControlName="analystId" required>
+                    <mat-option>--</mat-option>
                     <mat-option *ngFor="let analyst of users" [value]="analyst.id">
                         {{ analyst.name }}
                     </mat-option>
                 </mat-select>
+                <mat-error *ngIf="formDistrict.get('analystId').hasError('required')">Esse campo é obrigatório</mat-error>
             </mat-form-field>
             <div fxLayout="row" fxLayoutAlign="space-between" fxFlexOffset="40px">
                 <a mat-button type="button" routerLink="/tesouraria/distritos">CANCELAR</a>

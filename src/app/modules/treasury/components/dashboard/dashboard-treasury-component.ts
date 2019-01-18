@@ -8,6 +8,8 @@ import { auth } from '../../../../auth/auth';
 import { MatDialog } from '@angular/material';
 import { AvaliationReportComponent } from './avaliation-report/avaliation-report-component';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { DashboardTreasuryService } from './dashboard-treasury.service';
+import { AnalystDistrictListInterface } from '../../interfaces/district/analyst-district-list-interface';
 
 @Component({
   selector: 'app-dashboard-treasury',
@@ -18,7 +20,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 export class DashboardTreasuryComponent implements OnInit, OnDestroy {
 
   isMobile: boolean;
-  users: any;
+  users: AnalystDistrictListInterface[];
   // Chart Configurations
   // Adicione novas cores aqui, caso o gráfico fique com cor cinza
   chartColors = [{
@@ -100,6 +102,7 @@ export class DashboardTreasuryComponent implements OnInit, OnDestroy {
   constructor(
     private media: ObservableMedia,
     private service: TreasuryService,
+    private dashboadTreasuryService: DashboardTreasuryService,
     private changeDetector: ChangeDetectorRef,
     private dialog: MatDialog,
   ) { }
@@ -108,7 +111,7 @@ export class DashboardTreasuryComponent implements OnInit, OnDestroy {
     const unit = auth.getCurrentUnit();
     this.mediaSubscription = this.media
       .subscribe((change: MediaChange) => setTimeout(() => this.isMobile = change.mqAlias === 'xs'));
-    this.service.getUsers(unit.id).subscribe((data) => {
+    this.dashboadTreasuryService.getAnalystsOfTheDistrict(unit.id).subscribe(data => {
       this.users = data;
     });
     this.getDataSubscription = this.getDashboardData(0);

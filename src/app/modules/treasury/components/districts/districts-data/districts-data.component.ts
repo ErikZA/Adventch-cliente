@@ -1,9 +1,8 @@
-import { auth } from './../../../../../auth/auth';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Subject ,  Subscription } from 'rxjs';
 
-import { Districts } from '../../../models/districts';
+import { auth } from './../../../../../auth/auth';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { TreasuryService } from '../../../treasury.service';
@@ -12,6 +11,8 @@ import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { skipWhile, switchMap, tap } from 'rxjs/operators';
+import { DistrictService } from '../district.service';
+import { DistrictDataInterface } from '../../../interfaces/district/district-data-interface';
 
 @Component({
   selector: 'app-districts-data',
@@ -27,8 +28,8 @@ export class DistrictsDataComponent extends AbstractSidenavContainer implements 
   showList = 80;
   search$ = new Subject<string>();
 
-  districtsCache: Districts[] = [];
-  districts: Districts[] = [];
+  districtsCache: DistrictDataInterface[] = [];
+  districts: DistrictDataInterface[] = [];
 
   sub1: Subscription;
   subsConfirm: Subscription;
@@ -38,6 +39,7 @@ export class DistrictsDataComponent extends AbstractSidenavContainer implements 
     private treasureService: TreasuryService,
     private snackBar: MatSnackBar,
     private confirmDialogService: ConfirmDialogService,
+    private service: DistrictService
   ) { super(router); }
 
   ngOnInit() {
@@ -50,9 +52,9 @@ export class DistrictsDataComponent extends AbstractSidenavContainer implements 
   ngOnDestroy(): void {
   }
 
-  getData() {
+  public getData() {
     this.search$.next('');
-    return this.treasureService
+    return this.service
     .getDistricts(auth.getCurrentUnit().id)
     .pipe(
       tap(districts => {
@@ -65,24 +67,24 @@ export class DistrictsDataComponent extends AbstractSidenavContainer implements 
   public onScroll() {
     this.showList += 80;
   }
-  searchFilter(value: string): Districts[] {
+  searchFilter(value: string): DistrictDataInterface[] {
     return this.districtsCache.filter(d =>
       utils.buildSearchRegex(value).test(d.name.toUpperCase()) ||
       utils.buildSearchRegex(value).test(d.analystName.toUpperCase())
     );
   }
-  remove(district: Districts) {
+  public remove(district: DistrictDataInterface) {
     this.subsConfirm = this.confirmDialogService
       .confirm('Remover', 'Você deseja realmente remover este distrito?', 'REMOVER')
       .pipe(
         skipWhile(res => res !== true),
-        switchMap(() => this.treasureService.removeDistricts(district.id)),
+        switchMap(() => this.service.deleteDistrict(district.id)),
         switchMap(() => this.getData()),
         tap(() => this.snackBar.open('Distrito removido com sucesso.', 'OK', { duration: 5000 }))
       ).subscribe();
   }
 
-  edit(district: Districts) {
+  public edit(district: DistrictDataInterface) {
     if (district.id === undefined) {
       return;
     }

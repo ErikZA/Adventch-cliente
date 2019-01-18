@@ -36,6 +36,7 @@ import { ChurchService } from './components/church/church.service';
 import { ObservationService } from './components/observation/observation.service';
 import { TreasurerService } from './components/treasurer/treasurer.service';
 import { DistrictService } from './components/districts/district.service';
+import { DashboardTreasuryService } from './components/dashboard/dashboard-treasury.service';
 
 @NgModule({
   imports: [
@@ -76,6 +77,7 @@ import { DistrictService } from './components/districts/district.service';
     TreasurerService,
     DistrictService,
     AvaliationStore,
+    DashboardTreasuryService
   ],
   entryComponents: [
     AvaliationReportComponent

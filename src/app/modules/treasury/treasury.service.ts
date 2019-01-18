@@ -104,11 +104,6 @@ export class TreasuryService {
   /*
     Distritos
   */
- getDistricts(unitId): Observable<Districts[]> {
-  const url = '/treasury/districts/getAllDistricts/' + unitId;
-  return this.http
-    .get<Districts[]>(url);
-  }
   saveDistricts(data): Observable<any> {
     const url = '/treasury/districts/newDistrict';
     return this.http

@@ -13,6 +13,8 @@ import { auth } from '../../../../../auth/auth';
 
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { switchMap, tap, delay, skipWhile } from 'rxjs/operators';
+import { DistrictService } from '../../districts/district.service';
+import { DistrictListInterface } from '../../../interfaces/district/district-list-interface';
 
 @Component({
   selector: 'app-church-form',
@@ -22,7 +24,7 @@ import { switchMap, tap, delay, skipWhile } from 'rxjs/operators';
 @AutoUnsubscribe()
 export class ChurchFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
-  districts: Districts[] = [];
+  districts: DistrictListInterface[] = [];
   states: State[] = [];
   cities: City[] = [];
   church: Church;
@@ -38,7 +40,8 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
     private service: TreasuryService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private churchDataComponent: ChurchDataComponent
+    private churchDataComponent: ChurchDataComponent,
+    private districtService: DistrictService
   ) {}
 
   ngOnInit() {
@@ -134,10 +137,10 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   }
 
   private loadDistricts() {
-    return this.service
-      .getDistricts(auth.getCurrentUnit().id)
+    return this.districtService
+      .getDistrictsList(auth.getCurrentUnit().id)
       .pipe(
-        tap((data: Districts[]) => { this.districts = data; })
+        tap((data: DistrictListInterface[]) => { this.districts = data; })
       );
   }
 

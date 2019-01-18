@@ -20,6 +20,8 @@ import { FilterService } from '../../../../../core/components/filter/service/fil
 import { ReportService } from '../../../../../shared/report.service';
 import { TreasurerService } from '../treasurer.service';
 import { TreasurerDataInterface } from '../../../interfaces/treasurer/treasurer-data-interface';
+import { DistrictListInterface } from '../../../interfaces/district/district-list-interface';
+import { DistrictService } from '../../districts/district.service';
 
 @Component({
   selector: 'app-treasurer-data',
@@ -55,7 +57,8 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     private confirmDialogService: ConfirmDialogService,
     private snackBar: MatSnackBar,
     private filterService: FilterService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private districtService: DistrictService
   ) { super(router); }
 
   ngOnInit() {
@@ -144,9 +147,9 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
 
   private loadDistricts() {
     this.districtsData = [];
-    return this.treasureService.getDistricts(auth.getCurrentUnit().id)
+    return this.districtService.getDistrictsList(auth.getCurrentUnit().id)
     .pipe(
-      tap((data: Districts[]) => {
+      tap((data: DistrictListInterface[]) => {
         data.forEach(d => {
           this.districtsData.push(new Filter(Number(d.id), d.name));
         });

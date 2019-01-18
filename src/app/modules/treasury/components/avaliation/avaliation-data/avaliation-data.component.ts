@@ -21,6 +21,8 @@ import { FilterService } from '../../../../../core/components/filter/service/fil
 import { utils } from '../../../../../shared/utils';
 
 import { AvaliationDataInterface } from '../../../interfaces/avaliation/avaliation-data-interface';
+import { DistrictListInterface } from '../../../interfaces/district/district-list-interface';
+import { DistrictService } from '../../districts/district.service';
 @Component({
   selector: 'app-avaliation-data',
   templateUrl: './avaliation-data.component.html',
@@ -48,7 +50,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   analystsSelecteds: number[] = [];
   analystsData: Filter[] = [];
 
-  districts: Districts[] = new Array<Districts>();
+  districts: DistrictListInterface[] = new Array<DistrictListInterface>();
   analysts: User[] = new Array<User>();
   years: number[] = new Array<number>();
 
@@ -64,6 +66,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     private snackBar: MatSnackBar,
     private avaliationService: AvaliationService,
     private filterService: FilterService,
+    private districtService: DistrictService,
     private oldService: TreasuryService // TO DO: refatorar os métodos usados neste serviço para o FilterService
   ) { super(router); }
 
@@ -129,8 +132,8 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   }
 
   private loadDistricts() {
-    this.oldService
-    .getDistricts(auth.getCurrentUnit().id).subscribe((data: Districts[]) => {
+    this.districtService
+    .getDistrictsList(auth.getCurrentUnit().id).subscribe((data: DistrictListInterface[]) => {
       data.forEach(d => {
         this.districtsData.push(new Filter(Number(d.id), d.name));
       });

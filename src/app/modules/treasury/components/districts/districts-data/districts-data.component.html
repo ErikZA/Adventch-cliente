@@ -34,7 +34,7 @@
         <div fxLayout="column" *ngIf="districts.length !== 0">
             <mat-list-item class="break-line" *ngFor="let district of districts; index as i" fxFlex>
                 <span class="text-color-item" fxFlex>{{ district.name }}</span>
-                <span class="text-color-item" fxFlex>{{ district.analyst.name }}</span>
+                <span class="text-color-item" fxFlex>{{ district.analystName }}</span>
                 <button mat-icon-button fxHide.gt-xs [matMenuTriggerFor]="menu">
                           <mat-icon>more_vert</mat-icon>
                         </button>
