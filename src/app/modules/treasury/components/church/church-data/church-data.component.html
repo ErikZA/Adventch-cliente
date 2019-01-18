@@ -50,46 +50,59 @@
                 <mat-expansion-panel hideToggle *ngIf="i <= showList">
                     <mat-expansion-panel-header>
                         <mat-panel-description fxLayout="row" fxFlex>
-                            <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
-                {{ church.name }}
-              </span>
-                            <span class="text-bold" *ngIf="!church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
-                <i>Não Informado</i>
-              </span>
-                            <span *ngIf="church.district.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
-                {{ church.district.name }}
-              </span>
-                            <span class="text-bold" *ngIf="!church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
-                <i>Não Informado</i>
-              </span>
-                            <span *ngIf="church.district?.analyst?.name" fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
-                {{ church.district?.analyst?.name }}
-              </span>
-                            <span fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;" fxHide.lt-sm>
-                {{ church.city.name }} - {{ church.city.state.acronym }}
-              </span>
+                            <p fxFlex fxFlex.gt-sm="25%" style="white-space: line-wrap;">
+                                {{ church.name }}
+                            </p>
+                            <p fxFlex.gt-sm="25%" fxHide.lt-sm>
+                                <ng-container *ngIf="church.district !== undefined && church.district !== null; else notDisctrict">
+                                    <span>{{ church.district.name }}</span>
+                                </ng-container>
+                                <ng-template #notDisctrict>
+                                    <div class="text-italic text-bold">Não Informado</div>
+                                </ng-template>
+                            </p>
+                            <p fxFlex.gt-sm="25%" fxHide.lt-sm>
+                                <ng-container *ngIf="church.district !== undefined && church.district !== null && church.district.analyst !== undefined && church.district.analyst !== null; else notAnalyst">
+                                    <span>{{ church.district.analyst.name }}</span>
+                                </ng-container>
+                                <ng-template #notAnalyst>
+                                    <div class="text-italic text-bold">Não Informado</div>
+                                </ng-template>
+                            </p>
+                            <p fxFlex.gt-sm="25%" fxHide.lt-sm>
+                                {{ church.city.name }} - {{ church.city.stateAcronym }}
+                            </p>
                         </mat-panel-description>
                     </mat-expansion-panel-header>
                     <div fxLayout="column" class="description">
                         <div fxLayout="row">
                             <p class="title-description">Informações da Igreja</p>
                         </div>
-
                         <div fxLayout="row wrap" fxLayoutGap="5px">
                             <span class="text-bold">Código:</span>
                             <span>{{ church.code }}</span>
                         </div>
                         <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
                             <span class="text-bold">Distrito:</span>
-                            <span>{{ church.district.name }}</span>
+                            <ng-container *ngIf="church.district !== undefined && church.district !== null; else notDisctrictInfo">
+                                <span>{{ church.district.name }}</span>
+                            </ng-container>
+                            <ng-template #notDisctrictInfo>
+                                <div class="text-italic">Não Informado</div>
+                            </ng-template>
                         </div>
                         <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
                             <span class="text-bold">Analista:</span>
-                            <span>{{ church.district.analyst.name }}</span>
+                            <ng-container *ngIf="church.district !== undefined && church.district !== null && church.district.analyst !== undefined && church.district.analyst !== null; else notAnalystInfo">
+                                <span>{{ church.district.analyst.name }}</span>
+                            </ng-container>
+                            <ng-template #notAnalystInfo>
+                                <div class="text-italic">Não Informado</div>
+                            </ng-template>
                         </div>
                         <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
                             <span class="text-bold">Cidade:</span>
-                            <span>{{ church.city.name }} - {{ church.city.state.acronym }}</span>
+                            <span>{{ church.city.name }} - {{ church.city.stateAcronym }}</span>
                         </div>
                         <div fxLayout="row wrap" fxLayoutGap="5px">
                             <span class="text-bold">Endereço:</span>

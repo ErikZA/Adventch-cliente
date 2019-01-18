@@ -15,7 +15,8 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 import { ReportService } from '../../../../../shared/report.service';
-
+import { ChurchService } from '../church.service';
+import { ChurchDataInterface } from '../../../interfaces/church/church-data-interface';
 
 @Component({
   selector: 'app-church-data',
@@ -31,8 +32,8 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
   search$ = new Subject<string>();
   layout: String = 'row';
 
-  churches: Church[] = [];
-  churchesCache: Church[] = [];
+  churches: ChurchDataInterface[];
+  churchesCache: ChurchDataInterface[];
 
   filterText = '';
 
@@ -54,7 +55,8 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
     private treasuryService: TreasuryService,
     private snackBar: MatSnackBar,
     private filterService: FilterService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private service: ChurchService
   ) { super(router); }
 
   ngOnInit() {
@@ -72,7 +74,8 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
   }
   public getData() {
     this.search$.next('');
-    return this.treasuryService.getChurches(auth.getCurrentUnit().id)
+    const { id } = auth.getCurrentUnit();
+    return this.service.getChurchesData(id)
     .pipe(
       tap(data => {
         this.churches = data;
@@ -84,7 +87,7 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
       })
     );
   }
-  private loadCities(data: Church[]): void {
+  private loadCities(data: ChurchDataInterface[]): void {
     this.citiesData = [];
     if (!Array.isArray(data)) {
       return;
@@ -96,25 +99,33 @@ export class ChurchDataComponent extends AbstractSidenavContainer implements OnI
     });
     this.citiesData.sort((a, b) => a.name.localeCompare(b.name));
   }
-  private loadAnalysts(data: Church[]): void {
+  private loadAnalysts(data: ChurchDataInterface[]): void {
     this.analystsData = [];
     if (!Array.isArray(data)) {
       return;
     }
     data.forEach(church => {
-      if (church.district.id !== 0 && this.analystsData.map(x => x.id).indexOf(church.district.analyst.id) === -1) {
+      if (
+        church.district !== null &&
+        church.district.id !== 0 &&
+        this.analystsData.map(x => x.id).indexOf(church.district.analyst.id) === -1
+        ) {
         this.analystsData.push(church.district.analyst);
       }
     });
     this.analystsData.sort((a, b) => a.name.localeCompare(b.name));
   }
-  private loadDistricts(data: Church[]): void {
+  private loadDistricts(data: ChurchDataInterface[]): void {
     this.districtsData = [];
     if (!Array.isArray(data)) {
       return;
     }
     data.forEach(church => {
-      if (church.district.id !== 0 && this.districtsData.map(x => x.id).indexOf(church.district.id) === -1) {
+      if (
+        church.district !== null &&
+        church.district.id !== 0 &&
+        this.districtsData.map(x => x.id).indexOf(church.district.id) === -1
+        ) {
         this.districtsData.push(new Filter(Number(church.district.id), church.district.name));
       }
     });

@@ -111,7 +111,7 @@ export class FilterService {
   }
 
   private fetchFromObject(obj, property) {
-    if (typeof obj === 'undefined') {
+    if (typeof obj === 'undefined' || obj === null) {
       return false;
     }
 
