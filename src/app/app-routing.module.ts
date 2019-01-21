@@ -50,7 +50,7 @@ const appRoutes: Routes = [
       canActivate: [AuthMainGuard, AdminGuard],
       canLoad: [AuthMainGuard, AdminGuard],
       loadChildren: '../app/modules/administration/administration.module#AdministrationModule'
-    },
+    }
   ]},
   { path: 'educacao',
     component: LayoutResponsibleComponent,

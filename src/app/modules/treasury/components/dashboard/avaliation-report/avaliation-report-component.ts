@@ -27,6 +27,10 @@ export class AvaliationReportComponent implements OnInit, OnDestroy {
   totalRequirementsAnual = 0;
   totalRequirementsMonth: any;
   showList = 15;
+  filterActive = false;
+  filterYear = 2018;
+  years: number[] = new Array<number>();
+  searchFilter = '';
 
   constructor(
       private service: TreasuryService,
@@ -37,23 +41,23 @@ export class AvaliationReportComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    const unit = auth.getCurrentUnit();
+    this.getYearsOfFilter();
     this.subsSearch = this.search$.subscribe(search => {
         this.avaliationReport = this.search(search);
     });
-    this.getrankingReportData = this.getAvaliationData(unit.id);
+    this.getrankingReportData = this.getAvaliationData();
   }
 
   ngOnDestroy(): void {
-
   }
 
   cancel() {
     this.dialogRef.close(false);
   }
 
-  getAvaliationData(id) {
-    return this.service.getAvaliationRaking(id).subscribe((data: any) => {
+  getAvaliationData() {
+    const { id } = auth.getCurrentUnit();
+    return this.service.getAvaliationRaking(id, this.filterYear).subscribe((data: any) => {
         let previousNote = 0;
         let position = 0;
         data.forEach(element => {
@@ -65,12 +69,13 @@ export class AvaliationReportComponent implements OnInit, OnDestroy {
             }
             previousNote = element.notes / element.score;
         });
-        this.avaliationReport = data;
-        this.dataAvaliationReport = this.avaliationReport;
+        this.dataAvaliationReport = data;
+        this.avaliationReport = this.search(this.searchFilter);
     });
   }
 
   public search(search: string): any[] {
+    this.searchFilter = search;
     if (search === '' || search === undefined || search === null) {
         return this.dataAvaliationReport;
     } else {
@@ -111,5 +116,21 @@ export class AvaliationReportComponent implements OnInit, OnDestroy {
         return {
             year: new Date().getFullYear(),
         };
+    }
+
+    public filterTreasurerEvaluated(): void {
+        this.filterActive = !this.filterActive;
+    }
+
+    private getYearsOfFilter(): void {
+        const currentYear = new Date().getFullYear();
+        for (let i = this.filterYear; i <= currentYear; i++) {
+            this.years.push(i);
+        }
+        this.filterYear = currentYear;
+    }
+
+    public getDataOfTreasurers(): void {
+
     }
 }

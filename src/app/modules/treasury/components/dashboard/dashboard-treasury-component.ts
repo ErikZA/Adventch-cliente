@@ -8,6 +8,7 @@ import { auth } from '../../../../auth/auth';
 import { MatDialog } from '@angular/material';
 import { AvaliationReportComponent } from './avaliation-report/avaliation-report-component';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Router } from '@angular/router';
 import { DashboardTreasuryService } from './dashboard-treasury.service';
 import { AnalystDistrictListInterface } from '../../interfaces/district/analyst-district-list-interface';
 
@@ -19,6 +20,9 @@ import { AnalystDistrictListInterface } from '../../interfaces/district/analyst-
 @AutoUnsubscribe()
 export class DashboardTreasuryComponent implements OnInit, OnDestroy {
 
+  filterYear = 2018;
+  filterAnalyst = 0;
+  years: number[] = new Array<number>();
   isMobile: boolean;
   users: AnalystDistrictListInterface[];
   // Chart Configurations
@@ -105,25 +109,27 @@ export class DashboardTreasuryComponent implements OnInit, OnDestroy {
     private dashboadTreasuryService: DashboardTreasuryService,
     private changeDetector: ChangeDetectorRef,
     private dialog: MatDialog,
+    private router: Router
   ) { }
 
   ngOnInit() {
+    this.getYearsOfFilter();
     const unit = auth.getCurrentUnit();
     this.mediaSubscription = this.media
       .subscribe((change: MediaChange) => setTimeout(() => this.isMobile = change.mqAlias === 'xs'));
     this.dashboadTreasuryService.getAnalystsOfTheDistrict(unit.id).subscribe(data => {
       this.users = data;
     });
-    this.getDataSubscription = this.getDashboardData(0);
+    this.getDatasOfDashboard();
   }
 
   ngOnDestroy(): void {
 
   }
 
-  getDashboardData(idAnalyst) {
+  private getDashboardData(idAnalyst) {
     const unit = auth.getCurrentUnit();
-    return this.service.getTreasuryDashboard(unit.id, idAnalyst).subscribe((data) => {
+    return this.service.getTreasuryDashboard(unit.id, idAnalyst, this.filterYear).subscribe((data) => {
       if (data) {
         this.getChartObservationData(data.chartObservationData);
         this.getChartTreasurersData(data.chartTreasurersData);
@@ -247,6 +253,31 @@ export class DashboardTreasuryComponent implements OnInit, OnDestroy {
   filter(user) {
     this.getDataSubscription = this.getDashboardData(user);
     this.changeDetector.markForCheck();
+  }
+
+  public redirectToFeature(feature: number): void {
+    switch (feature) {
+      case 1:
+        this.router.navigate(['/tesouraria/distritos']);
+        break;
+      case 2:
+        this.router.navigate(['/tesouraria/igrejas']);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private getYearsOfFilter(): void {
+    const currentYear = new Date().getFullYear();
+    for (let i = this.filterYear; i <= currentYear; i++) {
+        this.years.push(i);
+    }
+    this.filterYear = currentYear;
+  }
+
+  public getDatasOfDashboard(): void {
+    this.getDataSubscription = this.getDashboardData(this.filterAnalyst);
   }
 }
 

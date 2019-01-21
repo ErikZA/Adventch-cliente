@@ -1,61 +1,61 @@
-<div class="page-container mat-elevation-z2" fxFlex style="overflow: auto;">
-  <div style="padding: 0 0 0 15px">
-    <mat-form-field>
-      <mat-select placeholder="Analista">
-        <mat-option (click)="filter(0)">
-          TODOS
-        </mat-option>
-        <mat-option *ngFor="let analyst of users" [value]="analyst.id" (click)="filter(analyst.id)">
-          {{ analyst.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+<div fxLayout="column" fxLayoutGap="10px">
+  <div fxLayout="row" fxLayoutAlign="start" fxLayoutGap="10px">
+      <mat-form-field fxFlex fxFlex.gt-sm="28%">
+          <mat-select placeholder="Analista" (selectionChange)="getDatasOfDashboard()" [(ngModel)]="filterAnalyst">
+              <mat-option value="0">
+                TODOS
+              </mat-option>
+              <mat-option *ngFor="let analyst of users" [value]="analyst.id">
+                {{ analyst.name }}
+              </mat-option>
+          </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+          <mat-select placeholder="Ano" (selectionChange)="getDatasOfDashboard()" [(ngModel)]="filterYear">
+              <mat-option *ngFor="let year of years" [value]="year">
+                  {{ year }}
+              </mat-option>
+          </mat-select>
+      </mat-form-field>
+      <mat-divider></mat-divider>
   </div>
-  <mat-divider></mat-divider>
-  <div fxLayout="row" fxLayout.xs="column">
-    <div class="process process-3" routerLink="/tesouraria/distritos">
-      <br/>
-      <p class="process-count process-3">{{cardDistrictsData}}</p>
-      <p class="process-description">Distritos</p>
-      <br/>
+  <mat-card-content fxLayout="column" fxLayoutGap="10px" *ngIf="!loading">
+    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+      <app-card-count-features (click)="redirectToFeature(1)" [count]="cardDistrictsData" title="Distritos" color="#03a9f4" fxFlex></app-card-count-features>
+      <app-card-count-features (click)="redirectToFeature(2)" [count]="cardChurchesData" title="Igrejas" color="#76d275" fxFlex></app-card-count-features>
     </div>
-    <div class="process process-2" routerLink="/tesouraria/igrejas">
-      <br/>
-      <p class="process-count process-2">{{cardChurchesData}}</p>
-      <p class="process-description">Igrejas</p>
-      <br/>
+    <div fxLayout="row" fxLayoutAlign="center start">
+      <mat-card *ngIf="checkEmpty(chartAvaliationsData)" fxFlex.gt-md="50%">
+          <mat-card-content fxLayout="column" fxLayoutAlign="start center">
+            <h4 fxLayoutAlign="center center">Ranking de maiores notas</h4>
+            <div class="wrapper">
+              <canvas  (click)="openDialog()" baseChart [datasets]="chartAvaliationsData" [labels]="chartAvaliationsLabels" [legend]="false" [options]="barChartOptions" [colors]="chartColors" chartType="bar" style="width: 500px!important"
+                fxLayoutAlign="center center"></canvas>
+            </div>
+          </mat-card-content>
+      </mat-card>
     </div>
-  </div>
-  <br>
-  <br>
-  <div fxLayout="row wrap" fxLayoutAlign="space-around center">
-    <div *ngIf="checkEmpty(chartTreasurersData)">
-      <h4 fxLayoutAlign="center center">Tesoureiros</h4>
-      <div class="wrapper" routerLink="/tesouraria/tesoureiros">
-        <div class="text">{{chartTreasurersTotal}}</div>
-        <canvas style="width: 400px!important" fxLayoutAlign="center center" baseChart [data]="chartTreasurersData" [labels]="chartTreasurersLabels"
-          chartType="doughnut" [options]="pieChartOptions" [colors]="chartColors"></canvas>
-      </div>
+    <div fxLayout="row wrap" fxLayoutAlign="space-around start" fxLayoutGap="10px" fxFlex>
+        <mat-card *ngIf="checkEmpty(chartTreasurersData)" fxFlex>
+          <mat-card-content fxLayout="column" fxLayoutAlign="start center">
+              <h4 fxLayoutAlign="center center">Tesoureiros</h4>
+              <div class="wrapper" routerLink="/tesouraria/tesoureiros">
+                <div class="text">{{chartTreasurersTotal}}</div>
+                <canvas style="width: 400px!important" fxLayoutAlign="center center" baseChart [data]="chartTreasurersData" [labels]="chartTreasurersLabels"
+                  chartType="doughnut" [options]="pieChartOptions" [colors]="chartColors"></canvas>
+              </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card *ngIf="checkEmpty(chartObservationData)" fxFlex>
+          <mat-card-content fxLayout="column" fxLayoutAlign="start center">
+            <h4 fxLayoutAlign="center center">Observações</h4>
+            <div class="wrapper" routerLink="/tesouraria/observacoes">
+              <div class="text">{{chartObservationTotal}}</div>
+              <canvas style="width: 400px!important" fxLayoutAlign="center center" baseChart [data]="chartObservationData" [labels]="chartObservationLabels"
+                chartType="doughnut" [options]="pieChartOptions" [colors]="chartColors"></canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
     </div>
-
-    <div *ngIf="checkEmpty(chartObservationData)">
-      <h4 fxLayoutAlign="center center">Observações</h4>
-      <div class="wrapper" routerLink="/tesouraria/observacoes">
-        <div class="text">{{chartObservationTotal}}</div>
-        <canvas style="width: 400px!important" fxLayoutAlign="center center" baseChart [data]="chartObservationData" [labels]="chartObservationLabels"
-          chartType="doughnut" [options]="pieChartOptions" [colors]="chartColors"></canvas>
-      </div>
-    </div>
-  </div>
-  <br />
-  <br />
-  <div fxLayout="row" fxLayoutAlign="center center">
-    <div *ngIf="checkEmpty(chartAvaliationsData)">
-      <h4 fxLayoutAlign="center center">Ranking de maiores notas</h4>
-      <div class="wrapper">
-        <canvas  (click)="openDialog()" baseChart [datasets]="chartAvaliationsData" [labels]="chartAvaliationsLabels" [legend]="false" [options]="barChartOptions" [colors]="chartColors" chartType="bar" style="width: 500px!important"
-          fxLayoutAlign="center center"></canvas>
-      </div>
-    </div>
-  </div>
+  </mat-card-content>
 </div>

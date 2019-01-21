@@ -177,15 +177,15 @@ export class TreasuryService {
   }
 
   // Dashboard
-  getTreasuryDashboard(unitId, idAnalyst) {
-    const url = '/treasury/dashboard/getTreasuryDashboard/' + unitId + '/' + idAnalyst;
+  getTreasuryDashboard(unitId, idAnalyst, year: number) {
+    const url = '/treasury/dashboard/getTreasuryDashboard/' + unitId + '/' + idAnalyst + '/' + year;
     return this.http
       .get<any>(url);
   }
 
 
-  getAvaliationRaking(unitId) {
-    const url = '/treasury/dashboard/getAvaliationsRanking/' + unitId;
+  getAvaliationRaking(unitId, year: number) {
+    const url = '/treasury/dashboard/getAvaliationsRanking/' + unitId + '/' + year;
     return this.http
       .get(url);
   }

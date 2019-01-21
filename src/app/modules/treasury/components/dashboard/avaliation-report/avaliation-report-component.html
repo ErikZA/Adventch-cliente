@@ -8,12 +8,27 @@
             <button mat-icon-button (click)="searchButton = !searchButton">
           <mat-icon aria-label="Pesquisar">search</mat-icon>
         </button>
-            <button mat-icon-button matTooltip="Imprimir" (click)="generateGeneralReport()">
-          <mat-icon aria-label="Imprimir relatório">print</mat-icon>
+        <button mat-icon-button matTooltip="Filtragem avançada" (click)="filterTreasurerEvaluated()">
+            <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Imprimir" (click)="generateGeneralReport()">
+            <mat-icon aria-label="Imprimir relatório">print</mat-icon>
         </button>
         </div>
     </div>
     <mat-divider></mat-divider>
+    <app-filter-container *ngIf="filterActive">
+        <div space-type="filters">
+            <mat-form-field>
+                <mat-select placeholder="Ano" (selectionChange)="getAvaliationData()" [(ngModel)]="filterYear">
+                    <!-- <mat-option value="0">TODOS</mat-option> -->
+                    <mat-option *ngFor="let year of years" [value]="year">
+                        {{ year }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </app-filter-container>
     <div class="header">
         <mat-list>
             <mat-list-item>

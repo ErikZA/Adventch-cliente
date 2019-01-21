@@ -162,10 +162,10 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       ).subscribe();
   }
   public getStatus(status): string {
-    if (status === 1) {
-      return 'Aberta';
+    if (status === 2) {
+      return 'Finalizada';
     }
-    return 'Finalizada';
+    return 'Aberta';
   }
 
   public searchInDates(startDate: Date, endDate: Date, observations: Observation[]) {

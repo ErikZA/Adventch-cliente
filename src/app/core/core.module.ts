@@ -52,6 +52,7 @@ import { ButtonResponsibleUserComponent } from './components/header/responsible/
 import { FooterResponsibleComponent } from './components/footer/responsible/footer-responsible/footer-responsible.component';
 import { MAT_DATE_LOCALE, DateAdapter } from '@angular/material';
 import { DateFormat } from './material/date-format';
+import { FilterContainerComponent } from './components/filter-container/filter-container.component';
 
 // const globalRippleConfig: RippleGlobalOptions = {
 //   disabled: false,
@@ -71,7 +72,7 @@ import { DateFormat } from './material/date-format';
     InfiniteScrollModule,
     AngularSvgIconModule,
     OrderModule,
-    MaterialModule
+    MaterialModule,
   ],
   exports: [
     // old Components
@@ -103,6 +104,7 @@ import { DateFormat } from './material/date-format';
     HeaderFormComponent,
     FilterComponent,
     LayoutResponsibleComponent,
+    FilterContainerComponent,
 
     // modules Generics
     FlexLayoutModule,
@@ -148,7 +150,8 @@ import { DateFormat } from './material/date-format';
     LayoutResponsibleComponent,
     LogoResponsibleComponent,
     ButtonResponsibleUserComponent,
-    FooterResponsibleComponent
+    FooterResponsibleComponent,
+    FilterContainerComponent
   ],
   providers: [
     ConfirmDialogService,
