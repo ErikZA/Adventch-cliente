@@ -114,7 +114,7 @@ export class AvaliationReportComponent implements OnInit, OnDestroy {
 
     private getDataParams(): any {
         return {
-            year: new Date().getFullYear(),
+            year: this.filterYear,
         };
     }
 

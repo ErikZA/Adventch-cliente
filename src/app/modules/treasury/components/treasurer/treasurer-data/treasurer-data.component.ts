@@ -8,7 +8,6 @@ import { ConfirmDialogService } from '../../../../../core/components/confirm-dia
 
 import { Treasurer } from '../../../models/treasurer';
 import { auth } from '../../../../../auth/auth';
-import { Districts } from '../../../models/districts';
 import { User } from '../../../../../shared/models/user.model';
 import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
