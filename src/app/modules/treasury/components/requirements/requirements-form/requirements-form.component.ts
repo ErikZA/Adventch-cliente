@@ -79,6 +79,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
       this.sendData()
         .pipe(
           switchMap(() => this.requirementDataComponent.getData()),
+          tap(() => this.requirementDataComponent.search()),
           tap(() => this.requirementDataComponent.closeSidenav(),
           () => this.snackBar.open('Ocorreu um erro ao salvar o requisito', 'OK', { duration: 3000 })),
           tap(() => this.snackBar.open('Requisito salvo com sucesso!', 'OK', { duration: 3000 })),

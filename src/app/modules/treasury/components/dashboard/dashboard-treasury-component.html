@@ -19,7 +19,7 @@
       </mat-form-field>
       <mat-divider></mat-divider>
   </div>
-  <mat-card-content fxLayout="column" fxLayoutGap="10px" *ngIf="!loading">
+  <mat-card-content fxLayout="column" fxLayoutGap="10px">
     <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px">
       <app-card-count-features (click)="redirectToFeature(1)" [count]="cardDistrictsData" title="Distritos" color="#03a9f4" fxFlex></app-card-count-features>
       <app-card-count-features (click)="redirectToFeature(2)" [count]="cardChurchesData" title="Igrejas" color="#76d275" fxFlex></app-card-count-features>
