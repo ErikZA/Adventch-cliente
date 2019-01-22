@@ -4,12 +4,9 @@ import { MatSnackBar } from '@angular/material';
 
 import { Subject, Subscription } from 'rxjs';
 
-import { ChurchAvaliation } from '../../../models/avaliation';
 import { auth } from '../../../../../auth/auth';
-import { AvaliationStore } from '../avaliation.store';
 import { EAvaliationStatus } from '../../../models/Enums';
 import { TreasuryService } from '../../../treasury.service';
-import { Districts } from '../../../models/districts';
 import { User } from '../../../../../shared/models/user.model';
 import { ReportService } from '../../../../../shared/report.service';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
@@ -61,7 +58,6 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   constructor(
     public router: Router,
     private route: ActivatedRoute,
-    private store: AvaliationStore,
     private reportService: ReportService,
     private snackBar: MatSnackBar,
     private avaliationService: AvaliationService,
@@ -199,27 +195,22 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     }
   }
 
-  private setStoreValues(churchAvaliation: ChurchAvaliation) {
-    this.store.churchAvaliation = churchAvaliation;
-    this.store.period = new Date(this.filterYear, this.filterMonth - 1);
-    this.store.avaliation = this.store.getAvaliationByPeriod(churchAvaliation, this.store.period);
-  }
-
   public expandPanel(matExpansionPanel): void {
     matExpansionPanel.toggle();
   }
 
   public search() {
-    const filtered = this.churchesAvaliationsCache.filter(o =>
+    let avaliationsFiltered = this.churchesAvaliationsCache.filter(o =>
       utils.buildSearchRegex(this.filterText).test(o.name.toUpperCase()) ||
       utils.buildSearchRegex(this.filterText).test(o.code.toUpperCase())
     );
-
+    avaliationsFiltered = this.filterService.filter(avaliationsFiltered, 'district.id', this.districtsSelecteds);
+    avaliationsFiltered = this.filterService.filter(avaliationsFiltered, 'district.analyst.id', this.analystsSelecteds);
     const filtered2 = [];
-    filtered.forEach(f => {
+    avaliationsFiltered.forEach(f => {
       const avaliation = f.avaliations
       .find(a => a.isMensal && this.getYear(a.date) === this.filterYear && this.getMonth(a.date) === this.filterMonth);
-      if (this.filterStatusInAvaliation(avaliation) && this.filterDistrictsInAvaliation(f) && this.filterAnalystsInAvaliation(f)) {
+      if (this.filterStatusInAvaliation(avaliation)) {
         filtered2.push(f);
       }
     });
