@@ -122,7 +122,7 @@ export class TreasuryService {
   }
 
   loadAnalysts(unit): Observable<User[]> {
-    const url = '/treasury/districts/loadAnalysts/' + unit;
+    const url = '/treasury/districts/analyst/unit/' + unit;
     return this.http
       .get<User[]>(url);
   }
