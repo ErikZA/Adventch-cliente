@@ -138,8 +138,8 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
       id: 0,
       number: [null],
       type: [null],
-      isWhatsapp: [null],
-      isTelegram: [null]
+      isWhatsapp: false,
+      isTelegram: false
     });
   }
 
