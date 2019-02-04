@@ -160,7 +160,9 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
       .loadChurches(auth.getCurrentUnit().id)
       .pipe(
         tap((data: Church[]) => {
-          this.lstChurches = data.sort((a, b) => Number(a.code) - Number(b.code));
+          if (data) {
+            this.lstChurches = data.sort((a, b) => Number(a.code) - Number(b.code));
+          }
         })
       );
   }
