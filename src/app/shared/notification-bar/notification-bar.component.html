@@ -1,0 +1,4 @@
+<div *ngIf="showBar" class="notification-bar" fxLayout="row">
+    <div fxFlex="99%" fxLayoutAlign="center">{{ msg }}</div>
+    <a fxFlex="1%" (click)="closeNotificationBar();" fxLayoutAlign="end">X</a>
+</div>

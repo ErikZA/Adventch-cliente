@@ -4,6 +4,7 @@
     <!-- <app-button-language button-type="language"></app-button-language> -->
     <app-button-user button-type="user"></app-button-user>
 </app-toolbar>
+<app-notification-bar></app-notification-bar>
 <mat-drawer-container class="container" autosize>
     <mat-drawer #drawer class="sidenav-left mat-elevation-z5" [mode]="isMobile ? 'over' : 'side'" [opened]="isOpen" (closedStart)="setAsOff()">
         <app-menu-main></app-menu-main>
