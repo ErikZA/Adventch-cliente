@@ -7,17 +7,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NotificationBarComponent implements OnInit {
 
-  msg = 'Devido a baixa adesão do chat online, a partir de segunda-feira (11) o atendimento será realizado apenas por e-mail e telefone.';
+  msg = 'Informamos que a partir de sexta-feira (01/03) o suporte será realizado apenas pelo e-mail (suporteproes@forlogic.net)';
 
   showBar = true;
 
   constructor() {}
 
   ngOnInit() {
+    if ('showBar' in sessionStorage) {
+      this.showBar = sessionStorage.getItem('showBar') === 'true';
+    }
   }
 
   closeNotificationBar() {
     this.showBar = false;
+    sessionStorage.setItem('showBar', 'false');
   }
 
 }
