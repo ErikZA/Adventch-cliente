@@ -5,6 +5,7 @@
         </button>
         <mat-checkbox formControlName="feature" class="text-bold" [checked]="featureChecked" [indeterminate]="indeterminate" (change)="changeCheckFeature($event)">{{ feature.name }}</mat-checkbox>
     </div>
+    
     <div [formGroup]="formPermissions" *ngIf="expanded" fxLayout="column" fxLayoutGap="10px" class="permissions-checkers">
         <mat-checkbox formControlName="create">CRIAR</mat-checkbox>
         <mat-checkbox formControlName="read">VISUALIZAR</mat-checkbox>
