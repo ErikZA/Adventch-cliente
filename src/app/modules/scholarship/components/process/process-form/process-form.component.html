@@ -62,6 +62,21 @@
                             </mat-select>
                             <mat-error *ngIf="formProcess.get('studentSerieId').hasError('required')">Este campo é obrigatório</mat-error>
                         </mat-form-field>
+
+
+
+                        <mat-form-field>
+                                <mat-select placeholder="Ano Letivo" formControlName="schoolYear" required>
+                                    <mat-option *ngFor="let year of schoolYears" [value]="year">
+                                        {{ year }}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="formProcess.get('schoolYear').hasError('required')">Este campo é obrigatório</mat-error>
+                        </mat-form-field>
+
+
+
+
                         <div fxLayout="row" fxLayoutGap="20px" style="margin-top: 10px">
                             <label [ngStyle]="{ 'color': formProcess.get('bagPorcentage').hasError('required') && this.formProcess.touched ? '#d32f2f' : 'rgba(0, 0, 0, 0.42)' }">Porcentagem da Bolsa: </label>
                             <mat-radio-group formControlName="bagPorcentage" fxLayout="row">

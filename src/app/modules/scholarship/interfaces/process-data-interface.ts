@@ -9,12 +9,14 @@ export interface ProcessDataInterface {
   student: StudentProcessDataInterface;
   responsible: ResponsibleDataInterface;
   bagPorcentage: number;
+  schoolYear: number;
   serie: string;
   school: string;
   pendency: string;
   motiveReject: string;
   isSendDocument: boolean;
   dateRegistration: Date;
+  dateCreation: Date;
   documents: DocumentProcessDataInterface[];
   hasUploads: boolean;
 }

@@ -9,6 +9,7 @@ export interface ProcessResponsibleInterface {
   motiveReject: string;
   isSendDocument: boolean;
   dateRegistration: Date;
+  dateCreation: Date;
   school: School;
   hasUploads: boolean;
 }

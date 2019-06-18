@@ -6,6 +6,7 @@ export interface NewProcessViewModel {
   responsible: ResponsibleProcessViewModel;
   student: StudentProcessViewModel;
   documents: number[];
+  schoolYear: number;
 }
 
 export interface ResponsibleProcessViewModel extends NewResponsibleViewModel {
@@ -36,6 +37,7 @@ export interface EditProcessViewModel {
   documents: number[];
   student: StudentProcessViewModel;
   responsible: ResponsibleProcessViewModel;
+  schoolYear: number;
 }
 
 export interface ProcessUploadViewModel {

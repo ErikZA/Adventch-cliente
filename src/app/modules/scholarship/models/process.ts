@@ -17,6 +17,7 @@ export class Process {
   statusString: string;
   pendency: string;
   dateRegistration?: Date;
+  dateCreation?: Date;
   isSendDocument = false;
   motiveReject: string;
   processDocuments: Array<ProcessDocument>;

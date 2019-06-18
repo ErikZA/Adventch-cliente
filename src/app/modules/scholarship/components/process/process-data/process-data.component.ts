@@ -26,8 +26,10 @@ import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 import { ProcessDataDownloadComponent } from '../process-data-download/process-data-download.component';
 
-import { distinctUntilChanged, tap, skipWhile, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, tap, skipWhile, switchMap, filter } from 'rxjs/operators';
 import { Rejected } from '../../../enums/rejected.enum';
+import { School } from '../../../models/school';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-process-data',
@@ -65,6 +67,12 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   statusSelecteds: number[] = [];
   statusData: Filter[] = [];
   statusDefault: number[] = [];
+  yearSelecteds: number[] = [];
+  yearData: Filter[] = [];
+  yearDefault: number[] = [];
+  schoolYearSelecteds: number[] = [];
+  schoolYearData: Filter[] = [];
+  schoolYearDefault: number[] = [];
 
   // Verificar tipo de usuário que pode modificar projeto ou não
   isScholarship: boolean;
@@ -94,7 +102,10 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   }
 
   ngOnInit() {
+    this.loadYear();
+    this.loadSchoolYear();
     this.loadStatus();
+    // this.getProcesses();
     this.isScholarship = auth.getCurrentUser().isScholarship;
     this.schoolIsVisible();
     this.setAllFilters();
@@ -115,8 +126,21 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.schoolDefault = [this.scholarshipService.schoolSelected];
     this.schoolData = [];
     schools.forEach(school => {
+      console.log(school);
       this.schoolData.push(new Filter(school.id, school.name));
     });
+  }
+
+  private loadYear(): void {
+    for (let i = 2017; i <= new Date().getFullYear(); i++)  {
+      this.yearData.push(new Filter(i, i.toString()));
+    }
+  }
+
+  private loadSchoolYear(): void {
+    for (let i = 2019; i <= new Date().getFullYear() + 1; i++)  {
+      this.schoolYearData.push(new Filter(i, i.toString()));
+    }
   }
 
   private loadStatus(): void {
@@ -141,16 +165,32 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.statusSelecteds = this.filterService.check(status, this.statusSelecteds);
     this.refetchData();
   }
-
-  private searchProcesses(): void {
-    this.processes = this.searchFilter(this.searchText);
-    this.searchFilterStatus();
+  public checkYear(year): void {
+    this.yearSelecteds = this.filterService.check(year, this.yearSelecteds);
+    this.refetchData();
   }
+
+  public checkSchoolYear(schoolYear): void {
+    this.schoolYearSelecteds = this.filterService.check(schoolYear, this.schoolYearSelecteds);
+    this.refetchData();
+  }
+
+
+  // private searchProcesses(): void {
+  //   this.processes = this.searchFilter(this.searchText);
+  //   this.searchFilterStatus();
+  // }
 
   private searchFilterStatus(): void {
     this.processes = this.statusSelecteds.length === 0 ?
     this.processes : this.processes.filter(p => this.statusSelecteds.some(s => s === p.status.id));
   }
+
+  // private searchFilterYear(): void {
+  //   debugger;
+  //   this.processes = this.yearSelecteds.length === 0 ?
+  //   this.processes : this.processes.filter(p => this.yearSelecteds.some(s => s === p.dateRegistration.getFullYear())); 
+  // }
 
   private searchFilter(value: string) {
     return this.processesCache.filter(p =>
@@ -182,6 +222,8 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   private setAllFilters(): void {
     this.setInitialFilterSchool();
     this.setInitialFilterStatus();
+    this.setInitialFilterYear();
+    this.setInitialFilterSchoolYear();
   }
 
   private setInitialFilterStatus() {
@@ -195,13 +237,25 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       this.schoolSelecteds.push(this.scholarshipService.schoolSelected);
     }
   }
+  private setInitialFilterYear() {
+    if (this.scholarshipService.yearSelected !== 1) {
+      this.yearSelecteds.push(this.scholarshipService.yearSelected);
+    }
+  }
+
+  private setInitialFilterSchoolYear() {
+    if (this.scholarshipService.schoolYearSelected !== 1) {
+      this.schoolYearSelecteds.push(this.scholarshipService.schoolYearSelected);
+    }
+  }
+
   private getInitialData() {
     const user = auth.getCurrentUser();
     return this.getProcesses()
       .pipe(
         skipWhile(() => user.idSchool !== 0),
         switchMap(() => this.scholarshipService.getSchools()),
-        tap(schools => this.loadSchools(schools))
+        tap(schools => this.loadSchools(schools)),
       );
   }
   private refetchData() {
@@ -218,9 +272,11 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   public getProcesses() {
     this.search$.next('');
     const user = auth.getCurrentUser();
+    console.log("Pegar Processo", this.yearSelecteds, this.schoolYearSelecteds);
+    console.log(this.statusSelecteds);
     if (user.idSchool === 0) {
       return this.scholarshipService
-        .getProcessesByUnit(this.schoolSelecteds, this.statusSelecteds, this.query)
+        .getProcessesByUnit(this.schoolSelecteds, this.statusSelecteds, this.yearSelecteds, this.schoolYearSelecteds, this.query)
         .pipe(
           tap(processes => {
             this.processes = this.orderByStudentName(processes);

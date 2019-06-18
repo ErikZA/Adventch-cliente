@@ -19,6 +19,8 @@ import { DocumentProcessDataInterface } from './interfaces/document-process-data
 export class ScholarshipService {
   schoolSelected = -1;
   statusSelected = 0;
+  yearSelected = 1;
+  schoolYearSelected = 1;
   scholarshipReport: any;
   refresh$: Observable<boolean>;
   public refresh: Subject<boolean>;
@@ -43,6 +45,9 @@ export class ScholarshipService {
 
   updateStatus(status) {
     this.statusSelected = status;
+  }
+  updateYear(year) {
+    this.yearSelected = year;
   }
 
   setReport(any) {
@@ -75,9 +80,20 @@ export class ScholarshipService {
     return params;
   }
 
-  public getProcessesByUnit(schools: number[], status: number[], query: string): Observable<ProcessDataInterface[]> {
+  public getProcessesByUnit(schools: number[], status: number[], year: number[], schoolYear: number[], query: string): Observable<ProcessDataInterface[]> {
+    debugger
     let params = new HttpParams();
     if (query) { params = params.set('query', query); }
+    if (year.length > 0) {
+      year.forEach(s => {
+        params = params.append('year', String(s));
+      });
+    }
+    if (schoolYear.length > 0) {
+      schoolYear.forEach(s => {
+        params = params.append('schoolYear', String(s));
+      });
+    }
     if (status.length > 0) {
       status.forEach(s => {
         params = params.append('statusIds', String(s));

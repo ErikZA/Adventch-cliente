@@ -57,6 +57,9 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   selectStudent: Student;
   subsCheckCpf: Subscription;
 
+  schoolYears: number[] = [new Date().getFullYear(), new Date().getFullYear() + 1];
+
+
   constructor(
     private formBuilder: FormBuilder,
     private scholarshipService: ScholarshipService,
@@ -124,7 +127,9 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       rc: [null],
       nameStudent: [null, Validators.required],
       studentSerieId: [null, Validators.required],
-      bagPorcentage: [null, Validators.required]
+      bagPorcentage: [null, Validators.required],
+      schoolYear: [null, Validators.required]
+
     });
   }
   private checkCpf(): void {
@@ -162,7 +167,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       rc: null,
       nameStudent: null,
       studentSerieId: null,
-      bagPorcentage: null
+      bagPorcentage: null,
+      schoolYear: null
     });
   }
 
@@ -174,6 +180,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     });
   }
   private setValuesToFormProcess(process: EditProcessViewModel): void {
+    debugger
     this.selectStudent = process.student ? {
       id: process.student.id,
       name: process.student.name,
@@ -198,7 +205,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       rc: process.student.rc,
       nameStudent: process.student.name,
       studentSerieId: process.serieId,
-      bagPorcentage: process.bagPorcentage.toString()
+      bagPorcentage: process.bagPorcentage.toString(),
+      schoolYear: process.schoolYear
     });
   }
   private setValuesToFormDocuments(documents: number[]) {
@@ -251,6 +259,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
       schoolId: user.idSchool === 0 ? this.scholarshipService.schoolSelected : user.idSchool,
       userId: user.id,
       serieId: this.formProcess.value.studentSerieId,
+      schoolYear: this.formProcess.value.schoolYear,
       documents: this.getAllDocumentsFromTypes(),
       student: {
         id: !!this.selectStudent ? Number.isInteger(this.selectStudent.id) ? this.selectStudent.id : 0 : 0,
