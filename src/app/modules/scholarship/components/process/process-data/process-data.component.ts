@@ -189,7 +189,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   // private searchFilterYear(): void {
   //   debugger;
   //   this.processes = this.yearSelecteds.length === 0 ?
-  //   this.processes : this.processes.filter(p => this.yearSelecteds.some(s => s === p.dateRegistration.getFullYear())); 
+  //   this.processes : this.processes.filter(p => this.yearSelecteds.some(s => s === p.dateRegistration.getFullYear()));
   // }
 
   private searchFilter(value: string) {
@@ -272,7 +272,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   public getProcesses() {
     this.search$.next('');
     const user = auth.getCurrentUser();
-    console.log("Pegar Processo", this.yearSelecteds, this.schoolYearSelecteds);
+    console.log('Pegar Processo', this.yearSelecteds, this.schoolYearSelecteds);
     console.log(this.statusSelecteds);
     if (user.idSchool === 0) {
       return this.scholarshipService
@@ -285,7 +285,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
         );
     }
     return this.scholarshipService
-      .getProcessesBySchool(user.idSchool, this.statusSelecteds, this.query)
+      .getProcessesBySchool(user.idSchool, this.statusSelecteds, this.yearSelecteds, this.schoolYearSelecteds, this.query)
       .pipe(
         tap(processes => {
           this.processes = this.orderByStudentName(processes);

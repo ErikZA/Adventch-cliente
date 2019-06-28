@@ -81,7 +81,6 @@ export class ScholarshipService {
   }
 
   public getProcessesByUnit(schools: number[], status: number[], year: number[], schoolYear: number[], query: string): Observable<ProcessDataInterface[]> {
-    debugger
     let params = new HttpParams();
     if (query) { params = params.set('query', query); }
     if (year.length > 0) {
@@ -109,12 +108,22 @@ export class ScholarshipService {
       .get<ProcessDataInterface[]>(url, { params: params });
   }
 
-  public getProcessesBySchool(schoolId: number, status: number[], query: string): Observable<ProcessDataInterface[]> {
+  public getProcessesBySchool(schoolId: number, status: number[], year: number[], schoolYear: number[], query: string): Observable<ProcessDataInterface[]> {
     let params = new HttpParams();
     if (query) { params = params.set('query', query); }
     if (status.length > 0) {
       status.forEach(s => {
         params = params.append('statusIds', String(s));
+      });
+    }
+    if (year.length > 0) {
+      year.forEach(s => {
+        params = params.append('year', String(s));
+      });
+    }
+    if (schoolYear.length > 0) {
+      schoolYear.forEach(s => {
+        params = params.append('schoolYear', String(s));
       });
     }
     const url = `/scholarship/process/school/${schoolId}`;

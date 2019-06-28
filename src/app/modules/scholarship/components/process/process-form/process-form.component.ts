@@ -180,7 +180,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     });
   }
   private setValuesToFormProcess(process: EditProcessViewModel): void {
-    debugger
     this.selectStudent = process.student ? {
       id: process.student.id,
       name: process.student.name,

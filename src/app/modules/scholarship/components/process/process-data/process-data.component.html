@@ -26,7 +26,7 @@
                     <app-filter *ngIf="authService.getCurrentUser().idSchool === 0" [defaultValues]="schoolDefault" flex="35" [data]="schoolData" placeholder="Escolas" (filterEmitted)="checkSchool($event)">
                     </app-filter>
                     <app-filter flex="35" [defaultValues]="statusDefault" [data]="statusData" placeholder="Status" (filterEmitted)="checkStatus($event)"></app-filter>
-                    <app-filter flex="35" [defaultValues]="yearDefault" [data]="yearData" placeholder="Ano" (filterEmitted)="checkYear($event)"></app-filter>
+                    <!-- <app-filter flex="35" [defaultValues]="yearDefault" [data]="yearData" placeholder="Ano" (filterEmitted)="checkYear($event)"></app-filter> -->
                     <app-filter flex="35" [defaultValues]="SchoolyYearDefault" [data]="schoolYearData" placeholder="Ano Letivo" (filterEmitted)="checkSchoolYear($event)"></app-filter>
                 </div>
             </mat-expansion-panel>
@@ -57,14 +57,9 @@
                 <mat-expansion-panel hideToggle *ngIf="i <= showList" (expandedChange)="disableVisibilityDocuments()">
                     <mat-expansion-panel-header>
                         <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2px" fxFlex>
-
-
-                            <p *ngIf="showSchool && schoolSelecteds?.length !== 1" fxFlex="16%" fxHide.lt-sm>
+                            <p  fxFlex="16%" fxHide.lt-sm>
                                 {{ process.schoolYear }}
                             </p>
-
-
-
                             <p *ngIf="showSchool && schoolSelecteds?.length !== 1" fxFlex="26%" fxHide.lt-sm>
                                 {{ process.school }}
                             </p>
