@@ -4,5 +4,8 @@ export enum Rejected {
   Income = 3,
   Disciplinary = 4,
   Documentation = 5,
-  Withdrawal = 6
+  Withdrawal = 6,
+  NotComtempled = 7,
+  NoVacancy = 8,
+  NotEnroll = 9
 }

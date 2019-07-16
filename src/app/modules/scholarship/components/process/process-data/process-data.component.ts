@@ -545,6 +545,12 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
         return 'Documentação';
       case Rejected.Withdrawal:
         return 'Desistência';
+      case Rejected.NoVacancy:
+        return 'Não há vaga';
+      case Rejected.NotComtempled:
+        return 'Não comtemplado';
+      case Rejected.NotEnroll:
+        return 'Não matriculou';
       default:
         break;
     }
