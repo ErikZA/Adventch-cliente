@@ -26,7 +26,7 @@ export class ScholarshipService {
   public refresh: Subject<boolean>;
   currentResponsible = new EventEmitter<Responsible>();
   showApp = new EventEmitter<boolean>();
-  idUnit = -1;
+
 
   constructor(
     private http: HttpClient
@@ -81,7 +81,7 @@ export class ScholarshipService {
   }
 
   public getProcessesByUnit(schools: number[], status: number[], year: number[], schoolYear: number[],
-     query: string): Observable<ProcessDataInterface[]> {
+    query: string): Observable<ProcessDataInterface[]> {
     let params = new HttpParams();
     if (query) { params = params.set('query', query); }
     if (year.length > 0) {
@@ -110,7 +110,7 @@ export class ScholarshipService {
   }
 
   public getProcessesBySchool(schoolId: number, status: number[], year: number[], schoolYear: number[],
-     query: string): Observable<ProcessDataInterface[]> {
+    query: string): Observable<ProcessDataInterface[]> {
     let params = new HttpParams();
     if (query) { params = params.set('query', query); }
     if (status.length > 0) {
@@ -212,9 +212,8 @@ export class ScholarshipService {
 
   public getAllDocuments(): Observable<ProcessDocument[]> {
     const url = '/scholarship/process/documents';
-    const params = new HttpParams().set('unitId', this.idUnit.toString());
     return this.http
-      .get<ProcessDocument[]>(url, { params: params });
+      .get<ProcessDocument[]>(url);
   }
 
   public getProcessDocuments(processId: number): Observable<DocumentProcessDataInterface[]> {

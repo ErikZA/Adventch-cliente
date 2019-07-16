@@ -36,7 +36,8 @@
                                             {{ process.dateRegistration | date: 'dd/MM/yyyy' }}
                                         </p>
                                         <p fxFlex="20%" fxHide.lt-sm>
-                                            {{ process.status.name }}
+                                                Vaga Liberada
+                                            <!--{{ process.status.name }}-->
                                         </p>
                                         <p fxFlex="1%" fxFlex.lt-md="3%">
                                             <mat-icon *ngIf="process.status.id === 3 && process.hasUploads" style="color:#76d275">attachment</mat-icon>

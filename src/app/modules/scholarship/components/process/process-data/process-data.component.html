@@ -179,14 +179,27 @@
                         </ng-template>
                         <ng-template [Feature]="43">
                             <button *ngIf="process.status.id > 1 && process.status.id < 7" mat-button style="background-color: #607d8b!important; color: #fff" matTooltip="Indeferir" [matMenuTriggerFor]="menu">
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< master
                     <mat-icon>list</mat-icon>NÃO APROVADO</button>
+========================================================================
+                <mat-icon>list</mat-icon>NÃO APROVADO</button>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 16374
                                 <mat-menu #menu="matMenu">
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< master
                                     <button (click)="toReject(process, 3)" mat-menu-item matTooltip="Não Contemplado em virtude da renda familiar não se enquadrar no perfil de carência apropriado à avaliação correspondente.">Renda</button>
                                     <button (click)="toReject(process, 5)" mat-menu-item matTooltip="Não Contemplado devido a documentação inconsistente a analise correspondente.">Documentação</button>
                                     <button (click)="toReject(process, 6)" mat-menu-item matTooltip="Abdicação do processo de bolsa solicitado.">Desistente</button>
                                     <button (click)="toReject(process, 7)" mat-menu-item matTooltip="Não foi Contemplada, em caso de dúvidas, entrar em contato com a unidade escolar.">Não Contemplado</button>
                                     <button (click)="toReject(process, 8)" mat-menu-item matTooltip="Não contemplado por não haver vaga na turma ou % de bolsa solicitado.">Não há Vaga</button>
                                     <button (click)="toReject(process, 9)" mat-menu-item matTooltip="Não matriculou.">Não Matriculou</button>
+========================================================================
+                                <button (click)="toReject(process, 3)" mat-menu-item matTooltip="Não Contemplado em virtude da renda familiar não se enquadrar no perfil de carência apropriado à avaliação correspondente.">Renda</button>
+                                <button (click)="toReject(process, 5)" mat-menu-item matTooltip="Não Contemplado devido a documentação inconsistente a analise correspondente.">Documentação</button>
+                                <button (click)="toReject(process, 6)" mat-menu-item matTooltip="Abdicação do processo de bolsa solicitado.">Desistente</button>
+                                <button (click)="toReject(process, 7)" mat-menu-item matTooltip="Não foi Contemplada, em caso de dúvidas, entrar em contato com a unidade escolar.">Não Contemplado</button>
+                                <button (click)="toReject(process, 8)" mat-menu-item matTooltip="Não contemplado por não haver vaga na turma ou % de bolsa solicitado.">Não há Vaga</button>
+                                <button (click)="toReject(process, 9)" mat-menu-item matTooltip="Não matriculou.">Não Matriculou</button>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 16374
                                 </mat-menu>
                         </ng-template>
                         <ng-template [Feature]="45">
