@@ -21,6 +21,7 @@ import { NewProcessViewModel, EditProcessViewModel } from '../../../interfaces/p
 import { ReportService } from '../../../../../shared/report.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
+
 @Component({
   selector: 'app-process-form',
   templateUrl: './process-form.component.html',
@@ -59,7 +60,6 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
   schoolYears: number[] = [new Date().getFullYear(), new Date().getFullYear() + 1];
 
-
   constructor(
     private formBuilder: FormBuilder,
     private scholarshipService: ScholarshipService,
@@ -73,6 +73,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initForm();
     this.checkCpf();
+    this.updateUnit();
     this.scholarshipService.getStudentSeries()
       .pipe(
         tap(series => {
@@ -102,6 +103,11 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.processDataComponent.closeSidenav();
+  }
+
+  private updateUnit(): void {
+    const idUnit = auth.getCurrentUnit();
+    this.scholarshipService.idUnit = idUnit.id;
   }
 
   private setSchoolSelectedToNewProcess(): void {
