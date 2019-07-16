@@ -23,11 +23,17 @@ export class ReportService {
     return this.viewReport('process', EModules.Scholarship, params);
   }
 
-  public reportProcesses(data: any): Observable<any> {
+  public reportProcessesPdf(data: any): Observable<any> {
     const urlConsult = document.location.origin + '/educacao';
     data.url = urlConsult;
     const params = JSON.stringify(data);
-    return this.viewReport('processGeral', EModules.Scholarship, params);
+    return this.viewReport('processGeralPdf', EModules.Scholarship, params);
+  }
+  public reportProcessesExcel(data: any): Observable<any> {
+    const urlConsult = document.location.origin + '/educacao';
+    data.url = urlConsult;
+    const params = JSON.stringify(data);
+    return this.viewReport('processGeralExcel', EModules.Scholarship, params);
   }
 
   private viewReport(reportName: string, moduleId: number, params: any): Observable<any> {

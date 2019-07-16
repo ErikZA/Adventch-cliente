@@ -45,6 +45,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   showList = 80;
   idSchool = -1;
   showSchool = false;
+  selectedFormat = 0;
 
   dialogRef: MatDialogRef<PendencyComponent>;
   dialogRef2: MatDialogRef<VacancyComponent>;
@@ -356,26 +357,47 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     });
   }
 
-  public generateGeneralProcessReport(): void {
+  public generateGeneralProcessReport(formatSelect: number): void {
     const data = {
       school2: this.getSchoolParams(),
-      status2: String(this.statusSelecteds.length === 0 ? [1, 2, 3, 4, 5, 6, 7, 8] : this.statusSelecteds)
+      status2: String(this.statusSelecteds.length === 0 ? [1, 2, 3, 4, 5, 6, 7, 8] : this.statusSelecteds),
+      selectedFormat: formatSelect
     };
-    this.reportService
-    .reportProcesses(data)
-    .subscribe(urlData => {
-      const fileUrl = URL.createObjectURL(urlData);
-        let element;
-        element = document.createElement('a');
-        element.href = fileUrl;
-        element.download = 'processos.pdf';
-        element.target = '_blank';
-        element.click();
-      this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
-    }, err => {
-      console.log(err);
-      this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
-    });
+
+    if(formatSelect === 1){
+      this.reportService
+      .reportProcessesPdf(data)
+      .subscribe(urlData => {
+        const fileUrl = URL.createObjectURL(urlData);
+          let element;
+          element = document.createElement('a');
+          element.href = fileUrl;
+            element.download = 'processos.pdf';
+          element.target = '_blank';
+          element.click();
+        this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+      }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
+      });
+    }
+    if(formatSelect === 12){
+      this.reportService
+      .reportProcessesExcel(data)
+      .subscribe(urlData => {
+        const fileUrl = URL.createObjectURL(urlData);
+          let element;
+          element = document.createElement('a');
+          element.href = fileUrl;
+          element.download = 'processos.xls';
+          element.target = '_blank';
+          element.click();
+        this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
+      }, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
+      });
+    }
   }
 
   private getSchoolParams(): string {
