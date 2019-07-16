@@ -26,7 +26,7 @@ export class ScholarshipService {
   public refresh: Subject<boolean>;
   currentResponsible = new EventEmitter<Responsible>();
   showApp = new EventEmitter<boolean>();
-
+  idUnit = -1;
 
   constructor(
     private http: HttpClient
@@ -212,8 +212,9 @@ export class ScholarshipService {
 
   public getAllDocuments(): Observable<ProcessDocument[]> {
     const url = '/scholarship/process/documents';
+    const params = new HttpParams().set('unitId', this.idUnit.toString());
     return this.http
-      .get<ProcessDocument[]>(url);
+      .get<ProcessDocument[]>(url, { params: params });
   }
 
   public getProcessDocuments(processId: number): Observable<DocumentProcessDataInterface[]> {
