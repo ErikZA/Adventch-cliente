@@ -91,7 +91,7 @@
             <div fxLayout="column" [formGroup]="processDocumentsForm" class="flex-content">
                 <div fxLayout="column" fxLayoutAlign="space-between" *ngFor="let documentType of types">
                     <div fxLayout="row" fxLayoutAlign="space-between">
-                        <p class="section-form">{{ documentType.description }} *</p>
+                        <p class="section-form">{{ documentType.description }}</p>
                         <app-process-form-document-info [type]="documentType.id"></app-process-form-document-info>
                     </div>
                     <mat-form-field>

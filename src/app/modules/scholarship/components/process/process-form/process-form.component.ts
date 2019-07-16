@@ -48,8 +48,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   // 6	Rendimento Acadêmico
   types = [
     { id: 1, description: 'Documentos Pessoais', controlName: 'doc1', },
-    { id: 2, description: 'Imposto de Renda', controlName: 'doc2', },
-    { id: 3, description: 'Carteira de Trabalho', controlName: 'doc3' },
+    { id: 2, description: 'Declaração de Imposto de Renda', controlName: 'doc2', },
+    { id: 3, description: 'Carteira de Trabalho (CTPS)', controlName: 'doc3' },
     { id: 4, description: 'Comprovantes de Rendimentos', controlName: 'doc4' },
     { id: 5, description: 'Comprovantes de Despesas', controlName: 'doc5' },
     { id: 6, description: 'Rendimento Acadêmico', controlName: 'doc6' },
@@ -112,7 +112,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   private createFormGroupForTypes(types: any[]): FormGroup {
     const obj = {};
     types.forEach(t => {
-      obj[t.controlName] = [[], Validators.required];
+      obj[t.controlName] = [];
     });
     return this.formBuilder.group(obj);
   }
