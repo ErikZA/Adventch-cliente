@@ -20,7 +20,7 @@ export class ScholarshipService {
   schoolSelected = -1;
   statusSelected = 0;
   yearSelected = 1;
-  schoolYearSelected = 1;
+  schoolYearSelected = [-1];
   scholarshipReport: any;
   refresh$: Observable<boolean>;
   public refresh: Subject<boolean>;
@@ -43,6 +43,10 @@ export class ScholarshipService {
     this.schoolSelected = id;
   }
 
+  updateSchoolYearSelected(schoolYear) {
+    this.schoolYearSelected = schoolYear;
+  }
+
   updateStatus(status) {
     this.statusSelected = status;
   }
@@ -61,7 +65,10 @@ export class ScholarshipService {
   // New
   public getProcessCountStatus(unitId: number): Observable<ProcessCountStatusInterface> {
     const url = `/scholarship/process/status/unit/${unitId}/count`;
-    const params = new HttpParams().set('schoolId', this.schoolSelected.toString());
+    let params = new HttpParams().set('schoolId', this.schoolSelected.toString());
+    if (this.schoolYearSelected.length > 0) {
+        params = params.append('schoolYearSelected', this.schoolYearSelected.toString());
+      }
     return this.http
       .get<ProcessCountStatusInterface>(url, { params: params });
   }
