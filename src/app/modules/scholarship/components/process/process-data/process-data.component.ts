@@ -139,6 +139,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   }
 
   private loadSchoolYear(): void {
+    this.schoolYearDefault = this.scholarshipService.schoolYearSelected;
     for (let i = 2019; i <= new Date().getFullYear() + 1; i++)  {
       this.schoolYearData.push(new Filter(i, i.toString()));
     }
@@ -175,7 +176,6 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.schoolYearSelecteds = this.filterService.check(schoolYear, this.schoolYearSelecteds);
     this.refetchData();
   }
-
 
   // private searchProcesses(): void {
   //   this.processes = this.searchFilter(this.searchText);
@@ -245,8 +245,8 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   }
 
   private setInitialFilterSchoolYear() {
-    if (this.scholarshipService.schoolYearSelected !== 1) {
-      this.schoolYearSelecteds.push(this.scholarshipService.schoolYearSelected);
+    if (this.scholarshipService.schoolYearSelected && this.scholarshipService.schoolYearSelected.length > 0) {
+      this.schoolYearSelecteds.push(...this.scholarshipService.schoolYearSelected);
     }
   }
 

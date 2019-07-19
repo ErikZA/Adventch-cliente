@@ -1,6 +1,6 @@
 <div fxLayout="column" fxLayoutGap="10px">
     <div fxLayout="row" fxLayoutAlign="start">
-        <mat-form-field fxFlex fxFlex.gt-sm="28%">
+        <mat-form-field fxFlex fxFlex.gt-sm="28%" fxLayoutAlign="space-between">
             <mat-select placeholder="Escola" (selectionChange)="changeDashboard()" [(ngModel)]="idSchool" [disabled]="loading || authService.getCurrentUser().idSchool !== 0" required>
                 <mat-option *ngIf="authService.getCurrentUser().idSchool === 0" [value]="-1">Todas Escolas</mat-option>
                 <mat-option *ngFor="let s of (schools$ | async)" [value]="s.id">
@@ -8,6 +8,17 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
+        
+        <mat-form-field fxFlex fxFlex.gt-sm="28%" fxLayoutAlign="space-between">
+            <mat-select placeholder="Ano Letivo" (selectionChange)="schoolYearFilter()" [(ngModel)]="schoolYear" multiple>
+                <!-- <mat-option value="-1">Todos</mat-option> -->
+                <mat-option *ngFor="let y of (schoolYearData)" [value]="y.id">
+                    {{ y.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+
     </div>
     <mat-card-content fxLayout="column" fxLayoutGap="10px" *ngIf="!loading">
         <div fxLayout.gt-xs="row" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="10px">
