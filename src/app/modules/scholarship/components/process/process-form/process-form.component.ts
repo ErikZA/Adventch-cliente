@@ -118,7 +118,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   private createFormGroupForTypes(types: any[]): FormGroup {
     const obj = {};
     types.forEach(t => {
-      obj[t.controlName] = [];
+      obj[t.controlName] = [[]];
     });
     return this.formBuilder.group(obj);
   }
@@ -216,6 +216,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   }
   private setValuesToFormDocuments(documents: number[]) {
     documents.forEach(d => {
+      debugger;
       const doc = this.processDocuments.find(pd => pd.id === d);
       if (doc) {
         const type = this.types.find(t => t.id === doc.type);
