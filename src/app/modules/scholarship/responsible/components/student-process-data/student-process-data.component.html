@@ -35,10 +35,23 @@
                                         <p fxFlex="15%" fxHide.lt-sm>
                                             {{ process.dateRegistration | date: 'dd/MM/yyyy' }}
                                         </p>
+                                        
                                         <p fxFlex="20%" fxHide.lt-sm>
-                                                Vaga Liberada
-                                            <!--{{ process.status.name }}-->
+                                                {{ process.status.name }}
                                         </p>
+
+                                        <!-- <div *ngIf="process.status.name === 'Vaga Liberada 50%' || process.status.name === 'Vaga Liberada 100%' ">
+                                            <p fxFlex fxHide.lt-sm>
+                                                Vaga Liberada
+                                            </p> 
+                                        </div>
+                                        <div *ngIf="process.status.name !== 'Vaga Liberada 50%' && process.status.name !== 'Vaga Liberada 100%' ">
+                                            <p fxFlex fxHide.lt-sm>
+                                                {{ process.status.name }}
+                                            </p> 
+                                        </div> -->
+                       
+
                                         <p fxFlex="1%" fxFlex.lt-md="3%">
                                             <mat-icon *ngIf="process.status.id === 3 && process.hasUploads" style="color:#76d275">attachment</mat-icon>
                                         </p>
