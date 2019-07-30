@@ -62,6 +62,7 @@ export class ProcessDataDownloadComponent implements OnInit {
       element.click();
       // this.snackBar.open('Relatório gerado com sucesso.', 'OK', { duration: 5000 });
     }, err => {
+        console.log('parou aqui');
         console.log(err);
         // this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
     });

@@ -37,6 +37,8 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
   loading = true;
   processId: number;
 
+  private allDocuments: ProcessDocument[] = [];
+
   students: Student[] = [];
   studentSeries: StudentSerie[] = [];
   processDocuments: ProcessDocument[] = [];
@@ -71,16 +73,22 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.processDataComponent.openSidenav();
     this.initForm();
     this.checkCpf();
     this.updateUnit();
     this.scholarshipService.getStudentSeries()
       .pipe(
         tap(series => {
+          console.log('getSeries', series);
           this.studentSeries = series;
         }),
         switchMap(() => this.scholarshipService.getAllDocuments()),
-        tap(documents => this.processDocuments = documents),
+        tap(documents => {
+          console.log('documentos', documents),
+          this.allDocuments = documents;
+          this.processDocuments = this.allDocuments.filter(d => d.removed === false);
+        }),
         switchMap(() => this.route.params),
         tap(({ id }) => this.loading = !!id),
         skipWhile(({ id }) => {
@@ -97,8 +105,12 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         tap(process => this.setValuesToFormProcess(process)),
         tap(process => this.setValuesToFormDocuments(process.documents)),
         delay(100)
-      ).subscribe(() => this.loading = false);
-    this.processDataComponent.openSidenav();
+      ).subscribe(() => {
+        console.log('Documentos', this.processDocuments);
+        this.loading = false;
+
+
+      });
   }
 
   ngOnDestroy() {
@@ -215,9 +227,10 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     });
   }
   private setValuesToFormDocuments(documents: number[]) {
+    this.processDocuments = this.allDocuments.filter(d => d.removed === false || (documents.includes(d.id) && d.removed === true));
+    console.log('Documentos setValue', documents);
     documents.forEach(d => {
-      debugger;
-      const doc = this.processDocuments.find(pd => pd.id === d);
+      const doc = this.allDocuments.find(pd => pd.id === d);
       if (doc) {
         const type = this.types.find(t => t.id === doc.type);
         const control = this.processDocumentsForm.get(type.controlName);

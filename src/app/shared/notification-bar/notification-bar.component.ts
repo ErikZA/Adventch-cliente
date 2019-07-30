@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NotificationBarComponent implements OnInit {
 
-  msg = 'Informamos que a partir de sexta-feira (01/03) o suporte será realizado apenas pelo e-mail (suporteproes@forlogic.net)';
+  msg = 'Em caso de dúvidas enviar email para help@adven.tech';
 
   showBar = true;
 

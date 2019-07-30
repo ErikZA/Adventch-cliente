@@ -127,7 +127,6 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.schoolDefault = [this.scholarshipService.schoolSelected];
     this.schoolData = [];
     schools.forEach(school => {
-      console.log(school);
       this.schoolData.push(new Filter(school.id, school.name));
     });
   }
@@ -273,8 +272,6 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
   public getProcesses() {
     this.search$.next('');
     const user = auth.getCurrentUser();
-    console.log('Pegar Processo', this.yearSelecteds, this.schoolYearSelecteds);
-    console.log(this.statusSelecteds);
     if (user.idSchool === 0) {
       return this.scholarshipService
         .getProcessesByUnit(this.schoolSelecteds, this.statusSelecteds, this.yearSelecteds, this.schoolYearSelecteds, this.query)
@@ -364,7 +361,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       selectedFormat: formatSelect
     };
 
-    if(formatSelect === 1){
+    if (formatSelect === 1) {
       this.reportService
       .reportProcessesPdf(data)
       .subscribe(urlData => {
@@ -381,7 +378,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
         this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
       });
     }
-    if(formatSelect === 12){
+    if (formatSelect === 12) {
       this.reportService
       .reportProcessesExcel(data)
       .subscribe(urlData => {
