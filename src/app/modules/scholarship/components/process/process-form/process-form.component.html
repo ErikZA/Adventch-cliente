@@ -23,10 +23,9 @@
                             <mat-error *ngIf="formProcess.get('name').hasError('maxlenght')">Nome grande, digite um nome com menos de 200 dígitos</mat-error>
                         </mat-form-field>
                         <mat-form-field fxFlex>
-                            <input matInput type="email" placeholder="Email" formControlName="email" maxlength="200" ngModel [email]="true">
-                            <mat-error *ngIf="formProcess.get('email').hasError('email')">
-                                Digite um email válido
-                            </mat-error>
+                            <input matInput type="email" placeholder="Email" formControlName="email" maxlength="200" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+                            <mat-error *ngIf="formProcess.get('email').hasError('email')">Digite um email válido</mat-error>
+                            <mat-error *ngIf="formProcess.get('email').hasError('pattern')">Digite um email válido</mat-error>
                         </mat-form-field>
                         <mat-form-field fxFlex>
                             <input type="tel" matInput placeholder="Telefone" formControlName="phone" maxlength="18" #phone [InputMask]="maskPhone(phone)" pattern="\([0-9]{2}\) [0-9][0-9]{3,4}-[0-9]{3,5}$">

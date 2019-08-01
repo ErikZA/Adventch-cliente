@@ -140,7 +140,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     this.formProcess = this.formBuilder.group({
       cpf: [null, [Validators.required, CustomValidators.cpfCnpjValidator]],
       name: [null, Validators.required],
-      email: [null],
+      email: [null, [Validators.required]],
       phone: [null],
       rc: [null],
       nameStudent: [null, Validators.required],
