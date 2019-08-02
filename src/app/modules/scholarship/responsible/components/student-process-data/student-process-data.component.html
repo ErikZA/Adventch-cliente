@@ -8,11 +8,11 @@
                         <mat-list>
                             <mat-list-item>
                                 <h3 matLine fxLayout="row" fxLayoutAlign="start center">
-                                    <span fxFlex="15%" fxHide.lt-sm>Ano Letivo</span>
+                                    <span fxFlex="10%" fxHide.lt-sm>Ano Letivo</span>
                                     <span fxFlex="30%">Aluno</span>
-                                    <span fxFlex="20%" fxHide.lt-sm>Escola</span>
-                                    <span fxFlex="15%" fxHide.lt-sm>Protocolo</span>
-                                    <span fxFlex="15%" fxHide.lt-sm>Data da matrícula</span>
+                                    <span fxFlex="30%" fxHide.lt-sm>Escola</span>
+                                    <span fxFlex="20%" fxHide.lt-sm>Protocolo</span>
+                                    <span fxFlex="20%" fxHide.lt-sm>Data da matrícula</span>
                                     <span fxFlex="20%" fxHide.lt-sm>Status</span>
                                 </h3>
                             </mat-list-item>
@@ -24,19 +24,19 @@
                             <mat-expansion-panel hideToggle>
                                 <mat-expansion-panel-header>
                                     <mat-panel-description fxLayout="row" fxFlex>
-                                        <p fxFlex="30%" style="white-space: nowrap;">
+                                        <p fxFlex="10%" fxHide.lt-sm>
                                             {{ process.schoolYear }}
                                         </p>
                                         <p fxFlex="30%" style="white-space: nowrap;">
                                             {{ process.nameStudent }}
                                         </p>
-                                        <p fxFlex="20%" fxHide.lt-sm>
+                                        <p fxFlex="30%" fxHide.lt-sm>
                                             {{ process.school.name }}
                                         </p>
-                                        <p fxFlex="15%" fxHide.lt-sm>
+                                        <p fxFlex="20%" fxHide.lt-sm>
                                             {{ process.protocol }}
                                         </p>
-                                        <p fxFlex="15%" fxHide.lt-sm>
+                                        <p fxFlex="20%" fxHide.lt-sm>
                                             {{ process.dateRegistration | date: 'dd/MM/yyyy' }}
                                         </p>
                                         <p fxFlex="20%" fxHide.lt-sm>
