@@ -12,4 +12,5 @@ export interface ProcessResponsibleInterface {
   dateCreation: Date;
   school: School;
   hasUploads: boolean;
+  schoolYear: number;
 }

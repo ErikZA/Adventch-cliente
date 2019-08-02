@@ -567,7 +567,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
       case Rejected.NoVacancy:
         return 'Não há vaga';
       case Rejected.NotComtempled:
-        return 'Não comtemplado';
+        return 'Não contemplado';
       case Rejected.NotEnroll:
         return 'Não matriculou';
       default:

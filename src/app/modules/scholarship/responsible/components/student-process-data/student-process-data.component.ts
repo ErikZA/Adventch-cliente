@@ -55,16 +55,16 @@ export class StudentProcessDataComponent implements OnInit {
     if (motive === 'Documentação') {
       return 'Não Contemplado devido a documentação inconsistente a análise correspondente.';
     }
-    if (motive === 'Desistente') {
+    if (motive === 'Desistência') {
       return 'Abdicação do processo de bolsa solicitado.';
     }
-    if (motive === 'Não Contemplado') {
+    if (motive === 'Não contemplado') {
       return 'Não foi Contemplada, em caso de dúvidas, entrar em contato com a unidade escolar.';
     }
-    if (motive === 'Não há Vaga') {
+    if (motive === 'Não há vaga') {
       return 'Não contemplado por não haver vaga na turma ou % de bolsa solicitado.';
     }
-    if (motive === 'Não Matriculou') {
+    if (motive === 'Não matriculou') {
       return 'Não matriculou.';
     }
     return 'Indeferido pela apresentação da documentação inconsistente à análise correspondente.';
