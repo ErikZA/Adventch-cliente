@@ -315,6 +315,12 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
         return 'Indeferido pela apresentação da documentação inconsistente à análise correspondente.';
       case 'Desistência':
         return 'Indeferido por abdicação do processo de bolsa solicitado.';
+      case 'Não há vaga':
+        return 'Não contemplado por não haver vaga na turma ou % de bolsa solicitado.';
+      case 'Não contemplado':
+         return 'Não foi Contemplada, em caso de dúvidas, entrar em contato com a unidade escolar.';
+      case 'Não matriculou':
+         return 'Não matriculou.';
       default:
         break;
     }
