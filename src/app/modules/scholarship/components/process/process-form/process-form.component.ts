@@ -87,7 +87,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         tap(documents => {
           console.log('documentos', documents),
           this.allDocuments = documents;
-          this.processDocuments = this.allDocuments.filter(d => d.removed === false);
+          this.processDocuments = this.allDocuments.filter(d => (d.idUnit === auth.getCurrentUnit().id || d.idUnit === 0) && d.removed === false);
         }),
         switchMap(() => this.route.params),
         tap(({ id }) => this.loading = !!id),
