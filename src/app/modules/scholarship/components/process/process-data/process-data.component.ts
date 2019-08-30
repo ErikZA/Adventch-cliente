@@ -360,10 +360,16 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     });
   }
 
+  private getYearsProcesses(initial: number = 2019): Array<number> {
+    const length = new Date().getFullYear() + 2 - initial;
+    return Array.from({ length }, (_, i) => initial + i);
+  }
+
   public generateGeneralProcessReport(formatSelect: number): void {
     const data = {
       school2: this.getSchoolParams(),
       status2: String(this.statusSelecteds.length === 0 ? [1, 2, 3, 4, 5, 6, 7, 8] : this.statusSelecteds),
+      years: String(this.schoolYearSelecteds.length === 0 ? this.getYearsProcesses() : this.schoolYearSelecteds),
       selectedFormat: formatSelect
     };
 
