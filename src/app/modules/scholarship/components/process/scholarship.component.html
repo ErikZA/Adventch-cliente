@@ -1,40 +1,38 @@
 <div fxLayout="column" fxLayoutGap="10px">
-    <div fxLayout="row" fxLayoutAlign="start">
-        <mat-form-field fxFlex fxFlex.gt-sm="28%" fxLayoutAlign="space-between">
-            <mat-select placeholder="Escola" (selectionChange)="changeDashboard()" [(ngModel)]="idSchool" [disabled]="loading || authService.getCurrentUser().idSchool !== 0" required>
-                <mat-option *ngIf="authService.getCurrentUser().idSchool === 0" [value]="-1">Todas Escolas</mat-option>
-                <mat-option *ngFor="let s of (schools$ | async)" [value]="s.id">
-                    ({{ s.id }}) {{ s.name }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        
-        <mat-form-field fxFlex fxFlex.gt-sm="28%" fxLayoutAlign="space-between">
-            <mat-select placeholder="Ano Letivo" (selectionChange)="schoolYearFilter()" [(ngModel)]="schoolYear" multiple>
-                <!-- <mat-option value="-1">Todos</mat-option> -->
-                <mat-option *ngFor="let y of (schoolYearData)" [value]="y.id">
-                    {{ y.name }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-
-
-    </div>
-    <mat-card-content fxLayout="column" fxLayoutGap="10px" *ngIf="!loading">
-        <div fxLayout.gt-xs="row" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="10px">
-            <app-process-card-count class="process" (click)="redirectToProcess(0)" [count]="processesCountStatus.allProcess" title="Processos" fxFlex></app-process-card-count>
-            <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(1)" [count]="processesCountStatus.waitingReview" title="Aguardando Análise" color="#03a9f4" fxFlex></app-process-card-count>
-            <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(2)" [count]="processesCountStatus.analyze" title="Em Análise" color="#76d275" fxFlex></app-process-card-count>
-        </div>
-        <div fxLayout.gt-xs="row" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="10px">
-            <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(4)" [count]="processesCountStatus.waitingVacancy" title="Aguardando Vaga de Bolsa" color="#ffc947" fxFlex></app-process-card-count>
-            <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(5)" [count]="processesCountStatus.halfVacancy" title="Vaga Liberada 50%" color="#ff9800" fxFlex></app-process-card-count>
-            <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(6)" [count]="processesCountStatus.fullVacancy" title="Vaga Liberada 100%" color="#c66900" fxFlex></app-process-card-count>
-        </div>
-        <div fxLayout.gt-xs="row" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="10px">
-            <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(3)" [count]="processesCountStatus.pendency" title="Pendência" color="#f44336" fxFlex></app-process-card-count>
-            <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(7)" [count]="processesCountStatus.rejected" title="Bolsa Indeferida" color="#607d8b" fxFlex></app-process-card-count>
-            <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(8)" [count]="processesCountStatus.notEnroll" title="Não Matrículado" color="#a30000" fxFlex></app-process-card-count>
-        </div>
-    </mat-card-content>
+  <div fxLayout.gt-xs="row" fxLayout="column" fxLayoutAlign="start" fxLayoutGap.gt-xs="2%">
+    <mat-form-field fxFlex fxFlex.gt-sm="50%">
+        <mat-select placeholder="Escola" (selectionChange)="changeDashboard()" [(ngModel)]="idSchool" [disabled]="loading || authService.getCurrentUser().idSchool !== 0" required>
+            <mat-option *ngIf="authService.getCurrentUser().idSchool === 0" [value]="-1">Todas Escolas</mat-option>
+            <mat-option *ngFor="let s of (schools$ | async)" [value]="s.id">
+                ({{ s.id }}) {{ s.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    
+    <mat-form-field fxFlex fxFlex.gt-sm="28%">
+        <mat-select placeholder="Ano Letivo" (selectionChange)="schoolYearFilter()" [(ngModel)]="schoolYear" multiple>
+            <!-- <mat-option value="-1">Todos</mat-option> -->
+            <mat-option *ngFor="let y of (schoolYearData)" [value]="y.id">
+                {{ y.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+  </div>
+  <mat-card-content fxLayout="column" fxLayoutGap="10px" *ngIf="!loading">
+      <div fxLayout.gt-xs="row" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="10px">
+          <app-process-card-count class="process" (click)="redirectToProcess(0)" [count]="processesCountStatus.allProcess" title="Processos" fxFlex></app-process-card-count>
+          <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(1)" [count]="processesCountStatus.waitingReview" title="Aguardando Análise" color="#03a9f4" fxFlex></app-process-card-count>
+          <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(2)" [count]="processesCountStatus.analyze" title="Em Análise" color="#76d275" fxFlex></app-process-card-count>
+      </div>
+      <div fxLayout.gt-xs="row" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="10px">
+          <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(4)" [count]="processesCountStatus.waitingVacancy" title="Aguardando Vaga de Bolsa" color="#ffc947" fxFlex></app-process-card-count>
+          <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(5)" [count]="processesCountStatus.halfVacancy" title="Vaga Liberada 50%" color="#ff9800" fxFlex></app-process-card-count>
+          <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(6)" [count]="processesCountStatus.fullVacancy" title="Vaga Liberada 100%" color="#c66900" fxFlex></app-process-card-count>
+      </div>
+      <div fxLayout.gt-xs="row" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="10px">
+          <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(3)" [count]="processesCountStatus.pendency" title="Pendência" color="#f44336" fxFlex></app-process-card-count>
+          <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(7)" [count]="processesCountStatus.rejected" title="Bolsa Indeferida" color="#607d8b" fxFlex></app-process-card-count>
+          <app-process-card-count class="process" [total]="processesCountStatus.allProcess" (click)="redirectToProcess(8)" [count]="processesCountStatus.notEnroll" title="Não Matrículado" color="#a30000" fxFlex></app-process-card-count>
+      </div>
+  </mat-card-content>
 </div>
