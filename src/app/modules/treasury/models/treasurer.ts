@@ -1,4 +1,4 @@
-import { EGender, EFunction } from './Enums';
+import { EGender, EFunction } from './enums';
 import { Unit } from '../../../shared/models/unit.model';
 import { Church } from './church';
 import { Phone } from './phone';

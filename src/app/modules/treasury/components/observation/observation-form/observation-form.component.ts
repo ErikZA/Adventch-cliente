@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import * as moment from 'moment';
 import { MatSnackBar } from '@angular/material';
-import { EObservationStatus } from '../../../models/Enums';
+import { EObservationStatus } from '../../../models/enums';
 import { auth } from '../../../../../auth/auth';
 import { ObservationDataComponent } from '../observation-data/observation-data.component';
 
@@ -106,23 +106,23 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
         }),
         switchMap(() => this.observationDataComponent.getData()),
         tap(() => this.snackBar.open('Observação armazenado com sucesso!', 'OK', { duration: 5000 }))
-      ).subscribe(() => {}, error => {
+      ).subscribe(() => { }, error => {
         console.log(error);
         this.snackBar.open('Erro ao salvar observação, tente novamente.', 'OK', { duration: 5000 });
       });
   }
   editObservation(id: number) {
     return this.treasuryService.getObservation(id)
-    .pipe(
-      tap(data => {
-        this.observation = data;
-        this.formObservation.patchValue({
-          description: data.description,
-          date: data.date,
-          church: data.church.id
-        });
-      })
-    );
+      .pipe(
+        tap(data => {
+          this.observation = data;
+          this.formObservation.patchValue({
+            description: data.description,
+            date: data.date,
+            church: data.church.id
+          });
+        })
+      );
   }
   resetAllForms() {
     this.formObservation.reset();
