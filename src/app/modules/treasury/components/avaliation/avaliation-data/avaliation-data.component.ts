@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material';
 import { Subject, Subscription } from 'rxjs';
 
 import { auth } from '../../../../../auth/auth';
-import { EAvaliationStatus } from '../../../models/Enums';
+import { EAvaliationStatus } from '../../../models/enums';
 import { TreasuryService } from '../../../treasury.service';
 import { User } from '../../../../../shared/models/user.model';
 import { ReportService } from '../../../../../shared/report.service';
@@ -129,11 +129,11 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
 
   private loadDistricts() {
     this.districtService
-    .getDistrictsList(auth.getCurrentUnit().id).subscribe((data: DistrictListInterface[]) => {
-      data.forEach(d => {
-        this.districtsData.push(new Filter(Number(d.id), d.name));
+      .getDistrictsList(auth.getCurrentUnit().id).subscribe((data: DistrictListInterface[]) => {
+        data.forEach(d => {
+          this.districtsData.push(new Filter(Number(d.id), d.name));
+        });
       });
-    });
   }
 
   private loadAnalysts() {
@@ -209,7 +209,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     const filtered2 = [];
     avaliationsFiltered.forEach(f => {
       const avaliation = f.avaliations
-      .find(a => a.isMensal && this.getYear(a.date) === this.filterYear && this.getMonth(a.date) === this.filterMonth);
+        .find(a => a.isMensal && this.getYear(a.date) === this.filterYear && this.getMonth(a.date) === this.filterMonth);
       if (this.filterStatusInAvaliation(avaliation)) {
         filtered2.push(f);
       }
@@ -296,11 +296,11 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
 
   public disableReport(): boolean {
     const districts = this.districtsSelecteds.length === 0
-    || this.districtsSelecteds.length === 1
-    || this.districtsSelecteds.length === this.districtsData.length;
+      || this.districtsSelecteds.length === 1
+      || this.districtsSelecteds.length === this.districtsData.length;
     const analysts = this.analystsSelecteds.length === 0
-    || this.analystsSelecteds.length === 1
-    || this.analystsSelecteds.length === this.analystsData.length;
+      || this.analystsSelecteds.length === 1
+      || this.analystsSelecteds.length === this.analystsData.length;
     if (districts && analysts) {
       return false;
     }
@@ -348,15 +348,15 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     this.avaliationService
       .finalizeMonthlyAvaliation(avaliation.id, { userId: id })
       .pipe(
-      skipWhile(res => !res),
-      switchMap(() => this.getData()),
-      tap(() =>
-        this.snackBar.open(`Avaliação de ${this.filterMonth}/${this.filterYear} finalizada!`, 'OK', { duration: 3000 }),
-        error => {
-          console.log(error);
-          this.snackBar
-            .open(`Ocorreu um erro ao finalizar a avaliação de ${this.filterMonth}/${this.filterYear}`, 'OK', { duration: 3000 });
-        })
+        skipWhile(res => !res),
+        switchMap(() => this.getData()),
+        tap(() =>
+          this.snackBar.open(`Avaliação de ${this.filterMonth}/${this.filterYear} finalizada!`, 'OK', { duration: 3000 }),
+          error => {
+            console.log(error);
+            this.snackBar
+              .open(`Ocorreu um erro ao finalizar a avaliação de ${this.filterMonth}/${this.filterYear}`, 'OK', { duration: 3000 });
+          })
       ).subscribe();
   }
 
@@ -366,14 +366,14 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     this.avaliationService
       .finalizeAnnualAvaliation(avaliation.id, { userId: id })
       .pipe(
-      skipWhile(res => !res),
-      switchMap(() => this.getData()),
-      tap(() =>
-        this.snackBar.open(`Avaliação de ${this.filterYear} finalizada!`, 'OK', { duration: 3000 }),
-        error => {
-          console.log(error);
-          this.snackBar.open(`Ocorreu um erro ao finalizar a avaliação de ${this.filterYear}`, 'OK', { duration: 3000 });
-        })
+        skipWhile(res => !res),
+        switchMap(() => this.getData()),
+        tap(() =>
+          this.snackBar.open(`Avaliação de ${this.filterYear} finalizada!`, 'OK', { duration: 3000 }),
+          error => {
+            console.log(error);
+            this.snackBar.open(`Ocorreu um erro ao finalizar a avaliação de ${this.filterYear}`, 'OK', { duration: 3000 });
+          })
       ).subscribe();
   }
 
@@ -436,19 +436,19 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   public generateDetailReport(avaliation): void {
     const data = this.getReportParams(avaliation.id);
     this.reportService
-    .reportAvaliationsDetail(data)
-    .subscribe(dataURL => {
-      const fileUrl = URL.createObjectURL(dataURL);
-      const element = document.createElement('a');
-      element.href = fileUrl;
-      element.download = 'detalhe-avaliacao.pdf';
-      element.target = '_blank';
-      element.click();
-      this.snackBar.open('Relatório gerado com sucesso.', 'OK', { duration: 5000 });
-    }, err => {
+      .reportAvaliationsDetail(data)
+      .subscribe(dataURL => {
+        const fileUrl = URL.createObjectURL(dataURL);
+        const element = document.createElement('a');
+        element.href = fileUrl;
+        element.download = 'detalhe-avaliacao.pdf';
+        element.target = '_blank';
+        element.click();
+        this.snackBar.open('Relatório gerado com sucesso.', 'OK', { duration: 5000 });
+      }, err => {
         console.log(err);
         this.snackBar.open('Erro ao gerar relatório, tente novamente.', 'OK', { duration: 5000 });
-    });
+      });
   }
 
   private getReportParams(id): any {

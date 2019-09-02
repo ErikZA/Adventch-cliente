@@ -4,7 +4,7 @@ import { Church } from './church';
 import { Unit } from '../../../shared/models/unit.model';
 import { Treasurer } from './treasurer';
 import { AvaliationRequirement } from './avaliationRequirement';
-import { EAvaliationStatus } from './Enums';
+import { EAvaliationStatus } from './enums';
 export class Avaliation {
   id: number;
   date: Date;
