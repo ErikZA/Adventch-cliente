@@ -7,7 +7,8 @@ trigger:
 - master
 
 pool:
-  vmImage: 'linux'
+  name: linux
+  timeoutInMinutes: 10
 
 steps:
 - task: NodeTool@0
