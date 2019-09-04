@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, Subscription } from 'rxjs';
-import { MatSnackBar } from '@angular/material';
+import { Subject, Subscription, Observable } from 'rxjs';
+import { MatSnackBar, MatPaginator, MatPaginatorIntl, PageEvent } from '@angular/material';
 
 import { TreasuryService } from '../../../treasury.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
@@ -13,7 +13,7 @@ import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import * as moment from 'moment';
-import { switchMap, tap, skipWhile } from 'rxjs/operators';
+import { switchMap, tap, skipWhile, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 import { ReportService } from '../../../../../shared/report.service';
@@ -21,6 +21,7 @@ import { TreasurerService } from '../treasurer.service';
 import { TreasurerDataInterface } from '../../../interfaces/treasurer/treasurer-data-interface';
 import { DistrictListInterface } from '../../../interfaces/district/district-list-interface';
 import { DistrictService } from '../../districts/district.service';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-treasurer-data',
@@ -49,6 +50,14 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   sub1: Subscription;
   subsConfirmRemove: Subscription;
 
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  treasurers$: Observable<any>;
+  private subscribeSearch: Subscription;
+  private textSearch = '';
+  length = 0;
+  pageSize = 10;
+  pageNumber = 0;
+  pageEvent: PageEvent;
   constructor(
     protected router: Router,
     private treasureService: TreasuryService,
@@ -61,20 +70,59 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   ) { super(router); }
 
   ngOnInit() {
-    this.getData()
-      .pipe(
-        switchMap(() => this.search$)
-      ).subscribe(search => {
-        this.filterText = search;
-        this.search();
-      });
+    const paginatorIntl = new MatPaginatorIntl();
+
+    paginatorIntl.itemsPerPageLabel = 'Items per pagina:';
+    paginatorIntl.nextPageLabel = 'Volgende pagina';
+    paginatorIntl.previousPageLabel = 'Vorige pagina';
+    this.getTreasurers();
+    this.subscribeSearch = this.search$.pipe(
+      tap(search => this.textSearch = search),
+      debounceTime(250),
+      distinctUntilChanged(),
+      tap(() => this.restartPager()),
+      tap(() => this.getTreasurers())
+    ).subscribe();
+    // this.getData()
+    //   .pipe(
+    //     switchMap(() => this.search$)
+    //   ).subscribe(search => {
+    //     this.filterText = search;
+    //     this.search();
+    //   });
   }
 
   ngOnDestroy(): void {
-
+    this.subscribeSearch.unsubscribe();
   }
 
-  getFunctionName(treasurer: Treasurer) {
+  private getTreasurers(): void {
+    const params = new HttpParams()
+      .set('pageSize', String(this.pageSize))
+      .set('pageNumber', String(this.pageNumber + 1))
+      .set('search', this.textSearch);
+    // .set('districtId', null)
+    // .set('functionId', null);
+    const { id } = auth.getCurrentUnit();
+    this.treasurers$ = this.treasurerService
+      .getTreasurers(id, params)
+      .pipe(
+        tap(data => this.length = data.rowCount)
+      );
+  }
+
+  public paginatorEvent(event: PageEvent): PageEvent {
+    this.pageSize = event.pageSize;
+    this.pageNumber = event.pageIndex;
+    this.getTreasurers();
+    return event;
+  }
+
+  private restartPager(): void {
+    this.paginator.firstPage();
+  }
+
+  public getFunctionName(treasurer: Treasurer) {
     if (treasurer.function === 1) {
       return 'Tesoureiro (a)';
     }
@@ -84,27 +132,27 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     return 'Tesoureiro (a) Assistente';
   }
 
-  public getData() {
-    this.search$.next('');
-    return this.getTreasurers().pipe(
-      switchMap(() => this.loadAnalysts()),
-      switchMap(() => this.loadDistricts()),
-      tap(() => this.loadFunctions())
-    );
-  }
+  // public getData() {
+  //   this.search$.next('');
+  //   return this.getTreasurers().pipe(
+  //     switchMap(() => this.loadAnalysts()),
+  //     switchMap(() => this.loadDistricts()),
+  //     tap(() => this.loadFunctions())
+  //   );
+  // }
 
-  private getTreasurers() {
-    const { id } = auth.getCurrentUnit();
-    return this.treasurerService
-      .getTreasurers(id)
-      .pipe(
-        tap(data => {
-          this.treasurersCache = data;
-          this.treasurers = data;
-        }),
-        tap(() => this.search())
-      );
-  }
+  // private getTreasurers() {
+  //   const { id } = auth.getCurrentUnit();
+  //   return this.treasurerService
+  //     .getTreasurers(id)
+  //     .pipe(
+  //       tap(data => {
+  //         this.treasurersCache = data;
+  //         this.treasurers = data;
+  //       }),
+  //       tap(() => this.search())
+  //     );
+  // }
 
   public editTreasurer(treasurer: TreasurerDataInterface): void {
     const id = treasurer.id;
@@ -114,19 +162,19 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     this.router.navigate([`tesouraria/tesoureiros/${id}/editar`]);
   }
 
-  public removeTreasurer(treasurer: TreasurerDataInterface) {
-    this.subsConfirmRemove = this.confirmDialogService
-      .confirm('Remover registro', 'Você deseja realmente remover este tesoureiro?', 'REMOVER')
-      .pipe(
-        skipWhile(res => res !== true),
-        switchMap(() => this.treasureService.deleteTreasurer(treasurer.id)),
-        switchMap(() => this.getTreasurers()),
-        tap(() => this.snackBar.open('Tesoureiro removido!', 'OK', { duration: 5000 }))
-      ).subscribe(null, err => {
-        console.log(err);
-        this.snackBar.open('Erro ao remover tesoureiro, tente novamente.', 'OK', { duration: 5000 });
-      });
-  }
+  // public removeTreasurer(treasurer: TreasurerDataInterface) {
+  //   this.subsConfirmRemove = this.confirmDialogService
+  //     .confirm('Remover registro', 'Você deseja realmente remover este tesoureiro?', 'REMOVER')
+  //     .pipe(
+  //       skipWhile(res => res !== true),
+  //       switchMap(() => this.treasureService.deleteTreasurer(treasurer.id)),
+  //       switchMap(() => this.getTreasurers()),
+  //       tap(() => this.snackBar.open('Tesoureiro removido!', 'OK', { duration: 5000 }))
+  //     ).subscribe(null, err => {
+  //       console.log(err);
+  //       this.snackBar.open('Erro ao remover tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+  //     });
+  // }
 
   public onScroll() {
     this.showList += 80;
@@ -147,24 +195,24 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   private loadDistricts() {
     this.districtsData = [];
     return this.districtService.getDistrictsList(auth.getCurrentUnit().id)
-    .pipe(
-      tap((data: DistrictListInterface[]) => {
-        data.forEach(d => {
-          this.districtsData.push(new Filter(Number(d.id), d.name));
-        });
-      })
-    );
+      .pipe(
+        tap((data: DistrictListInterface[]) => {
+          data.forEach(d => {
+            this.districtsData.push(new Filter(Number(d.id), d.name));
+          });
+        })
+      );
   }
   private loadAnalysts() {
     this.analystsData = [];
     return this.treasureService.loadAnalysts(auth.getCurrentUnit().id)
-    .pipe(
-      tap((data: User[]) => {
-        data.forEach(d => {
-          this.analystsData.push(new Filter(Number(d.id), d.name));
-        });
-      })
-    );
+      .pipe(
+        tap((data: User[]) => {
+          data.forEach(d => {
+            this.analystsData.push(new Filter(Number(d.id), d.name));
+          });
+        })
+      );
   }
 
   private loadFunctions() {

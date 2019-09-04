@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 
-const modules = {}
-
 import {
   MatSlideToggleModule,
   MatDividerModule,
@@ -39,6 +37,7 @@ import {
   MatTreeModule
 } from '@angular/material';
 
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   exports: [
@@ -75,7 +74,8 @@ import {
     MatToolbarModule,
     MatTooltipModule,
     MatGridListModule,
-    MatTreeModule
+    MatTreeModule,
+    ScrollingModule
   ]
 })
 export class MaterialModule { }

@@ -50,10 +50,11 @@ import { LayoutResponsibleComponent } from './components/container/layout-respon
 import { LogoResponsibleComponent } from './components/header/responsible/logo-responsible/logo-responsible.component';
 import { ButtonResponsibleUserComponent } from './components/header/responsible/button-responsible-user/button-responsible-user.component';
 import { FooterResponsibleComponent } from './components/footer/responsible/footer-responsible/footer-responsible.component';
-import { MAT_DATE_LOCALE, DateAdapter } from '@angular/material';
+import { MAT_DATE_LOCALE, DateAdapter, MatPaginatorIntl } from '@angular/material';
 import { DateFormat } from './material/date-format';
 import { FilterContainerComponent } from './components/filter-container/filter-container.component';
 import { NotificationBarComponent } from '../shared/notification-bar/notification-bar.component';
+import { PaginatorFormat } from './material/paginator-format';
 
 // const globalRippleConfig: RippleGlobalOptions = {
 //   disabled: false,
@@ -167,6 +168,7 @@ import { NotificationBarComponent } from '../shared/notification-bar/notificatio
     // { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     // { provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: globalRippleConfig }
+    { provide: MatPaginatorIntl, useClass: PaginatorFormat },
   ],
   entryComponents: [
     ConfirmDialogComponent
