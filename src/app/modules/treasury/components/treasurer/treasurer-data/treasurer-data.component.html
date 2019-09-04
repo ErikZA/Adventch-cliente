@@ -1,4 +1,4 @@
-<!-- <app-form-sidenav-right (closeEmitted)="closeSidenav()" #sidenavRight></app-form-sidenav-right> -->
+<app-form-sidenav-right (closeEmitted)="closeSidenav()" #sidenavRight></app-form-sidenav-right>
 <!-- <app-layout-data> -->
 <!-- <div space-type="header" fxLayout="column">
       <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
@@ -160,40 +160,46 @@
   </div> -->
 <!-- </app-layout-data> -->
 <div space-type="header" fxLayout="column">
-    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
-        <h2 class="title" *ngIf="!searchButton">Lista de Tesoureiros</h2>
-        <mat-form-field *ngIf="searchButton" appearance="outline" fxFlex>
-            <mat-label>Pesquisar...</mat-label>
-            <input matInput placeholder="Nome, código ou nome da igreja" (keyup)="search$.next($event.target.value)"
-                (blur)="search$.next($event.target.value)" (keydown.enter)="search$.next($event.target.value)"
-                [value]="search$ | async">
-        </mat-form-field>
-        <div class="buttons" fxLayoutAlign="start center">
-            <button mat-icon-button (click)="searchButton = !searchButton">
-                <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
-            </button>
-            <button mat-icon-button matTooltip="Filtragem avançada">
-                <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
-            </button>
-            <button mat-icon-button matTooltip="Relatório geral" (click)="generateGeneralReport()">
-                <mat-icon>print</mat-icon>
-            </button>
-        </div>
+  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
+    <h2 class="title" *ngIf="!searchButton">Lista de Tesoureiros</h2>
+    <mat-form-field *ngIf="searchButton" appearance="outline" fxFlex>
+      <mat-label>Pesquisar...</mat-label>
+      <input matInput placeholder="Nome, código da igreja ou nome da igreja" (keyup)="search$.next($event.target.value)"
+        (blur)="search$.next($event.target.value)" (keydown.enter)="search$.next($event.target.value)"
+        [value]="search$ | async">
+    </mat-form-field>
+    <div class="buttons" fxLayoutAlign="start center">
+      <ng-template [Feature]="38" permission="1">
+        <button mat-stroked-button routerLink="./novo">
+          <mat-icon aria-label="Adicionar tesoureiro">add</mat-icon>
+          Novo
+        </button>
+      </ng-template>
+      <button mat-icon-button (click)="searchButton = !searchButton">
+        <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Filtragem avançada">
+        <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Relatório geral" (click)="generateGeneralReport()">
+        <mat-icon>print</mat-icon>
+      </button>
     </div>
+  </div>
 </div>
 <ng-container *ngIf="(treasurers$ | async) as treasurers">
-    <mat-list *ngFor="let item of treasurers.results">
-        <mat-list-item class="item-list">
-            <h3 matLine>{{item.name}}</h3>
-        </mat-list-item>
-        <mat-divider></mat-divider>
-    </mat-list>
-    <mat-paginator [length]="length" [pageSize]="pageSize" [pageIndex]="pageNumber" [pageSizeOptions]="[10, 15, 25, 50]"
-        [showFirstLastButtons]="true" (page)="pageEvent = paginatorEvent($event)">
-    </mat-paginator>
+  <mat-list *ngFor="let item of treasurers.results">
+    <mat-list-item class="item-list">
+      <h3 matLine>{{item.name}}</h3>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  </mat-list>
+  <mat-paginator [length]="length" [pageSize]="pageSize" [pageIndex]="pageNumber" [pageSizeOptions]="[10, 15, 25, 50]"
+    [showFirstLastButtons]="true" (page)="pageEvent = paginatorEvent($event)">
+  </mat-paginator>
 </ng-container>
 <!-- <ng-template [Feature]="38" permission="1">
-    <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo">
-        <mat-icon aria-label="Adicionar tesoureiro">add</mat-icon>
-    </button>
+  <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo">
+    <mat-icon aria-label="Adicionar tesoureiro">add</mat-icon>
+  </button>
 </ng-template> -->
