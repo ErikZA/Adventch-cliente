@@ -1,19 +1,30 @@
 <form [formGroup]="formVacancy" novalidate fxLayout="column" fxLayoutAlign="space-between">
-    <mat-card-title>Aprovação da bolsa</mat-card-title>
-    <div fxLayout="column" fxFlexOffset="20px" fxLayoutAlign="|start,center,end,space-around,space-between| |start,center,end,stretch|" fxLayoutGap="10px">
-        <mat-radio-group formControlName="type" name="type" aria-label="Tipo da bolsa" [(ngModel)]="value">
-            <mat-radio-button value="1" aria-label="50% (Meia)" style="margin: 0 20px 0 0">50% (Meia)</mat-radio-button>
-            <mat-radio-button value="2" aria-label="100% (Completa)">100% (Completa)</mat-radio-button>
-        </mat-radio-group>
-        <mat-form-field fxFlexFill>
-            <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerRegistration" placeholder="Data da matrícula" formControlName="dateRegistration" required>
-            <mat-datepicker-toggle matSuffix [for]="pickerRegistration"></mat-datepicker-toggle>
-            <mat-datepicker #pickerRegistration></mat-datepicker>
-        </mat-form-field>
-        <div fxLayoutGap="10px" style="font-size: 12px">AVISO: O responsável receberá um e-mail com essa confirmação.</div>
-    </div>
-    <div fxFlexOffset="20px" class="buttons" fxLayout="row" fxLayoutAlign="space-between">
-        <button mat-button type="button" class="btn-cancel" (click)="cancel()">CANCELAR</button>
-        <button mat-raised-button color="primary" type="submit" (click)="saveType()" [disabled]="formVacancy.invalid">SALVAR</button>
-    </div>
+  <mat-card-title>Aprovação da bolsa</mat-card-title>
+  <div fxLayout="column" fxFlexOffset="20px" fxLayoutGap="10px">
+    <mat-radio-group formControlName="type" name="type" aria-label="Tipo da bolsa" [(ngModel)]="value">
+      <mat-radio-button value="1" aria-label="50% (Meia)" style="margin: 0 20px 0 0">50% (Meia)</mat-radio-button>
+      <mat-radio-button value="2" aria-label="100% (Completa)">100% (Completa)</mat-radio-button>
+    </mat-radio-group>
+    <mat-form-field fxFlexFill>
+      <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerRegistration"
+        placeholder="Data da matrícula" formControlName="dateRegistration" required>
+      <mat-datepicker-toggle matSuffix [for]="pickerRegistration"></mat-datepicker-toggle>
+      <mat-datepicker #pickerRegistration></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field *ngIf="idUnit === 1 || idUnit === 12">
+      <mat-label>Turno Liberado:</mat-label>
+      <mat-select formControlName="shiftId">
+        <mat-option *ngFor="let shift of shifts$ | async" [value]="shift.id">
+          {{shift.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div fxLayoutGap="10px" style="font-size: 12px">AVISO: O responsável receberá um e-mail com essa confirmação.</div>
+  </div>
+
+  <div class="buttons" fxLayout="row" fxLayoutAlign="space-between">
+    <button mat-button type="button" class="btn-cancel" (click)="cancel()">CANCELAR</button>
+    <button mat-raised-button color="primary" type="submit" (click)="saveType()"
+      [disabled]="formVacancy.invalid">SALVAR</button>
+  </div>
 </form>

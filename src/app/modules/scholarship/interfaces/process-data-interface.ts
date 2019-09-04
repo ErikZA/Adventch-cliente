@@ -19,4 +19,5 @@ export interface ProcessDataInterface {
   dateCreation: Date;
   documents: DocumentProcessDataInterface[];
   hasUploads: boolean;
+  approvedShift: string;
 }

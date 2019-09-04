@@ -473,7 +473,8 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
         if (vacancy) {
           const { id } = auth.getCurrentUser();
           this.scholarshipService
-            .saveVacancy(process.id, { userId: id, status: vacancy.idStatus, dataRegistration: vacancy.dateRegistration })
+            .saveVacancy(process.id,
+              { userId: id, status: vacancy.idStatus, dataRegistration: vacancy.dateRegistration, shiftId: vacancy.shiftId })
             .pipe(
               skipWhile((res) => !res),
               tap(() => {

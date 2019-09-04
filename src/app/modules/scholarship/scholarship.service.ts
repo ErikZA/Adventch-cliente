@@ -14,6 +14,7 @@ import { SchoolProcessInterface } from './interfaces/school-process-interface';
 import { ProcessDataInterface } from './interfaces/process-data-interface';
 import { EditProcessViewModel, NewProcessViewModel, ProcessUploadViewModel } from './interfaces/process-view-models';
 import { DocumentProcessDataInterface } from './interfaces/document-process-data-interface';
+import { ShiftInterface } from './interfaces/shift-interface';
 
 @Injectable()
 export class ScholarshipService {
@@ -181,7 +182,9 @@ export class ScholarshipService {
       .put<boolean>(url, model);
   }
 
-  public saveVacancy(processId: number, model: { userId: number, status: number, dataRegistration: Date }): Observable<boolean> {
+  public saveVacancy(processId: number,
+    model: { userId: number, status: number, dataRegistration: Date, shiftId: number }
+    ): Observable<boolean> {
     const url = `/scholarship/process/${processId}/status/approve`;
     return this.http
       .put<boolean>(url, model);
@@ -215,6 +218,12 @@ export class ScholarshipService {
     const url = '/scholarship/process/series';
     return this.http
       .get<StudentSerie[]>(url);
+  }
+
+  public getAllShifts(): Observable<ShiftInterface[]> {
+    const url = '/scholarship/process/shifts';
+    return this.http
+      .get<ShiftInterface[]>(url);
   }
 
   public getAllDocuments(): Observable<ProcessDocument[]> {

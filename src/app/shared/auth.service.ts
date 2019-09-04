@@ -5,9 +5,6 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-
-
-
 import { Unit } from './models/unit.model';
 import { EModules } from './models/modules.enum';
 import { Permission } from './models/permission.model';
@@ -89,13 +86,13 @@ export class AuthService {
       return;
     }
     this.http.get(`/auth/token/renew/${unitId}`)
-    .pipe(tap(() => {
-      this.router.navigate(['/']);
-      window.location.reload();
-    }))
-    .subscribe((t: any) => {
-      auth.setMainToken(t.token);
-    });
+      .pipe(tap(() => {
+        this.router.navigate(['/']);
+        window.location.reload();
+      }))
+      .subscribe((t: any) => {
+        auth.setMainToken(t.token);
+      });
   }
   redirectToHome(): void {
     this.router.navigate(['/']);
