@@ -81,7 +81,7 @@
                                 {{ process.status.name }}
                             </p>
                             <p fxFlex="1%" fxFlex.lt-md="3%">
-                                <mat-icon *ngIf="process.status.id === 3 && process.hasUploads" style="color:#76d275">attachment</mat-icon>
+                                <mat-icon *ngIf="process.status.id === 3 && process.hasUploads" style="color:#76d275">check_circle</mat-icon>
                             </p>
                         </mat-panel-description>
                     </mat-expansion-panel-header>
@@ -97,12 +97,12 @@
                                 <button mat-icon-button color="basic" (click)="generateReportToProcess(process)" matTooltip="Imprimir processo">
                   <mat-icon>print</mat-icon>
                 </button>
-                                <button mat-button color="basic" (click)="generateNewPasswordResponsible(process)" matTooltip="Gerar nova senha para o responsável">
+                                <button *ngIf="isSysAdmin" mat-button color="basic" (click)="generateNewPasswordResponsible(process)" matTooltip="Gerar nova senha para o responsável">
                   Gerar senha
                 </button>
                             </div>
                             <mat-button-toggle (change)="enableDocuments(process)">
-                                {{ !documentsIsVisible ? 'Documentos Enviados' : 'Informações do Processo' }}
+                                {{ !documentsIsVisible ? 'Documentos Entregues' : 'Informações do Processo' }}
                                 <mat-icon>assignment</mat-icon>
                             </mat-button-toggle>
                         </div>
@@ -127,7 +127,7 @@
                                     <div>{{ process.responsible.name }}</div>
                                 </div>
                                 <div fxLayout="row" fxLayoutGap="10px">
-                                    <div class="text-bold">RC do aluno: </div>
+                                    <div class="text-bold">RA do aluno: </div>
                                     <div>{{ process.student.rc }}</div>
                                 </div>
                                 <div fxLayout="row" fxLayoutGap="10px">

@@ -9,7 +9,7 @@ export class NotificationBarComponent implements OnInit {
 
   msg = 'Em caso de dúvidas enviar email para help@adven.tech';
 
-  showBar = true;
+  showBar = false;
 
   constructor() {}
 

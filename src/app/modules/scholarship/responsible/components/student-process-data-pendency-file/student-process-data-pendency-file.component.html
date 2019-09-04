@@ -1,4 +1,4 @@
-<form enctype="multipart/form-data" *ngIf="!process.hasUploads">
+<form enctype="multipart/form-data" *ngIf="process.status.id === 3">
     <div fxLayout="row wrap" fxLayoutGap="5px">
         <mat-button-toggle (click)="openWindow(process)">
             <mat-icon>attach_file</mat-icon>

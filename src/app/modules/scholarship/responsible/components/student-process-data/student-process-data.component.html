@@ -43,7 +43,7 @@
                                                {{ process.status.name === 'Vaga Liberada 50%' ?  process.status.name.substring(0,13) : process.status.name === 'Vaga Liberada 100%' ?  process.status.name.substring(0,13) : process.status.name }}
                                         </p>
                                         <p fxFlex="1%" fxFlex.lt-md="3%">
-                                            <mat-icon *ngIf="process.status.id === 3 && process.hasUploads" style="color:#76d275">attachment</mat-icon>
+                                            <mat-icon *ngIf="process.status.id === 3 && process.hasUploads" style="color:#76d275">backup</mat-icon>
                                         </p>
                                     </mat-panel-description>
                                 </mat-expansion-panel-header>

@@ -77,6 +77,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   // Verificar tipo de usuário que pode modificar projeto ou não
   isScholarship: boolean;
+  isSysAdmin: boolean;
   documentsIsVisible = false;
   sub1: Subscription;
   sub2: Subscription;
@@ -107,6 +108,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     this.loadSchoolYear();
     this.loadStatus();
     // this.getProcesses();
+    this.isSysAdmin = auth.getCurrentUser().isSysAdmin;
     this.isScholarship = auth.getCurrentUser().isScholarship;
     this.schoolIsVisible();
     this.setAllFilters();

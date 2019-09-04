@@ -2,7 +2,7 @@
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
         <p class="text-bold">{{ getNameTypeDocument() }}:</p>
         <mat-chip-list>
-            <mat-chip [ngClass]="{'chip-color': numberOfDocuments() > 0}">{{ numberOfDocuments() > 0 ? 'Enviado(s)' : 'Nenhum' }}</mat-chip>
+            <mat-chip [ngClass]="{'chip-color': numberOfDocuments() > 0}">{{ numberOfDocuments() > 0 ? 'Entregue(s)' : 'Nenhum' }}</mat-chip>
         </mat-chip-list>
     </div>
     <div *ngFor="let document of documents">
