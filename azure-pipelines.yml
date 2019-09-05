@@ -24,6 +24,7 @@ steps:
   displayName: 'npm install'
 
 - script: |
+    npm rebuild node-sass
     npm run build-$(envName)
   displayName: 'npm build'
 
