@@ -5,11 +5,11 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
-        "build": "ng build --prod",
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e",
-        "build-test": "ng build --configuration test"
+        "build-prod": "node --max-old-space-size=4096 ./node_modules/@angular/cli/bin/ng build --prod --output-path=dist/prod/",
+        "build-homolog": "node --max-old-space-size=4096 ./node_modules/@angular/cli/bin/ng build --configuration homolog --output-path=dist/homolog/"
     },
     "private": true,
     "dependencies": {

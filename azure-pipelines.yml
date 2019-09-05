@@ -6,23 +6,39 @@
 trigger:
 - master
 
+strategy:
+  matrix:
+    prod:
+      envName: "prod"
+    homolog:
+      envName: "homolog"
+  maxParallel: 2
+
 pool:
-  vmImage: 'ubuntu-latest'
+  name: linux
+  demands: npm
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+- script: |
+    npm install
+  displayName: 'npm install'
 
 - script: |
-    npm install -g @angular/cli
-    npm install
     npm rebuild node-sass
-    npm run build
-  displayName: 'npm install and build'
+  displayName: 'npm rebuild node-sass'
+
+- script: |
+    npm rebuild node-sass
+    npm run build-$(envName)
+  displayName: 'npm build'
+
+- bash: |
+   find dist/$(envName) -type f -exec sh -c "gzip < {} > {}.gz" \;
+   find dist/$(envName) -type f -not -name "*.gz" -exec sh -c "brotli {}" \;
+  displayName: 'Compress build files'
 
 - task: PublishBuildArtifacts@1
-  displayName: 'publish artifacts'
+  displayName: 'Publish artifact'
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)'
+    PathtoPublish: dist
+    ArtifactName: dist
