@@ -177,7 +177,7 @@
       <button mat-icon-button (click)="searchButton = !searchButton">
         <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
       </button>
-      <button mat-icon-button matTooltip="Filtragem avançada">
+      <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
         <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
       </button>
       <button mat-icon-button matTooltip="Relatório geral" (click)="generateGeneralReport()">
@@ -185,18 +185,40 @@
       </button>
     </div>
   </div>
-</div>
-<ng-container space-type="container" *ngIf="(treasurers$ | async) as treasurers; else notFound">
-  <ng-container *ngIf="treasurers.length > 0; else emptyList">
-    <mat-list *ngFor="let item of treasurers.results">
-      <mat-list-item class="item-list">
-        <h3 matLine>{{item.name}}</h3>
+  <mat-accordion class="example-headers-align" #matExpansionPanel>
+    <mat-expansion-panel #matExpansionPanel hideToggle="true">
+      <div fxLayout.gt-xs="row" fxLayout="column">
+        <app-filter flex="35" [data]="districtsData" placeholder="Distritos" (filterEmitted)="checkDistrict($event)">
+        </app-filter>
+        <app-filter flex="35" [data]="analystsData" placeholder="Analistas" (filterEmitted)="checkAnalyst($event)">
+        </app-filter>
+        <app-filter flex="35" [data]="functionsData" placeholder="Cargos" (filterEmitted)="checkFunction($event)">
+        </app-filter>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <mat-divider></mat-divider>
+  <div class="header">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row">
+          <span fxFlex fxFlex.gt-md="45%">Nome do tesoureiro</span>
+          <span fxFlex="20%" fxHide.lt-sm>Igreja</span>
+          <span fxFlex="20%" fxHide.lt-sm>Cargo</span>
+          <div fxFlex="10%" fxHide.lt-md>Última edição</div>
+        </h3>
       </mat-list-item>
-      <mat-divider></mat-divider>
     </mat-list>
-    <mat-paginator [length]="length" [pageSize]="pageSize" [pageIndex]="pageNumber" [pageSizeOptions]="[10, 15, 25, 50]"
-      [showFirstLastButtons]="true" (page)="pageEvent = paginatorEvent($event)">
-    </mat-paginator>
+    <mat-divider></mat-divider>
+  </div>
+</div>
+<ng-container *ngIf="(treasurers$ | async) as treasurers; else notFound">
+  <ng-container *ngIf="treasurers.length === 0; else dataList">
+    <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+      <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+      </mat-icon>
+      <p style="color: gray">Nenhum tesoureiro encontrado</p>
+    </div>
   </ng-container>
   <ng-template #notFound>
     <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
@@ -206,12 +228,129 @@
       <p style="color: gray">Recarregue a página</p>
     </div>
   </ng-template>
-  <ng-template #emptyList>
-    <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
-      <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
-      </mat-icon>
-      <p style="color: gray">Nenhum tesoureiro encontrado</p>
-    </div>
+  <ng-template #dataList>
+    <mat-accordion>
+      <div *ngFor="let treasurer of treasurers.results; index as i">
+        <mat-expansion-panel hideToggle *ngIf="i <= showList">
+          <!-- <mat-expansion-panel-header>
+            <mat-panel-description fxLayout="row" fxFlex>
+              <span fxFlex fxFlex.gt-md="45%" fxFlexAlign="center" style="white-space: line-wrap;">
+                {{ treasurer.name }}
+              </span>
+              <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center" style="white-space: line-wrap;">
+                {{ treasurer.churchName }}
+              </span>
+              <span fxFlex="22%" fxHide.lt-sm fxFlexAlign="center" style="white-space: line-wrap;">
+                {{ treasurer.function.name }}
+              </span>
+              <ng-container *ngIf="treasurer.dateLastEdition; else notDateLastEdition">
+                <div fxFlex="10%" fxHide.lt-md>
+                  {{ treasurer.dateLastEdition | date: "dd/MM/yyyy" }}
+                </div>
+              </ng-container>
+              <ng-template #notDateLastEdition>
+                <div fxFlex="10%" fxHide.lt-md>
+                  Não Informado
+                </div>
+              </ng-template>
+            </mat-panel-description>
+          </mat-expansion-panel-header> -->
+          <!-- <div fxLayout="column" class="description">
+            <div fxLayout="row">
+              <p class="title-description">Informações do Tesoureiro</p>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Igreja:</span>
+              <span>{{ treasurer.churchName }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Cargo:</span>
+              <span>{{ treasurer.function.name }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-sm>
+              <span class="text-bold">Última edição:</span>
+              <ng-container *ngIf="treasurer.dateLastEdition; else notDateLastEditionDetail">
+                <div>{{ treasurer.dateLastEdition | date: "dd/MM/yyyy" }}</div>
+              </ng-container>
+              <ng-template #notDateLastEditionDetail>
+                <div>Não Informado</div>
+              </ng-template>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+              <span class="text-bold">Tempo no Cargo:</span>
+              <ng-container *ngIf="treasurer.dateRegister; else dateIsNull">
+                <span>{{ treasurer.dateRegister | date: "dd/MM/yyyy" }} {{ getTimeInCharge(treasurer) }}</span>
+              </ng-container>
+              <ng-template #dateIsNull>
+                <span>Não Informado</span>
+              </ng-template>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+              <span class="text-bold">Email:</span>
+              <span>{{ treasurer.email || "Não Informado" }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="15px">
+              <div class="box-description" fxLayout="column wrap" fxFlex>
+                <p class="text-bold">Endereço:</p>
+                <mat-divider></mat-divider>
+                <div class="container-description" fxLayout="column" fxLayoutAlign="space-between">
+                  <div>{{ treasurer.address || "Não Informado" }}</div>
+                  <div fxLayout="row wrap" fxLayoutGap="5px">
+                    <span class="text-bold">Complemento:</span>
+                    <span
+                      *ngIf="treasurer.addressComplement">{{ treasurer.addressComplement || "Não Informado" }}</span>
+                  </div>
+                  <div fxLayout="row wrap" fxLayoutGap="5px">
+                    <span class="text-bold">CEP:</span>
+                    <span>{{ treasurer.cep || "Não Informado" }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="box-description" fxLayout="column wrap" fxFlex>
+                <p class="text-bold">Telefone(s):</p>
+                <mat-divider></mat-divider>
+                <ng-container *ngIf="treasurer.phones.length !== 0; else notContaisPhones">
+                  <div class="container-description" *ngFor="let phone of treasurer.phones">
+                    <div fxLayout="row wrap" fxLayoutGap="5px">
+                      <span class="text-bold">{{ phone.type }}:</span>
+                      <span>{{ phone.number }}</span>
+                      <span> - Serviço(s) Utilizado(s): {{ !phone.isWhatsapp && !phone.isTelegram ? 'Nenhum serviço utilizado.':
+                        '' }} {{ phone.isWhatsapp ? 'Whatsapp' : ''}}
+                        {{ phone.isWhatsapp && phone.isTelegram ? ', ' : ''}}
+                        {{ phone.isTelegram ? 'Telegram': ''}}</span>
+                    </div>
+                  </div>
+                  <div fxLayout="row wrap" fxLayoutGap="5px">
+                    <p class="text-bold">Melhor Contato:</p>
+                    <p>{{ treasurer.contact || "Não Informado" }}</p>
+                  </div>
+                </ng-container>
+                <ng-template #notContaisPhones>
+                  <p>Nenhum Telefone Informado</p>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <mat-action-row fxLayout="row" fxLayout.xs="column">
+            <ng-template [Feature]="49" permission="1">
+              <button mat-button style="background-color: #ff9800!important; color: #fff" matTooltip="Ver observações"
+                [routerLink]="['/tesouraria/observacoes']">OBSERVAÇÕES</button>
+            </ng-template>
+            <ng-template [Feature]="38" permission="4">
+              <button mat-button color="warn" matTooltip="Excluir Tesoureiro"
+                (click)="removeTreasurer(treasurer)">REMOVER</button>
+            </ng-template>
+            <ng-template [Feature]="38" permission="3">
+              <button mat-button color="primary" matTooltip="Editar Tesoureiro"
+                (click)="editTreasurer(treasurer)">EDITAR</button>
+            </ng-template>
+          </mat-action-row> -->
+        </mat-expansion-panel>
+      </div>
+    </mat-accordion>
+    <mat-paginator [length]="length" [pageSize]="pageSize" [pageIndex]="pageNumber" [pageSizeOptions]="[10, 15, 25, 50]"
+      [showFirstLastButtons]="true" (page)="pageEvent = paginatorEvent($event)">
+    </mat-paginator>
   </ng-template>
 </ng-container>
 <!-- </app-layout-data> -->

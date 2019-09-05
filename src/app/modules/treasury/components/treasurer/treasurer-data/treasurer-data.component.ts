@@ -70,11 +70,6 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   ) { super(router); }
 
   ngOnInit() {
-    const paginatorIntl = new MatPaginatorIntl();
-
-    paginatorIntl.itemsPerPageLabel = 'Items per pagina:';
-    paginatorIntl.nextPageLabel = 'Volgende pagina';
-    paginatorIntl.previousPageLabel = 'Vorige pagina';
     this.getTreasurers();
     this.subscribeSearch = this.search$.pipe(
       tap(search => this.textSearch = search),
@@ -107,7 +102,16 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     this.treasurers$ = this.treasurerService
       .getTreasurers(id, params)
       .pipe(
-        tap(data => this.length = data.rowCount)
+        tap(data => this.length = data.rowCount),
+        switchMap(() => this.loadFilter())
+      );
+  }
+
+  private loadFilter(): Observable<any> {
+    return this.loadAnalysts()
+      .pipe(
+        switchMap(() => this.loadDistricts()),
+        tap(() => this.loadFunctions())
       );
   }
 
@@ -203,7 +207,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
         })
       );
   }
-  private loadAnalysts() {
+  private loadAnalysts(): Observable<any> {
     this.analystsData = [];
     return this.treasureService.loadAnalysts(auth.getCurrentUnit().id)
       .pipe(
