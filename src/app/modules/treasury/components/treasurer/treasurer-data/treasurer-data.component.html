@@ -158,7 +158,6 @@
           </div>
       </mat-accordion>
   </div> -->
-<!-- </app-layout-data> -->
 <div space-type="header" fxLayout="column">
   <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
     <h2 class="title" *ngIf="!searchButton">Lista de Tesoureiros</h2>
@@ -187,17 +186,35 @@
     </div>
   </div>
 </div>
-<ng-container *ngIf="(treasurers$ | async) as treasurers">
-  <mat-list *ngFor="let item of treasurers.results">
-    <mat-list-item class="item-list">
-      <h3 matLine>{{item.name}}</h3>
-    </mat-list-item>
-    <mat-divider></mat-divider>
-  </mat-list>
-  <mat-paginator [length]="length" [pageSize]="pageSize" [pageIndex]="pageNumber" [pageSizeOptions]="[10, 15, 25, 50]"
-    [showFirstLastButtons]="true" (page)="pageEvent = paginatorEvent($event)">
-  </mat-paginator>
+<ng-container space-type="container" *ngIf="(treasurers$ | async) as treasurers; else notFound">
+  <ng-container *ngIf="treasurers.length > 0; else emptyList">
+    <mat-list *ngFor="let item of treasurers.results">
+      <mat-list-item class="item-list">
+        <h3 matLine>{{item.name}}</h3>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </mat-list>
+    <mat-paginator [length]="length" [pageSize]="pageSize" [pageIndex]="pageNumber" [pageSizeOptions]="[10, 15, 25, 50]"
+      [showFirstLastButtons]="true" (page)="pageEvent = paginatorEvent($event)">
+    </mat-paginator>
+  </ng-container>
+  <ng-template #notFound>
+    <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+      <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">explore_off
+      </mat-icon>
+      <p style="color: gray">Ops... Parece que houve um erro ao encontrar os tesoureiros</p>
+      <p style="color: gray">Recarregue a página</p>
+    </div>
+  </ng-template>
+  <ng-template #emptyList>
+    <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+      <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+      </mat-icon>
+      <p style="color: gray">Nenhum tesoureiro encontrado</p>
+    </div>
+  </ng-template>
 </ng-container>
+<!-- </app-layout-data> -->
 <!-- <ng-template [Feature]="38" permission="1">
   <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo">
     <mat-icon aria-label="Adicionar tesoureiro">add</mat-icon>
