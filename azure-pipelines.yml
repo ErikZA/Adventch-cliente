@@ -25,6 +25,10 @@ steps:
 
 - script: |
     npm rebuild node-sass
+  displayName: 'npm rebuild node-sass'
+
+- script: |
+    npm rebuild node-sass
     npm run build-$(envName)
   displayName: 'npm build'
 
