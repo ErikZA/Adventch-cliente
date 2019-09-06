@@ -202,7 +202,7 @@
     <mat-list>
       <mat-list-item>
         <h3 matLine fxLayout="row">
-          <span fxFlex fxFlex.gt-md="45%">Nome do tesoureiro</span>
+          <span fxFlex fxFlex.gt-md="40%">Nome do tesoureiro</span>
           <span fxFlex="20%" fxHide.lt-sm>Igreja</span>
           <span fxFlex="20%" fxHide.lt-sm>Cargo</span>
           <div fxFlex="10%" fxHide.lt-md>Última edição</div>
@@ -230,15 +230,15 @@
   </ng-template>
   <ng-template #dataList>
     <mat-accordion>
-      <div *ngFor="let treasurer of treasurers.results; index as i">
-        <mat-expansion-panel hideToggle *ngIf="i <= showList">
-          <!-- <mat-expansion-panel-header>
+      <div *ngFor="let treasurer of treasurers.results">
+        <mat-expansion-panel hideToggle>
+          <mat-expansion-panel-header>
             <mat-panel-description fxLayout="row" fxFlex>
-              <span fxFlex fxFlex.gt-md="45%" fxFlexAlign="center" style="white-space: line-wrap;">
+              <span fxFlex fxFlex.gt-md="40%" fxFlexAlign="center" style="white-space: line-wrap;">
                 {{ treasurer.name }}
               </span>
               <span fxFlex="20%" fxHide.lt-sm fxFlexAlign="center" style="white-space: line-wrap;">
-                {{ treasurer.churchName }}
+                {{ treasurer.church.code + " - " + treasurer.church.name }}
               </span>
               <span fxFlex="22%" fxHide.lt-sm fxFlexAlign="center" style="white-space: line-wrap;">
                 {{ treasurer.function.name }}
@@ -254,8 +254,8 @@
                 </div>
               </ng-template>
             </mat-panel-description>
-          </mat-expansion-panel-header> -->
-          <!-- <div fxLayout="column" class="description">
+          </mat-expansion-panel-header>
+          <div fxLayout="column" class="description">
             <div fxLayout="row">
               <p class="title-description">Informações do Tesoureiro</p>
             </div>
@@ -315,8 +315,7 @@
                       <span class="text-bold">{{ phone.type }}:</span>
                       <span>{{ phone.number }}</span>
                       <span> - Serviço(s) Utilizado(s): {{ !phone.isWhatsapp && !phone.isTelegram ? 'Nenhum serviço utilizado.':
-                        '' }} {{ phone.isWhatsapp ? 'Whatsapp' : ''}}
-                        {{ phone.isWhatsapp && phone.isTelegram ? ', ' : ''}}
+              '' }} {{ phone.isWhatsapp ? 'Whatsapp' : ''}} {{ phone.isWhatsapp && phone.isTelegram ? ', ' : ''}}
                         {{ phone.isTelegram ? 'Telegram': ''}}</span>
                     </div>
                   </div>
@@ -344,7 +343,7 @@
               <button mat-button color="primary" matTooltip="Editar Tesoureiro"
                 (click)="editTreasurer(treasurer)">EDITAR</button>
             </ng-template>
-          </mat-action-row> -->
+          </mat-action-row>
         </mat-expansion-panel>
       </div>
     </mat-accordion>

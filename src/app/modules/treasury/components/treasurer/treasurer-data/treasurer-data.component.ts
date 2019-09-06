@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, Subscription, Observable } from 'rxjs';
 import { MatSnackBar, MatPaginator, MatPaginatorIntl, PageEvent } from '@angular/material';
@@ -26,7 +26,8 @@ import { HttpParams } from '@angular/common/http';
 @Component({
   selector: 'app-treasurer-data',
   templateUrl: './treasurer-data.component.html',
-  styleUrls: ['./treasurer-data.component.scss']
+  styleUrls: ['./treasurer-data.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @AutoUnsubscribe()
 export class TreasurerDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
@@ -95,15 +96,15 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     const params = new HttpParams()
       .set('pageSize', String(this.pageSize))
       .set('pageNumber', String(this.pageNumber + 1))
-      .set('search', this.textSearch);
-    // .set('districtId', null)
+      .set('search', this.textSearch)
+      .set('functionId', String([1]));
     // .set('functionId', null);
     const { id } = auth.getCurrentUnit();
     this.treasurers$ = this.treasurerService
       .getTreasurers(id, params)
       .pipe(
         tap(data => this.length = data.rowCount),
-        switchMap(() => this.loadFilter())
+        tap(() => this.loadFilter())
       );
   }
 
@@ -113,6 +114,10 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
         switchMap(() => this.loadDistricts()),
         tap(() => this.loadFunctions())
       );
+  }
+
+  private getFilteredList(): void {
+
   }
 
   public paginatorEvent(event: PageEvent): PageEvent {
@@ -166,19 +171,19 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     this.router.navigate([`tesouraria/tesoureiros/${id}/editar`]);
   }
 
-  // public removeTreasurer(treasurer: TreasurerDataInterface) {
-  //   this.subsConfirmRemove = this.confirmDialogService
-  //     .confirm('Remover registro', 'Você deseja realmente remover este tesoureiro?', 'REMOVER')
-  //     .pipe(
-  //       skipWhile(res => res !== true),
-  //       switchMap(() => this.treasureService.deleteTreasurer(treasurer.id)),
-  //       switchMap(() => this.getTreasurers()),
-  //       tap(() => this.snackBar.open('Tesoureiro removido!', 'OK', { duration: 5000 }))
-  //     ).subscribe(null, err => {
-  //       console.log(err);
-  //       this.snackBar.open('Erro ao remover tesoureiro, tente novamente.', 'OK', { duration: 5000 });
-  //     });
-  // }
+  public removeTreasurer(treasurer: TreasurerDataInterface) {
+    this.subsConfirmRemove = this.confirmDialogService
+      .confirm('Remover registro', 'Você deseja realmente remover este tesoureiro?', 'REMOVER')
+      .pipe(
+        skipWhile(res => res !== true),
+        switchMap(() => this.treasureService.deleteTreasurer(treasurer.id)),
+        tap(() => this.getTreasurers()),
+        tap(() => this.snackBar.open('Tesoureiro removido!', 'OK', { duration: 5000 }))
+      ).subscribe(null, err => {
+        console.log(err);
+        this.snackBar.open('Erro ao remover tesoureiro, tente novamente.', 'OK', { duration: 5000 });
+      });
+  }
 
   public onScroll() {
     this.showList += 80;

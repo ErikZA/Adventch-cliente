@@ -1,5 +1,6 @@
 import { FunctionTreasurerDataInterface } from './function-treasurer-data-interface';
 import { PhoneTreasurerDataInterface } from './phone-treasurer-data-interface';
+import { ChurchTreasurerDataInterface } from './church-treasurer-data-interface';
 
 export interface TreasurerDataInterface {
   id: number;
@@ -9,7 +10,7 @@ export interface TreasurerDataInterface {
   cep: string;
   contact: string;
   email: string;
-  churchName: string;
+  church: ChurchTreasurerDataInterface;
   dateRegister: Date;
   dateLastEdition: Date;
   function: FunctionTreasurerDataInterface;
