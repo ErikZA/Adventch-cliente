@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, Subscription } from 'rxjs';
-import { MatSnackBar } from '@angular/material';
+import { Subject, Subscription, Observable } from 'rxjs';
+import { MatSnackBar, MatPaginator, MatExpansionPanel, PageEvent } from '@angular/material';
 
 import { TreasuryService } from '../../../treasury.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
@@ -9,11 +9,10 @@ import { ConfirmDialogService } from '../../../../../core/components/confirm-dia
 import { Treasurer } from '../../../models/treasurer';
 import { auth } from '../../../../../auth/auth';
 import { User } from '../../../../../shared/models/user.model';
-import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import * as moment from 'moment';
-import { switchMap, tap, skipWhile } from 'rxjs/operators';
+import { switchMap, tap, skipWhile, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
 import { ReportService } from '../../../../../shared/report.service';
@@ -21,22 +20,20 @@ import { TreasurerService } from '../treasurer.service';
 import { TreasurerDataInterface } from '../../../interfaces/treasurer/treasurer-data-interface';
 import { DistrictListInterface } from '../../../interfaces/district/district-list-interface';
 import { DistrictService } from '../../districts/district.service';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-treasurer-data',
   templateUrl: './treasurer-data.component.html',
-  styleUrls: ['./treasurer-data.component.scss']
+  styleUrls: ['./treasurer-data.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @AutoUnsubscribe()
 export class TreasurerDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
   protected componentUrl = 'tesouraria/tesoureiros';
   searchButton = false;
-  showList = 40;
   search$ = new Subject<string>();
   filterText = '';
-
-  treasurers: TreasurerDataInterface[];
-  treasurersCache: TreasurerDataInterface[];
 
   // new filter
   districtsSelecteds: number[] = [];
@@ -46,9 +43,19 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   functionsSelecteds: number[] = [];
   functionsData: Filter[] = [];
 
-  sub1: Subscription;
-  subsConfirmRemove: Subscription;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('matExpansionPanel') panelFilter: MatExpansionPanel;
+  treasurers$: Observable<any>;
 
+  private subscribeSearch: Subscription;
+  subsConfirmRemove: Subscription;
+  private subscribeFilters: Subscription;
+  private textSearch = '';
+  length = 0;
+  pageSize = 10;
+  pageNumber = 0;
+  pageEvent: PageEvent;
+  filter = false;
   constructor(
     protected router: Router,
     private treasureService: TreasuryService,
@@ -61,20 +68,83 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   ) { super(router); }
 
   ngOnInit() {
-    this.getData()
+    this.getTreasurers();
+    this.subscribeSearch = this.search$.pipe(
+      tap(search => this.textSearch = search),
+      debounceTime(250),
+      distinctUntilChanged(),
+      tap(() => this.restartPager()),
+      tap(() => this.getTreasurers()),
+    ).subscribe();
+    this.subscribeFilters = this.loadFilter()
       .pipe(
-        switchMap(() => this.search$)
-      ).subscribe(search => {
-        this.filterText = search;
-        this.search();
-      });
+        tap(() => this.getPreferenceFilter())
+      ).subscribe();
   }
 
   ngOnDestroy(): void {
-
+    this.subscribeSearch.unsubscribe();
+    this.subscribeFilters.unsubscribe();
+    if (this.subsConfirmRemove) {
+      this.subsConfirmRemove.unsubscribe();
+    }
   }
 
-  getFunctionName(treasurer: Treasurer) {
+  private getPreferenceFilter() {
+    const filter = localStorage.getItem('treasury.treasurer.filter.open');
+    if (filter !== null && filter !== undefined) {
+      JSON.parse(filter) ? this.panelFilter.open() : this.panelFilter.close();
+      this.filter = JSON.parse(filter) ? true : false;
+    }
+  }
+
+  public getTreasurers(): void {
+    let params = new HttpParams()
+      .set('pageSize', String(this.pageSize))
+      .set('pageNumber', String(this.pageNumber + 1))
+      .set('search', this.textSearch);
+
+    params = this.appendParamsArray(params, 'functionIds', this.functionsSelecteds);
+    params = this.appendParamsArray(params, 'districtIds', this.districtsSelecteds);
+    params = this.appendParamsArray(params, 'analystIds', this.analystsSelecteds);
+
+    const { id } = auth.getCurrentUnit();
+    this.treasurers$ = this.treasurerService
+      .getTreasurers(id, params)
+      .pipe(
+        tap(data => this.length = data.rowCount)
+      );
+  }
+
+  private appendParamsArray(params: HttpParams, name: string, array: Array<any>): HttpParams {
+    if (array.length > 0) {
+      array.forEach(s => {
+        params = params.append(name, String(s));
+      });
+    }
+    return params;
+  }
+
+  private loadFilter(): Observable<any> {
+    return this.loadAnalysts()
+      .pipe(
+        switchMap(() => this.loadDistricts()),
+        tap(() => this.loadFunctions())
+      );
+  }
+
+  public paginatorEvent(event: PageEvent): PageEvent {
+    this.pageSize = event.pageSize;
+    this.pageNumber = event.pageIndex;
+    this.getTreasurers();
+    return event;
+  }
+
+  private restartPager(): void {
+    this.paginator.firstPage();
+  }
+
+  public getFunctionName(treasurer: Treasurer) {
     if (treasurer.function === 1) {
       return 'Tesoureiro (a)';
     }
@@ -84,26 +154,8 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     return 'Tesoureiro (a) Assistente';
   }
 
-  public getData() {
-    this.search$.next('');
-    return this.getTreasurers().pipe(
-      switchMap(() => this.loadAnalysts()),
-      switchMap(() => this.loadDistricts()),
-      tap(() => this.loadFunctions())
-    );
-  }
-
-  private getTreasurers() {
-    const { id } = auth.getCurrentUnit();
-    return this.treasurerService
-      .getTreasurers(id)
-      .pipe(
-        tap(data => {
-          this.treasurersCache = data;
-          this.treasurers = data;
-        }),
-        tap(() => this.search())
-      );
+  public newTreasurer(): void {
+    this.router.navigate([`tesouraria/tesoureiros/novo`]);
   }
 
   public editTreasurer(treasurer: TreasurerDataInterface): void {
@@ -120,7 +172,8 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       .pipe(
         skipWhile(res => res !== true),
         switchMap(() => this.treasureService.deleteTreasurer(treasurer.id)),
-        switchMap(() => this.getTreasurers()),
+        tap(() => this.getTreasurers()),
+        debounceTime(100),
         tap(() => this.snackBar.open('Tesoureiro removido!', 'OK', { duration: 5000 }))
       ).subscribe(null, err => {
         console.log(err);
@@ -128,43 +181,33 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       });
   }
 
-  public onScroll() {
-    this.showList += 80;
-  }
-
   public expandPanel(matExpansionPanel): void {
-    matExpansionPanel.toggle();
-  }
-
-  private search() {
-    let treasurersFilttered = this.treasurersCache.filter(t => utils.buildSearchRegex(this.filterText).test(t.name.toUpperCase()));
-    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'districtId', this.districtsSelecteds);
-    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'analystId', this.analystsSelecteds);
-    treasurersFilttered = this.filterService.filter(treasurersFilttered, 'function.id', this.functionsSelecteds);
-    this.treasurers = treasurersFilttered;
+    this.filter = !this.filter;
+    this.filter ? this.panelFilter.open() : this.panelFilter.close();
+    localStorage.setItem('treasury.treasurer.filter.open', JSON.stringify(this.filter));
   }
 
   private loadDistricts() {
     this.districtsData = [];
     return this.districtService.getDistrictsList(auth.getCurrentUnit().id)
-    .pipe(
-      tap((data: DistrictListInterface[]) => {
-        data.forEach(d => {
-          this.districtsData.push(new Filter(Number(d.id), d.name));
-        });
-      })
-    );
+      .pipe(
+        tap((data: DistrictListInterface[]) => {
+          data.forEach(d => {
+            this.districtsData.push(new Filter(Number(d.id), d.name));
+          });
+        })
+      );
   }
-  private loadAnalysts() {
+  private loadAnalysts(): Observable<any> {
     this.analystsData = [];
     return this.treasureService.loadAnalysts(auth.getCurrentUnit().id)
-    .pipe(
-      tap((data: User[]) => {
-        data.forEach(d => {
-          this.analystsData.push(new Filter(Number(d.id), d.name));
-        });
-      })
-    );
+      .pipe(
+        tap((data: User[]) => {
+          data.forEach(d => {
+            this.analystsData.push(new Filter(Number(d.id), d.name));
+          });
+        })
+      );
   }
 
   private loadFunctions() {
@@ -176,17 +219,20 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
 
   public checkDistrict(district) {
     this.districtsSelecteds = this.filterService.check(district, this.districtsSelecteds);
-    this.search();
+    this.getTreasurers();
+    this.restartPager();
   }
 
   public checkAnalyst(analyst) {
     this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
-    this.search();
+    this.getTreasurers();
+    this.restartPager();
   }
 
   public checkFunction(func) {
     this.functionsSelecteds = this.filterService.check(func, this.functionsSelecteds);
-    this.search();
+    this.getTreasurers();
+    this.restartPager();
   }
 
   public generateGeneralReport(): void {
@@ -208,26 +254,10 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
 
   private getDataParams(): any {
     return {
-      treasurersIds: this.treasurers.length === 0 ? '' : this.treasurers.map(t => t.id).join(),
-      functions: this.getFunctionsNames(),
-      districts: this.getDistrictsNames(),
-      analysts: this.getAnalystsNames()
+      functionIds: this.functionsSelecteds,
+      districtIds: this.districtsSelecteds,
+      analystIds: this.analystsSelecteds
     };
-  }
-
-  private getFunctionsNames(): string {
-    const functions = this.functionsData.filter((data: Filter) => this.functionsSelecteds.some(x => x === data.id));
-    return functions.length === 0 ? 'TODOS' : functions.map(f => f.name).join();
-  }
-
-  private getDistrictsNames(): string {
-    const functions = this.districtsData.filter((data: Filter) => this.districtsSelecteds.some(x => x === data.id));
-    return functions.length === 0 ? 'TODOS' : functions.map(f => f.name).join();
-  }
-
-  private getAnalystsNames(): string {
-    const functions = this.analystsData.filter((data: Filter) => this.analystsSelecteds.some(x => x === data.id));
-    return functions.length === 0 ? 'TODOS' : functions.map(f => f.name).join();
   }
 
   public getTimeInCharge(treasurer: TreasurerDataInterface): string {

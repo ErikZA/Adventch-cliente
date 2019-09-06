@@ -12,7 +12,7 @@ import { TreasurerDataComponent } from '../treasurer-data/treasurer-data.compone
 import { auth } from '../../../../../auth/auth';
 
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { tap, switchMap, skipWhile, delay } from 'rxjs/operators';
+import { tap, switchMap, skipWhile, delay, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-treasurer-form',
@@ -51,7 +51,7 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
         tap(data => this.setDataToForm(data)),
         delay(300)
       ).subscribe(() => { this.loading = false; });
-      this.treasurerDataComponent.openSidenav();
+    this.treasurerDataComponent.openSidenav();
   }
   initConfigurations() {
     this.treasurer = new Treasurer();
@@ -74,22 +74,22 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
   setDataToForm(treasurer: Treasurer) {
     this.treasurer = treasurer;
     this.formPersonal.setValue({
-        name: treasurer.name,
-        churchId: treasurer.church.id,
-        functionId: treasurer.function,
-        dateRegister: treasurer.dateRegister,
-        cpf: treasurer.cpf,
-        dateBirth: treasurer.dateBirth,
-        genderId: treasurer.gender
+      name: treasurer.name,
+      churchId: treasurer.church.id,
+      functionId: treasurer.function,
+      dateRegister: treasurer.dateRegister,
+      cpf: treasurer.cpf,
+      dateBirth: treasurer.dateBirth,
+      genderId: treasurer.gender
     });
 
     this.setPhonesValue(treasurer);
     this.formContact.setValue({
-       email: treasurer.email,
-       contact: treasurer.contact,
-       address: treasurer.address,
-       addressComplement: treasurer.addressComplement,
-       cep: treasurer.cep
+      email: treasurer.email,
+      contact: treasurer.contact,
+      address: treasurer.address,
+      addressComplement: treasurer.addressComplement,
+      cep: treasurer.cep
     });
   }
 
@@ -183,9 +183,11 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
     this.treasuryService.saveTreasurer(treasurer)
       .pipe(
         tap(() => this.treasurerDataComponent.closeSidenav()),
-        switchMap(() => this.treasurerDataComponent.getData()),
+        tap(() => this.treasurerDataComponent.getTreasurers()),
+        debounceTime(100),
         tap(() => this.snackBar.open('Tesoureiro salvo!', 'OK', { duration: 5000 }))
-      ).subscribe(() => this.isSending = false, err => {
+      )
+      .subscribe(() => this.isSending = false, err => {
         console.log(err);
         this.isSending = false;
         this.snackBar.open('Erro ao salvar tesoureiro, tente novamente.', 'OK', { duration: 5000 });
