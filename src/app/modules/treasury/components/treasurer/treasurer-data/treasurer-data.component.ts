@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, Subscription, Observable } from 'rxjs';
-import { MatSnackBar, MatPaginator, MatPaginatorIntl, PageEvent } from '@angular/material';
+import { MatSnackBar, MatPaginator, MatExpansionPanel, PageEvent } from '@angular/material';
 
 import { TreasuryService } from '../../../treasury.service';
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
@@ -44,6 +44,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   functionsData: Filter[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('matExpansionPanel') panelFilter: MatExpansionPanel;
   treasurers$: Observable<any>;
 
   private subscribeSearch: Subscription;
@@ -54,6 +55,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   pageSize = 10;
   pageNumber = 0;
   pageEvent: PageEvent;
+  filter = false;
   constructor(
     protected router: Router,
     private treasureService: TreasuryService,
@@ -74,7 +76,10 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       tap(() => this.restartPager()),
       tap(() => this.getTreasurers()),
     ).subscribe();
-    this.subscribeFilters = this.loadFilter().subscribe();
+    this.subscribeFilters = this.loadFilter()
+      .pipe(
+        tap(() => this.getPreferenceFilter())
+      ).subscribe();
   }
 
   ngOnDestroy(): void {
@@ -82,6 +87,14 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     this.subscribeFilters.unsubscribe();
     if (this.subsConfirmRemove) {
       this.subsConfirmRemove.unsubscribe();
+    }
+  }
+
+  private getPreferenceFilter() {
+    const filter = localStorage.getItem('treasury.treasurer.filter.open');
+    if (filter !== null && filter !== undefined) {
+      JSON.parse(filter) ? this.panelFilter.open() : this.panelFilter.close();
+      this.filter = JSON.parse(filter) ? true : false;
     }
   }
 
@@ -169,7 +182,9 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   }
 
   public expandPanel(matExpansionPanel): void {
-    matExpansionPanel.toggle();
+    this.filter = !this.filter;
+    this.filter ? this.panelFilter.open() : this.panelFilter.close();
+    localStorage.setItem('treasury.treasurer.filter.open', JSON.stringify(this.filter));
   }
 
   private loadDistricts() {
@@ -239,26 +254,10 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
 
   private getDataParams(): any {
     return {
-      // treasurersIds: this.treasurers.length === 0 ? '' : this.treasurers.map(t => t.id).join(),
-      functions: this.getFunctionsNames(),
-      districts: this.getDistrictsNames(),
-      analysts: this.getAnalystsNames()
+      functionIds: this.functionsSelecteds,
+      districtIds: this.districtsSelecteds,
+      analystIds: this.analystsSelecteds
     };
-  }
-
-  private getFunctionsNames(): string {
-    const functions = this.functionsData.filter((data: Filter) => this.functionsSelecteds.some(x => x === data.id));
-    return functions.length === 0 ? 'TODOS' : functions.map(f => f.name).join();
-  }
-
-  private getDistrictsNames(): string {
-    const functions = this.districtsData.filter((data: Filter) => this.districtsSelecteds.some(x => x === data.id));
-    return functions.length === 0 ? 'TODOS' : functions.map(f => f.name).join();
-  }
-
-  private getAnalystsNames(): string {
-    const functions = this.analystsData.filter((data: Filter) => this.analystsSelecteds.some(x => x === data.id));
-    return functions.length === 0 ? 'TODOS' : functions.map(f => f.name).join();
   }
 
   public getTimeInCharge(treasurer: TreasurerDataInterface): string {
