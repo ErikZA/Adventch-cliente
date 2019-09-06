@@ -12,7 +12,7 @@ import { TreasurerDataComponent } from '../treasurer-data/treasurer-data.compone
 import { auth } from '../../../../../auth/auth';
 
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { tap, switchMap, skipWhile, delay } from 'rxjs/operators';
+import { tap, switchMap, skipWhile, delay, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-treasurer-form',
@@ -181,11 +181,12 @@ export class TreasurerFormComponent implements OnInit, OnDestroy {
     };
 
     this.treasuryService.saveTreasurer(treasurer)
-      // .pipe(
-      //   tap(() => this.treasurerDataComponent.closeSidenav()),
-      //   switchMap(() => this.treasurerDataComponent.getData()),
-      //   tap(() => this.snackBar.open('Tesoureiro salvo!', 'OK', { duration: 5000 }))
-      // )
+      .pipe(
+        tap(() => this.treasurerDataComponent.closeSidenav()),
+        tap(() => this.treasurerDataComponent.getTreasurers()),
+        debounceTime(100),
+        tap(() => this.snackBar.open('Tesoureiro salvo!', 'OK', { duration: 5000 }))
+      )
       .subscribe(() => this.isSending = false, err => {
         console.log(err);
         this.isSending = false;

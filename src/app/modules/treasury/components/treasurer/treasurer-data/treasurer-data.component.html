@@ -169,7 +169,7 @@
     </mat-form-field>
     <div class="buttons" fxLayoutAlign="start center">
       <ng-template [Feature]="38" permission="1">
-        <button mat-stroked-button routerLink="./novo">
+        <button mat-stroked-button (click)="newTreasurer()" matTooltip="Novo Tesoureiro">
           <mat-icon aria-label="Adicionar tesoureiro">add</mat-icon>
           Novo
         </button>
@@ -244,12 +244,12 @@
                 {{ treasurer.function.name }}
               </span>
               <ng-container *ngIf="treasurer.dateLastEdition; else notDateLastEdition">
-                <div fxFlex="10%" fxHide.lt-md>
+                <div fxFlex="15%" fxHide.lt-md>
                   {{ treasurer.dateLastEdition | date: "dd/MM/yyyy" }}
                 </div>
               </ng-container>
               <ng-template #notDateLastEdition>
-                <div fxFlex="10%" fxHide.lt-md>
+                <div fxFlex="15%" fxHide.lt-md>
                   Não Informado
                 </div>
               </ng-template>
@@ -352,9 +352,3 @@
     </mat-paginator>
   </ng-template>
 </ng-container>
-<!-- </app-layout-data> -->
-<!-- <ng-template [Feature]="38" permission="1">
-  <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo">
-    <mat-icon aria-label="Adicionar tesoureiro">add</mat-icon>
-  </button>
-</ng-template> -->
