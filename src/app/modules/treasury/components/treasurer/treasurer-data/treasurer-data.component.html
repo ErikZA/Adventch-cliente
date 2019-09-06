@@ -53,7 +53,7 @@
     <mat-divider></mat-divider>
   </div>
 </div>
-<ng-container *ngIf="(treasurers$ | async) as treasurers; else notFound">
+<ng-container *ngIf="(treasurers$ | async) as treasurers;">
   <ng-container *ngIf="treasurers.length === 0; else dataList">
     <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
       <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
@@ -61,14 +61,14 @@
       <p style="color: gray">Nenhum tesoureiro encontrado</p>
     </div>
   </ng-container>
-  <ng-template #notFound>
+  <!-- <ng-template #objectNotFound>
     <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
       <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">explore_off
       </mat-icon>
       <p style="color: gray">Ops... Parece que houve um erro ao encontrar os tesoureiros</p>
       <p style="color: gray">Recarregue a página</p>
     </div>
-  </ng-template>
+  </ng-template> -->
   <ng-template #dataList>
     <mat-accordion>
       <div *ngFor="let treasurer of treasurers.results">
