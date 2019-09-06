@@ -176,7 +176,7 @@ export class ScholarshipService {
       .get<Process>(url);
   }
 
-  public changeProcessStatus(processId: number, status: number, model: { userId: number }): Observable<boolean> {
+  public changeProcessStatus(processId: number, status: number, model: { userId: number, sendMail: boolean }): Observable<boolean> {
     const url = `/scholarship/process/${processId}/status/${status}`;
     return this.http
       .put<boolean>(url, model);

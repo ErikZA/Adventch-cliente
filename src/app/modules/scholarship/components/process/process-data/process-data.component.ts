@@ -422,10 +422,10 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
     return String(this.schoolSelecteds); // assistante que selecionou um ou mais itens
   }
 
-  public changeStatusToProcess(process: ProcessDataInterface, status: number): void {
+  public changeStatusToProcess(process: ProcessDataInterface, status: number, sendMail: boolean): void {
     const user = auth.getCurrentUser();
     this.scholarshipService
-    .changeProcessStatus(process.id, status, { userId: user.id })
+    .changeProcessStatus(process.id, status, { userId: user.id, sendMail })
     .pipe(
       skipWhile((res) => !res),
       tap(() => {
@@ -461,7 +461,7 @@ export class ProcessDataComponent extends AbstractSidenavContainer implements On
 
   public toApprove(process: ProcessDataInterface): void {
     if (process.status.id === 2 || process.status.id === 3 || process.status.id === 7) {
-      this.changeStatusToProcess(process, 4);
+      this.changeStatusToProcess(process, 4, true);
     } else {
       const dialogConfig = new MatDialogConfig();
 

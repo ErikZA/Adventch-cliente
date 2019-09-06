@@ -197,7 +197,7 @@
                       <ng-template [Feature]="41">
                           <button *ngIf="process.status.id === 1" mat-button
                               style="background-color: #76d275!important; color: #fff" matTooltip="Iniciar"
-                              (click)="changeStatusToProcess(process, 2)">INICIAR</button>
+                              (click)="changeStatusToProcess(process, 2, true)">INICIAR</button>
                       </ng-template>
                       <ng-template [Feature]="42">
                           <button *ngIf="process.status.id === 2 || process.status.id === 3" mat-button
@@ -223,14 +223,12 @@
                               <button (click)="toReject(process, 8)" mat-menu-item
                                   matTooltip="Não contemplado por não haver vaga na turma ou % de bolsa solicitado.">Não
                                   há Vaga</button>
-                              <button (click)="toReject(process, 9)" mat-menu-item matTooltip="Não matriculou.">Não
-                                  Matriculou</button>
                           </mat-menu>
                       </ng-template>
                       <ng-template [Feature]="45">
                           <button *ngIf="process.status.id === 5 || process.status.id === 6" mat-button
                               style="background-color: #a30000!important; color: #fff" matTooltip="Não Matriculou"
-                              (click)="changeStatusToProcess(process, 8)">NÃO MATRICULOU</button>
+                              (click)="changeStatusToProcess(process, 8, true)">NÃO MATRICULOU</button>
                       </ng-template>
                       <ng-template [Feature]="44">
                           <button *ngIf="process.status.id > 1" mat-button
@@ -245,13 +243,13 @@
                               <mat-icon>list</mat-icon>STATUS
                           </button>
                           <mat-menu #menu="matMenu">
-                              <button *ngIf="process.status.id > 1" (click)="changeStatusToProcess(process, 1)"
+                              <button *ngIf="process.status.id > 1" (click)="changeStatusToProcess(process, 1, false)"
                                   mat-menu-item>Aguardando Análise</button>
-                              <button *ngIf="process.status.id > 2" (click)="changeStatusToProcess(process, 2)"
+                              <button *ngIf="process.status.id > 2" (click)="changeStatusToProcess(process, 2, false)"
                                   mat-menu-item>Análise</button>
-                              <button *ngIf="process.status.id > 3" (click)="changeStatusToProcess(process, 3)"
+                              <button *ngIf="process.status.id > 3" (click)="changeStatusToProcess(process, 3, false)"
                                   mat-menu-item>Pendente</button>
-                              <button *ngIf="process.status.id > 7" (click)="changeStatusToProcess(process, 7)"
+                              <button *ngIf="process.status.id > 7" (click)="changeStatusToProcess(process, 7, false)"
                                   mat-menu-item>Bolsa Indeferida</button>
                           </mat-menu>
                       </ng-template>
