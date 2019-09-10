@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ObservationAvaliationFormInterface } from '../../interfaces/observation/observation-avaliation-form-interface';
 import { Observable } from 'rxjs';
 
@@ -12,6 +12,12 @@ export class ObservationService {
   constructor(
     private http: HttpClient
   ) { }
+
+  public getObservations(unitId: number, params: HttpParams): Observable<any> {
+    const url = `${this.baseURL}unit/${unitId}`;
+    return this.http
+      .get<any>(url, { params });
+  }
 
   public getObservationsAvaliationByChurchIdAndYear(churchId: number, year: number): Observable<ObservationAvaliationFormInterface[]> {
     const url = `${this.baseURL}${churchId}/avaliation/${year}`;

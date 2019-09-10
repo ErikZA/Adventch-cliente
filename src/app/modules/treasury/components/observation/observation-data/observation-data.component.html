@@ -1,5 +1,92 @@
 <app-form-sidenav-right (closeEmitted)="closeSidenav()" #sidenavRight></app-form-sidenav-right>
-<app-layout-data>
+<div fxLayout="column">
+  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
+    <h2 class="title" *ngIf="!searchButton">Lista de Observações</h2>
+    <mat-form-field *ngIf="searchButton" appearance="outline" fxFlex>
+      <mat-label>Pesquisar...</mat-label>
+      <input matInput placeholder="Nome, código da igreja ou nome da igreja" (keyup)="search$.next($event.target.value)"
+        (blur)="search$.next($event.target.value)" [value]="search$ | async">
+    </mat-form-field>
+    <div class="buttons" fxLayoutAlign="start center">
+      <ng-template [Feature]="49" permission="1">
+        <button mat-stroked-button (click)="newObservation()" matTooltip="Novo Observação">
+          <mat-icon aria-label="Adicionar Observação">add</mat-icon>
+          Novo
+        </button>
+      </ng-template>
+      <button mat-icon-button (click)="searchButton = !searchButton">
+        <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
+        <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Relatório geral" (click)="generateGeneralReport()"
+        [disabled]="disableReport()">
+        <mat-icon>print</mat-icon>
+      </button>
+    </div>
+  </div>
+  <mat-accordion class="example-headers-align" #matExpansionPanel>
+    <mat-expansion-panel #matExpansionPanel hideToggle="true">
+      <div fxLayout.gt-xs="row wrap" fxLayout="column">
+        <app-filter flex="35" [data]="statusData" placeholder="Status" (filterEmitted)="checkStatus($event)"
+          [defaultValues]="statusDefault"></app-filter>
+        <app-filter flex="35" [data]="churchesData" placeholder="Igreja" (filterEmitted)="checkChurch($event)">
+        </app-filter>
+        <app-filter flex="35" [data]="analystsData" placeholder="Analista" (filterEmitted)="checkAnalyst($event)">
+        </app-filter>
+        <app-filter flex="35" [data]="responsiblesData" placeholder="Responsável"
+          (filterEmitted)="checkResponsible($event)"></app-filter>
+
+        <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+          <mat-form-field>
+            <input matInput [matDatepicker]="picker" placeholder="Início" [(ngModel)]="filterPeriodStart"
+              (dateChange)="search()">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </mat-list>
+
+        <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
+          <mat-form-field>
+            <input matInput [matDatepicker]="picker2" placeholder="Final" [(ngModel)]="filterPeriodEnd"
+              [min]="filterPeriodStart" (dateChange)="search()">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+        </mat-list>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <mat-divider></mat-divider>
+  <div class="header">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex fxFlex.gt-sm="32">Igreja</span>
+          <span fxFlex fxFlex.gt-sm="35" fxHide.lt-sm>Responsável</span>
+          <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Data</span>
+          <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Status</span>
+          <span></span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <mat-divider></mat-divider>
+  </div>
+</div>
+<ng-container *ngIf="(observations$ | async) as observations;">
+  <ng-container *ngIf="observations.RowCount === 0; else dataList">
+    <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+      <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+      </mat-icon>
+      <p style="color: gray">Nenhum tesoureiro encontrado</p>
+    </div>
+  </ng-container>
+  <ng-template #dataList>
+    ola
+  </ng-template>
+</ng-container>
+<!-- <app-layout-data>
   <div space-type="header">
     <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
       <h2 class="title" *ngIf="!searchButton">Lista de Observações</h2>
@@ -123,4 +210,4 @@
   <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo">
     <mat-icon aria-label="Adicionar">add</mat-icon>
   </button>
-</ng-template>
+</ng-template> -->

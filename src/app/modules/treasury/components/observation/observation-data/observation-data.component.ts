@@ -1,6 +1,6 @@
-import { Subscription ,  Subject } from 'rxjs';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { Subscription, Subject, Observable } from 'rxjs';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { MatSnackBar, PageEvent, MatPaginator, MatExpansionPanel } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { ConfirmDialogService } from '../../../../../core/components/confirm-dialog/confirm-dialog.service';
@@ -15,7 +15,9 @@ import { FilterService } from '../../../../../core/components/filter/service/fil
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 import * as moment from 'moment';
-import { tap, switchMap, skipWhile } from 'rxjs/operators';
+import { tap, switchMap, skipWhile, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { HttpParams } from '@angular/common/http';
+import { ObservationService } from '../observation.service';
 @Component({
   selector: 'app-observation-data',
   templateUrl: './observation-data.component.html',
@@ -52,6 +54,17 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   subsConfirmFinalize: Subscription;
   subsReport: Subscription;
 
+  private subscribeSearch: Subscription;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('matExpansionPanel') panelFilter: MatExpansionPanel;
+  observations$: Observable<any>;
+
+  private textSearch = '';
+  length = 0;
+  pageSize = 10;
+  pageNumber = 0;
+  pageEvent: PageEvent;
+  filter = false;
   constructor(
     protected router: Router,
     private confirmDialogService: ConfirmDialogService,
@@ -59,24 +72,65 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     private reportService: ReportService,
     private snackBar: MatSnackBar,
     private treasuryService: TreasuryService,
-    private filterService: FilterService
-  ) {  super(router); }
+    private filterService: FilterService,
+    private service: ObservationService
+  ) { super(router); }
 
   ngOnInit() {
-    this.loadStatus();
-    this.statusSelecteds = this.statusDefault;
-    this.sub1 = this
-      .getData()
-      .pipe(
-        switchMap(() => this.search$)
-      ).subscribe(search => {
-        this.filterText = search;
-        this.search();
-      });
+    this.getObservations();
+    this.subscribeSearch = this.search$.pipe(
+      tap(search => this.textSearch = search),
+      debounceTime(250),
+      distinctUntilChanged(),
+      tap(() => this.getObservations()),
+    ).subscribe();
+    // this.loadStatus();
+    // this.statusSelecteds = this.statusDefault;
+    // this.sub1 = this
+    //   .getData()
+    //   .pipe(
+    //     switchMap(() => this.search$)
+    //   ).subscribe(search => {
+    //     this.filterText = search;
+    //     this.search();
+    //   });
   }
 
   ngOnDestroy(): void {
 
+  }
+
+  public getObservations(): void {
+    let params = new HttpParams()
+      .set('pageSize', String(this.pageSize))
+      .set('pageNumber', String(this.pageNumber + 1))
+      .set('search', this.textSearch);
+
+    // params = this.appendParamsArray(params, 'functionIds', this.functionsSelecteds);
+    // params = this.appendParamsArray(params, 'districtIds', this.districtsSelecteds);
+    // params = this.appendParamsArray(params, 'analystIds', this.analystsSelecteds);
+
+    const { id } = auth.getCurrentUnit();
+    this.observations$ = this.service
+      .getObservations(id, params)
+      .pipe(
+        tap(data => this.length = data.rowCount),
+        skipWhile(data => data.rowCount !== 0 && this.paginator !== null),
+        tap(() => console.log(this.paginator))
+      );
+  }
+
+  private appendParamsArray(params: HttpParams, name: string, array: Array<any>): HttpParams {
+    if (array.length > 0) {
+      array.forEach(s => {
+        params = params.append(name, String(s));
+      });
+    }
+    return params;
+  }
+
+  public newObservation(): void {
+    this.router.navigate([`tesouraria/observacoes/novo`]);
   }
 
   getData() {
@@ -198,7 +252,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       this.snackBar.open('Gerando relatório!', 'OK', { duration: 5000 });
     }, err => {
       console.log(err);
-        this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
+      this.snackBar.open('Erro ao gerar relatório relatório!', 'OK', { duration: 5000 });
     });
   }
 
