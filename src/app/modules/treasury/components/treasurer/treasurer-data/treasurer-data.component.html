@@ -5,8 +5,7 @@
     <mat-form-field *ngIf="searchButton" appearance="outline" fxFlex>
       <mat-label>Pesquisar...</mat-label>
       <input matInput placeholder="Nome, código da igreja ou nome da igreja" (keyup)="search$.next($event.target.value)"
-        (blur)="search$.next($event.target.value)" (keydown.enter)="search$.next($event.target.value)"
-        [value]="search$ | async">
+        (blur)="search$.next($event.target.value)" [value]="search$ | async">
     </mat-form-field>
     <div class="buttons" fxLayoutAlign="start center">
       <ng-template [Feature]="38" permission="1">
@@ -54,7 +53,7 @@
   </div>
 </div>
 <ng-container *ngIf="(treasurers$ | async) as treasurers;">
-  <ng-container *ngIf="treasurers.length === 0; else dataList">
+  <ng-container *ngIf="length === 0; else dataList">
     <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
       <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
       </mat-icon>

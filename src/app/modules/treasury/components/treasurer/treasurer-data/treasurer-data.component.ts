@@ -73,7 +73,6 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       tap(search => this.textSearch = search),
       debounceTime(250),
       distinctUntilChanged(),
-      tap(() => this.restartPager()),
       tap(() => this.getTreasurers()),
     ).subscribe();
     this.subscribeFilters = this.loadFilter()
@@ -112,7 +111,8 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     this.treasurers$ = this.treasurerService
       .getTreasurers(id, params)
       .pipe(
-        tap(data => this.length = data.rowCount)
+        tap(data => this.length = data.rowCount),
+        tap(() => this.restartPaginator())
       );
   }
 
@@ -133,15 +133,17 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       );
   }
 
+  private restartPaginator(): void {
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+  }
+
   public paginatorEvent(event: PageEvent): PageEvent {
     this.pageSize = event.pageSize;
     this.pageNumber = event.pageIndex;
     this.getTreasurers();
     return event;
-  }
-
-  private restartPager(): void {
-    this.paginator.firstPage();
   }
 
   public getFunctionName(treasurer: Treasurer) {
@@ -220,19 +222,16 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   public checkDistrict(district) {
     this.districtsSelecteds = this.filterService.check(district, this.districtsSelecteds);
     this.getTreasurers();
-    this.restartPager();
   }
 
   public checkAnalyst(analyst) {
     this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
     this.getTreasurers();
-    this.restartPager();
   }
 
   public checkFunction(func) {
     this.functionsSelecteds = this.filterService.check(func, this.functionsSelecteds);
     this.getTreasurers();
-    this.restartPager();
   }
 
   public generateGeneralReport(): void {
