@@ -73,8 +73,8 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       tap(search => this.textSearch = search),
       debounceTime(250),
       distinctUntilChanged(),
-      tap(() => this.restartPager()),
       tap(() => this.getTreasurers()),
+      tap(() => this.restartPaginator())
     ).subscribe();
     this.subscribeFilters = this.loadFilter()
       .pipe(
@@ -133,15 +133,17 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       );
   }
 
+  private restartPaginator(): void {
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+  }
+
   public paginatorEvent(event: PageEvent): PageEvent {
     this.pageSize = event.pageSize;
     this.pageNumber = event.pageIndex;
     this.getTreasurers();
     return event;
-  }
-
-  private restartPager(): void {
-    this.paginator.firstPage();
   }
 
   public getFunctionName(treasurer: Treasurer) {
@@ -181,7 +183,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       });
   }
 
-  public expandPanel(matExpansionPanel): void {
+  public expandPanel(): void {
     this.filter = !this.filter;
     this.filter ? this.panelFilter.open() : this.panelFilter.close();
     localStorage.setItem('treasury.treasurer.filter.open', JSON.stringify(this.filter));
@@ -220,19 +222,19 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   public checkDistrict(district) {
     this.districtsSelecteds = this.filterService.check(district, this.districtsSelecteds);
     this.getTreasurers();
-    this.restartPager();
+    this.restartPaginator();
   }
 
   public checkAnalyst(analyst) {
     this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
     this.getTreasurers();
-    this.restartPager();
+    this.restartPaginator();
   }
 
   public checkFunction(func) {
     this.functionsSelecteds = this.filterService.check(func, this.functionsSelecteds);
     this.getTreasurers();
-    this.restartPager();
+    this.restartPaginator();
   }
 
   public generateGeneralReport(): void {

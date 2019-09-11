@@ -7,14 +7,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
   providedIn: 'root'
 })
 export class TreasurerService {
-  protected baseURl = '/treasury/treasurers/';
+  protected baseURL = '/treasury/treasurers/';
 
   constructor(
     private http: HttpClient
   ) { }
 
   public getTreasurers(unitId: number, params: HttpParams): Observable<any> {
-    const url = `${this.baseURl}unit/${unitId}`;
+    const url = `${this.baseURL}unit/${unitId}`;
     return this.http
       .get<any>(url, { params });
   }
