@@ -4,6 +4,9 @@ import { ObservationAvaliationFormInterface } from '../../interfaces/observation
 import { Observable } from 'rxjs';
 import { ObservationDataInterface } from '../../interfaces/observation/observation-data-interface';
 import { PagedResult } from '../../../../shared/paged-result';
+import { ChurchObservationListFilterInterface } from '../../interfaces/observation/church-observation-list-filter-interface';
+import { ResponsibleObservationListFilterInterface } from '../../interfaces/observation/responsible-observation-list-filter-interface';
+import { AnalystDistrictChurchObservationListFilterInterface } from '../../interfaces/observation/analyst-district-church-observation-list-filter-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +18,8 @@ export class ObservationService {
     private http: HttpClient
   ) { }
 
-  public getObservations(unitId: number, params: HttpParams): Observable<any> {
-    const url = `${this.baseURL}unit/${unitId}`;
+  public getObservations(unitId: number, params: HttpParams): Observable<PagedResult<ObservationDataInterface>> {
+    const url = `${this.baseURL}units/${unitId}`;
     return this.http
       .get<PagedResult<ObservationDataInterface>>(url, { params });
   }
@@ -31,5 +34,23 @@ export class ObservationService {
     const url = '/treasury/observations/finalize/';
     return this.http
       .put<boolean>(url, data);
+  }
+
+  public getChurchObservations(unitId: number): Observable<ChurchObservationListFilterInterface[]> {
+    const url = `${this.baseURL}units/${unitId}/churches`;
+    return this.http
+      .get<ChurchObservationListFilterInterface[]>(url);
+  }
+
+  public getResponsibleObservations(unitId: number): Observable<ResponsibleObservationListFilterInterface[]> {
+    const url = `${this.baseURL}units/${unitId}/responsibles`;
+    return this.http
+      .get<ResponsibleObservationListFilterInterface[]>(url);
+  }
+
+  public getAnalystDistrictChurchObservations(unitId: number): Observable<AnalystDistrictChurchObservationListFilterInterface[]> {
+    const url = `${this.baseURL}units/${unitId}/churches/districts/analysts`;
+    return this.http
+      .get<AnalystDistrictChurchObservationListFilterInterface[]>(url);
   }
 }

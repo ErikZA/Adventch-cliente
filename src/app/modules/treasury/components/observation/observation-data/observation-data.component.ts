@@ -20,6 +20,9 @@ import { HttpParams } from '@angular/common/http';
 import { ObservationService } from '../observation.service';
 import { PagedResult } from '../../../../../shared/paged-result';
 import { ObservationDataInterface } from '../../../interfaces/observation/observation-data-interface';
+import { ChurchObservationListFilterInterface } from '../../../interfaces/observation/church-observation-list-filter-interface';
+import { ResponsibleObservationListFilterInterface } from '../../../interfaces/observation/responsible-observation-list-filter-interface';
+import { AnalystDistrictChurchObservationListFilterInterface } from '../../../interfaces/observation/analyst-district-church-observation-list-filter-interface';
 @Component({
   selector: 'app-observation-data',
   templateUrl: './observation-data.component.html',
@@ -56,6 +59,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   subsReport: Subscription;
 
   private subscribeSearch: Subscription;
+  private subscribeFilters: Subscription;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('matExpansionPanel') panelFilter: MatExpansionPanel;
   observations$: Observable<PagedResult<ObservationDataInterface>>;
@@ -78,6 +82,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   ) { super(router); }
 
   ngOnInit() {
+    this.statusSelecteds = this.statusDefault;
     this.getObservations();
     this.subscribeSearch = this.search$.pipe(
       tap(search => this.textSearch = search),
@@ -85,8 +90,11 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       distinctUntilChanged(),
       tap(() => this.getObservations()),
     ).subscribe();
+    this.subscribeFilters = this.loadFilter()
+      .pipe(
+        tap(() => this.getPreferenceFilter())
+      ).subscribe();
     // this.loadStatus();
-    // this.statusSelecteds = this.statusDefault;
     // this.sub1 = this
     //   .getData()
     //   .pipe(
@@ -98,7 +106,11 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   }
 
   ngOnDestroy(): void {
-
+    this.subscribeSearch.unsubscribe();
+    this.subscribeFilters.unsubscribe();
+    if (this.subsConfirmRemove) {
+      this.subsConfirmRemove.unsubscribe();
+    }
   }
 
   public getObservations(): void {
@@ -107,9 +119,10 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       .set('pageNumber', String(this.pageNumber + 1))
       .set('search', this.textSearch);
 
-    // params = this.appendParamsArray(params, 'functionIds', this.functionsSelecteds);
-    // params = this.appendParamsArray(params, 'districtIds', this.districtsSelecteds);
-    // params = this.appendParamsArray(params, 'analystIds', this.analystsSelecteds);
+    params = this.appendParamsArray(params, 'statusIds', this.statusSelecteds);
+    params = this.appendParamsArray(params, 'churchesIds', this.churchesSelecteds);
+    params = this.appendParamsArray(params, 'responsiblesIds', this.responsiblesSelecteds);
+    params = this.appendParamsArray(params, 'analystsIds', this.analystsSelecteds);
 
     const { id } = auth.getCurrentUnit();
     this.observations$ = this.service
@@ -129,6 +142,14 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     return params;
   }
 
+  private getPreferenceFilter() {
+    const filter = localStorage.getItem('treasury.observation.filter.open');
+    if (filter !== null && filter !== undefined) {
+      JSON.parse(filter) ? this.panelFilter.open() : this.panelFilter.close();
+      this.filter = JSON.parse(filter) ? true : false;
+    }
+  }
+
   private restartPaginator(): void {
     if (this.paginator) {
       this.paginator.firstPage();
@@ -146,63 +167,68 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     return event;
   }
 
+  private loadFilter(): Observable<any> {
+    return this.loadChurches()
+      .pipe(
+        switchMap(() => this.loadResponsibles()),
+        switchMap(() => this.loadAnalysts()),
+        tap(() => this.loadStatus())
+      );
+  }
+
   getData() {
     this.search$.next('');
     return this.treasuryService
       .getObservations(auth.getCurrentUnit().id)
       .pipe(
         tap(data => {
-          this.observations = data.sort(this.sortByDate);
-          this.observationsCache = data.sort(this.sortByDate);
-          this.loadAnalysts(data);
-          this.loadChurches(data);
-          this.loadResponsibles(data);
-          this.search();
+          // this.observations = data.sort(this.sortByDate);
+          // this.observationsCache = data.sort(this.sortByDate);
+          // this.loadAnalysts(data);
+          // this.loadChurches(data);
+          // this.loadResponsibles(data);
+          // this.search();
         })
       );
   }
-  private sortByDate(a: Observation, b: Observation) {
-    if (a.date === b.date) {
-      return 0;
-    }
-    if (a.date > b.date) {
-      return 1;
-    } else {
-      return -1;
-    }
-  }
-  private loadChurches(observations: Observation[]) {
+
+  private loadChurches() {
     this.churchesData = [];
-    observations.forEach(observation => {
-      if (this.churchesData.map(x => x.id).indexOf(observation.church.id) === -1) {
-        this.churchesData.push(observation.church);
-      }
-    });
-    this.churchesData.sort((a, b) => a.name.localeCompare(b.name));
+    const { id } = auth.getCurrentUnit();
+    return this.service.getChurchObservations(id)
+      .pipe(
+        tap((data: ChurchObservationListFilterInterface[]) => {
+          data.forEach(d => {
+            this.churchesData.push(new Filter(Number(d.id), d.name));
+          });
+        })
+      );
   }
 
-  private loadAnalysts(observations: Observation[]) {
-    this.analystsData = [];
-    observations.forEach(observation => {
-      if (this.analystsData.map(x => x.id).indexOf(observation.church.district.analyst.id) === -1) {
-        this.analystsData.push(observation.church.district.analyst);
-      }
-    });
-    this.analystsData.sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  private loadResponsibles(observations: Observation[]) {
+  private loadResponsibles() {
     this.responsiblesData = [];
-    observations.forEach(observation => {
-      if (this.responsiblesData.map(x => x.id).indexOf(observation.responsible.id) === -1) {
-        this.responsiblesData.push(observation.responsible);
-      }
-    });
-    this.responsiblesData.sort((a, b) => a.name.localeCompare(b.name));
+    const { id } = auth.getCurrentUnit();
+    return this.service.getResponsibleObservations(id)
+      .pipe(
+        tap((data: ResponsibleObservationListFilterInterface[]) => {
+          data.forEach(d => {
+            this.responsiblesData.push(new Filter(Number(d.id), d.name));
+          });
+        })
+      );
   }
 
-  public onScroll() {
-    this.showList += 80;
+  private loadAnalysts() {
+    this.analystsData = [];
+    const { id } = auth.getCurrentUnit();
+    return this.service.getAnalystDistrictChurchObservations(id)
+      .pipe(
+        tap((data: AnalystDistrictChurchObservationListFilterInterface[]) => {
+          data.forEach(d => {
+            this.analystsData.push(new Filter(Number(d.id), d.name));
+          });
+        })
+      );
   }
 
   public remove(observation: Observation) {
@@ -215,9 +241,11 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
         tap(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 2000 }))
       ).subscribe();
   }
+
   public edit(observation: Observation) {
     this.router.navigate([observation.id, 'editar'], { relativeTo: this.route });
   }
+
   public finalize(observation: Observation) {
     this.subsConfirmFinalize = this.confirmDialogService
       .confirm('Finalizar', 'Você deseja realmente finalizar a observação?', 'FINALIZAR')
@@ -248,8 +276,10 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     this.observations = observations;
   }
 
-  public expandPanel(matExpansionPanel): void {
-    matExpansionPanel.toggle();
+  public expandPanel(): void {
+    this.filter = !this.filter;
+    this.filter ? this.panelFilter.open() : this.panelFilter.close();
+    localStorage.setItem('treasury.observation.filter.open', JSON.stringify(this.filter));
   }
 
   public generateGeneralReport(): void {
@@ -315,24 +345,24 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     return false;
   }
 
-  checkStatus(type): void {
+  public checkStatus(type): void {
     this.statusSelecteds = this.filterService.check(type, this.statusSelecteds);
-    this.search();
+    this.getObservations();
   }
 
-  checkChurch(church): void {
+  public checkChurch(church): void {
     this.churchesSelecteds = this.filterService.check(church, this.churchesSelecteds);
-    this.search();
+    this.getObservations();
   }
 
-  checkAnalyst(analyst): void {
+  public checkAnalyst(analyst): void {
     this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
-    this.search();
+    this.getObservations();
   }
 
-  checkResponsible(responsible): void {
+  public checkResponsible(responsible): void {
     this.responsiblesSelecteds = this.filterService.check(responsible, this.responsiblesSelecteds);
-    this.search();
+    this.getObservations();
   }
 
   private loadStatus(): void {
