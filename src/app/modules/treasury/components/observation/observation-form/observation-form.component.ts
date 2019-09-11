@@ -104,7 +104,7 @@ export class ObservationFormComponent implements OnInit, OnDestroy {
           this.formObservation.markAsUntouched();
           this.observationDataComponent.closeSidenav();
         }),
-        switchMap(() => this.observationDataComponent.getData()),
+        tap(() => this.observationDataComponent.getObservations()),
         tap(() => this.snackBar.open('Observação armazenado com sucesso!', 'OK', { duration: 5000 }))
       ).subscribe(() => { }, error => {
         console.log(error);

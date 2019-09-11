@@ -22,7 +22,10 @@ import { PagedResult } from '../../../../../shared/paged-result';
 import { ObservationDataInterface } from '../../../interfaces/observation/observation-data-interface';
 import { ChurchObservationListFilterInterface } from '../../../interfaces/observation/church-observation-list-filter-interface';
 import { ResponsibleObservationListFilterInterface } from '../../../interfaces/observation/responsible-observation-list-filter-interface';
-import { AnalystDistrictChurchObservationListFilterInterface } from '../../../interfaces/observation/analyst-district-church-observation-list-filter-interface';
+import {
+  AnalystDistrictChurchObservationListFilterInterface
+} from '../../../interfaces/observation/analyst-district-church-observation-list-filter-interface';
+
 @Component({
   selector: 'app-observation-data',
   templateUrl: './observation-data.component.html',
@@ -89,6 +92,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       debounceTime(250),
       distinctUntilChanged(),
       tap(() => this.getObservations()),
+      tap(() => this.restartPaginator())
     ).subscribe();
     this.subscribeFilters = this.loadFilter()
       .pipe(
@@ -117,7 +121,9 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     let params = new HttpParams()
       .set('pageSize', String(this.pageSize))
       .set('pageNumber', String(this.pageNumber + 1))
-      .set('search', this.textSearch);
+      .set('search', this.textSearch)
+      .set('dateStart', this.filterPeriodStart.toDateString())
+      .set('dateEnd', this.filterPeriodEnd.toDateString());
 
     params = this.appendParamsArray(params, 'statusIds', this.statusSelecteds);
     params = this.appendParamsArray(params, 'churchesIds', this.churchesSelecteds);
@@ -128,8 +134,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     this.observations$ = this.service
       .getObservations(id, params)
       .pipe(
-        tap(data => this.length = data.rowCount),
-        tap(() => this.restartPaginator())
+        tap(data => this.length = data.rowCount)
       );
   }
 
@@ -173,22 +178,6 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
         switchMap(() => this.loadResponsibles()),
         switchMap(() => this.loadAnalysts()),
         tap(() => this.loadStatus())
-      );
-  }
-
-  getData() {
-    this.search$.next('');
-    return this.treasuryService
-      .getObservations(auth.getCurrentUnit().id)
-      .pipe(
-        tap(data => {
-          // this.observations = data.sort(this.sortByDate);
-          // this.observationsCache = data.sort(this.sortByDate);
-          // this.loadAnalysts(data);
-          // this.loadChurches(data);
-          // this.loadResponsibles(data);
-          // this.search();
-        })
       );
   }
 
@@ -237,7 +226,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       .pipe(
         skipWhile(res => res !== true),
         switchMap(() => this.treasuryService.deleteObservation(observation.id)),
-        switchMap(() => this.getData()),
+        tap(() => this.getObservations()),
         tap(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 2000 }))
       ).subscribe();
   }
@@ -252,7 +241,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       .pipe(
         skipWhile(res => res !== true),
         switchMap(() => this.treasuryService.finalizeObservation(observation)),
-        switchMap(() => this.getData()),
+        tap(() => this.getObservations()),
         tap(() => this.snackBar.open('Finalizado com sucesso', 'OK', { duration: 2000 }))
       ).subscribe();
   }
@@ -261,19 +250,6 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       return 'Finalizada';
     }
     return 'Aberta';
-  }
-
-  public searchInDates(startDate: Date, endDate: Date, observations: Observation[]) {
-    return Array.isArray(observations) ? observations.filter(f => new Date(f.date) > startDate && new Date(f.date) < endDate) : [];
-  }
-  public search() {
-    let observations = this.observationsCache.filter(o => utils.buildSearchRegex(this.filterText).test(o.church.name.toUpperCase()));
-    observations = this.filterService.filter(observations, 'status', this.statusSelecteds);
-    observations = this.filterService.filter(observations, 'church.id', this.churchesSelecteds);
-    observations = this.filterService.filter(observations, 'church.district.analyst.id', this.analystsSelecteds);
-    observations = this.filterService.filter(observations, 'responsible.id', this.responsiblesSelecteds);
-    observations = this.searchInDates(this.filterPeriodStart, this.filterPeriodEnd, observations);
-    this.observations = observations;
   }
 
   public expandPanel(): void {
@@ -347,21 +323,25 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
 
   public checkStatus(type): void {
     this.statusSelecteds = this.filterService.check(type, this.statusSelecteds);
+    this.restartPaginator();
     this.getObservations();
   }
 
   public checkChurch(church): void {
     this.churchesSelecteds = this.filterService.check(church, this.churchesSelecteds);
+    this.restartPaginator();
     this.getObservations();
   }
 
   public checkAnalyst(analyst): void {
     this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
+    this.restartPaginator();
     this.getObservations();
   }
 
   public checkResponsible(responsible): void {
     this.responsiblesSelecteds = this.filterService.check(responsible, this.responsiblesSelecteds);
+    this.restartPaginator();
     this.getObservations();
   }
 
