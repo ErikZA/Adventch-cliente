@@ -4,8 +4,9 @@
     <h2 class="title" *ngIf="!searchButton">Lista de Observações</h2>
     <mat-form-field *ngIf="searchButton" appearance="outline" fxFlex>
       <mat-label>Pesquisar...</mat-label>
-      <input matInput placeholder="Nome, código da igreja ou nome da igreja" (keyup)="search$.next($event.target.value)"
-        (blur)="search$.next($event.target.value)" [value]="search$ | async">
+      <input matInput placeholder="Nome do responsável, código da igreja ou nome da igreja"
+        (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)"
+        [value]="search$ | async">
     </mat-form-field>
     <div class="buttons" fxLayoutAlign="start center">
       <ng-template [Feature]="49" permission="1">
@@ -74,8 +75,9 @@
     <mat-divider></mat-divider>
   </div>
 </div>
-<ng-container *ngIf="(observations$ | async) as observations;">
-  <ng-container *ngIf="observations.RowCount === 0; else dataList">
+
+<ng-container *ngIf="(observations$ | async) as observations">
+  <ng-container *ngIf="length === 0; else dataList">
     <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
       <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
       </mat-icon>
@@ -83,7 +85,68 @@
     </div>
   </ng-container>
   <ng-template #dataList>
-    ola
+    <mat-accordion>
+      <div *ngFor="let observation of observations.results">
+        <mat-expansion-panel hideToggle>
+          <mat-expansion-panel-header>
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <span fxFlex fxFlex.gt-sm="32"
+                style="white-space: line-wrap;">{{ observation.church.code + " - " + observation.church.name }}</span>
+              <span fxFlex fxFlex.gt-sm="35" style="white-space: line-wrap;"
+                fxHide.lt-sm>{{ observation.responsibleName }}</span>
+              <span fxFlex fxFlex.gt-sm="17" style="white-space: line-wrap;"
+                fxHide.lt-sm>{{ observation.date | date: "dd/MM/yyyy" }}</span>
+              <span fxFlex fxFlex.gt-sm="13" style="white-space: line-wrap;"
+                fxHide.lt-sm>{{ getStatus(observation.status) }}</span>
+              <span style="white-space: line-wrap;">
+                <mat-icon *ngIf="checkAttention(observation)" matTooltip="Aberta há mais de 30 dias" style="color: red">
+                  error_outline</mat-icon>
+              </span>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div fxLayout="column" class="description">
+            <div fxLayout="row">
+              <p class="title-description">Informações da Observação</p>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Responsável:</span>
+              <span>{{ observation.responsibleName }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Data:</span>
+              <span>{{ observation.date | date: "dd/MM/yyyy" }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Status:</span>
+              <span>{{ getStatus(observation.status) }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+              <span class="text-bold">Descrição:</span>
+              <span>{{ observation.description }}</span>
+            </div>
+          </div>
+
+          <mat-action-row fxLayout="row" fxLayout.xs="column">
+            <ng-template [Feature]="50">
+              <button *ngIf="observation.status === 1" mat-button
+                style="background-color: #E8702A!important; color: #fff" matTooltip="Finalizar observação"
+                (click)="finalize(observation)">FINALIZAR</button>
+            </ng-template>
+            <ng-template [Feature]="49" permission="4">
+              <button mat-button color="warn" matTooltip="Excluir" (click)="remove(observation)">REMOVER</button>
+            </ng-template>
+            <ng-template [Feature]="49" permission="3">
+              <button mat-button color="primary" matTooltip="Editar" (click)="edit(observation)"
+                *ngIf="observation.status === 1">EDITAR</button>
+            </ng-template>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </div>
+    </mat-accordion>
+    <mat-paginator [length]="length" [pageSize]="pageSize" [pageIndex]="pageNumber" [pageSizeOptions]="[10, 15, 25, 50]"
+      [showFirstLastButtons]="true" (page)="pageEvent = paginatorEvent($event)">
+    </mat-paginator>
   </ng-template>
 </ng-container>
 <!-- <app-layout-data>

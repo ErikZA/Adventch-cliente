@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ObservationAvaliationFormInterface } from '../../interfaces/observation/observation-avaliation-form-interface';
 import { Observable } from 'rxjs';
+import { ObservationDataInterface } from '../../interfaces/observation/observation-data-interface';
+import { PagedResult } from '../../../../shared/paged-result';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +18,7 @@ export class ObservationService {
   public getObservations(unitId: number, params: HttpParams): Observable<any> {
     const url = `${this.baseURL}unit/${unitId}`;
     return this.http
-      .get<any>(url, { params });
+      .get<PagedResult<ObservationDataInterface>>(url, { params });
   }
 
   public getObservationsAvaliationByChurchIdAndYear(churchId: number, year: number): Observable<ObservationAvaliationFormInterface[]> {

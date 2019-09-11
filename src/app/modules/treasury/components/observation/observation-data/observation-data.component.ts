@@ -18,12 +18,13 @@ import * as moment from 'moment';
 import { tap, switchMap, skipWhile, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
 import { ObservationService } from '../observation.service';
+import { PagedResult } from '../../../../../shared/paged-result';
+import { ObservationDataInterface } from '../../../interfaces/observation/observation-data-interface';
 @Component({
   selector: 'app-observation-data',
   templateUrl: './observation-data.component.html',
   styleUrls: ['./observation-data.component.scss']
 })
-@AutoUnsubscribe()
 export class ObservationDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
   protected componentUrl = 'tesouraria/observacoes';
 
@@ -57,7 +58,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   private subscribeSearch: Subscription;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('matExpansionPanel') panelFilter: MatExpansionPanel;
-  observations$: Observable<any>;
+  observations$: Observable<PagedResult<ObservationDataInterface>>;
 
   private textSearch = '';
   length = 0;
@@ -115,8 +116,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       .getObservations(id, params)
       .pipe(
         tap(data => this.length = data.rowCount),
-        skipWhile(data => data.rowCount !== 0 && this.paginator !== null),
-        tap(() => console.log(this.paginator))
+        tap(() => this.restartPaginator())
       );
   }
 
@@ -129,8 +129,21 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     return params;
   }
 
+  private restartPaginator(): void {
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+  }
+
   public newObservation(): void {
     this.router.navigate([`tesouraria/observacoes/novo`]);
+  }
+
+  public paginatorEvent(event: PageEvent): PageEvent {
+    this.pageSize = event.pageSize;
+    this.pageNumber = event.pageIndex;
+    this.getObservations();
+    return event;
   }
 
   getData() {
