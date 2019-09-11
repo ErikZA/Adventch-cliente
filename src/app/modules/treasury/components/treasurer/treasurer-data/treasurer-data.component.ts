@@ -74,6 +74,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       debounceTime(250),
       distinctUntilChanged(),
       tap(() => this.getTreasurers()),
+      tap(() => this.restartPaginator())
     ).subscribe();
     this.subscribeFilters = this.loadFilter()
       .pipe(
@@ -111,8 +112,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     this.treasurers$ = this.treasurerService
       .getTreasurers(id, params)
       .pipe(
-        tap(data => this.length = data.rowCount),
-        tap(() => this.restartPaginator())
+        tap(data => this.length = data.rowCount)
       );
   }
 
@@ -183,7 +183,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       });
   }
 
-  public expandPanel(matExpansionPanel): void {
+  public expandPanel(): void {
     this.filter = !this.filter;
     this.filter ? this.panelFilter.open() : this.panelFilter.close();
     localStorage.setItem('treasury.treasurer.filter.open', JSON.stringify(this.filter));
@@ -222,16 +222,19 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   public checkDistrict(district) {
     this.districtsSelecteds = this.filterService.check(district, this.districtsSelecteds);
     this.getTreasurers();
+    this.restartPaginator();
   }
 
   public checkAnalyst(analyst) {
     this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
     this.getTreasurers();
+    this.restartPaginator();
   }
 
   public checkFunction(func) {
     this.functionsSelecteds = this.filterService.check(func, this.functionsSelecteds);
     this.getTreasurers();
+    this.restartPaginator();
   }
 
   public generateGeneralReport(): void {

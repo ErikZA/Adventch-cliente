@@ -42,7 +42,7 @@
         <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
           <mat-form-field>
             <input matInput [matDatepicker]="picker" placeholder="Início" [(ngModel)]="filterPeriodStart"
-              (dateChange)="search()">
+              (dateChange)="selectPeriod()">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
@@ -51,7 +51,7 @@
         <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
           <mat-form-field>
             <input matInput [matDatepicker]="picker2" placeholder="Final" [(ngModel)]="filterPeriodEnd"
-              [min]="filterPeriodStart" (dateChange)="search()">
+              [min]="filterPeriodStart" (dateChange)="selectPeriod()">
             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
             <mat-datepicker #picker2></mat-datepicker>
           </mat-form-field>
@@ -149,128 +149,3 @@
     </mat-paginator>
   </ng-template>
 </ng-container>
-<!-- <app-layout-data>
-  <div space-type="header">
-    <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
-      <h2 class="title" *ngIf="!searchButton">Lista de Observações</h2>
-      <mat-form-field *ngIf="searchButton" fxFlex>
-        <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
-      </mat-form-field>
-      <div class="buttons" fxLayoutAlign="start center">
-        <button mat-icon-button (click)="searchButton = !searchButton">
-          <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
-        </button>
-        <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel(matExpansionPanel)">
-          <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
-        </button>
-        <div matTooltip="Relatório geral">
-          <button mat-icon-button (click)="generateGeneralReport()" [disabled]="disableReport()">
-            <mat-icon>print</mat-icon>
-          </button>
-        </div>
-      </div>
-    </div>
-    <mat-accordion class="example-headers-align" #matExpansionPanel>
-      <mat-expansion-panel #matExpansionPanel hideToggle="true">
-        <div fxLayout.gt-xs="row wrap" fxLayout="column">
-          <app-filter flex="35" [data]="statusData" placeholder="Status" (filterEmitted)="checkStatus($event)" [defaultValues]="statusDefault"></app-filter>
-          <app-filter flex="35" [data]="churchesData" placeholder="Igreja" (filterEmitted)="checkChurch($event)"></app-filter>
-          <app-filter flex="35" [data]="analystsData" placeholder="Analista" (filterEmitted)="checkAnalyst($event)"></app-filter>
-          <app-filter flex="35" [data]="responsiblesData" placeholder="Responsável" (filterEmitted)="checkResponsible($event)"></app-filter>
-
-          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-            <mat-form-field>
-              <input matInput [matDatepicker]="picker" placeholder="Início" [(ngModel)]="filterPeriodStart" (dateChange)="search()">
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-          </mat-list>
-
-          <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
-            <mat-form-field>
-              <input matInput [matDatepicker]="picker2" placeholder="Final" [(ngModel)]="filterPeriodEnd" [min]="filterPeriodStart" (dateChange)="search()">
-              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-              <mat-datepicker #picker2></mat-datepicker>
-            </mat-form-field>
-          </mat-list>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-    <mat-divider></mat-divider>
-    <div class="header">
-      <mat-list>
-        <mat-list-item>
-          <h3 matLine fxLayout="row" fxLayoutAlign="start center">
-            <span fxFlex fxFlex.gt-sm="32">Igreja</span>
-            <span fxFlex fxFlex.gt-sm="35" fxHide.lt-sm>Responsável</span>
-            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Data</span>
-            <span fxFlex fxFlex.gt-sm="15" fxHide.lt-sm>Status</span>
-            <span></span>
-          </h3>
-        </mat-list-item>
-      </mat-list>
-      <mat-divider></mat-divider>
-    </div>
-  </div>
-
-  <div space-type="container" fxLayout="column" class="container" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
-    (scrolled)="onScroll()" [scrollWindow]="false">
-    <mat-accordion>
-      <div *ngFor="let observation of observations; index as i">
-        <mat-expansion-panel hideToggle *ngIf="i <= showList">
-          <mat-expansion-panel-header>
-            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
-              <span *ngIf="observation.church" fxFlex fxFlex.gt-sm="32" style="white-space: line-wrap;">{{ observation.church.name }}</span>
-              <span *ngIf="observation.responsible" fxFlex fxFlex.gt-sm="35" style="white-space: line-wrap;" fxHide.lt-sm>{{ observation.responsible.name }}</span>
-              <span fxFlex fxFlex.gt-sm="17" style="white-space: line-wrap;" fxHide.lt-sm>{{ observation.date | date: "dd/MM/yyyy" }}</span>
-              <span fxFlex fxFlex.gt-sm="13" style="white-space: line-wrap;" fxHide.lt-sm>{{ getStatus(observation.status) }}</span>
-              <span style="white-space: line-wrap;">
-                <mat-icon *ngIf="checkAttention(observation)" matTooltip="Aberta há mais de 30 dias" style="color: red">error_outline</mat-icon>
-              </span>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-
-          <div fxLayout="column" class="description">
-            <div fxLayout="row">
-              <p class="title-description">Informações da Observação</p>
-            </div>
-            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
-              <span class="text-bold">Responsável:</span>
-              <span>{{ observation.responsible.name }}</span>
-            </div>
-            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
-              <span class="text-bold">Data:</span>
-              <span>{{ observation.date | date: "dd/MM/yyyy" }}</span>
-            </div>
-            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
-              <span class="text-bold">Status:</span>
-              <span>{{ getStatus(observation.status) }}</span>
-            </div>
-            <div fxLayout="row wrap" fxLayoutGap="5px">
-              <span class="text-bold">Descrição:</span>
-              <span>{{ observation.description }}</span>
-            </div>
-          </div>
-
-          <mat-action-row fxLayout="row" fxLayout.xs="column">
-            <ng-template [Feature]="50">
-              <button *ngIf="observation.status === 1" mat-button style="background-color: #E8702A!important; color: #fff" matTooltip="Finalizar observação"
-                (click)="finalize(observation)">FINALIZAR</button>
-            </ng-template>
-            <ng-template [Feature]="49" permission="4">
-              <button mat-button color="warn" matTooltip="Excluir" (click)="remove(observation)">REMOVER</button>
-            </ng-template>
-            <ng-template [Feature]="49" permission="3">
-              <button mat-button color="primary" matTooltip="Editar" (click)="edit(observation)" *ngIf="observation.status === 1">EDITAR</button>
-            </ng-template>
-          </mat-action-row>
-        </mat-expansion-panel>
-      </div>
-    </mat-accordion>
-  </div>
-</app-layout-data>
-<ng-template [Feature]="49" permission="1">
-  <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo">
-    <mat-icon aria-label="Adicionar">add</mat-icon>
-  </button>
-</ng-template> -->

@@ -345,6 +345,11 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
     this.getObservations();
   }
 
+  public selectPeriod(): void {
+    this.restartPaginator();
+    this.getObservations();
+  }
+
   private loadStatus(): void {
     this.statusData.push(new Filter(1, 'Aberta'));
     this.statusData.push(new Filter(2, 'Finalizada'));
