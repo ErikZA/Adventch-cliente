@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatPaginator, MatExpansionPanel, PageEvent, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material';
 
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, Observable } from 'rxjs';
 
 import { auth } from '../../../../../auth/auth';
 import { EAvaliationStatus } from '../../../models/enums';
@@ -11,25 +11,26 @@ import { User } from '../../../../../shared/models/user.model';
 import { ReportService } from '../../../../../shared/report.service';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
 import { AvaliationService } from '../avaliation.service';
-import { map, tap, switchMap, skipWhile } from 'rxjs/operators';
+import { tap, skipWhile, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { ChurchAvaliationDataInterface } from '../../../interfaces/avaliation/church-avaliation-data-interface';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
-import { utils } from '../../../../../shared/utils';
 
 import { AvaliationDataInterface } from '../../../interfaces/avaliation/avaliation-data-interface';
 import { DistrictListInterface } from '../../../interfaces/district/district-list-interface';
 import { DistrictService } from '../../districts/district.service';
+import { PagedResult } from '../../../../../shared/paged-result';
+import { HttpParams } from '@angular/common/http';
+
 @Component({
   selector: 'app-avaliation-data',
   templateUrl: './avaliation-data.component.html',
-  styleUrls: ['./avaliation-data.component.scss']
+  styleUrls: ['./avaliation-data.component.scss'],
 })
-export class AvaliationDataComponent extends AbstractSidenavContainer implements OnInit {
+export class AvaliationDataComponent extends AbstractSidenavContainer implements OnInit, OnDestroy {
   protected componentUrl = '/tesouraria/avaliacoes';
 
   searchButton = false;
-  showList = 80;
   search$ = new Subject<string>();
   layout: String = 'row';
 
@@ -55,6 +56,18 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   churchesAvaliationsCache: ChurchAvaliationDataInterface[];
   sub1: Subscription;
 
+  private subscribeSearch: Subscription;
+  private subscribeFilters: Subscription;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('matExpansionPanel') panelFilter: MatExpansionPanel;
+  churchesAvaliations$: Observable<PagedResult<ChurchAvaliationDataInterface>>;
+
+  private textSearch = '';
+  length = 0;
+  pageSize = 10;
+  pageNumber = 0;
+  pageEvent: PageEvent;
+  filter = false;
   constructor(
     public router: Router,
     private route: ActivatedRoute,
@@ -67,38 +80,106 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   ) { super(router); }
 
   ngOnInit() {
-    this.loadFilters();
-    this.sub1 = this.getData()
+    this.loadPeriods();
+    this.getChurchesAvaliations();
+    this.subscribeSearch = this.search$.pipe(
+      tap(search => this.textSearch = search),
+      debounceTime(250),
+      distinctUntilChanged(),
+      tap(() => this.getChurchesAvaliations()),
+      tap(() => this.restartPaginator())
+    ).subscribe();
+    this.subscribeFilters = this.loadFilter()
       .pipe(
-        switchMap(() => this.search$)
-      ).subscribe(search => {
-        this.filterText = search;
-        this.search();
-      });
+        tap(() => this.getPreferenceFilter())
+      ).subscribe();
+    // this.loadFilters();
+    // this.sub1 = this.getData()
+    //   .pipe(
+    //     switchMap(() => this.search$)
+    //   ).subscribe(search => {
+    //     this.filterText = search;
+    //     this.search();
+    //   });
   }
 
-  public getData() {
+  ngOnDestroy(): void {
+    this.subscribeSearch.unsubscribe();
+    this.subscribeFilters.unsubscribe();
+  }
+
+  public getChurchesAvaliations(): void {
+    let params = new HttpParams()
+      .set('pageSize', String(this.pageSize))
+      .set('pageNumber', String(this.pageNumber + 1))
+      .set('search', this.textSearch)
+      .set('month', this.filterMonth.toString())
+      .set('year', this.filterYear.toString());
+
+    params = this.appendParamsArray(params, 'statusIds', this.statusSelecteds);
+    params = this.appendParamsArray(params, 'districtsIds', this.districtsSelecteds);
+    params = this.appendParamsArray(params, 'analystsIds', this.analystsSelecteds);
+
     const { id } = auth.getCurrentUnit();
-    return this.avaliationService
-      .getChurchesAvaliations(id)
+    this.churchesAvaliations$ = this.avaliationService
+      .getChurchesAvaliations(id, params)
       .pipe(
-        skipWhile(data => !data),
-        map(data => data.sort((a, b) => Number(a.code) - Number(b.code))),
-        tap((data: ChurchAvaliationDataInterface[]) => {
-          this.churchesAvaliations = data;
-          this.churchesAvaliationsCache = data;
-          this.search();
-        })
+        tap(data => this.length = data.rowCount)
       );
   }
 
-  private sortByCode(a, b) {
-    if (a.code < b.code) {
-      return -1;
-    } else if (a.code > b.code) {
-      return 1;
+  private appendParamsArray(params: HttpParams, name: string, array: Array<any>): HttpParams {
+    if (array.length > 0) {
+      array.forEach(s => {
+        params = params.append(name, String(s));
+      });
     }
-    return 0;
+    return params;
+  }
+
+  private getPreferenceFilter() {
+    const filter = localStorage.getItem('treasury.avaliation.filter.open');
+    if (filter !== null && filter !== undefined) {
+      JSON.parse(filter) ? this.panelFilter.open() : this.panelFilter.close();
+      this.filter = JSON.parse(filter) ? true : false;
+    }
+  }
+
+  private restartPaginator(): void {
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+  }
+
+  public paginatorEvent(event: PageEvent): PageEvent {
+    this.pageSize = event.pageSize;
+    this.pageNumber = event.pageIndex;
+    this.getChurchesAvaliations();
+    return event;
+  }
+
+  private loadFilter(): Observable<any> {
+    return this.loadDistricts()
+      .pipe(
+        // switchMap(() => this.loadResponsibles()),
+        switchMap(() => this.loadAnalysts()),
+        tap(() => this.loadStatus())
+      );
+  }
+
+  public getData() {
+    // const { id } = auth.getCurrentUnit();
+    // return this.avaliationService
+    //   .getChurchesAvaliations(id);
+    // .pipe(
+    //   skipWhile(data => !data),
+    //   map(data => data.sort((a, b) => Number(a.code) - Number(b.code))),
+    //   tap((data: ChurchAvaliationDataInterface[]) => {
+    //     this.churchesAvaliations = data;
+    //     this.churchesAvaliationsCache = data;
+    //     this.search();
+    //   })
+    // );
   }
 
   public getChurchScoreInTheYear(churchAvaliations: ChurchAvaliationDataInterface): number {
@@ -124,24 +205,32 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     this.statusData.push(new Filter(1, 'Aguardando'));
     this.statusData.push(new Filter(2, 'Avaliando'));
     this.statusData.push(new Filter(3, 'Finalizado'));
-
   }
 
   private loadDistricts() {
-    this.districtService
-      .getDistrictsList(auth.getCurrentUnit().id).subscribe((data: DistrictListInterface[]) => {
-        data.forEach(d => {
-          this.districtsData.push(new Filter(Number(d.id), d.name));
-        });
-      });
+    this.districtsData = [];
+    const { id } = auth.getCurrentUnit();
+    return this.districtService
+      .getDistrictsList(id)
+      .pipe(
+        tap((data: DistrictListInterface[]) => {
+          data.forEach(d => {
+            this.districtsData.push(new Filter(Number(d.id), d.name));
+          });
+        })
+      );
   }
 
   private loadAnalysts() {
-    this.oldService.loadAnalysts(auth.getCurrentUnit().id).subscribe((data: User[]) => {
-      data.forEach(d => {
-        this.analystsData.push(new Filter(Number(d.id), d.name));
-      });
-    });
+    this.analystsData = [];
+    const { id } = auth.getCurrentUnit();
+    return this.districtService.getAnalystDistrictList(id)
+      .pipe(
+        tap((data: User[]) => {
+          data.forEach(d => {
+            this.analystsData.push(new Filter(Number(d.id), d.name));
+          });
+        }));
   }
 
   private loadPeriods() {
@@ -151,12 +240,6 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     }
     this.filterMonth = new Date().getMonth() + 1;
     this.filterYear = new Date().getFullYear();
-  }
-
-  /* Usados pelo component */
-
-  public onScroll() {
-    this.showList += 80;
   }
 
   private mensal(churchAvaliation: ChurchAvaliationDataInterface) {
@@ -195,55 +278,57 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     }
   }
 
-  public expandPanel(matExpansionPanel): void {
-    matExpansionPanel.toggle();
+  public expandPanel(): void {
+    this.filter = !this.filter;
+    this.filter ? this.panelFilter.open() : this.panelFilter.close();
+    localStorage.setItem('treasury.avaliation.filter.open', JSON.stringify(this.filter));
   }
 
-  public search() {
-    let avaliationsFiltered = this.churchesAvaliationsCache.filter(o =>
-      utils.buildSearchRegex(this.filterText).test(o.name.toUpperCase()) ||
-      utils.buildSearchRegex(this.filterText).test(o.code.toUpperCase())
-    );
-    avaliationsFiltered = this.filterService.filter(avaliationsFiltered, 'district.id', this.districtsSelecteds);
-    avaliationsFiltered = this.filterService.filter(avaliationsFiltered, 'district.analyst.id', this.analystsSelecteds);
-    const filtered2 = [];
-    avaliationsFiltered.forEach(f => {
-      const avaliation = f.avaliations
-        .find(a => a.isMensal && this.getYear(a.date) === this.filterYear && this.getMonth(a.date) === this.filterMonth);
-      if (this.filterStatusInAvaliation(avaliation)) {
-        filtered2.push(f);
-      }
-    });
-    this.churchesAvaliations = filtered2;
-  }
+  // public search() {
+  //   let avaliationsFiltered = this.churchesAvaliationsCache.filter(o =>
+  //     utils.buildSearchRegex(this.filterText).test(o.name.toUpperCase()) ||
+  //     utils.buildSearchRegex(this.filterText).test(o.code.toUpperCase())
+  //   );
+  //   avaliationsFiltered = this.filterService.filter(avaliationsFiltered, 'district.id', this.districtsSelecteds);
+  //   avaliationsFiltered = this.filterService.filter(avaliationsFiltered, 'district.analyst.id', this.analystsSelecteds);
+  //   const filtered2 = [];
+  //   avaliationsFiltered.forEach(f => {
+  //     const avaliation = f.avaliations
+  //       .find(a => a.isMensal && this.getYear(a.date) === this.filterYear && this.getMonth(a.date) === this.filterMonth);
+  //     if (this.filterStatusInAvaliation(avaliation)) {
+  //       filtered2.push(f);
+  //     }
+  //   });
+  //   this.churchesAvaliations = filtered2;
+  // }
 
-  private filterStatusInAvaliation(avaliation): boolean {
-    if (this.statusSelecteds.length === 0) {
-      return true;
-    }
-    if (this.statusSelecteds
-      .some(s => s === 1) && avaliation === undefined) { // Avaliação não existe, mas tá sendo pesquisado por aguardando
-      return true;
-    }
-    if (avaliation === undefined) { // Avaliação não existe
-      return false;
-    }
-    return this.statusSelecteds.some(s => s === avaliation.status);
-  }
+  // private filterStatusInAvaliation(avaliation): boolean {
+  //   if (this.statusSelecteds.length === 0) {
+  //     return true;
+  //   }
+  //   if (this.statusSelecteds
+  //     .some(s => s === 1) && avaliation === undefined) { // Avaliação não existe, mas tá sendo pesquisado por aguardando
+  //     return true;
+  //   }
+  //   if (avaliation === undefined) { // Avaliação não existe
+  //     return false;
+  //   }
+  //   return this.statusSelecteds.some(s => s === avaliation.status);
+  // }
 
-  private filterDistrictsInAvaliation(churchAvaliations): boolean {
-    if (this.districtsSelecteds.length === 0) {
-      return true;
-    }
-    return this.districtsSelecteds.some(s => s === churchAvaliations.district.id);
-  }
+  // private filterDistrictsInAvaliation(churchAvaliations): boolean {
+  //   if (this.districtsSelecteds.length === 0) {
+  //     return true;
+  //   }
+  //   return this.districtsSelecteds.some(s => s === churchAvaliations.district.id);
+  // }
 
-  private filterAnalystsInAvaliation(churchAvaliations): boolean {
-    if (this.analystsSelecteds.length === 0) {
-      return true;
-    }
-    return this.analystsSelecteds.some(s => s === churchAvaliations.district.analyst.id);
-  }
+  // private filterAnalystsInAvaliation(churchAvaliations): boolean {
+  //   if (this.analystsSelecteds.length === 0) {
+  //     return true;
+  //   }
+  //   return this.analystsSelecteds.some(s => s === churchAvaliations.district.analyst.id);
+  // }
 
   public getStatusString(churchAvaliation: ChurchAvaliationDataInterface): string {
     const avaliation = churchAvaliation
@@ -349,7 +434,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
       .finalizeMonthlyAvaliation(avaliation.id, { userId: id })
       .pipe(
         skipWhile(res => !res),
-        switchMap(() => this.getData()),
+        tap(() => this.getChurchesAvaliations()),
         tap(() =>
           this.snackBar.open(`Avaliação de ${this.filterMonth}/${this.filterYear} finalizada!`, 'OK', { duration: 3000 }),
           error => {
@@ -367,7 +452,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
       .finalizeAnnualAvaliation(avaliation.id, { userId: id })
       .pipe(
         skipWhile(res => !res),
-        switchMap(() => this.getData()),
+        tap(() => this.getChurchesAvaliations()),
         tap(() =>
           this.snackBar.open(`Avaliação de ${this.filterYear} finalizada!`, 'OK', { duration: 3000 }),
           error => {
@@ -418,19 +503,27 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     return avaliation.status !== EAvaliationStatus.Finished;
   }
 
-  checkStatus(status) {
+  public checkStatus(status) {
     this.statusSelecteds = this.filterService.check(status, this.statusSelecteds);
-    this.search();
+    this.restartPaginator();
+    this.getChurchesAvaliations();
   }
 
-  checkDistrict(district) {
+  public checkDistrict(district) {
     this.districtsSelecteds = this.filterService.check(district, this.districtsSelecteds);
-    this.search();
+    this.restartPaginator();
+    this.getChurchesAvaliations();
   }
 
-  checkAnalyst(analyst) {
+  public checkAnalyst(analyst) {
     this.analystsSelecteds = this.filterService.check(analyst, this.analystsSelecteds);
-    this.search();
+    this.restartPaginator();
+    this.getChurchesAvaliations();
+  }
+
+  public selectPeriod(): void {
+    this.restartPaginator();
+    this.getChurchesAvaliations();
   }
 
   public generateDetailReport(avaliation): void {

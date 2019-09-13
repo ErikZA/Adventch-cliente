@@ -80,12 +80,10 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
     this.scholarshipService.getStudentSeries()
       .pipe(
         tap(series => {
-          console.log('getSeries', series);
           this.studentSeries = series;
         }),
         switchMap(() => this.scholarshipService.getAllDocuments()),
         tap(documents => {
-          console.log('documentos', documents),
           this.allDocuments = documents;
           this.processDocuments = this.allDocuments.filter(d => (d.idUnit === auth.getCurrentUnit().id || d.idUnit === 0) && d.removed === false);
         }),
@@ -106,10 +104,7 @@ export class ProcessFormComponent implements OnInit, OnDestroy {
         tap(process => this.setValuesToFormDocuments(process.documents)),
         delay(100)
       ).subscribe(() => {
-        console.log('Documentos', this.processDocuments);
         this.loading = false;
-
-
       });
   }
 

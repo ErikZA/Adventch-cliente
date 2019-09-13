@@ -1,5 +1,5 @@
 <app-form-sidenav-right (closeEmitted)="closeSidenav()" #sidenavRight></app-form-sidenav-right>
-<app-layout-data>
+<!-- <app-layout-data>
     <div space-type="header">
         <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
             <h2 class="title" *ngIf="!searchButton">Lista de Avaliações</h2>
@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <mat-accordion class="example-headers-align" #matExpansionPanel>
+        <mat-accordion class="example-headers-align">
             <mat-expansion-panel #matExpansionPanel hideToggle="true">
                 <div fxLayout.gt-xs="row wrap" fxLayout="column">
                     <app-filter flex="35" [data]="statusData" placeholder="Status" (filterEmitted)="checkStatus($event)"></app-filter>
@@ -47,7 +47,6 @@
                     <mat-list flex="35" class="margin-search" style="padding: 0 8px;">
                         <mat-form-field>
                             <mat-select placeholder="Ano" (change)="search()" [(ngModel)]="filterYear">
-                                <!-- <mat-option value="0">TODOS</mat-option> -->
                                 <mat-option *ngFor="let year of years" [value]="year">
                                     {{ year }}
                                 </mat-option>
@@ -157,4 +156,198 @@
             </div>
         </mat-accordion>
     </div>
-</app-layout-data>
+</app-layout-data> -->
+<div fxLayout="column">
+  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
+    <h2 class="title" *ngIf="!searchButton">Lista de Observações</h2>
+    <mat-form-field *ngIf="searchButton" appearance="outline" fxFlex>
+      <mat-label>Pesquisar...</mat-label>
+      <input matInput placeholder="Código da igreja, nome da igreja ou nome do distrito"
+        (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)"
+        [value]="search$ | async">
+    </mat-form-field>
+    <div class="buttons" fxLayoutAlign="start center">
+      <button mat-icon-button (click)="searchButton = !searchButton">
+        <mat-icon aria-label="Pesquisar Avaliação">search</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Filtragem avançada" (click)="expandPanel()">
+        <mat-icon aria-label="Filtragem avançada">filter_list</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Relatório geral" (click)="generateGeneralReport()"
+        [disabled]="disableReport()">
+        <mat-icon>print</mat-icon>
+      </button>
+    </div>
+  </div>
+  <mat-accordion class="example-headers-align">
+    <mat-expansion-panel #matExpansionPanel hideToggle="true">
+      <div fxLayout.gt-xs="row wrap" fxLayout="column">
+        <app-filter flex="35" [data]="statusData" placeholder="Status" (filterEmitted)="checkStatus($event)">
+        </app-filter>
+        <app-filter flex="35" [data]="districtsData" placeholder="Distritos" (filterEmitted)="checkDistrict($event)">
+        </app-filter>
+        <app-filter flex="35" [data]="analystsData" placeholder="Analista" (filterEmitted)="checkAnalyst($event)">
+        </app-filter>
+        <div flex="35" class="margin-search" style="padding: 4px 5px;">
+          <mat-form-field>
+            <mat-select placeholder="Mês" (selectionChange)="selectPeriod()" [(ngModel)]="filterMonth">
+              <mat-option [value]="1">Janeiro</mat-option>
+              <mat-option [value]="2">Fevereiro</mat-option>
+              <mat-option [value]="3">Março</mat-option>
+              <mat-option [value]="4">Abril</mat-option>
+              <mat-option [value]="5">Maio</mat-option>
+              <mat-option [value]="6">Junho</mat-option>
+              <mat-option [value]="7">Julho</mat-option>
+              <mat-option [value]="8">Agosto</mat-option>
+              <mat-option [value]="9">Setembro</mat-option>
+              <mat-option [value]="10">Outubro</mat-option>
+              <mat-option [value]="11">Novembro</mat-option>
+              <mat-option [value]="12">Dezembro</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div flex="35" class="margin-search" style="padding: 4px 5px;">
+          <mat-form-field>
+            <mat-select placeholder="Ano" (selectionChange)="selectPeriod()" [(ngModel)]="filterYear">
+              <mat-option *ngFor="let year of years" [value]="year">
+                {{ year }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <mat-divider></mat-divider>
+  <div class="header">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex fxFlex.gt-sm="10%">Código</span>
+          <span fxFlex.gt-sm="30%" fxFlex>Igreja</span>
+          <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Distrito</span>
+          <span fxFlex fxFlex.gt-sm="20%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <mat-divider></mat-divider>
+  </div>
+</div>
+<ng-container *ngIf="(churchesAvaliations$ | async) as churchesAvaliations">
+  <ng-container *ngIf="length === 0; else dataList">
+    <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+      <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+      </mat-icon>
+      <p style="color: gray">Nenhuma avaliação de igreja encontrada</p>
+    </div>
+  </ng-container>
+  <ng-template #dataList>
+    <mat-accordion>
+      <div *ngFor="let churchAvaliations of churchesAvaliations.results">
+        <mat-expansion-panel hideToggle>
+          <mat-expansion-panel-header>
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="10%">
+                {{ churchAvaliations.code }}
+              </p>
+              <p fxFlex.gt-sm="30%">
+                {{ churchAvaliations.name }}
+              </p>
+              <p fxFlex.gt-sm="22%" fxHide.lt-sm>
+                <ng-container
+                  *ngIf="churchAvaliations.districtName !== undefined && churchAvaliations.districtName !== null; else notDisctrict">
+                  <span>{{ churchAvaliations.districtName }}</span>
+                </ng-container>
+                <ng-template #notDisctrict>
+                  <div class="text-italic text-bold">Não Informado</div>
+                </ng-template>
+              </p>
+              <p fxFlex fxFlexAlign="center" fxFlex.gt-sm="22%" fxHide.lt-sm>
+                {{ churchAvaliations.avaliationScore.total }} / {{ churchAvaliations.avaliationScore.totalRating }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getStatusColor(churchAvaliations)">{{ getStatusString(churchAvaliations) }}</div>
+              </div>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div fxLayout="column" class="description">
+            <div fxLayout="row">
+              <p class="title-description">Informações da Avaliação</p>
+              <button mat-icon-button color="basic" (click)="generateDetailReport(churchAvaliations)"
+                matTooltip="Imprimir processo">
+                <mat-icon>print</mat-icon>
+              </button>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Distrito:</span>
+              <ng-container
+                *ngIf="churchAvaliations.districtName !== undefined && churchAvaliations.districtName !== null; else notDisctrictInfo">
+                <span>{{ churchAvaliations.districtName }}</span>
+              </ng-container>
+              <ng-template #notDisctrictInfo>
+                <div class="text-italic text-bold">Não Informado</div>
+              </ng-template>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Pontuação:</span>
+              <span>{{ churchAvaliations.avaliationScore.total }} /
+                {{ churchAvaliations.avaliationScore.totalRating }}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="5px" fxHide.gt-xs>
+              <span class="text-bold">Status:</span>
+              <div
+                style="white-space: line-wrap; text-align: center; color: white; font-size: 11px;  padding: 5px; width: 100px;"
+                [className]="getStatusColor(churchAvaliations)">{{ getStatusString(churchAvaliations) }}</div>
+            </div>
+            <div fxLayout="column" fxFlexOffset="10px">
+              <span class="text-bold">Tesoureiro(s)</span>
+              <ng-container
+                *ngIf="churchAvaliations.treasurers !== undefined && churchAvaliations.treasurers !== null && churchAvaliations.treasurers.length !== 0; else notTreasurers">
+                <div fxLayout="column wrap" *ngFor="let treasurer of churchAvaliations.treasurers">
+                  <span>{{ treasurer.name }}</span>
+                </div>
+              </ng-container>
+              <ng-template #notTreasurers>
+                <div>Nenhum Tesoureiro</div>
+              </ng-template>
+            </div>
+          </div>
+          <mat-action-row fxLayout="row" fxLayout.xs="column"
+            *ngIf="checkHasAvaliation(churchAvaliations) || churchAvaliations.avaliations.lenght !== 0">
+            <ng-template [Feature]="52">
+              <button mat-button *ngIf="checkFinalizedMonthly(churchAvaliations)"
+                style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal"
+                (click)="mensal(churchAvaliations)">AVALIAR</button>
+            </ng-template>
+            <ng-template [Feature]="53">
+              <button mat-button *ngIf="checkFinalizedYearly(churchAvaliations)"
+                style="background-color: #314762!important; color: #fff" matTooltip="Avaliação anual"
+                (click)="anual(churchAvaliations)">ANUAL</button>
+            </ng-template>
+            <ng-template [Feature]="54">
+              <button mat-button *ngIf="checkHasAvaliation(churchAvaliations)"
+                style="background-color: #0D2139!important; color: #fff" matTooltip="Finalizar avaliação da igreja"
+                [matMenuTriggerFor]="menu">
+                <mat-icon>list</mat-icon>FINALIZAR
+              </button>
+              <mat-menu #menu="matMenu">
+                <button *ngIf="checkHasAvaliationMonthly(churchAvaliations)"
+                  (click)="finalizeMonthlyEvaluation(churchAvaliations)" mat-menu-item
+                  matTooltip="Finaliza apenas a avaliação mensal da igreja">Avaliação Mensal</button>
+                <button *ngIf="checkHasAvaliationYearly(churchAvaliations)"
+                  (click)="finalizeAnnualEvaluation(churchAvaliations)" mat-menu-item
+                  matTooltip="Finaliza apenas a avaliação anual da igreja">Avaliação Anual</button>
+              </mat-menu>
+            </ng-template>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </div>
+    </mat-accordion>
+    <mat-paginator [length]="length" [pageSize]="pageSize" [pageIndex]="pageNumber" [pageSizeOptions]="[10, 15, 25, 50]"
+      [showFirstLastButtons]="true" (page)="pageEvent = paginatorEvent($event)">
+    </mat-paginator>
+  </ng-template>
+</ng-container>

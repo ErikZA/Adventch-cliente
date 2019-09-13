@@ -35,7 +35,6 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   protected componentUrl = 'tesouraria/observacoes';
 
   searchButton = false;
-  showList = 40;
   search$ = new Subject<string>();
 
   observations: Observation[] = [];
@@ -98,15 +97,6 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       .pipe(
         tap(() => this.getPreferenceFilter())
       ).subscribe();
-    // this.loadStatus();
-    // this.sub1 = this
-    //   .getData()
-    //   .pipe(
-    //     switchMap(() => this.search$)
-    //   ).subscribe(search => {
-    //     this.filterText = search;
-    //     this.search();
-    //   });
   }
 
   ngOnDestroy(): void {

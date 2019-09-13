@@ -7,6 +7,7 @@ import { DistrictDataInterface } from '../../interfaces/district/district-data-i
 import { DistrictListInterface } from '../../interfaces/district/district-list-interface';
 import { DistrictEditInterface } from '../../interfaces/district/district-edit-interface';
 import { UserDistrictListInterface } from '../../interfaces/district/user-district-list-interface';
+import { AnalystDistrictListInterface } from '../../interfaces/district/analyst-district-list-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,12 @@ export class DistrictService {
   constructor(
     private http: HttpClient
   ) { }
+
+  public getAnalystDistrictList(unitId: number): Observable<AnalystDistrictListInterface[]> {
+    const url = `${this.baseURl}analyst/unit/${unitId}`;
+    return this.http
+      .get<AnalystDistrictListInterface[]>(url);
+  }
 
   public getDistrictsList(unitId: number): Observable<DistrictListInterface[]> {
     const url = `${this.baseURl}unit/${unitId}/list`;
