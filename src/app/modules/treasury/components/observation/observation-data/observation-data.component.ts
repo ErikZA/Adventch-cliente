@@ -8,11 +8,9 @@ import { ReportService } from '../../../../../shared/report.service';
 import { Observation } from '../../../models/observation';
 import { auth } from '../../../../../auth/auth';
 import { TreasuryService } from '../../../treasury.service';
-import { utils } from '../../../../../shared/utils';
 import { AbstractSidenavContainer } from '../../../../../shared/abstract-sidenav-container.component';
 import { Filter } from '../../../../../core/components/filter/Filter.model';
 import { FilterService } from '../../../../../core/components/filter/service/filter.service';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 import * as moment from 'moment';
 import { tap, switchMap, skipWhile, debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -84,6 +82,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   ) { super(router); }
 
   ngOnInit() {
+    this.getPreferenceFilter();
     this.statusSelecteds = this.statusDefault;
     this.getObservations();
     this.subscribeSearch = this.search$.pipe(
@@ -94,9 +93,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
       tap(() => this.restartPaginator())
     ).subscribe();
     this.subscribeFilters = this.loadFilter()
-      .pipe(
-        tap(() => this.getPreferenceFilter())
-      ).subscribe();
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -139,9 +136,13 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
 
   private getPreferenceFilter() {
     const filter = localStorage.getItem('treasury.observation.filter.open');
+    const pageSize = localStorage.getItem('treasury.observation.page.pageSize');
     if (filter !== null && filter !== undefined) {
       JSON.parse(filter) ? this.panelFilter.open() : this.panelFilter.close();
       this.filter = JSON.parse(filter) ? true : false;
+    }
+    if (pageSize !== null && pageSize !== undefined) {
+      this.pageSize = JSON.parse(pageSize);
     }
   }
 
@@ -158,6 +159,7 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
   public paginatorEvent(event: PageEvent): PageEvent {
     this.pageSize = event.pageSize;
     this.pageNumber = event.pageIndex;
+    localStorage.setItem('treasury.observation.page.pageSize', JSON.stringify(event.pageSize));
     this.getObservations();
     return event;
   }

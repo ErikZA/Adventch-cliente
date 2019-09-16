@@ -68,6 +68,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   ) { super(router); }
 
   ngOnInit() {
+    this.getPreferenceFilter();
     this.getTreasurers();
     this.subscribeSearch = this.search$.pipe(
       tap(search => this.textSearch = search),
@@ -77,9 +78,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       tap(() => this.restartPaginator())
     ).subscribe();
     this.subscribeFilters = this.loadFilter()
-      .pipe(
-        tap(() => this.getPreferenceFilter())
-      ).subscribe();
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -92,9 +91,13 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
 
   private getPreferenceFilter() {
     const filter = localStorage.getItem('treasury.treasurer.filter.open');
+    const pageSize = localStorage.getItem('treasury.treasurer.page.pageSize');
     if (filter !== null && filter !== undefined) {
       JSON.parse(filter) ? this.panelFilter.open() : this.panelFilter.close();
       this.filter = JSON.parse(filter) ? true : false;
+    }
+    if (pageSize !== null && pageSize !== undefined) {
+      this.pageSize = JSON.parse(pageSize);
     }
   }
 
@@ -142,6 +145,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   public paginatorEvent(event: PageEvent): PageEvent {
     this.pageSize = event.pageSize;
     this.pageNumber = event.pageIndex;
+    localStorage.setItem('treasury.treasurer.page.pageSize', JSON.stringify(event.pageSize));
     this.getTreasurers();
     return event;
   }

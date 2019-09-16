@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar, MatPaginator, MatExpansionPanel, PageEvent, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material';
+import { MatSnackBar, MatPaginator, MatExpansionPanel, PageEvent } from '@angular/material';
 
 import { Subject, Subscription, Observable } from 'rxjs';
 
@@ -75,11 +75,11 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     private snackBar: MatSnackBar,
     private avaliationService: AvaliationService,
     private filterService: FilterService,
-    private districtService: DistrictService,
-    private oldService: TreasuryService // TO DO: refatorar os métodos usados neste serviço para o FilterService
+    private districtService: DistrictService
   ) { super(router); }
 
   ngOnInit() {
+    this.getPreferenceFilter();
     this.loadPeriods();
     this.getChurchesAvaliations();
     this.subscribeSearch = this.search$.pipe(
@@ -90,17 +90,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
       tap(() => this.restartPaginator())
     ).subscribe();
     this.subscribeFilters = this.loadFilter()
-      .pipe(
-        tap(() => this.getPreferenceFilter())
-      ).subscribe();
-    // this.loadFilters();
-    // this.sub1 = this.getData()
-    //   .pipe(
-    //     switchMap(() => this.search$)
-    //   ).subscribe(search => {
-    //     this.filterText = search;
-    //     this.search();
-    //   });
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -139,9 +129,13 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
 
   private getPreferenceFilter() {
     const filter = localStorage.getItem('treasury.avaliation.filter.open');
+    const pageSize = localStorage.getItem('treasury.avaliation.page.pageSize');
     if (filter !== null && filter !== undefined) {
       JSON.parse(filter) ? this.panelFilter.open() : this.panelFilter.close();
       this.filter = JSON.parse(filter) ? true : false;
+    }
+    if (pageSize !== null && pageSize !== undefined) {
+      this.pageSize = JSON.parse(pageSize);
     }
   }
 
@@ -154,6 +148,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   public paginatorEvent(event: PageEvent): PageEvent {
     this.pageSize = event.pageSize;
     this.pageNumber = event.pageIndex;
+    localStorage.setItem('treasury.avaliation.page.pageSize', JSON.stringify(event.pageSize));
     this.getChurchesAvaliations();
     return event;
   }
@@ -161,25 +156,9 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   private loadFilter(): Observable<any> {
     return this.loadDistricts()
       .pipe(
-        // switchMap(() => this.loadResponsibles()),
         switchMap(() => this.loadAnalysts()),
         tap(() => this.loadStatus())
       );
-  }
-
-  public getData() {
-    // const { id } = auth.getCurrentUnit();
-    // return this.avaliationService
-    //   .getChurchesAvaliations(id);
-    // .pipe(
-    //   skipWhile(data => !data),
-    //   map(data => data.sort((a, b) => Number(a.code) - Number(b.code))),
-    //   tap((data: ChurchAvaliationDataInterface[]) => {
-    //     this.churchesAvaliations = data;
-    //     this.churchesAvaliationsCache = data;
-    //     this.search();
-    //   })
-    // );
   }
 
   public getChurchScoreInTheYear(churchAvaliations: ChurchAvaliationDataInterface): number {
@@ -192,13 +171,6 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     const avaliations = churchAvaliations.avaliations.filter(a => this.getYear(a.date) === this.filterYear);
     return !avaliations ? 0 : avaliations
       .reduce((a, b) => a + b.totalRating, 0);
-  }
-
-  private loadFilters() {
-    this.loadStatus();
-    this.loadDistricts();
-    this.loadAnalysts();
-    this.loadPeriods();
   }
 
   private loadStatus() {
@@ -242,7 +214,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     this.filterYear = new Date().getFullYear();
   }
 
-  private mensal(churchAvaliation: ChurchAvaliationDataInterface) {
+  public mensal(churchAvaliation: ChurchAvaliationDataInterface) {
     const avaliation = churchAvaliation
       .avaliations
       .find(a => a.isMensal && this.getYear(a.date) === this.filterYear && this.getMonth(a.date) === this.filterMonth);
@@ -260,7 +232,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     }
   }
 
-  private anual(churchAvaliation: ChurchAvaliationDataInterface) {
+  public anual(churchAvaliation: ChurchAvaliationDataInterface) {
     const avaliation = churchAvaliation
       .avaliations
       .find(a => !a.isMensal && this.getYear(a.date) === this.filterYear);
@@ -283,52 +255,6 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     this.filter ? this.panelFilter.open() : this.panelFilter.close();
     localStorage.setItem('treasury.avaliation.filter.open', JSON.stringify(this.filter));
   }
-
-  // public search() {
-  //   let avaliationsFiltered = this.churchesAvaliationsCache.filter(o =>
-  //     utils.buildSearchRegex(this.filterText).test(o.name.toUpperCase()) ||
-  //     utils.buildSearchRegex(this.filterText).test(o.code.toUpperCase())
-  //   );
-  //   avaliationsFiltered = this.filterService.filter(avaliationsFiltered, 'district.id', this.districtsSelecteds);
-  //   avaliationsFiltered = this.filterService.filter(avaliationsFiltered, 'district.analyst.id', this.analystsSelecteds);
-  //   const filtered2 = [];
-  //   avaliationsFiltered.forEach(f => {
-  //     const avaliation = f.avaliations
-  //       .find(a => a.isMensal && this.getYear(a.date) === this.filterYear && this.getMonth(a.date) === this.filterMonth);
-  //     if (this.filterStatusInAvaliation(avaliation)) {
-  //       filtered2.push(f);
-  //     }
-  //   });
-  //   this.churchesAvaliations = filtered2;
-  // }
-
-  // private filterStatusInAvaliation(avaliation): boolean {
-  //   if (this.statusSelecteds.length === 0) {
-  //     return true;
-  //   }
-  //   if (this.statusSelecteds
-  //     .some(s => s === 1) && avaliation === undefined) { // Avaliação não existe, mas tá sendo pesquisado por aguardando
-  //     return true;
-  //   }
-  //   if (avaliation === undefined) { // Avaliação não existe
-  //     return false;
-  //   }
-  //   return this.statusSelecteds.some(s => s === avaliation.status);
-  // }
-
-  // private filterDistrictsInAvaliation(churchAvaliations): boolean {
-  //   if (this.districtsSelecteds.length === 0) {
-  //     return true;
-  //   }
-  //   return this.districtsSelecteds.some(s => s === churchAvaliations.district.id);
-  // }
-
-  // private filterAnalystsInAvaliation(churchAvaliations): boolean {
-  //   if (this.analystsSelecteds.length === 0) {
-  //     return true;
-  //   }
-  //   return this.analystsSelecteds.some(s => s === churchAvaliations.district.analyst.id);
-  // }
 
   public getStatusString(churchAvaliation: ChurchAvaliationDataInterface): string {
     const avaliation = churchAvaliation
