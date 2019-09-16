@@ -51,14 +51,14 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initForm();
     this.sub1 = this.route.data
-    .pipe(
-      skipWhile(({ feature }) => !feature),
-      tap(({ feature }) => this.type = feature),
-      switchMap(() => this.getDatasOfAvaliation()),
-      switchMap(() => this.loadChurchForm()),
-      switchMap(() => this.loadDataEdit()),
-      delay(500)
-    ).subscribe(() => this.loading = false);
+      .pipe(
+        skipWhile(({ feature }) => !feature),
+        tap(({ feature }) => this.type = feature),
+        switchMap(() => this.getDatasOfAvaliation()),
+        switchMap(() => this.loadChurchForm()),
+        switchMap(() => this.loadDataEdit()),
+        delay(500)
+      ).subscribe(() => this.loading = false);
     this.avaliationDataComponent.openSidenav();
   }
 
@@ -144,10 +144,10 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
     if (this.formAvaliation.valid) {
       this.sendData()
         .pipe(
-          switchMap(() => this.avaliationDataComponent.getData()),
+          tap(() => this.avaliationDataComponent.getChurchesAvaliations()),
           tap(() => this.avaliationDataComponent.closeSidenav()),
           tap(() => this.snackBar.open('Avaliação salva com sucesso!', 'OK', { duration: 3000 }),
-          () => this.snackBar.open('Ocorreu um erro ao salvar a avaliação', 'OK', { duration: 3000 })),
+            () => this.snackBar.open('Ocorreu um erro ao salvar a avaliação', 'OK', { duration: 3000 })),
           tap(() => this.isSending = false)
         ).subscribe();
     }
@@ -155,8 +155,8 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
 
   private sendData(): Observable<boolean> {
     return this.checkIsEdit() ?
-        this.sendDataUpdate() :
-        this.sendDataNew();
+      this.sendDataUpdate() :
+      this.sendDataNew();
   }
 
   private sendDataUpdate(): Observable<boolean> {
