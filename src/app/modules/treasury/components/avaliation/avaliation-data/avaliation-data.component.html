@@ -1,7 +1,7 @@
 <app-form-sidenav-right (closeEmitted)="closeSidenav()" #sidenavRight></app-form-sidenav-right>
 <div fxLayout="column">
   <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
-    <h2 class="title" *ngIf="!searchButton">Lista de Observações</h2>
+    <h2 class="title" *ngIf="!searchButton">Lista de Avaliações</h2>
     <mat-form-field *ngIf="searchButton" appearance="outline" fxFlex>
       <mat-label>Pesquisar...</mat-label>
       <input matInput placeholder="Código da igreja, nome da igreja ou nome do distrito"
@@ -106,7 +106,7 @@
                 </ng-template>
               </p>
               <p fxFlex fxFlexAlign="center" fxFlex.gt-sm="22%" fxHide.lt-sm>
-                {{ churchAvaliations.avaliationScore.total }} / {{ churchAvaliations.avaliationScore.totalRating }}
+                {{ getAvaliationsScore(churchAvaliations.avaliationScore) }}
               </p>
               <div fxFlex.gt-sm="10%" fxHide.lt-sm>
                 <div
@@ -135,8 +135,7 @@
             </div>
             <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
               <span class="text-bold">Pontuação:</span>
-              <span>{{ churchAvaliations.avaliationScore.total }} /
-                {{ churchAvaliations.avaliationScore.totalRating }}</span>
+              <span>{{ getAvaliationsScore(churchAvaliations.avaliationScore) }}</span>
             </div>
             <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="5px" fxHide.gt-xs>
               <span class="text-bold">Status:</span>

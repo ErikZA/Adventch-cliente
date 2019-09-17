@@ -8,6 +8,6 @@ export interface ChurchAvaliationDataInterface {
   name: string;
   district: DistrictChurchAvaliationDataInterface;
   avaliations: AvaliationDataInterface[];
-  avaliationScore: AvaliationScoreDataInterface;
+  avaliationScore: AvaliationScoreDataInterface[];
   treasurers: TreasurerAvaliationDataInterface[];
 }

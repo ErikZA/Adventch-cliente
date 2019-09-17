@@ -21,6 +21,7 @@ import { DistrictListInterface } from '../../../interfaces/district/district-lis
 import { DistrictService } from '../../districts/district.service';
 import { PagedResult } from '../../../../../shared/paged-result';
 import { HttpParams } from '@angular/common/http';
+import { AvaliationScoreDataInterface } from '../../../interfaces/avaliation/avaliantion-score-data-interface';
 
 @Component({
   selector: 'app-avaliation-data',
@@ -51,10 +52,6 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   districts: DistrictListInterface[] = new Array<DistrictListInterface>();
   analysts: User[] = new Array<User>();
   years: number[] = new Array<number>();
-
-  churchesAvaliations: ChurchAvaliationDataInterface[];
-  churchesAvaliationsCache: ChurchAvaliationDataInterface[];
-  sub1: Subscription;
 
   private subscribeSearch: Subscription;
   private subscribeFilters: Subscription;
@@ -212,6 +209,12 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     }
     this.filterMonth = new Date().getMonth() + 1;
     this.filterYear = new Date().getFullYear();
+  }
+
+  public getAvaliationsScore(avaliationsScore: AvaliationScoreDataInterface[]) {
+    const total = avaliationsScore.reduce((sum, current) => sum + current.total, 0);
+    const totalRating = avaliationsScore.reduce((sum, current) => sum + current.totalRating, 0);
+    return `${total} / ${totalRating}`;
   }
 
   public mensal(churchAvaliation: ChurchAvaliationDataInterface) {
