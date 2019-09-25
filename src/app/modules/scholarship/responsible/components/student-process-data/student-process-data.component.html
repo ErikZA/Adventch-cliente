@@ -58,7 +58,7 @@
                                     </div>
                                     <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
                                         <span class="text-bold" class="details-title">
-                    <b>Status:</b> {{ process.status.name }}</span>
+                    <b>Status:</b> {{ process.status.name === 'Vaga Liberada 50%' ?  process.status.name.substring(0,13) : process.status.name === 'Vaga Liberada 100%' ?  process.status.name.substring(0,13) : process.status.name }}</span>
                                     </div>
                                     <div fxLayout="row" fxHide.gt-xs fxLayoutAlign="space-between">
                                         <span *ngIf="process.dateRegistration != null && (process.status.id == 5 || process.status.id ==6)" class="text-bold" class="details-title">
