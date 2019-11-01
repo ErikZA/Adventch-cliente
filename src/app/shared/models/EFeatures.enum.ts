@@ -1,5 +1,7 @@
 // Acrescentar número igual a tabela
 export enum EFeatures {
+  Orcamentos = 20,
+
   Tesoureiro = 38,
   DashboardBolsas = 39,
   Processos = 40,

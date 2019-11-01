@@ -1,0 +1,81 @@
+<app-form-sidenav-right (closeEmitted)="closeSidenav()" #sidenavRight></app-form-sidenav-right>
+<app-layout-data>
+  <div space-type="header" fxLayout="column">
+    <div class="margin-top-small" fxLayout="row" fxLayoutAlign="space-between">
+      <h2 class="title" *ngIf="!searchButton">Lista de Orçamentos</h2>
+      <mat-form-field *ngIf="searchButton" fxFlex>
+        <input matInput placeholder="Pesquisar..." (keyup)="search$.next($event.target.value)" (blur)="search$.next($event.target.value)">
+      </mat-form-field>
+      <div class="buttons" fxLayoutAlign="start center">
+        <button mat-icon-button (click)="searchButton = !searchButton">
+          <mat-icon aria-label="Pesquisar Tesoureiro">search</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div fxLayout="row wrap" style="flex-wrap: wrap;">
+      <mat-form-field fxLayout="column" class="margin-search" style="padding: 8px; width: 300px">
+        <mat-select placeholder="Ano" [(ngModel)]="yearFilter">
+          <mat-option *ngFor="let year of years" [value]="year" (click)="searchYear(year)">{{ year }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxLayout="column" class="margin-search" style="padding: 8px; width: 300px">
+        <mat-select placeholder="Responsável">
+          <mat-option value="-1" (click)="searchResponsible(undefined)">[TODOS]</mat-option>
+          <mat-option *ngFor="let responsible of responsiblesData" [value]="responsible.id" (click)="searchResponsible(responsible)">{{ responsible.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxLayout="column" class="margin-search" style="padding: 8px; width: 300px">
+        <mat-select placeholder="Agrupador">
+          <mat-option value="-1" (click)="searchParent(undefined)">[TODOS]</mat-option>
+          <mat-option *ngFor="let department of departmentsData" [value]="department.id" (click)="searchParent(department)">{{ department.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+  </div>
+
+  <div space-type="container" fxLayout="column" class="container" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+    (scrolled)="onScroll()" [scrollWindow]="false">
+    <div *ngFor="let budget of budgets; index as i">
+      <div *ngIf="i < showList">
+        <mat-card class="clearfix">
+          <div>
+            <mat-card-title>
+              {{ budget.departmentName }}
+              <!-- <mat-icon class="edit" (click)="edit(budget);">edit</mat-icon> -->
+            </mat-card-title>
+            <mat-card-subtitle>
+              <b>Responsáveis:</b> {{ budget.departmentResponsibles }}<br/>
+              <b>Agrupador:</b> {{ budget.parent }}
+            </mat-card-subtitle>
+            <mat-chip-list>
+              <span *ngIf="budget?.avaliable < 0" class="badge">
+                <mat-icon class="badge">error</mat-icon>
+                <p class="badge" style="margin: 3px">
+                  <b> Saldo negativo</b>
+                </p>
+              </span>
+            </mat-chip-list>
+          </div>
+
+          <div fxLayout="column">
+            <div>
+              <app-budget-data-values label="Saldo do ano anterior" [value]="budget?.previous"></app-budget-data-values>
+              <app-budget-data-values label="Orçamento anual" [value]="budget?.value"></app-budget-data-values>
+              <app-budget-data-values label="Entradas" [value]="budget?.incoming"></app-budget-data-values>
+              <app-budget-data-values label="Saídas" [value]="budget?.outflows"></app-budget-data-values>
+              <app-budget-data-values label="Saldo disponível" [value]="budget?.avaliable"></app-budget-data-values>
+              <app-budget-data-values label="Realizado" [value]="budget?.realized"></app-budget-data-values>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+      <br/>
+    </div>
+  </div>
+</app-layout-data>
+<!-- <ng-template [Feature]="20" permission="1">
+  <button mat-fab color="accent" class="mat-fab-right" routerLink="./novo" (click)="openSidenav()">
+    <mat-icon aria-label="Adicionar">add</mat-icon>
+  </button>
+</ng-template> -->

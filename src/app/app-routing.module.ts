@@ -46,6 +46,15 @@ const appRoutes: Routes = [
       },
     },
     {
+      path: 'pagamentos',
+      loadChildren: '../app/modules/payment/payment.module#PaymentModule',
+      canActivate: [AuthMainGuard, ModuleGuard],
+      canLoad: [AuthMainGuard, ModuleGuard],
+      data: {
+        module: EModules.Payment
+      },
+    },
+    {
       path: 'administracao',
       canActivate: [AuthMainGuard, AdminGuard],
       canLoad: [AuthMainGuard, AdminGuard],
