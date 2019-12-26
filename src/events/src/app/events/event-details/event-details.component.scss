@@ -1,0 +1,19 @@
+.container {
+  border: 2px solid #f3f3f3;
+  border-radius: 5px;
+}
+
+.image-event {
+  display: block;
+  width: 100%;
+}
+
+.info-event {
+  background-color: #fdfffe;
+}
+
+@media only screen and (min-width: 1080px) {
+  .image-event {
+    height: 360px;
+  }
+}
