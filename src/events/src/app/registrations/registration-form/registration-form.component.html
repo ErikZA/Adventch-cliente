@@ -1,51 +1,13 @@
 <mat-horizontal-stepper linear #stepper>
-  <mat-step [stepControl]="identificationForm" errorMessage="Name is required.">
-    <form fxLayout="row" fxLayoutAlign="center center" [formGroup]="identificationForm">
-      <ng-template matStepLabel>Identificação</ng-template>
-      <div class="mat-elevation-z1 form" fxLayout="column" fxFlex="80%" fxFlexAlign="center">
-        <div fxFlex fxFlexAlign="center">
-          <h2 class="title">Identificação</h2>
-        </div>
-        <mat-form-field appearance="outline">
-          <mat-label>Nome Completo</mat-label>
-          <input matInput formControlName="name" required>
-          <mat-error *ngIf="identificationForm.get('name').hasError('required')">O nome completo é obrigatório
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>CPF</mat-label>
-          <input matInput formControlName="cpf" placeholder="000.000.000-00" required>
-          <mat-error *ngIf="identificationForm.get('cpf').hasError('required')">O CPF é obrigatório
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput formControlName="email" placeholder="email@email.com" required>
-          <mat-error *ngIf="identificationForm.get('email').hasError('required')">O email é obrigatório
-          </mat-error>
-          <mat-error *ngIf="identificationForm.get('email').hasError('email')">Formato do email inválido. Digite um
-            email válido.
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Celular</mat-label>
-          <input matInput formControlName="phone" placeholder="(00) 0 0000 0000">
-        </mat-form-field>
-        <button mat-stroked-button matStepperNext fxFlex color="primary">Continuar</button>
-      </div>
-    </form>
+  <mat-step [stepControl]="identificationForm" errorMessage="Campos de identificação são obrigatórios.">
+    <ng-template matStepLabel>Identificação</ng-template>
+    <!-- <app-registration-information-form fxFlex [identificationForm]="identificationForm">
+    </app-registration-information-form> -->
+    <app-registration-payment-form fxFlex [paymentForm]="paymentForm"></app-registration-payment-form>
   </mat-step>
-  <mat-step [stepControl]="secondFormGroup" errorMessage="Address is required.">
-    <form [formGroup]="secondFormGroup">
-      <ng-template matStepLabel>Adicionais</ng-template>
-      <mat-form-field>
-        <input matInput placeholder="Address" formControlName="secondCtrl" required>
-      </mat-form-field>
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
-      </div>
-    </form>
+  <mat-step [stepControl]="paymentForm" errorMessage="Address is required.">
+    <ng-template matStepLabel>Adicionais</ng-template>
+
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Pagamento</ng-template>

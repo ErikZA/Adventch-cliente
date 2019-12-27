@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class RegistrationFormComponent implements OnInit {
   identificationForm: FormGroup;
-  secondFormGroup: FormGroup;
+  paymentForm: FormGroup;
   constructor(
     private formBuilder: FormBuilder
   ) { }
@@ -20,7 +20,7 @@ export class RegistrationFormComponent implements OnInit {
       cpf: [null, Validators.required],
       phone: [null],
     });
-    this.secondFormGroup = this.formBuilder.group({
+    this.paymentForm = this.formBuilder.group({
       secondCtrl: ['', Validators.required]
     });
   }
