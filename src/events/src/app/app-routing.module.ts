@@ -3,10 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 
 
 const routes: Routes = [
-  // { path: '', redirectTo: '', pathMatch: 'full' },
+  { path: '', redirectTo: 'r', pathMatch: 'full' },
   {
-    path: '',
+    path: 'e',
     loadChildren: './events/events.module#EventsModule',
+  },
+  {
+    path: 'r',
+    loadChildren: './registrations/registrations.module#RegistrationsModule',
   },
 ];
 
