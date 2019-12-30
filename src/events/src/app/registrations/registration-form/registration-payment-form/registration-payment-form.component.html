@@ -10,11 +10,11 @@
 </form> -->
 
 <form fxLayout="row" fxLayoutAlign="center center" [formGroup]="paymentForm">
-  <div class="mat-elevation-z1 form" fxLayout="column" fxFlex="80%" fxFlexAlign="center">
+  <div class="mat-elevation-z1 form" fxLayout="column" fxFlex="80%" fxFlexAlign="center" fxLayoutGap="10px">
     <div fxFlex fxFlexAlign="center">
       <h2 class="title">Pagamento</h2>
     </div>
-    <mat-button-toggle-group [vertical]="true" #group="matButtonToggleGroup">
+    <!-- <mat-button-toggle-group [vertical]="true" #group="matButtonToggleGroup">
       <mat-button-toggle value="billet" aria-label="Payment Billet">
         Boleto
         <mat-icon>receipt</mat-icon>
@@ -23,33 +23,38 @@
         Cartão de Crédito
         <mat-icon>credit_card</mat-icon>
       </mat-button-toggle>
-    </mat-button-toggle-group>
+    </mat-button-toggle-group> -->
     <!-- <div class="example-selected-value">Selected value: {{group.value}}</div> -->
-    <!-- <mat-form-field appearance="outline">
-      <mat-label>Nome Completo</mat-label>
+    <app-registration-payment-card [card]="paymentForm.value"></app-registration-payment-card>
+    <mat-form-field appearance="outline">
+      <mat-label>Número do Cartão</mat-label>
+      <input matInput formControlName="number" placeholder="0000 0000 0000 0000" mask="0000 0000 0000 0000" required>
+      <mat-error *ngIf="paymentForm.get('number').hasError('required')">O número do cartão é obrigatório
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Nome do Titular</mat-label>
       <input matInput formControlName="name" required>
-      <mat-error *ngIf="paymentForm.get('name').hasError('required')">O nome completo é obrigatório
+      <mat-error *ngIf="paymentForm.get('name').hasError('required')">O nome do titular do cartão é obrigatório
       </mat-error>
     </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>CPF</mat-label>
-      <input matInput formControlName="cpf" placeholder="000.000.000-00" required>
-      <mat-error *ngIf="paymentForm.get('cpf').hasError('required')">O CPF é obrigatório
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Email</mat-label>
-      <input matInput formControlName="email" placeholder="email@email.com" required>
-      <mat-error *ngIf="paymentForm.get('email').hasError('required')">O email é obrigatório
-      </mat-error>
-      <mat-error *ngIf="paymentForm.get('email').hasError('email')">Formato do email inválido. Digite um
-        email válido.
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Celular</mat-label>
-      <input matInput formControlName="phone" placeholder="(00) 0 0000 0000">
-    </mat-form-field>
-    <button mat-stroked-button matStepperNext fxFlex color="primary">Continuar</button> -->
+    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+      <mat-form-field appearance="outline">
+        <mat-label>CCV</mat-label>
+        <input matInput type="number" formControlName="ccv" placeholder="000" required>
+      </mat-form-field>
+      <!-- <mat-form-field appearance="outline">
+        <mat-label>Data de Validade</mat-label>
+        <input matInput [matDatepicker]="dp" placeholder="00/0000" formControlName="expirationDate">
+        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker #dp startView="multi-year" (yearSelected)="chosenYearHandler($event)"
+          (monthSelected)="chosenMonthHandler($event, dp)" panelClass="example-month-picker">
+        </mat-datepicker>
+      </mat-form-field> -->
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-between">
+      <button mat-button matStepperPrevious>Anterior</button>
+      <button mat-stroked-button matStepperNext color="primary">Continuar</button>
+    </div>
   </div>
 </form>

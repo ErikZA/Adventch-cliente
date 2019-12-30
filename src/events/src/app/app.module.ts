@@ -6,11 +6,12 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { MatOptionModule, MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { HttpClient } from '@angular/common/http';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -18,6 +19,8 @@ export function createTranslateLoader(http: HttpClient) {
 }
 
 registerLocaleData(localePt, 'pt-BR');
+
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
 
 
 @NgModule({
@@ -34,6 +37,7 @@ registerLocaleData(localePt, 'pt-BR');
       },
       isolate: true,
     }),
+    NgxMaskModule.forRoot(options),
     AppRoutingModule,
     BrowserAnimationsModule
   ],

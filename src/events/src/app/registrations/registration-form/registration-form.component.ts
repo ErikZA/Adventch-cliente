@@ -21,7 +21,10 @@ export class RegistrationFormComponent implements OnInit {
       phone: [null],
     });
     this.paymentForm = this.formBuilder.group({
-      secondCtrl: ['', Validators.required]
+      number: [null, Validators.required],
+      expirationDate: [null, Validators.required],
+      name: [null, Validators.required],
+      ccv: [null, Validators.required]
     });
   }
 

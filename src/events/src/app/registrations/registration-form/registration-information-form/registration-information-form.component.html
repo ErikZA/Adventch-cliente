@@ -11,7 +11,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>CPF</mat-label>
-      <input matInput formControlName="cpf" placeholder="000.000.000-00" required>
+      <input matInput formControlName="cpf" placeholder="000.000.000-00" mask="000.000.000-00" required>
       <mat-error *ngIf="identificationForm.get('cpf').hasError('required')">O CPF é obrigatório
       </mat-error>
     </mat-form-field>
@@ -26,7 +26,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Celular</mat-label>
-      <input matInput formControlName="phone" placeholder="(00) 0 0000 0000">
+      <input matInput formControlName="phone" placeholder="(00) 0 0000 0000" mask="(00) 0 0000 0000">
     </mat-form-field>
     <button mat-stroked-button matStepperNext fxFlex color="primary">Continuar</button>
   </div>

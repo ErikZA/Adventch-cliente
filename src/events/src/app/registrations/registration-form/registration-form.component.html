@@ -1,16 +1,15 @@
 <mat-horizontal-stepper linear #stepper>
   <mat-step [stepControl]="identificationForm" errorMessage="Campos de identificação são obrigatórios.">
     <ng-template matStepLabel>Identificação</ng-template>
-    <!-- <app-registration-information-form fxFlex [identificationForm]="identificationForm">
-    </app-registration-information-form> -->
-    <app-registration-payment-form fxFlex [paymentForm]="paymentForm"></app-registration-payment-form>
+    <app-registration-information-form fxFlex [identificationForm]="identificationForm">
+    </app-registration-information-form>
   </mat-step>
   <mat-step [stepControl]="paymentForm" errorMessage="Address is required.">
-    <ng-template matStepLabel>Adicionais</ng-template>
-
+    <ng-template matStepLabel>Pagamento</ng-template>
+    <app-registration-payment-form fxFlex [paymentForm]="paymentForm"></app-registration-payment-form>
   </mat-step>
   <mat-step>
-    <ng-template matStepLabel>Pagamento</ng-template>
+    <ng-template matStepLabel>Adicionais</ng-template>
     You are now done.
     <div>
       <button mat-button matStepperPrevious>Back</button>
