@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { EPaymentTypes } from 'src/app/shared/enums/payment-types.enum';
 
 @Component({
   selector: 'app-registration-form',
@@ -14,6 +15,10 @@ export class RegistrationFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.initForm();
+  }
+
+  private initForm(): void {
     this.identificationForm = this.formBuilder.group({
       name: [null, Validators.required],
       email: [null, [Validators.required, Validators.email]],
@@ -26,6 +31,14 @@ export class RegistrationFormComponent implements OnInit {
       name: [null, Validators.required],
       ccv: [null, Validators.required]
     });
+  }
+
+  public registerSubscription(paymentType: EPaymentTypes): void {
+    const subscription = {
+      ...this.identificationForm.value,
+      paymentType,
+      cardInformations: this.paymentForm.value,
+    };
   }
 
 }

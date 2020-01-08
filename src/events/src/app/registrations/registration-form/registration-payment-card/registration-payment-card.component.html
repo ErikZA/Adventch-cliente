@@ -3,7 +3,7 @@
     <div class="card card--front">
       <div class="card__number">
         <ng-container *ngIf="card?.number; else numberExample">
-          {{ card.number }}
+          {{ card.number | mask: '0000 0000 0000 0000' }}
         </ng-container>
         <ng-template #numberExample>
           0000 0000 0000 0000

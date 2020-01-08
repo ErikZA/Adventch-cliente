@@ -4,16 +4,17 @@
     <app-registration-information-form fxFlex [identificationForm]="identificationForm">
     </app-registration-information-form>
   </mat-step>
-  <mat-step [stepControl]="paymentForm" errorMessage="Address is required.">
+  <mat-step [stepControl]="paymentForm" errorMessage="Campos de pagamento são obrigatórios." optional>
     <ng-template matStepLabel>Pagamento</ng-template>
-    <app-registration-payment-form fxFlex [paymentForm]="paymentForm"></app-registration-payment-form>
+    <app-registration-payment-form fxFlex [paymentForm]="paymentForm" (registerEmitted)="registerSubscription($event)">
+    </app-registration-payment-form>
   </mat-step>
-  <mat-step>
+  <!-- <mat-step>
     <ng-template matStepLabel>Adicionais</ng-template>
     You are now done.
     <div>
       <button mat-button matStepperPrevious>Back</button>
       <button mat-button (click)="stepper.reset()">Reset</button>
     </div>
-  </mat-step>
+  </mat-step> -->
 </mat-horizontal-stepper>
