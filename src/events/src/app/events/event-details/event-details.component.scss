@@ -1,0 +1,36 @@
+.container {
+  border: 2px solid #f3f3f3;
+  border-radius: 5px;
+}
+
+.image-event {
+  display: block;
+  border-radius: 2px;
+  width: 100%;
+}
+
+.info-event {
+  background-color: #fdfffe;
+}
+
+.date-event {
+  color: gray;
+  margin: 40px 0 0 40px;
+}
+
+.name-event h1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #232425;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 21px;
+  letter-spacing: .5px;
+  word-break: break-word;
+}
+
+@media only screen and (min-width: 1080px) {
+  .image-event {
+    height: 360px;
+  }
+}
