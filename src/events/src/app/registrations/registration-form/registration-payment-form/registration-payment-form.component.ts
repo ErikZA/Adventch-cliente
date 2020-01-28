@@ -10,6 +10,7 @@ import { EPaymentTypes } from 'src/app/shared/enums/payment-types.enum';
 export class RegistrationPaymentFormComponent implements OnInit {
   @Input() paymentForm: FormGroup;
   @Output() registerEmitted: EventEmitter<EPaymentTypes> = new EventEmitter();
+
   constructor() { }
 
   ngOnInit() {

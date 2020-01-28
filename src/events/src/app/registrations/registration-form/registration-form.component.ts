@@ -28,8 +28,8 @@ export class RegistrationFormComponent implements OnInit {
     this.paymentForm = this.formBuilder.group({
       number: [null, Validators.required],
       expirationDate: [null, Validators.required],
-      name: [null, Validators.required],
-      ccv: [null, Validators.required]
+      name: [null, [Validators.required]],
+      ccv: [null, Validators.compose]
     });
   }
 
