@@ -1,0 +1,54 @@
+<form [formGroup]="formProduct">
+    <div class="uk-flex uk-flex-row">
+
+        <div class="uk-flex-1" *ngIf="products?.length > 0">
+
+            <div class="uk-flex uk-flex-row uk-flex-middle uk-margin-small-bottom"
+                *ngFor="let p of products; let i = index">
+                <div class="uk-margin-small-right">
+                    <mat-icon>local_offer</mat-icon>
+                </div>
+                <div class="uk-flex-1">
+                    <span class="uk-text-small uk-display-block">Nome</span>
+                    <span> {{ p.name }} </span>
+                </div>
+                <div class="uk-flex-1">
+                    <span class="uk-text-small uk-display-block">Valor</span>
+                    <span> {{ p.value | currency:"BRL" }} </span>
+                </div>
+                <div>
+                    <a uk-icon="trash" (click)="remove(index)"></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="uk-flex-1 uk-flex uk-flex-row uk-flex-middle uk-flex-center mgsWarning"
+            *ngIf="products?.length == 0">
+            <span>Você não tem produtos cadastrado</span>
+        </div>
+
+        <div class="products-actions">
+
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Nome do Produto</mat-label>
+                <input type="text" matInput placeholder="Nome do Produto" formControlName="name">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Valor do produto</mat-label>
+                <input type="number" matInput min="1" placeholder="Valor do produto" formControlName="value">
+            </mat-form-field>
+
+            <button mat-flat-button color="primary" [disabled]="!formProduct.valid" (click)="add()">
+                Criar Produto
+            </button>
+
+        </div>
+    </div>
+
+    <button mat-flat-button matStepperNext color="primary" (click)="finish()">
+        Finalizar
+    </button>
+
+</form>

@@ -1,0 +1,42 @@
+<form [formGroup]="formInformation">
+
+    <mat-form-field appearance="outline" class="uk-width-1">
+        <mat-label>Titulo do evento</mat-label>
+        <input type="text" matInput placeholder="Nome" formControlName="name">
+    </mat-form-field>
+
+    <div class="uk-flex uk-flex-row">
+
+        <mat-form-field appearance="outline">
+            <mat-label>Número de inscrições disponíveis</mat-label>
+            <input type="number" matInput min="1" placeholder="Número de inscrições disponíveis"
+                formControlName="numberSubscriptions">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="uk-flex-1 uk-margin-small-right uk-margin-small-left">
+            <mat-label>Data de Inscrição</mat-label>
+            <input matInput placeholder="Data de Inscrição" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1"
+                [selectMode]="'range'" formControlName="registrationDate">
+            <owl-date-time #dt1></owl-date-time>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="uk-flex-1">
+            <mat-label>Data do Evento</mat-label>
+            <input matInput placeholder="Data do Evento" [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2"
+                [selectMode]="'range'" formControlName="realizationDate">
+            <owl-date-time #dt2></owl-date-time>
+        </mat-form-field>
+
+    </div>
+
+    <mat-form-field appearance="outline" class="uk-width-1">
+        <mat-label>Descrição do evento</mat-label>
+        <input type="text" matInput placeholder="Descrição" formControlName="description">
+    </mat-form-field>
+
+    <button mat-flat-button matStepperNext color="primary" (click)="sendInformation()"
+        [disabled]="!formInformation.valid">
+        Continuar
+    </button>
+
+</form>

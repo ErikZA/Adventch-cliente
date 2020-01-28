@@ -1,0 +1,37 @@
+.snack-bar {
+    color: #fff;
+    border: 0;
+    font-size: 14px;
+  
+    .message {
+      .material-icons.mat-icon {
+        color: #fff;
+        margin-right: 10px;
+      }
+    }
+  
+    .mat-button-wrapper {
+      color: #fff;
+    }
+}
+  
+.mat-snack-bar-container {
+    padding: 5px 10px;
+}
+  
+.success {
+    background-color: #43a047;
+}
+  
+.error-snackbar {
+    background-color: #d32f2f;
+}
+  
+.warning-snackbar {
+    background-color: #ffa000;
+}
+  
+.info-snackbar {
+    background-color: #1976d2;
+}
+  

@@ -1,0 +1,52 @@
+<div class="container">
+
+    <div class="uk-margin-medium-top">
+        <span class="title">Meus Eventos</span>
+    </div>
+
+    <div class="uk-padding-large uk-text-center" *ngIf="events?.length === 0 || events === null">
+        <span> Você não tem eventos criado. </span>
+    </div>
+
+    <div class="uk-margin-medium-top" *ngIf="events?.length > 0">
+
+        <div class="uk-flex uk-flex-row uk-margin-small-bottom">
+            <span class="uk-flex-1 uk-text-uppercase uk-text-small uk-text-muted">Nome</span>
+            <span class="column-small uk-text-uppercase uk-text-small uk-text-muted">Data inicio</span>
+            <span class="column-small uk-text-uppercase uk-text-small uk-text-muted">Data termino</span>
+            <span class="column-small uk-text-uppercase uk-text-small uk-text-muted">Valor a vista</span>
+            <span class="column-small uk-text-uppercase uk-text-small uk-text-muted">Valor a prazo</span>
+            <span class="column-small"></span>
+        </div>
+
+        <div class="uk-flex uk-flex-row uk-margin-small-bottom" *ngFor="let event of events">
+            <span class="uk-flex-1"> {{ event.name }} </span>
+            <span class="column-small"> {{ event?.realizationDate[0] | date:"dd/MM/yyyy HH:mm" }} </span>
+            <span class="column-small"> {{ event?.realizationDate[1] | date:"dd/MM/yyyy HH:mm" }} </span>
+            <span class="column-small"> {{ event?.cashValue | currency:"BRL" }} </span>
+            <span class="column-small"> {{ event?.installmentAmount | currency:"BRL" }} </span>
+            <span class="column-small">
+                <a uk-icon="link" uk-tooltip="Link"></a>
+                <a uk-icon="pencil" uk-tooltip="Editar" class="uk-margin-small-left uk-margin-small-right"></a>
+                <a uk-icon="trash" uk-tooltip="Apagar"></a>
+            </span>
+
+            <!-- <span class="uk-text-large"> {{ event.name }} </span>
+            <span class="uk-display-block uk-text-small">
+                {{ event?.adrees?.street }}, {{ event?.adrees?.number }} -
+                {{ event?.adrees?.neighborhood }} -
+                {{ event?.adrees?.city }} - {{ event?.adrees?.cep }}
+            </span>
+            <span class="uk-display-block"> {{ event?.cashValue | currency:"BRL" }} </span>
+
+            <div class="uk-flex uk-flex-row uk-flex-center uk-margin-small-top">
+                <button mat-flat-button class="uk-text-primary">Link</button>
+                <button mat-flat-button class="uk-text-success">Editar</button>
+                <button mat-flat-button class="uk-text-danger">Excluir</button>
+            </div> -->
+
+        </div>
+
+    </div>
+
+</div>
