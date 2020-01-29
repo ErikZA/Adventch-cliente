@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import CouponModel from './Coupon.model';
-
 @Component({
-  selector: 'app-subscription',
-  templateUrl: './subscription.component.html',
-  styleUrls: ['./subscription.component.scss']
+  selector: 'app-event-register',
+  templateUrl: './event-register.component.html',
+  styleUrls: ['./event-register.component.scss']
 })
-export class SubscriptionComponent implements OnInit {
+export class EventRegisterComponent implements OnInit {
 
   public isLinear = true;
 

@@ -1,8 +1,8 @@
-import CouponModel from '../modules/subscriptions/subscription/Coupon.model'
 import { Products } from '../models/event.model'
 
 import { coupons } from '../actions/coupon.action';
 import { produts } from '../actions/products.action';
+import CouponModel from '../modules/events/event-register/Coupon.model';
 
 export const AddInformation = (name: string, description: string, numberSubscriptions: number, realizationDate: string, registrationDate: string) => {
     return {

@@ -2,14 +2,17 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
-import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
-import { SubscriptionComponent } from './subscription/subscription.component';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { InformationFormComponent } from './subscription/information-form/information-form.component';
-import { PaymentsFormComponent } from './subscription/payments-form/payments-form.component';
-import { ProductsFormComponent } from './subscription/products-form/products-form.component';
-import { CouponsFormComponent } from './subscription/coupons-form/coupons-form.component';
-import { AdressFormComponent } from './subscription/adress-form/adress-form.component';
+// Modules
+import { SharedModule } from '../../shared/shared.module';
+import { EventRegisterRoutingModule } from './event-register-routing.module';
+
+// Components
+import { EventRegisterComponent } from './event-register/event-register.component';
+import { InformationFormComponent } from './event-register/information-form/information-form.component';
+import { PaymentsFormComponent } from './event-register/payments-form/payments-form.component';
+import { ProductsFormComponent } from './event-register/products-form/products-form.component';
+import { CouponsFormComponent } from './event-register/coupons-form/coupons-form.component';
+import { AdressFormComponent } from './event-register/adress-form/adress-form.component';
 
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 
@@ -25,7 +28,7 @@ export const MY_MOMENT_FORMATS = {
 
 @NgModule({
   declarations: [
-    SubscriptionComponent,
+    EventRegisterComponent,
     InformationFormComponent,
     PaymentsFormComponent,
     ProductsFormComponent,
@@ -35,9 +38,8 @@ export const MY_MOMENT_FORMATS = {
   imports: [
     CommonModule,
     SharedModule,
-    SubscriptionsRoutingModule,
+    EventRegisterRoutingModule,
     HttpClientModule,
-
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
   ],
@@ -45,4 +47,4 @@ export const MY_MOMENT_FORMATS = {
     { provide: OWL_DATE_TIME_LOCALE, useValue: MY_MOMENT_FORMATS },
   ]
 })
-export class SubscriptionsModule { }
+export class EventRegisterModule { }

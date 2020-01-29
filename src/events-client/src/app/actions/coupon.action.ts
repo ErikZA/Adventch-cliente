@@ -1,5 +1,6 @@
 import { ActionTypes } from '../models/action.enum';
-import CouponModel from '../modules/subscriptions/subscription/Coupon.model';
+import CouponModel from '../modules/events/event-register/Coupon.model';
+
 import { Action } from '@ngrx/store';
 
 export const coupons: CouponModel[] = [];

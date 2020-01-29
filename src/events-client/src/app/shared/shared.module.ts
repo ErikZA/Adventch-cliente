@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { NgxMaskModule } from 'ngx-mask';
 
 // Modules
 import { MaterialModule } from './material.module';
@@ -26,15 +27,16 @@ import { SnackBarService } from './snack-bar/snack-bar.service';
     ReactiveFormsModule,
     FlexLayoutModule,
     MaterialModule,
+    NgxMaskModule
   ],
   exports: [
     NavbarComponent,
     SnackBarComponent,
-    // modules Generics
     FlexLayoutModule,
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxMaskModule
   ],
   entryComponents: [SnackBarComponent],
   providers: [SnackBarService]

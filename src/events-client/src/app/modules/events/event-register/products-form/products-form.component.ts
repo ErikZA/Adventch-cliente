@@ -1,11 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+
 import { RemoveProcuts, AddProducts, ReadProducts } from 'src/app/actions/products.action';
 import { Products, ProductsReducer } from 'src/app/models/event.model';
 import { RegisterEvent } from 'src/app/actions/newEvent.action';
-import { Router } from '@angular/router';
 import { SnackBarService } from 'src/app/shared/snack-bar/snack-bar.service';
 
 @Component({
@@ -48,7 +49,7 @@ export class ProductsFormComponent implements OnInit {
   finish() {
     this.store.dispatch(RegisterEvent());
     this.router.navigate(['/eventos'])
-    this.snackbar.open("home", "Eventos criado com success", 2000, "success")
+    this.snackbar.open("check_circle", "Eventos criado com success", 2000, "success")
   }
 
 }

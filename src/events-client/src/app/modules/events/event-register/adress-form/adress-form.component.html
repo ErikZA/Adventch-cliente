@@ -4,7 +4,8 @@
 
         <mat-form-field appearance="outline" class="uk-flex-1">
             <mat-label>CEP</mat-label>
-            <input type="number" (blur)="getCep()" minlength="8" matInput placeholder="CEP" formControlName="cep"  mask="00000 - 000">
+            <input type="text" (blur)="getCep()" minlength="8" matInput placeholder="CEP" formControlName="cep"
+                mask="00000-000">
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="uk-flex-1 uk-margin-small-right uk-margin-small-left">
@@ -16,7 +17,6 @@
             <mat-label>Cidade</mat-label>
             <input type="text" matInput placeholder="Cidade" formControlName="city">
         </mat-form-field>
-
 
     </div>
 

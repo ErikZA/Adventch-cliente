@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SubscriptionComponent } from './subscription/subscription.component';
 
+import { EventRegisterComponent } from './event-register/event-register.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: SubscriptionComponent,
+    component: EventRegisterComponent,
   },
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class SubscriptionsRoutingModule { }
+export class EventRegisterRoutingModule { }

@@ -1,6 +1,6 @@
 import { ActionTypes } from '../models/action.enum';
 import { ActionModel } from '../models/action.model';
-import { CouponReducer } from '../modules/subscriptions/subscription/Coupon.model';
+import { CouponReducer } from '../modules/events/event-register/Coupon.model';
 
 export const coupon = new CouponReducer();
 

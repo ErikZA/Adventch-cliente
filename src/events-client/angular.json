@@ -57,8 +57,8 @@
                   "maximumError": "10mb"
                 }
               ],
-              "baseHref": "/events/",
-              "deployUrl": "/events/"
+              "baseHref": "/",
+              "deployUrl": "/"
             }
           }
         },
@@ -67,8 +67,8 @@
           "options": {
             "port": 4302,
             "browserTarget": "events:build",
-            "baseHref": "/events/",
-            "deployUrl": "/events/"
+            "baseHref": "/",
+            "deployUrl": "/"
           },
           "configurations": {
             "production": {
