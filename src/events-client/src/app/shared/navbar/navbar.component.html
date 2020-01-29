@@ -5,15 +5,16 @@
             <div class="uk-flex-1">Logo</div>
             <div class="uk-flex uk-flex-row">
 
-                <button mat-button class="uk-margin-small-right" routerLink="/eventos" routerLinkActive="actived">
+                <button mat-button class="uk-margin-small-right item-hidden" routerLink="/eventos"
+                    routerLinkActive="actived">
                     Meus Eventos
                 </button>
 
-                <button mat-button routerLink="/inscricoes" routerLinkActive="actived">
+                <button mat-button class="item-hidden" routerLink="/inscricoes" routerLinkActive="actived">
                     Novo Evento
                 </button>
 
-                <button mat-button routerLink="/configuracoes" routerLinkActive="actived">
+                <button mat-button class="item-hidden" routerLink="/configuracoes" routerLinkActive="actived">
                     Configurações
                 </button>
 
@@ -23,7 +24,15 @@
                     <mat-icon fxHide.lt-sm>expand_more</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu" class="menu">
-                    <button mat-menu-item>
+                    <button mat-menu-item routerLink="/eventos" class="item-show">
+                        <i uk-icon="calendar" class="uk-margin-small-right"></i>
+                        <span>Meus Eventos</span>
+                    </button>
+                    <button mat-menu-item routerLink="/inscricoes" class="item-show">
+                        <i uk-icon="calendar" class="uk-margin-small-right"></i>
+                        <span>Novo Evento</span>
+                    </button>
+                    <button mat-menu-item routerLink="/configuracoes" class="item-show">
                         <i uk-icon="cog" class="uk-margin-small-right"></i>
                         <span>Configurações</span>
                     </button>
