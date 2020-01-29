@@ -26,7 +26,7 @@ export class EventRegisterComponent implements OnInit {
     this.formInformation = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
-      numberSubscriptions: ['', Validators.compose([Validators.required, Validators.min(1), Validators.minLength(1)])],
+      subscriptionLimit: ['', Validators.compose([Validators.required, Validators.min(1), Validators.minLength(1)])],
       realizationDate: ['', Validators.required],
       registrationDate: ['', Validators.required],
     });
@@ -56,7 +56,7 @@ export class EventRegisterComponent implements OnInit {
       cashValue: ['', Validators.compose([Validators.required, Validators.min(1)])],
       installmentAmount: ['', Validators.compose([Validators.required, Validators.min(1)])],
       installmentLimit: ['', Validators.compose([Validators.required, Validators.min(1)])],
-      receiptAccountId: ['', Validators.required]
+      bankAccountId: ['', Validators.required]
     })
 
   }
