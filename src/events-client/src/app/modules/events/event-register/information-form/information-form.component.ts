@@ -28,7 +28,7 @@ export class InformationFormComponent implements OnInit {
     this.store.dispatch(AddInformation(
       this.formInformation.controls["name"].value,
       this.formInformation.controls["description"].value,
-      this.formInformation.controls["numberSubscriptions"].value,
+      this.formInformation.controls["subscriptionLimit"].value,
       this.formInformation.controls["realizationDate"].value,
       this.formInformation.controls["registrationDate"].value,
     ));

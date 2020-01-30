@@ -29,7 +29,7 @@ export class PaymentsFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.filteredOptions = this.formPayments.controls["receiptAccountId"].valueChanges.pipe(
+    this.filteredOptions = this.formPayments.controls['bankAccountId'].valueChanges.pipe(
       startWith(''),
       map(value => typeof value === 'string' ? value : value.name),
       map(name => name ? this._filter(name) : this.accounts.slice())
@@ -51,7 +51,7 @@ export class PaymentsFormComponent implements OnInit {
       this.formPayments.controls["cashValue"].value,
       this.formPayments.controls["installmentAmount"].value,
       this.formPayments.controls["installmentLimit"].value,
-      this.formPayments.controls["receiptAccountId"].value,
+      this.formPayments.controls["bankAccountId"].value,
     ))
   }
 
