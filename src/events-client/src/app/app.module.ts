@@ -7,7 +7,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { registerLocaleData } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import localePt from '@angular/common/locales/pt';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -20,6 +20,7 @@ import { newEvent } from './reducers/newEvent.reducer';
 import { MaterialModule } from './shared/material.module';
 import { productReducer } from './reducers/products.reducer';
 import { eventReducer } from './reducers/event.reducer';
+import { RequestInterceptor } from './shared/request-interceptor.module';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -40,6 +41,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     SharedModule,
     AppRoutingModule,
     MaterialModule,
+    HttpClientModule,
+    RequestInterceptor,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

@@ -1,23 +1,21 @@
 <form [formGroup]="formProduct">
-    <div class="uk-flex uk-flex-row">
+    <div class="contianer-input">
 
         <div class="uk-flex-1" *ngIf="products?.length > 0">
 
-            <div class="uk-flex uk-flex-row uk-flex-middle uk-margin-small-bottom"
-                *ngFor="let p of products; let i = index">
-                <div class="uk-margin-small-right">
-                    <mat-icon>local_offer</mat-icon>
-                </div>
-                <div class="uk-flex-1">
-                    <span class="uk-text-small uk-display-block">Nome</span>
-                    <span> {{ p.name }} </span>
-                </div>
-                <div class="uk-flex-1">
-                    <span class="uk-text-small uk-display-block">Valor</span>
-                    <span> {{ p.value | currency:"BRL" }} </span>
-                </div>
-                <div>
-                    <a uk-icon="trash" (click)="remove(index)"></a>
+            <div class="items" *ngFor="let p of products; let i = index">
+                <div class="uk-flex uk-flex-row uk-flex-middle">
+                    <div class="uk-flex-1">
+                        <span class="uk-text-large">
+                            {{ p.name }}
+                        </span>
+                        <span class="uk-display-block uk-text-small">
+                            Valor do produto: {{ p.value | currency:"BRL" }}
+                        </span>
+                    </div>
+                    <div>
+                        <a uk-icon="trash" (click)="remove(index)"></a>
+                    </div>
                 </div>
             </div>
 
@@ -40,9 +38,11 @@
                 <input type="number" matInput min="1" placeholder="Valor do produto" formControlName="value">
             </mat-form-field>
 
-            <button mat-flat-button color="primary" [disabled]="!formProduct.valid" (click)="add()">
-                Criar Produto
-            </button>
+            <div class="uk-text-right">
+                <button mat-flat-button color="primary" [disabled]="!formProduct.valid" (click)="add()">
+                    Criar Produto
+                </button>
+            </div>
 
         </div>
     </div>

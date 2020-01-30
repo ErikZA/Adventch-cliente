@@ -15,6 +15,7 @@ import { CouponsFormComponent } from './event-register/coupons-form/coupons-form
 import { AdressFormComponent } from './event-register/adress-form/adress-form.component';
 
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
+import { EventRegisterService } from './event-register/event-register.service';
 
 export const MY_MOMENT_FORMATS = {
   parseInput: '2 LT',
@@ -45,6 +46,7 @@ export const MY_MOMENT_FORMATS = {
   ],
   providers: [
     { provide: OWL_DATE_TIME_LOCALE, useValue: MY_MOMENT_FORMATS },
+    EventRegisterService,
   ]
 })
 export class EventRegisterModule { }

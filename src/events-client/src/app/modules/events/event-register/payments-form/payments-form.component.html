@@ -1,12 +1,12 @@
 <form [formGroup]="formPayments">
 
-    <div class="uk-flex uk-flex-row">
+    <div class="contianer-input">
         <mat-form-field appearance="outline" class="uk-flex-1">
             <mat-label>Valor à vista</mat-label>
             <input type="number" matInput min="1" placeholder="Valor á vista" formControlName="cashValue">
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="uk-flex-1 uk-margin-small-right uk-margin-small-left">
+        <mat-form-field appearance="outline" class="uk-flex-1 margin-input">
             <mat-label>Valor parcelado</mat-label>
             <input type="number" matInput min="1" placeholder="Valor parcelado" formControlName="installmentAmount">
         </mat-form-field>
@@ -23,9 +23,9 @@
         <input matInput placeholder="Conta do Banco" [matAutocomplete]="auto" formControlName="receiptAccountId">
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
             <mat-option *ngFor="let a of filteredOptions | async" [value]="a">
-                <span> {{a.name}} | </span>
-                <small> Conta: {{a.account}} |</small>
+                <small> {{a.name}} | </small>
                 <small> Agencia: {{a.agency}} </small>
+                <small> Conta: {{a.account}} |</small>
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>

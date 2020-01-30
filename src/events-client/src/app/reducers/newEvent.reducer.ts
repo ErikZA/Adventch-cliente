@@ -26,13 +26,6 @@ export function newEvent(state = event, action: ActionModel) {
             state.products = { ...action.payload }
             return state;
         case "REGISTER_EVENT":
-            const events = JSON.parse(localStorage.getItem("events"));
-            if (events === null) {
-                localStorage.setItem("events", JSON.stringify([state]))
-            } else {
-                events.push(state)
-                localStorage.setItem("events", JSON.stringify(events))
-            }
             state = new EventModel();
             return state;
         default:
