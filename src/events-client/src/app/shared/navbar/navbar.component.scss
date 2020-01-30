@@ -1,13 +1,11 @@
 .main_header{
-    width: 100%;
-    height: 60px;
+    top:0;
+    left: 0;
+    right: 0;
     background: #0C5390;
-    border-bottom: 1px solid #EEE;
     color:#FFF;
-}
-
-.menu{
-    width: 300px;
+    position: fixed;
+    z-index: 999;
 }
 
 .actived{
