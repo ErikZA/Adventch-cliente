@@ -21,6 +21,7 @@ import { MaterialModule } from './shared/material.module';
 import { productReducer } from './reducers/products.reducer';
 import { eventReducer } from './reducers/event.reducer';
 import { RequestInterceptor } from './shared/request-interceptor.module';
+import { authReducer } from './reducers/auth.reducer';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -56,7 +57,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
       coupon: couponReducer,
       newevent: newEvent,
       event: eventReducer,
-      product: productReducer
+      product: productReducer,
+      auth: authReducer,
     }),
   ],
   providers: [
