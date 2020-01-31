@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-forgot',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ForgotComponent implements OnInit {
 
-  constructor() { }
+  public formForgot: FormGroup;
+
+  constructor(
+    public fb: FormBuilder,
+  ) { }
 
   ngOnInit() {
+    this.formForgot = this.fb.group({
+      email: ['', Validators.compose([Validators.required, Validators.email])],
+    })
   }
 
 }

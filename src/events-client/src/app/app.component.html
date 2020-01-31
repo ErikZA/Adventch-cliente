@@ -1,6 +1,4 @@
-<app-navbar ></app-navbar>
-<div style="margin-top:60px;padding-top: 30px;">
+<app-navbar *ngIf="isLogin"></app-navbar>
+<div [class.container-router]="isLogin">
     <router-outlet></router-outlet>
 </div>
-<button (click)="entrar()">Login</button>
-
