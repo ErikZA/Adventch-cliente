@@ -11,10 +11,9 @@ import { ListComponent } from './list/list.component';
 const routes: Routes = [
   {
     path: '', component: SettingComponent, children: [
-      { path: 'conta', component: AccountComponent },
       { path: 'campos', component: FieldsComponent },
       { path: 'listas', component: ListComponent },
-      { path: '', redirectTo: '/configuracoes/conta', pathMatch: 'full' }
+      { path: '', redirectTo: '/configuracoes/campos', pathMatch: 'full' }
     ]
   }
 ];
