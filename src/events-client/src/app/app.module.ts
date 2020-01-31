@@ -27,6 +27,7 @@ import { authReducer } from './reducers/auth.reducer';
 import { AuthGuard } from './shared/auth/auth.guard';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AccountModule } from './modules/account/account.module';
+import { fieldReducer } from './reducers/field.reducer';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -76,6 +77,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
       event: eventReducer,
       product: productReducer,
       auth: authReducer,
+      field: fieldReducer,
     }),
   ],
   providers: [

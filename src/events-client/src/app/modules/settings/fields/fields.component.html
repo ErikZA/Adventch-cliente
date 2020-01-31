@@ -1,7 +1,27 @@
 <div class="uk-flex uk-flex-row">
 
-    <div class="uk-flex-1">
-        ola
+    <div class="uk-flex-1 uk-padding-small">
+
+        <div *ngIf="fields?.length > 0">
+            <div *ngFor="let field of fields; let i = index"
+                class="uk-flex uk-flex-row uk-flex-middle uk-margin-small-bottom">
+                <div class="uk-flex-1">
+                    <span class="uk-display-block uk-text-large"> {{ field.name }} </span>
+                </div>
+                <div class="decription-column">
+                    <span class="uk-display-block">Tipo: {{ fieldTypes[field.fieldTypeId - 1].name }} </span>
+                    <span class="uk-display-block">Obrigatorio: {{ field.isRequired ? "Sim" : "Não" }} </span>
+                </div>
+                <div class="uk-margin-small-left">
+                    <a uk-icon="trash" (click)="removeField(i)"></a>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="fields?.length === 0" class="uk-text-center alert">
+            <span class="uk-alert uk-alert-warning">Você não tem campos adicionais cadastrados</span>
+        </div>
+
     </div>
 
     <div class="fields-form">
@@ -13,21 +33,23 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="uk-width-1">
-                <mat-label>Descrição do campo</mat-label>
-                <input matInput placeholder="Placeholder" formControlName="description">                
+                <mat-label>Tipo do campo</mat-label>
+                <mat-select formControlName="fieldTypeId">
+                    <mat-option *ngFor="let fieldType of fieldTypes" [value]="fieldType.id"> {{ fieldType.name }}
+                    </mat-option>
+                </mat-select>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="uk-width-1">
-                <mat-label>Tipo do campo</mat-label>
-                <mat-select formControlName="fieldTypeId">
-                    <mat-option value="1">1</mat-option>
-                    <mat-option value="2">2</mat-option>
-                    <mat-option value="3">3</mat-option>
-                    <mat-option value="4">4</mat-option>
-                    <mat-option value="5">5</mat-option>
-                    <mat-option value="6">6</mat-option>
-                    <mat-option value="7">7</mat-option>
-                </mat-select>
+                <textarea matInput placeholder="Descrição do campo" #description maxlength="4000"
+                    formControlName="description"></textarea>
+                <mat-hint align="end">{{description.value?.length || 0}}/4000</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1" autocapitalize="true">
+                <textarea style="height: auto !important;" #guidingText maxlength="4000" matInput
+                    placeholder="Texto de Orientação" formControlName="guidingText"></textarea>
+                <mat-hint align="end">{{guidingText.value?.length || 0}}/4000</mat-hint>
             </mat-form-field>
 
             <div class="uk-margin-small-bottom">
@@ -35,7 +57,7 @@
                 <mat-slide-toggle formControlName="isRequired"></mat-slide-toggle>
             </div>
 
-            <button mat-flat-button color="primary" [disabled]="!formFields.valid">Cadastrar</button>
+            <button mat-flat-button color="primary" (click)="addField()" [disabled]="!formFields.valid">Cadastrar</button>
 
         </form>
     </div>

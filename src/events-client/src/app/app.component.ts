@@ -17,15 +17,17 @@ export class AppComponent implements OnInit {
   constructor(
     private store: Store<any>,
   ) {
-    const token = JSON.parse(localStorage.getItem("token"))
-
-    if (token !== undefined && token !== null) {
-      this.store.dispatch(IsLogin(true));
-    } else {
-      this.store.dispatch(IsLogin(false));
-    }
-
     this.auth$ = store.select('auth');
+    const token = JSON.parse(localStorage.getItem("token"))
+    localStorage.setItem("token", JSON.stringify("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2QiOjF9.xvDv5cIn1qck9Xmx9fAW3mi485FsgqRPMTxbK61ODJSByXNlPm5tfmMyj0mGHd4z3Eb4poOBdPYusMtu_1wpRqnSR_XB7xkkBydAEyZWJ40UZ75mT6_i3x1sF_OxLWK00VB2WbwCeGEQExn0rF0S_tK47UYOY6yqTFTPt6_oWQ4"))
+
+    // if (token !== undefined && token !== null) {
+    //   this.store.dispatch(IsLogin(true));
+    // } else {
+    //   this.store.dispatch(IsLogin(false));
+    // }
+    this.store.dispatch(IsLogin(true));
+
   }
 
   ngOnInit() {

@@ -9,15 +9,26 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { AccountComponent } from './account/account.component';
 import { FieldsComponent } from './fields/fields.component';
 import { ListComponent } from './list/list.component';
+import { SettingService } from './setting.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-  declarations: [SettingComponent, AccountComponent, FieldsComponent, ListComponent],
+  declarations: [
+    SettingComponent,
+    AccountComponent,
+    FieldsComponent,
+    ListComponent
+  ],
   imports: [
     CommonModule,
     SettingsRoutingModule,
     SharedModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    HttpClientModule
+  ],
+  providers: [
+    SettingService,
   ]
 })
 export class SettingsModule { }

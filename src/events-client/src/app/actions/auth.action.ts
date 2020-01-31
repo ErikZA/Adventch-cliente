@@ -1,5 +1,5 @@
 export const IsLogin = (value: boolean) => {
-
+    console.log(value);
     if (!value) {
         localStorage.clear();
     }
