@@ -26,6 +26,7 @@ import { authReducer } from './reducers/auth.reducer';
 // Services
 import { AuthGuard } from './shared/auth/auth.guard';
 import { JwtModule } from '@auth0/angular-jwt';
+import { AccountModule } from './modules/account/account.module';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -52,6 +53,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     MaterialModule,
     HttpClientModule,
     RequestInterceptor,
+    AccountModule,
     NgxMaskModule.forRoot(options),
     TranslateModule.forRoot({
       loader: {
