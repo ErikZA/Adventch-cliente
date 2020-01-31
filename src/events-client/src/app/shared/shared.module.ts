@@ -14,6 +14,7 @@ import { SnackBarComponent } from './snack-bar/snack-bar.component';
 
 // Services
 import { SnackBarService } from './snack-bar/snack-bar.service';
+import { AuthService } from './auth/auth.service';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,9 @@ import { SnackBarService } from './snack-bar/snack-bar.service';
     NgxMaskModule
   ],
   entryComponents: [SnackBarComponent],
-  providers: [SnackBarService]
+  providers: [
+    SnackBarService,
+    AuthService
+  ]
 })
 export class SharedModule { }

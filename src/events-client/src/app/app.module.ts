@@ -23,9 +23,17 @@ import { eventReducer } from './reducers/event.reducer';
 import { RequestInterceptor } from './shared/request-interceptor.module';
 import { authReducer } from './reducers/auth.reducer';
 
+// Services
+import { AuthGuard } from './shared/auth/auth.guard';
+import { JwtModule } from '@auth0/angular-jwt';
+
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
+export function tokenGetter() {
+  return JSON.parse(localStorage.getItem("token"));
 }
 
 registerLocaleData(localePt, 'pt-BR');
@@ -44,6 +52,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     MaterialModule,
     HttpClientModule,
     RequestInterceptor,
+    NgxMaskModule.forRoot(options),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -52,7 +61,13 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
       },
       isolate: true,
     }),
-    NgxMaskModule.forRoot(options),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: ['localhost:5001', 'api-store.adven.tech'],
+        blacklistedRoutes: ['viacep.com.br']
+      }
+    }),
     StoreModule.forRoot({
       coupon: couponReducer,
       newevent: newEvent,
@@ -62,6 +77,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     }),
   ],
   providers: [
+    AuthGuard,
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
   ],
   bootstrap: [AppComponent]

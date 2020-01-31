@@ -4,9 +4,19 @@ import { Routes, RouterModule } from '@angular/router';
 
 // Components
 import { SettingComponent } from './setting/setting.component';
+import { AccountComponent } from './account/account.component';
+import { FieldsComponent } from './fields/fields.component';
+import { ListComponent } from './list/list.component';
 
 const routes: Routes = [
-  { path: '', component: SettingComponent }
+  {
+    path: '', component: SettingComponent, children: [
+      { path: 'conta', component: AccountComponent },
+      { path: 'campos', component: FieldsComponent },
+      { path: 'listas', component: ListComponent },
+      { path: '', redirectTo: '/configuracoes/conta', pathMatch: 'full' }
+    ]
+  }
 ];
 
 @NgModule({

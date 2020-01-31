@@ -13,7 +13,7 @@ export class AppComponent {
   constructor(
     private store: Store<any>,
   ) {
-    this.store.dispatch(IsLogin(false));
+    this.store.dispatch(IsLogin(true));
   }
 
   entrar() {

@@ -2,3 +2,21 @@
     font-size: 26px;
     font-weight: 300;
 }
+
+.header{
+    width:100%;
+    height: 40.5px;
+    border-bottom: 2px solid #DDD;
+
+    a {
+        display: inline-block;
+        padding:10px 20px;
+        color:#000;
+        text-decoration: none;
+    }
+
+    .actived{
+        border-bottom: 2px solid #0C5390;
+    }
+
+}
