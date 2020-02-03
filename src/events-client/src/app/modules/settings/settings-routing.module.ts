@@ -4,7 +4,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 // Components
 import { SettingComponent } from './setting/setting.component';
-import { AccountComponent } from './account/account.component';
 import { FieldsComponent } from './fields/fields.component';
 import { ListComponent } from './list/list.component';
 
