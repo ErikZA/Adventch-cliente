@@ -43,6 +43,7 @@
         "ngx-auto-unsubscribe": "^2.4.1",
         "ngx-infinite-scroll": "^6.0.1",
         "ngx-order-pipe": "^2.0.2",
+        "node-sass": "^4.13.1",
         "raven-js": "^3.27.0",
         "rxjs": "^6.3.3",
         "web-animations-js": "^2.3.1",
