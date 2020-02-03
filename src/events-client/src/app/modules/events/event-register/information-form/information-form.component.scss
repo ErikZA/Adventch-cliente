@@ -1,4 +1,4 @@
-.contianer-input {
+.container-input {
     display: flex;
     flex-direction: row;
 }
@@ -7,12 +7,21 @@
     margin:0 15px;
 }
 
+.margin-input-right{
+    margin-right: 15px;
+}
+
 @media(max-width:750px){
-    .contianer-input{
+    .container-input{
         flex-direction: column;
     }
 
     .margin-input{
         margin:0;
     }
+
+    .margin-input-right{
+        margin:0;
+    }
+
 }

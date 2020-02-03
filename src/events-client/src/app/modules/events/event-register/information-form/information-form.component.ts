@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { AddInformation } from '../../../../actions/newEvent.action';
+import { ReadFields } from '../../../../actions/field.action';
+import { FieldModel } from 'src/app/models/fields.model';
 
 @Component({
   selector: 'app-information-form',
@@ -14,14 +16,18 @@ export class InformationFormComponent implements OnInit {
 
   @Input('formInformation') formInformation: FormGroup;
 
-  public information$: Observable<any>;
+  public field$: Observable<any>;
+  public fields: FieldModel[] = [];
 
   constructor(
     public store: Store<any>,
   ) {
+    this.field$ = store.select('field')
+    this.store.dispatch(ReadFields());
   }
 
   ngOnInit() {
+    this.field$.subscribe((res: any) => this.fields = res.data);
   }
 
   sendInformation() {
