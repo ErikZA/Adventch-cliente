@@ -1,0 +1,42 @@
+.items{
+    padding: 5px 0;
+    border-bottom: 1px solid #DDD;
+}
+
+.items:last-child{
+    border-bottom: none;
+}
+
+.coupon-form{
+    width: 300px;
+    margin-left: 15px;
+}
+
+.msgWarning{
+    height: 300px;
+    overflow-y: auto;
+}
+
+.contianer-input {
+    display: flex;
+    flex-direction: row;
+}
+
+.margin-input {
+    margin:0 15px;
+}
+
+@media(max-width:750px){
+    .contianer-input{
+        flex-direction: column;
+    }
+
+    .margin-input{
+        margin:0;
+    }
+
+    .coupon-form{
+        width: 100%;
+        margin:15px 0 25px;
+    }
+}

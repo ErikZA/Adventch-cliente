@@ -1,0 +1,9 @@
+<div class="snack-bar" fxLayout="row" fxLayoutAlign="space-between">
+    <div class="message" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon>{{ data.icon }}</mat-icon>
+        <span>{{ data.msg }}</span>
+    </div>
+    <button mat-icon-button (click)="dismiss()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>

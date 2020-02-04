@@ -33,5 +33,21 @@ $events-theme: mat-light-theme($events-primary, $events-accent, $events-warn);
 $accent-palete: map-get($app-theme, accent);
 $accent-color: mat-color($accent-palete);
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
+*,*:before{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body { 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+
+.container {
+    max-width: 95%;
+    width: 1000px;
+    margin:auto;
+}

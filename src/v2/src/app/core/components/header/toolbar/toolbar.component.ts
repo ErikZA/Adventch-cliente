@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { ObservableMedia, MediaChange } from '@angular/flex-layout';
+// import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
@@ -25,14 +25,14 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   menuEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(
-    private media: ObservableMedia
+    // private media: ObservableMedia
   ) { }
 
   ngOnInit() {
-    this.subscribe = this.media.subscribe((change: MediaChange) => {
-      const isMobile = (change.mqAlias === 'xs');
-      this.menuOpened = !(isMobile || (change.mqAlias === 'sm') || (change.mqAlias === 'md'));
-    });
+    // this.subscribe = this.media.subscribe((change: MediaChange) => {
+    //   const isMobile = (change.mqAlias === 'xs');
+    //   this.menuOpened = !(isMobile || (change.mqAlias === 'sm') || (change.mqAlias === 'md'));
+    // });
   }
 
   ngOnDestroy(): void {

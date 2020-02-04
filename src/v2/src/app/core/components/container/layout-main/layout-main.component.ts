@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ObservableMedia, MediaChange } from '@angular/flex-layout';
+// import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
@@ -16,16 +16,16 @@ export class LayoutMainComponent implements OnInit, OnDestroy {
   subscribe: Subscription;
 
   constructor(
-    private media: ObservableMedia
+    // private media: ObservableMedia
   ) { }
 
   ngOnInit() {
-    this.subscribe = this.media.subscribe((change: MediaChange) => {
-      this.isMobile = (change.mqAlias === 'xs');
-      this.isOpen = !((this.isMobile && !this.isOpen)
-      || ((change.mqAlias === 'sm') && !this.isOpen)
-      || ((change.mqAlias === 'md') && !this.isOpen));
-    });
+    // this.subscribe = this.media.subscribe((change: MediaChange) => {
+    //   this.isMobile = (change.mqAlias === 'xs');
+    //   this.isOpen = !((this.isMobile && !this.isOpen)
+    //   || ((change.mqAlias === 'sm') && !this.isOpen)
+    //   || ((change.mqAlias === 'md') && !this.isOpen));
+    // });
   }
 
   ngOnDestroy(): void {

@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { ObservableMedia, MediaChange } from '@angular/flex-layout';
+// import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 
 import { Subscription } from 'rxjs';
 
@@ -104,7 +104,7 @@ export class DashboardTreasuryComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private media: ObservableMedia,
+    // private media: ObservableMedia,
     private service: TreasuryService,
     private dashboadTreasuryService: DashboardTreasuryService,
     private changeDetector: ChangeDetectorRef,
@@ -115,11 +115,11 @@ export class DashboardTreasuryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getYearsOfFilter();
     const unit = auth.getCurrentUnit();
-    this.mediaSubscription = this.media
-      .subscribe((change: MediaChange) => setTimeout(() => this.isMobile = change.mqAlias === 'xs'));
-    this.dashboadTreasuryService.getAnalystsOfTheDistrict(unit.id).subscribe(data => {
-      this.users = data;
-    });
+    // this.mediaSubscription = this.media
+    //   .subscribe((change: MediaChange) => setTimeout(() => this.isMobile = change.mqAlias === 'xs'));
+    // this.dashboadTreasuryService.getAnalystsOfTheDistrict(unit.id).subscribe(data => {
+    //   this.users = data;
+    // });
     this.getDatasOfDashboard();
   }
 
