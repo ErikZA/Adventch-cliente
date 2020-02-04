@@ -13,6 +13,8 @@ import {
   AvaliationRequirementAvaliationFormInterface
 } from '../../../../interfaces/avaliation/avaliation-requirement-avaliation-form-interface';
 import { AvaliationRequirementEditInterface } from '../../../../interfaces/avaliation/avaliation-requirement-edit-interface';
+import { FormGroup } from '@angular/forms';
+
 
 @Component({
   selector: 'app-avaliation-requirement-form',
@@ -22,6 +24,7 @@ import { AvaliationRequirementEditInterface } from '../../../../interfaces/avali
 @AutoUnsubscribe()
 export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 
+  formObservation: FormGroup;
   sub1: Subscription;
 
   @Input()
@@ -98,31 +101,40 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return this.avaliation !== undefined && this.avaliation !== null;
   }
 
-  private checkIfChecked(requirementId: number): boolean {
-    if (this.checkIsEdit()) {
-      const requirementAvaliationEdit = this.avaliation
-        .avaliationsRequirements
-        .find(ar => ar.requirement.id === requirementId);
-      return requirementAvaliationEdit ? requirementAvaliationEdit.note === requirementAvaliationEdit.requirement.score : false;
-    } else {
-      return true;
+    private checkIfChecked(requirementId: number): boolean {
+      if (this.checkIsEdit()) {
+        const requirementAvaliationEdit = this.avaliation.avaliationsRequirements.find(ar => ar.requirement.id === requirementId);
+
+        return requirementAvaliationEdit ? requirementAvaliationEdit.note === requirementAvaliationEdit.requirement.score : false;
+      } else {
+        return true;
+      }
     }
-  }
 
   public sumTotalOfRequirements(): number {
     return this.avaliationsRequirements ? this.avaliationsRequirements.reduce((prev, r) => prev + r.note, 0) : 0;
   }
 
-  private updateCheck(checked: boolean, id: number) {
-    const evaluation = this.avaliationsRequirements
-      .find(ar => ar.idRequirement === id);
-    if (checked) {
-      const { score } = this.requirementsAvaliation
-      .find(ra => ra.id === id);
-      evaluation.note = score;
-    } else {
-      evaluation.note = 0;
-    }
+  private updateCheck(checked: boolean, id: number, valueMax: number, valueMin: number, valueNow: number) {
+    const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
+      const midlle = parseInt( ( (valueMax / 2) + ''), 10);
+      if (checked) {
+        if ( (valueNow < valueMax && valueNow > midlle) && evaluation.note > valueNow ) {
+          return   evaluation.note = midlle;
+        } else if ( (valueNow < valueMax && valueNow < midlle) &&  evaluation.note < valueNow ) {
+          return   evaluation.note = midlle;
+        } else if ( (valueNow < valueMax && valueNow > midlle) &&  evaluation.note < valueNow ) {
+          return   evaluation.note = valueMax;
+        } else if ( (valueNow < valueMax && valueNow > valueMin) &&  evaluation.note > valueNow ) {
+          return   evaluation.note = valueMin;
+        } else if ( evaluation.note < midlle) {
+          return  evaluation.note = valueMax;
+        }
+        }
+  }
+
+  private checkIsChange(checked: boolean, id: number, valueMax: number, valueMin: number, valueNow: number){
+    return this.updateCheck(checked, id, valueMax, valueMin, valueNow);
   }
 
   private createAvaliationRequirement(note: number, idRequirement: number): AvaliationRequirementAvaliationFormInterface {
@@ -134,6 +146,14 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 
   public getAvaliationsRequirement(): AvaliationRequirementAvaliationFormInterface[] {
     return this.avaliationsRequirements;
+  }
+
+  private formatLabel(value: number) {
+    if (value >= 1) {
+      return Math.round(value) + 'N';
+    }
+
+    return value;
   }
 
 }

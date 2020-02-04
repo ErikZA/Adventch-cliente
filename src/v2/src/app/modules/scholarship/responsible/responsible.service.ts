@@ -6,7 +6,7 @@ import { HttpEventType } from '@angular/common/http';
 
 import { Observable, Subject } from 'rxjs';
 
-import { environment } from '../../../../environments/environment.homolog';
+import { environment } from '../../../../environments/environment.dev';
 import { ResponsibleUploadInterface } from '../interfaces/responsible-upload-interface';
 @Injectable()
 export class ResponsibleService {

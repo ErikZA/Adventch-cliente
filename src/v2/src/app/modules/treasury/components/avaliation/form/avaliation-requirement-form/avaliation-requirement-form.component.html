@@ -5,9 +5,22 @@
         <div fxFlex fxFlex.gt-sm="20%">{{ requirement.name }}</div>
         <div fxLayout="row" fxFlex fxFlex.gt-sm="20%">
             <div style="padding: 5px">0</div>
-            <mat-slide-toggle (change)="updateCheck($event.checked, requirement.id)" [checked]="checkIfChecked(requirement.id)"></mat-slide-toggle>
-            <div style="padding: 5px">{{ requirement.score }}</div>
+
+        <mat-slider
+          #sliderScore
+          value="{{requirement.score}}"
+          thumbLabel
+          (change)="sliderScore.value = checkIsChange(checkIfChecked(requirement.id), requirement.id, sliderScore.max, sliderScore.min, sliderScore.value)"
+          [displayWith]="formatLabel()"
+          tickInterval="5"
+
+          min="0"
+          max="{{requirement.score}}">
+        </mat-slider>
+
+        <div #valueMax style="padding: 5px" >{{requirement.score}}</div>
         </div>
+
     </div>
     <div class="result-requirement" fxLayout="row" fxLayoutAlign="start">
         <span fxFlex fxFlex.gt-sm="21%">TOTAL</span>

@@ -3,7 +3,7 @@ import {throwError as observableThrowError,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { environment } from '../../environments/environment.homolog';
+import { environment } from '../../environments/environment.dev';
 import { AuthService } from './auth.service';
 import { EModules } from './models/modules.enum';
 import { auth } from '../auth/auth';
