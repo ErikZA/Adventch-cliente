@@ -1,0 +1,27 @@
+.main_header{
+    top:0;
+    left: 0;
+    right: 0;
+    background: #0C5390;
+    color:#FFF;
+    position: fixed;
+    z-index: 999;
+}
+
+.actived{
+    border-radius: 60px;
+    border:1px solid #FFF;
+}
+
+.item-show{
+    display: none;
+}
+
+@media(max-width:900px) {
+    .item-show{
+        display: block;
+    }
+    .item-hidden{
+        display: none;
+    }
+}

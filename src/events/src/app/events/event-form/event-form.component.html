@@ -1,8 +1,0 @@
-<form fxLayout="row" fxLayoutAlign="center center" [formGroup]="eventForm">
-  <mat-form-field appearance="outline">
-    <mat-label>Nome do evento</mat-label>
-    <input matInput formControlName="name" required>
-    <mat-error *ngIf="eventForm.get('name').hasError('required')">O nome do evento é obrigatório
-    </mat-error>
-  </mat-form-field>
-</form>

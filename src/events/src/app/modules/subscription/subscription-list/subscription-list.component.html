@@ -1,0 +1,32 @@
+<div class="container">
+
+    <div class="uk-text-center uk-margin-medium-top">
+        <span class="uk-text-large uk-display-block uk-text-uppercase"> {{ association }} </span>
+        <span class="uk-text-uppercase uk-margin-small-top uk-text-small"> Próximos eventos </span>
+    </div>
+
+    <div class="uk-margin-medium-top">
+
+        <a class="card-events" *ngFor="let m of number" [routerLink]="['nome-do-evento-vai-aqui']">
+            <span class="uk-text-large">Nome do evento</span>
+
+            <span class="uk-flex uk-flex-row uk-flex-middle">
+                <i uk-icon="calendar"></i>
+                <span class="uk-margin-small-right uk-text-small">06/04</span>
+                <i uk-icon="clock"></i>
+                <span class="uk-text-small">14:30</span>
+            </span>
+
+
+            <span class="uk-flex uk-flex-row uk-flex-middle uk-margin-small-bottom">
+                <i uk-icon="location"></i>
+                <span class="uk-margin-small-left uk-text-small">
+                    Rua Saguaçu - 335 - Saguaçu - Joinville
+                </span>
+            </span>
+        </a>
+
+    </div>
+
+
+</div>

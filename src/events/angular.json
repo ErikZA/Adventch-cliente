@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/events",
+            "outputPath": "dist/events-client",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -29,11 +29,14 @@
               "src/web.config"
             ],
             "styles": [
+              "./node_modules/uikit/dist/css/uikit.css",
               "src/styles.scss",
               "src/theme.scss"
             ],
             "scripts": [
-              "node_modules/hammerjs/hammer.min.js"
+              "node_modules/hammerjs/hammer.min.js",
+              "./node_modules/uikit/dist/js/uikit.js",
+              "./node_modules/uikit/dist/js/uikit-icons.js"
             ]
           },
           "configurations": {
@@ -47,13 +50,15 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [{
-                "type": "initial",
-                "maximumWarning": "5mb",
-                "maximumError": "10mb"
-              }],
-              "baseHref": "/events/",
-              "deployUrl": "/events/"
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "5mb",
+                  "maximumError": "10mb"
+                }
+              ],
+              "baseHref": "/",
+              "deployUrl": "/"
             }
           }
         },
@@ -62,8 +67,8 @@
           "options": {
             "port": 4302,
             "browserTarget": "events:build",
-            "baseHref": "/events/",
-            "deployUrl": "/events/"
+            "baseHref": "/",
+            "deployUrl": "/"
           },
           "configurations": {
             "production": {
@@ -74,7 +79,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "events:build"
+            "browserTarget": "events-client:build"
           }
         },
         "test": {
@@ -117,8 +122,8 @@
             "devServerTarget": "events:serve"
           },
           "configurations": {
-            "prod": {
-              "devServerTarget": "events:serve:prod"
+            "production": {
+              "devServerTarget": "events:serve:production"
             }
           }
         }
