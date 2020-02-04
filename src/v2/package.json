@@ -28,7 +28,6 @@
         "@angular/router": "7.1.1",
         "@auth0/angular-jwt": "^2.0.0",
         "@material/button": "^0.41.0",
-        "@ngx-progressbar/core": "^5.2.1",
         "@ngx-progressbar/http": "^5.2.1",
         "@ngx-translate/core": "^11.0.1",
         "@ngx-translate/http-loader": "^4.0.0",
@@ -43,6 +42,7 @@
         "ngx-auto-unsubscribe": "^2.4.1",
         "ngx-infinite-scroll": "^6.0.1",
         "ngx-order-pipe": "^2.0.2",
+        "node-sass": "^4.13.1",
         "raven-js": "^3.27.0",
         "rxjs": "^6.3.3",
         "web-animations-js": "^2.3.1",
@@ -54,6 +54,7 @@
         "@angular/cli": "^7.3.8",
         "@angular/compiler-cli": "^7.2.14",
         "@angular/language-service": "7.1.1",
+        "@ngx-progressbar/core": "5.2.1",
         "@types/hammerjs": "^2.0.36",
         "@types/jasmine": "~3.3.0",
         "@types/jasminewd2": "~2.0.6",
@@ -69,6 +70,6 @@
         "protractor": "~5.4.1",
         "ts-node": "~7.0.1",
         "tslint": "~5.11.0",
-        "typescript": "^3.1.6"
+        "typescript": "3.1.6"
     }
 }

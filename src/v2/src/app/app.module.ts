@@ -82,18 +82,8 @@ export function tokenGetter() {
         blacklistedRoutes: ['']
       }
     }),
-    NgProgressModule.forRoot({
-      trickleSpeed: 100,
-      min: 5,
-      max: 95,
-      // ease: 'easeInElastic',
-      color: 'white',
-      thick: true,
-      meteor: false,
-      spinner: false,
-      debounceTime: 200
-    }),
-    NgProgressHttpModule.forRoot(),
+    NgProgressModule,
+    NgProgressHttpModule,
     // deixar AppRouting sempre por último
     AppRouting
   ],

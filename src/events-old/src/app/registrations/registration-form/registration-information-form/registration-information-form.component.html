@@ -1,0 +1,33 @@
+<form fxLayout="row" fxLayoutAlign="center center" [formGroup]="identificationForm">
+  <div class="mat-elevation-z1 form" fxLayout="column" fxFlex="80%" fxFlexAlign="center">
+    <div fxFlex fxFlexAlign="center">
+      <h2 class="title">Identificação</h2>
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Nome Completo</mat-label>
+      <input matInput formControlName="name" required>
+      <mat-error *ngIf="identificationForm.get('name').hasError('required')">O nome completo é obrigatório
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>CPF</mat-label>
+      <input matInput formControlName="cpf" placeholder="000.000.000-00" mask="000.000.000-00" required>
+      <mat-error *ngIf="identificationForm.get('cpf').hasError('required')">O CPF é obrigatório
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" placeholder="email@email.com" required>
+      <mat-error *ngIf="identificationForm.get('email').hasError('required')">O email é obrigatório
+      </mat-error>
+      <mat-error *ngIf="identificationForm.get('email').hasError('email')">Formato do email inválido. Digite um
+        email válido.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Celular</mat-label>
+      <input matInput formControlName="phone" placeholder="(00) 0 0000 0000" mask="(00) 0 0000 0000">
+    </mat-form-field>
+    <button mat-stroked-button matStepperNext fxFlex color="primary">Continuar</button>
+  </div>
+</form>

@@ -1,0 +1,57 @@
+<form fxLayout="row" fxLayoutAlign="center center" [formGroup]="paymentForm">
+  <div class="mat-elevation-z1 form" fxLayout="column" fxFlex="80%" fxFlexAlign="center" fxLayoutGap="10px">
+    <div fxFlex fxFlexAlign="center">
+      <h2 class="title">Pagamento</h2>
+    </div>
+    <mat-button-toggle-group [vertical]="false" value="1" #group="matButtonToggleGroup">
+      <mat-button-toggle fxFlex value="1" aria-label="Payment Billet">
+        Boleto
+        <mat-icon>receipt</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle fxFlex value="2" aria-label="Payment Credit Card">
+        Cartão de Crédito
+        <mat-icon>credit_card</mat-icon>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+    <ng-container *ngIf="group.value == 2; else paymentInformations">
+      <app-registration-payment-card [card]="paymentForm.value"></app-registration-payment-card>
+      <mat-form-field appearance="outline">
+        <mat-label>Número do Cartão</mat-label>
+        <input matInput formControlName="number" placeholder="0000 0000 0000 0000" mask="0000 0000 0000 0000" required>
+        <mat-error *ngIf="paymentForm.get('number').hasError('required')">O número do cartão é obrigatório
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Nome do Titular</mat-label>
+        <input matInput formControlName="name" required>
+        <mat-error *ngIf="paymentForm.get('name').hasError('required')">O nome do titular do cartão é obrigatório
+        </mat-error>
+      </mat-form-field>
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+        <mat-form-field appearance="outline">
+          <mat-label>CCV</mat-label>
+          <input matInput type="number" formControlName="ccv" placeholder="000" required>
+          <mat-error *ngIf="paymentForm.get('ccv').hasError('required')">O CCV do cartão é obrigatório
+          </mat-error>
+        </mat-form-field>
+        <!-- <mat-form-field appearance="outline">
+          <mat-label>Data de Validade</mat-label>
+          <input matInput [matDatepicker]="dp" placeholder="00/0000" formControlName="expirationDate">
+          <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+          <mat-datepicker #dp startView="multi-year" (yearSelected)="chosenYearHandler($event)"
+            (monthSelected)="chosenMonthHandler($event, dp)" panelClass="example-month-picker">
+          </mat-datepicker>
+        </mat-form-field> -->
+      </div>
+    </ng-container>
+    <ng-template #paymentInformations>
+      <h4>Pagamento no Boleto</h4>
+      <p>Boleto com vencimento de 5 dias.</p>
+    </ng-template>
+    <div fxLayout="row" fxLayoutAlign="space-between">
+      <button mat-button matStepperPrevious>Anterior</button>
+      <button mat-stroked-button matStepperNext (click)="registerSubscription(group.value)"
+        [disabled]="group.value == 2 && paymentForm.invalid" color="primary">Inscrever</button>
+    </div>
+  </div>
+</form>
