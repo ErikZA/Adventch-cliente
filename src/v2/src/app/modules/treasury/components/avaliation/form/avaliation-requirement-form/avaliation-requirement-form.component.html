@@ -8,14 +8,13 @@
 
         <mat-slider
           #sliderScore
-          value="{{requirement.score}}"
-          thumbLabel
-          (change)="sliderScore.value = checkIsChange(checkIfChecked(requirement.id), requirement.id, sliderScore.max, sliderScore.min, sliderScore.value)"
-          [displayWith]="formatLabel()"
-          tickInterval="5"
-
+          value="{{getCurrentNote(requirement.id)}}"
           min="0"
-          max="{{requirement.score}}">
+          max="{{requirement.score}}"
+          thumbLabel
+          (change)="sliderScore.value = updateCheck(checkIsEdit(), requirement.id, sliderScore.max, sliderScore.min, sliderScore.value)"
+          [displayWith]="formatLabel()"
+          tickInterval="{{requirement.score /2}}">
         </mat-slider>
 
         <div #valueMax style="padding: 5px" >{{requirement.score}}</div>

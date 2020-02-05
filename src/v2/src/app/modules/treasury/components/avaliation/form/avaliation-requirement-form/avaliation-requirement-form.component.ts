@@ -101,15 +101,15 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return this.avaliation !== undefined && this.avaliation !== null;
   }
 
-    private checkIfChecked(requirementId: number): boolean {
-      if (this.checkIsEdit()) {
-        const requirementAvaliationEdit = this.avaliation.avaliationsRequirements.find(ar => ar.requirement.id === requirementId);
+    // private checkIfChecked(requirementId: number): boolean {
+    //   if (this.checkIsEdit()) {
+    //     const requirementAvaliationEdit = this.avaliation.avaliationsRequirements.find(ar => ar.requirement.id === requirementId);
 
-        return requirementAvaliationEdit ? requirementAvaliationEdit.note === requirementAvaliationEdit.requirement.score : false;
-      } else {
-        return true;
-      }
-    }
+    //     return requirementAvaliationEdit ? requirementAvaliationEdit.note === requirementAvaliationEdit.requirement.score : true;
+    //   } else {
+    //     return true;
+    //   }
+    // }
 
   public sumTotalOfRequirements(): number {
     return this.avaliationsRequirements ? this.avaliationsRequirements.reduce((prev, r) => prev + r.note, 0) : 0;
@@ -117,24 +117,24 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 
   private updateCheck(checked: boolean, id: number, valueMax: number, valueMin: number, valueNow: number) {
     const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
-      const midlle = parseInt( ( (valueMax / 2) + ''), 10);
       if (checked) {
-        if ( (valueNow < valueMax && valueNow > midlle) && evaluation.note > valueNow ) {
-          return   evaluation.note = midlle;
-        } else if ( (valueNow < valueMax && valueNow < midlle) &&  evaluation.note < valueNow ) {
-          return   evaluation.note = midlle;
-        } else if ( (valueNow < valueMax && valueNow > midlle) &&  evaluation.note < valueNow ) {
-          return   evaluation.note = valueMax;
-        } else if ( (valueNow < valueMax && valueNow > valueMin) &&  evaluation.note > valueNow ) {
-          return   evaluation.note = valueMin;
-        } else if ( evaluation.note < midlle) {
-          return  evaluation.note = valueMax;
-        }
-        }
-  }
 
-  private checkIsChange(checked: boolean, id: number, valueMax: number, valueMin: number, valueNow: number){
-    return this.updateCheck(checked, id, valueMax, valueMin, valueNow);
+        if(!isNaN(parseInt( ((valueMax / 2)+''), 10))){
+          const midlle = parseInt( ((valueMax / 2)+''), 10);
+        
+          if ( ((valueNow < valueMax && valueNow > midlle) && evaluation.note > valueNow) || 
+          ( (valueNow < valueMax && valueNow < midlle) &&  evaluation.note < valueNow ) )  {
+            return   evaluation.note = midlle;
+          } else if ( (valueNow < valueMax && valueNow > midlle) &&  evaluation.note < valueNow ) {
+            return   evaluation.note = valueMax;
+          } else if ( (valueNow < valueMax && valueNow > valueMin) &&  evaluation.note > valueNow ) {
+            return   evaluation.note = valueMin;
+          } else if ( evaluation.note < midlle) {
+            return  evaluation.note = valueMax;
+          }
+        }
+      }
+       return evaluation.note;
   }
 
   private createAvaliationRequirement(note: number, idRequirement: number): AvaliationRequirementAvaliationFormInterface {
@@ -144,6 +144,10 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     };
   }
 
+private getCurrentNote(id: number){
+  const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
+  return evaluation.note;
+}
   public getAvaliationsRequirement(): AvaliationRequirementAvaliationFormInterface[] {
     return this.avaliationsRequirements;
   }
