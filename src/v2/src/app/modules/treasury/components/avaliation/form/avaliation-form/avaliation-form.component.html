@@ -1,7 +1,7 @@
-<div fxLayout="row" fxFlexFill fxLayoutAlign="center" *ngIf="loading" style="padding-top: 25vh;">
+<div fxLayout="row" fxFlexFill fxLayoutAlign="center" *ngIf="loading" style="padding-top: 20vh;">
     <mat-spinner></mat-spinner>
 </div>
-<form [formGroup]="formAvaliation" fxLayout="column" ngStyle.gt-sm="margin: 0px 40px" ngStyle.lt-md="margin: 0px 10px" *ngIf="!loading" (keydown.enter)="$event.preventDefault()">
+<form [formGroup]="formAvaliation" fxLayout="column" ngStyle.gt-sm="margin: 0px 20px" ngStyle.lt-md="margin: 0px 5px" *ngIf="!loading" (keydown.enter)="$event.preventDefault()">
     <app-header-form [title]="getTitleLabel()"></app-header-form>
     <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center">
         <div fxLayout="column wrap" fxFlex="50%">
@@ -13,8 +13,8 @@
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
             <app-avaliation-requirement-form [avaliation]="avaliation" [type]="type"></app-avaliation-requirement-form>
-            <div fxLayout="row" fxLayoutAlign="space-between" fxFlexOffset="40px">
-                <a mat-button type="button" routerLink="/tesouraria/avaliacoes">CANCELAR</a>
+            <div fxLayout="row" fxLayoutAlign="space-between" fxFlexOffset="10px">
+                <a mat-button type="button" style="border: 1px solid black" routerLink="/tesouraria/avaliacoes">CANCELAR</a>
                 <button mat-raised-button type="submit" (click)="saveAvaliation()" color="primary" [disabled]="isSending">SALVAR</button>
             </div>
         </div>
