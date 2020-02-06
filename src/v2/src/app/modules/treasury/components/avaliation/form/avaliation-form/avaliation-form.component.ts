@@ -237,5 +237,4 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
     date.setFullYear(this.year);
     return date;
   }
-
 }

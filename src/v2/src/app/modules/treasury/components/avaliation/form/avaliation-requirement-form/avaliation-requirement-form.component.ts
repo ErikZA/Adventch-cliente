@@ -14,6 +14,7 @@ import {
 } from '../../../../interfaces/avaliation/avaliation-requirement-avaliation-form-interface';
 import { AvaliationRequirementEditInterface } from '../../../../interfaces/avaliation/avaliation-requirement-edit-interface';
 import { FormGroup } from '@angular/forms';
+import {ChurchAvaliationFormInterface} from "../../../../interfaces/avaliation/church-avaliation-form-interface";
 
 
 @Component({
@@ -24,14 +25,17 @@ import { FormGroup } from '@angular/forms';
 @AutoUnsubscribe()
 export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 
-  formObservation: FormGroup;
   sub1: Subscription;
 
   @Input()
   type: number;
-
   @Input()
   avaliation: AvaliationEditInterface;
+  @Input()
+  church: ChurchAvaliationFormInterface;
+  @Input()
+  formAvaliation: FormGroup;
+
 
   year: number;
 
@@ -106,7 +110,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return this.avaliationsRequirements ? this.avaliationsRequirements.reduce((prev, r) => prev + r.note, 0) : 0;
   }
 
-  private updateCheck(checked: boolean, id: number, valueMax: number, valueMin: number, valueNow: number) {
+  private updateCheck(checked: boolean, id: number, valueMax: number, valueMin: number, valueNow: number):number {
      const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
      if (checked) {
         if (!isNaN(parseInt( ((valueMax / 2) + ''), 10))) {
@@ -119,7 +123,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   }
 
 
-  private adjustsSlider(id: number, valueMax: number, valueMin: number, valueNow: number, midlle: number, note: number) {
+  private adjustsSlider(id: number, valueMax: number, valueMin: number, valueNow: number, midlle: number, note: number): number {
     if  ((valueNow < valueMax && valueNow > midlle) && note > valueNow) {
       return   midlle;
     } else if ( (valueNow < valueMax && valueNow < midlle) &&  note < valueNow )  {
@@ -150,7 +154,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getCurrentNote(id: number) {
+  private getCurrentNote(id: number):number {
     const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
     return evaluation.note;
   }
@@ -158,13 +162,4 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 public getAvaliationsRequirement(): AvaliationRequirementAvaliationFormInterface[] {
   return this.avaliationsRequirements;
 }
-
-  private formatLabel(value: number) {
-    if (value >= 1) {
-      return Math.round(value) + 'N';
-    }
-
-    return value;
-  }
-
 }

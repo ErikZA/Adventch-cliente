@@ -14,14 +14,13 @@
           max="{{requirement.score}}"
           thumbLabel
           (change)="sliderScore.value = updateCheck(checkIsEdit(), requirement.id, sliderScore.max, sliderScore.min, sliderScore.value)"
-          [displayWith]="formatLabel()"
           tickInterval="{{requirement.score /2}}">
         </mat-slider>
 
         <div #valueMax style="padding: 5px" >{{requirement.score}}</div>
         </div>
     </div>
-      <app-avaliation-observation-form *ngIf="requirement.isFull"></app-avaliation-observation-form>
+      <app-avaliation-observation-form [church]="church" [formAvaliation]="formAvaliation"   *ngIf="requirement.isFull"></app-avaliation-observation-form>
   </div>
     <div class="result-requirement" fxLayout="row" fxLayoutAlign="start">
         <span fxFlex fxFlex.gt-sm="21%">TOTAL</span>
