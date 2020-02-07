@@ -109,6 +109,15 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   }
 
   public sumTotalOfRequirements(): number {
+    // this.avaliationsRequirements.forEach(ra => {
+    //   if(ra.note === undefined || ra.note === null){
+    //     this.requirementsAvaliation.forEach( ava => {
+    //       if (ava.id === ra.idRequirement ){
+    //         ra.note = ava.score;
+    //       }
+    //     })
+    //   }
+    // })
     return this.avaliationsRequirements ? this.avaliationsRequirements.reduce((prev, r) => prev + r.note, 0) : 0;
   }
 
@@ -123,7 +132,8 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
        this.noteIsFull(id, evaluation.note, valueMax, midlle);
        return evaluation.note;
       }
-      return evaluation.note;
+       return valueMax;
+
   }
 
 
@@ -133,12 +143,13 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     } else if ( (valueNow < valueMax && valueNow < midlle) &&  note < valueNow )  {
       return   midlle;
     } else if ( (valueNow < valueMax && valueNow > midlle) &&  note < valueNow ) {
-      return   valueMax;
+       return   valueMax;
     } else if ( (valueNow < valueMax && valueNow > valueMin) &&  note > valueNow ) {
-      return   valueMin;
+       return   valueMin;
     } else if ( note < midlle) {
       return  midlle;
     }
+     return midlle;
   }
 
   private createAvaliationRequirement(note: number, idRequirement: number): AvaliationRequirementAvaliationFormInterface {

@@ -3,10 +3,10 @@
 </div>
 <div *ngIf="isValid">
   <form [formGroup]="formObservation" fxLayout="column" ngStyle.gt-sm="margin: 0px" ngStyle.lt-md="margin: 0px"  *ngIf="!loading" (keydown.enter)="$event.preventDefault()">
-    <div  fxLayout="row" fxLayout.lt-md="column"  ngStyle.gt-xs="margin: 0px 150px 0px 0px" fxLayoutAlign="center">
+    <div  fxLayout="row" fxLayout.lt-md="column"  ngStyle.gt-xs="margin: 0px 0px 0px 0px" fxLayoutAlign="center">
 
           <mat-form-field >
-              <textarea formControlName="description"  matInput placeholder="Observação" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10" required></textarea>
+              <textarea formControlName="description" matInput placeholder="Observação" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10" required></textarea>
               <mat-error *ngIf="formObservation.get('description').hasError('pattern')">Este campo é inválido</mat-error>
           </mat-form-field>
 
