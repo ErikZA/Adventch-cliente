@@ -109,15 +109,6 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   }
 
   public sumTotalOfRequirements(): number {
-    // this.avaliationsRequirements.forEach(ra => {
-    //   if(ra.note === undefined || ra.note === null){
-    //     this.requirementsAvaliation.forEach( ava => {
-    //       if (ava.id === ra.idRequirement ){
-    //         ra.note = ava.score;
-    //       }
-    //     })
-    //   }
-    // })
     return this.avaliationsRequirements ? this.avaliationsRequirements.reduce((prev, r) => prev + r.note, 0) : 0;
   }
 
