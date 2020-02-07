@@ -27,6 +27,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 
   sub1: Subscription;
 
+
   @Input()
   type: number;
   @Input()
@@ -38,6 +39,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 
 
   year: number;
+
 
   requirementsAvaliation: RequirementAvaliationChurchInterface[];
   avaliationsRequirements: AvaliationRequirementAvaliationFormInterface[];
@@ -111,20 +113,22 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   }
 
   private updateCheck(checked: boolean, id: number, valueMax: number, valueMin: number, valueNow: number):number {
-     const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
-     if (checked) {
+    let midlle = valueMax;
+    const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
+       if (checked) {
         if (!isNaN(parseInt( ((valueMax / 2) + ''), 10))) {
-          evaluation.note =  this.adjustsSlider(id, valueMax, valueMin, valueNow, parseInt( ((valueMax / 2) + ''), 10), evaluation.note);
-          this.noteIsFull(id, evaluation.note, valueMax, parseInt( ((valueMax / 2) + ''), 10));
-          return evaluation.note;
-          }
+          midlle = parseInt( ((valueMax / 2) + ''), 10);
+        }
+       evaluation.note =  this.adjustsSlider(valueMax, valueMin, valueNow, midlle, evaluation.note);
+       this.noteIsFull(id, evaluation.note, valueMax, midlle);
+       return evaluation.note;
       }
       return evaluation.note;
   }
 
 
-  private adjustsSlider(id: number, valueMax: number, valueMin: number, valueNow: number, midlle: number, note: number): number {
-    if  ((valueNow < valueMax && valueNow > midlle) && note > valueNow) {
+  private adjustsSlider(valueMax: number, valueMin: number, valueNow: number, midlle: number, note: number): number {
+     if  ((valueNow < valueMax && valueNow > midlle) && note > valueNow) {
       return   midlle;
     } else if ( (valueNow < valueMax && valueNow < midlle) &&  note < valueNow )  {
       return   midlle;
@@ -155,7 +159,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   }
 
   private getCurrentNote(id: number):number {
-    const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
+    let evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
     return evaluation.note;
   }
 

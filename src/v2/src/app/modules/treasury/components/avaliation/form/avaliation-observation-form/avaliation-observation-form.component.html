@@ -1,20 +1,21 @@
 <div fxLayout="row" fxFlexFill fxLayoutAlign="center" *ngIf="!!checkIsLoading()" style="padding-top: 25vh;">
   <mat-spinner></mat-spinner>
 </div>
-<form [formGroup]="formObservation" fxLayout="column" ngStyle.gt-sm="margin: 0px" ngStyle.lt-md="margin: 0px" *ngIf="!loading" (keydown.enter)="$event.preventDefault()">
-  <div  fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center">
-             <mat-form-field >
-              <textarea formControlName="description" matInput placeholder="Observação" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10" required></textarea>
+<div *ngIf="isValid">
+  <form [formGroup]="formObservation" fxLayout="column" ngStyle.gt-sm="margin: 0px" ngStyle.lt-md="margin: 0px"  *ngIf="!loading" (keydown.enter)="$event.preventDefault()">
+    <div  fxLayout="row" fxLayout.lt-md="column"  ngStyle.gt-xs="margin: 0px 150px 0px 0px" fxLayoutAlign="center">
+
+          <mat-form-field >
+              <textarea formControlName="description"  matInput placeholder="Observação" maxlength="800" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="10" required></textarea>
               <mat-error *ngIf="formObservation.get('description').hasError('pattern')">Este campo é inválido</mat-error>
           </mat-form-field>
 
-                <button mat-raised-button  type="submit" style="border: 1px solid black"  ngStyle.gt-xs="margin: 25px 1px 25px 1px"
+                <button mat-raised-button  type="submit" style="border: 1px solid black"  ngStyle.gt-xs="margin: 25px 2px 25px 2px"
                    ngStyle.lt-md="margin: 1px"   (click)="closeObservation()" >CANCELAR</button>
 
                 <button  mat-raised-button type="submit"   ngStyle.gt-xs="margin: 25px 1px 25px 1px" color="primary"
-                       ngStyle.lt-md="margin: 1px"
+                       ngStyle.lt-md="margin: 1px" (click)="saveObservation()" [disabled]="isSending"
                          >SALVAR</button>
-
-
-    </div>
+      </div>
   </form>
+</div>

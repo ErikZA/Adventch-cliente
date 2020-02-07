@@ -11,6 +11,10 @@ import { TreasuryService } from '../../../../treasury.service';
 import { ObservationDataComponent } from '../../../observation/observation-data/observation-data.component';
 import {AvaliationFormComponent} from "../avaliation-form/avaliation-form.component";
 import {ChurchAvaliationFormInterface} from "../../../../interfaces/avaliation/church-avaliation-form-interface";
+import {auth} from "../../../../../../auth/auth";
+import {EObservationStatus} from "../../../../models/enums";
+import {tap} from "rxjs/operators";
+import {AbstractSidenavContainer} from "../../../../../../shared/abstract-sidenav-container.component";
 
 
 @Component({
@@ -22,12 +26,11 @@ import {ChurchAvaliationFormInterface} from "../../../../interfaces/avaliation/c
 @AutoUnsubscribe()
 export class AvaliationObservationFormComponent implements OnInit, OnDestroy {
 
-  @ViewChild(AvaliationFormComponent)
-  avaliationFormComponente: AvaliationFormComponent;
-
   formObservation: FormGroup;
   observation: Observation;
   loading = true;
+  isSending = false;
+  isValid = true;
 
   @Input()
   church: ChurchAvaliationFormInterface;
@@ -40,15 +43,11 @@ export class AvaliationObservationFormComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private service: TreasuryService,
     private snackBar: MatSnackBar,
-    private treasuryService: TreasuryService,
-    private observationDataComponent: ObservationDataComponent
-  ) {
-  }
+    private treasuryService: TreasuryService) { }
 
 
   ngOnInit() {
     this.initForm();
-     this.observationDataComponent.openSidenav();
   }
 
 
@@ -57,7 +56,9 @@ export class AvaliationObservationFormComponent implements OnInit, OnDestroy {
 
   initForm(): void {
     this.formObservation = this.formBuilder.group({
-      description: ['', [Validators.required, Validators.minLength(3)]]
+      description: ['', [Validators.required, Validators.minLength(3)]],
+      church: [null],
+      date: [null]
     });
   }
 
@@ -69,12 +70,39 @@ export class AvaliationObservationFormComponent implements OnInit, OnDestroy {
   }
 
    saveObservation() {
-
+     if (!this.formObservation.valid) {
+       return;
+     }
+     this.formObservation.setValue({date:this.formAvaliation.get('date').value,
+     church:this.church.id, description: this.formObservation.get('description').value});
+     console.log(this.formObservation.value);
+     const unit = auth.getCurrentUnit();
+     const responsible = auth.getCurrentUser();
+     this.isSending = true;
+     console.log(...this.formObservation.value);
+     const data = {
+       id: !!this.observation ? this.observation.id : 0,
+       responsible: responsible.id,
+       unit: unit.id,
+       status: EObservationStatus.Open,
+       ...this.formObservation.value
+     };
+     this.treasuryService
+       .saveObservation(data)
+       .pipe(
+         tap(() => {
+           this.isSending = false;
+           this.formObservation.markAsUntouched();
+         }),
+         tap(() => this.snackBar.open('Observação armazenado com sucesso!', 'OK', { duration: 5000 }))
+       ).subscribe(() => { }, error => {
+       console.log(error);
+       this.snackBar.open('Erro ao salvar observação, tente novamente.', 'OK', { duration: 5000 });
+     });
+     this.closeObservation();
    }
 
    private closeObservation(){
-   }
-    private getChurchAndDate(){
-    //return this.avaliationFormComponente.getChurchAndDate();
+      this.isValid = false;
    }
 }
