@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IUrlParams } from '../shared/interfaces/url-params.interface';
 import { ActivatedRoute, Params } from '@angular/router';
-import { AppsService } from 'src/app/apps/shared/services/apps.service';
-import { Observable } from 'rxjs';
 import { Oauth2Service } from '../shared/services/oauth2.service';
 import { switchMap, skipWhile, tap } from 'rxjs/operators';
 import { IApp } from 'src/app/apps/shared/queries/get-app-by-clientId/view-model/app.interface';
-// import { GetAppByClientIdQuery } from 'src/app/apps/shared/queries/get-app-by-clientId/get-app-by-clientId.query';
+import { QueriesHandlerService } from '@adventech/ngx-adventech/handlers';
+import { AuthService } from '@adventech/ngx-adventech/auth';
+import { GetAppByClientIdQuery } from 'src/app/apps/shared/queries/get-app-by-clientId/get-app-by-clientId.query';
 
 @Component({
   selector: 'app-login',
@@ -24,26 +24,19 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private appsService: AppsService,
     private oauth2Service: Oauth2Service,
-    // private querieshandler: QueriesHandlerService,
+    private authService: AuthService,
+    private querieshandler: QueriesHandlerService,
   ) { }
 
   ngOnInit() {
     this.initForm();
-    // this.querieshandler
-    //   .handle<IApp>(new GetAppByClientIdQuery(this.clientId))
-    //   .subscribe((result: IQueryResult<ITicket>) => {
-    //     this.ticket = result.data[0];
-    //     this.title = '#' + this.ticket.id + ' - ' + this.ticket.subject;
-    //     this.isLoading = false;
-    //     this.cdRef.detectChanges();
-    //   });
     this.route.queryParams
       .pipe(
         skipWhile(({ client_id }) => !client_id),
-        // switchMap((queryParams: Params) => this.querieshandler.handle<IApp>(new GetAppByClientIdQuery(queryParams.clientId))),
-        // tap(app => this.app = app),
+        switchMap((queryParams: Params) => this.querieshandler.handle<IApp>(new GetAppByClientIdQuery(queryParams.clientId))),
+        tap(app => this.app = app.data[0]),
+        tap(() => window.addEventListener('storage', this.storageEventListener.bind(this)))
       ).subscribe((data) => {
         console.log(data);
       });
@@ -88,12 +81,12 @@ export class LoginComponent implements OnInit {
 
   }
 
-  // private storageEventListener(ev: StorageEvent) {
-  //   if (!this.loginRunning && ev.key === 'access_token' && ev.newValue !== null && ev.newValue !== '') {
-  //     this.oauth2Service
-  //       .redirect(this.urlParams.redirect_uri, this.authService.getAccessToken(), this.authService.getIdToken(), this.urlParams.state);
-  //   }
-  // }
+  private storageEventListener(ev: StorageEvent) {
+    if (!this.loginRunning && ev.key === 'access_token' && ev.newValue !== null && ev.newValue !== '') {
+      this.oauth2Service
+        .redirect(this.urlParams.redirect_uri, this.authService.getAccessToken(), this.authService.getIdToken(), this.urlParams.state);
+    }
+  }
 
   // public login() {
   //   if (!this.passValue) {
