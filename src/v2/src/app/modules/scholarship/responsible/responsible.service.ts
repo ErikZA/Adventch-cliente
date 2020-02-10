@@ -1,13 +1,10 @@
 
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { HttpRequest } from '@angular/common/http';
-import { HttpEventType } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import { Observable, Subject } from 'rxjs';
 
-import { environment } from '../../../../environments/environment.dev';
-import { ResponsibleUploadInterface } from '../interfaces/responsible-upload-interface';
+import { environment } from '../../../../environments/environment';
 @Injectable()
 export class ResponsibleService {
 
