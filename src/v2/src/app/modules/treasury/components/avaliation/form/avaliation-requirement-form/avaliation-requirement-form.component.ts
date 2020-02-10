@@ -13,6 +13,9 @@ import {
   AvaliationRequirementAvaliationFormInterface
 } from '../../../../interfaces/avaliation/avaliation-requirement-avaliation-form-interface';
 import { AvaliationRequirementEditInterface } from '../../../../interfaces/avaliation/avaliation-requirement-edit-interface';
+import { FormGroup } from '@angular/forms';
+import {ChurchAvaliationFormInterface} from "../../../../interfaces/avaliation/church-avaliation-form-interface";
+
 
 @Component({
   selector: 'app-avaliation-requirement-form',
@@ -24,13 +27,19 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 
   sub1: Subscription;
 
+
   @Input()
   type: number;
-
   @Input()
   avaliation: AvaliationEditInterface;
+  @Input()
+  church: ChurchAvaliationFormInterface;
+  @Input()
+  formAvaliation: FormGroup;
+
 
   year: number;
+
 
   requirementsAvaliation: RequirementAvaliationChurchInterface[];
   avaliationsRequirements: AvaliationRequirementAvaliationFormInterface[];
@@ -38,7 +47,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   constructor(
     private requirementService: RequirementsService,
     private route: ActivatedRoute
-  ) { }
+  ) {  }
 
   ngOnInit() {
     this.sub1 = this.route.params
@@ -89,6 +98,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     this.requirementsAvaliation = data;
     this.avaliationsRequirements = [];
     this.requirementsAvaliation.forEach(ra => {
+      ra.isFull = false;
       this.avaliationsRequirements
         .push(this.createAvaliationRequirement(ra.score, ra.id));
     });
@@ -98,31 +108,39 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return this.avaliation !== undefined && this.avaliation !== null;
   }
 
-  private checkIfChecked(requirementId: number): boolean {
-    if (this.checkIsEdit()) {
-      const requirementAvaliationEdit = this.avaliation
-        .avaliationsRequirements
-        .find(ar => ar.requirement.id === requirementId);
-      return requirementAvaliationEdit ? requirementAvaliationEdit.note === requirementAvaliationEdit.requirement.score : false;
-    } else {
-      return true;
-    }
-  }
-
   public sumTotalOfRequirements(): number {
     return this.avaliationsRequirements ? this.avaliationsRequirements.reduce((prev, r) => prev + r.note, 0) : 0;
   }
 
-  private updateCheck(checked: boolean, id: number) {
-    const evaluation = this.avaliationsRequirements
-      .find(ar => ar.idRequirement === id);
-    if (checked) {
-      const { score } = this.requirementsAvaliation
-      .find(ra => ra.id === id);
-      evaluation.note = score;
-    } else {
-      evaluation.note = 0;
+  private updateCheck(checked: boolean, id: number, valueMax: number, valueMin: number, valueNow: number):number {
+    let midlle = valueMax;
+    const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
+       if (checked) {
+        if (!isNaN(parseInt( ((valueMax / 2) + ''), 10))) {
+          midlle = parseInt( ((valueMax / 2) + ''), 10);
+        }
+       evaluation.note =  this.adjustsSlider(valueMax, valueMin, valueNow, midlle, evaluation.note);
+       this.noteIsFull(id, evaluation.note, valueMax, midlle);
+       return evaluation.note;
+      }
+       return valueMax;
+
+  }
+
+
+  private adjustsSlider(valueMax: number, valueMin: number, valueNow: number, midlle: number, note: number): number {
+     if  ((valueNow < valueMax && valueNow > midlle) && note > valueNow) {
+      return   midlle;
+    } else if ( (valueNow < valueMax && valueNow < midlle) &&  note < valueNow )  {
+      return   midlle;
+    } else if ( (valueNow < valueMax && valueNow > midlle) &&  note < valueNow ) {
+       return   valueMax;
+    } else if ( (valueNow < valueMax && valueNow > valueMin) &&  note > valueNow ) {
+       return   valueMin;
+    } else if ( note < midlle) {
+      return  midlle;
     }
+     return midlle;
   }
 
   private createAvaliationRequirement(note: number, idRequirement: number): AvaliationRequirementAvaliationFormInterface {
@@ -132,8 +150,22 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  public getAvaliationsRequirement(): AvaliationRequirementAvaliationFormInterface[] {
-    return this.avaliationsRequirements;
+  private noteIsFull(id, valueNow: number, valueMax: number, midlle: number) {
+   if (valueNow === valueMax) {
+      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = false; }} );
+    } else if (valueNow < midlle) {
+      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = true; }} );
+    } else   if (valueNow < valueMax) {
+      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = true; }} );
+    }
   }
 
+  private getCurrentNote(id: number):number {
+    let evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
+    return evaluation.note;
+  }
+
+public getAvaliationsRequirement(): AvaliationRequirementAvaliationFormInterface[] {
+  return this.avaliationsRequirements;
+}
 }
