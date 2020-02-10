@@ -50,3 +50,6 @@ src/environments/environment.ts
 
 /yarn.lock
 /package-lock.json
+
+yarn.lock
+package-lock.json
