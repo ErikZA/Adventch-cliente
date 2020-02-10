@@ -1,3 +1,5 @@
+import { Avaliation } from './models/avaliation';
+import { Observation } from './models/observation';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -38,6 +40,8 @@ import { TreasurerService } from './components/treasurer/treasurer.service';
 import { DistrictService } from './components/districts/district.service';
 import { CardCountFeaturesComponent } from './components/dashboard/card-count-features/card-count-features.component';
 import { DashboardTreasuryService } from './components/dashboard/dashboard-treasury.service';
+import { AvaliationObservationFormComponent } from './components/avaliation/form/avaliation-observation-form/avaliation-observation-form.component';
+
 
 @NgModule({
   imports: [
@@ -65,7 +69,8 @@ import { DashboardTreasuryService } from './components/dashboard/dashboard-treas
     AvaliationFormComponent,
     AvaliationRequirementFormComponent,
     ObservationsInformationComponent,
-    CardCountFeaturesComponent
+    CardCountFeaturesComponent,
+    AvaliationObservationFormComponent
   ],
   providers: [
     TreasuryService,
@@ -79,7 +84,8 @@ import { DashboardTreasuryService } from './components/dashboard/dashboard-treas
     TreasurerService,
     DistrictService,
     AvaliationStore,
-    DashboardTreasuryService
+    DashboardTreasuryService,
+    ObservationDataComponent
   ],
   entryComponents: [
     AvaliationReportComponent

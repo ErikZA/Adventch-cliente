@@ -1,14 +1,27 @@
-<div fxLayout="column" fxLayoutGap="15px">
-    <h4 class="text-grey">Avaliar Requisitos</h4>
+<div fxLayout="column" fxLayoutGap="5px">
+    <h4  class="text-grey">Avaliar Requisitos</h4>
     <mat-divider></mat-divider>
-    <div class="text-requirement-color" fxLayout="row" fxLayoutAlign="start" *ngFor="let requirement of requirementsAvaliation">
+    <div class="text-requirement-color" *ngFor="let requirement of requirementsAvaliation">
+    <div  fxLayout="row" fxLayoutAlign="start" >
         <div fxFlex fxFlex.gt-sm="20%">{{ requirement.name }}</div>
-        <div fxLayout="row" fxFlex fxFlex.gt-sm="20%">
+        <div fxLayout="row"  fxFlex="40%">
             <div style="padding: 5px">0</div>
-            <mat-slide-toggle (change)="updateCheck($event.checked, requirement.id)" [checked]="checkIfChecked(requirement.id)"></mat-slide-toggle>
-            <div style="padding: 5px">{{ requirement.score }}</div>
+
+        <mat-slider
+          #sliderScore
+          value="{{getCurrentNote(requirement.id)}}"
+          min="0"
+          max="{{requirement.score}}"
+          thumbLabel
+          (change)="sliderScore.value = updateCheck(checkIsEdit(), requirement.id, sliderScore.max, sliderScore.min, sliderScore.value)"
+          tickInterval="{{requirement.score /2}}">
+        </mat-slider>
+
+        <div style="padding: 5px" >{{requirement.score}}</div>
         </div>
+      <app-avaliation-observation-form [church]="church" [formAvaliation]="formAvaliation" *ngIf="requirement.isFull"></app-avaliation-observation-form>
     </div>
+  </div>
     <div class="result-requirement" fxLayout="row" fxLayoutAlign="start">
         <span fxFlex fxFlex.gt-sm="21%">TOTAL</span>
         <span fxFlex fxFlex.gt-sm="21%">{{ sumTotalOfRequirements() }}</span>
