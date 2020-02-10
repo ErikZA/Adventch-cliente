@@ -4,7 +4,9 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- master
+  branches:
+    include:
+      - master
 
 strategy:
   matrix:
@@ -20,7 +22,7 @@ pool:
 
 steps:
 - script: |
-    npm install
+    npm install --prefix src/events
   displayName: 'npm install'
 
 - script: |
@@ -29,12 +31,12 @@ steps:
 
 - script: |
     npm rebuild node-sass
-    npm run build-$(envName)
+    npm run build --prefix src/events
   displayName: 'npm build'
 
 - bash: |
-   find dist/$(envName) -type f -exec sh -c "gzip < {} > {}.gz" \;
-   find dist/$(envName) -type f -not -name "*.gz" -exec sh -c "brotli {}" \;
+   find dist/v2/$(envName) -type f -exec sh -c "gzip < {} > {}.gz" \;
+   find dist/v2/$(envName) -type f -not -name "*.gz" -exec sh -c "brotli {}" \;
   displayName: 'Compress build files'
 
 - task: PublishBuildArtifacts@1
