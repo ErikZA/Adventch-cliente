@@ -62,7 +62,7 @@ export class AvaliationObservationFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private checkIsLoading(): boolean {
+  public checkIsLoading(): boolean {
     if((this.church !== undefined && this.church !== null) &&  (this.formAvaliation !== undefined && this.formAvaliation !== null))
       return this.loading =false;
     else
