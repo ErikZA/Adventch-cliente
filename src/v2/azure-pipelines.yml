@@ -22,7 +22,7 @@ pool:
 
 steps:
 - script: |
-    npm install --prefix src/events
+    npm install --prefix src/v2
   displayName: 'npm install'
 
 - script: |
@@ -31,7 +31,7 @@ steps:
 
 - script: |
     npm rebuild node-sass
-    npm run build --prefix src/events
+    npm run build --prefix src/v2
   displayName: 'npm build'
 
 - bash: |
