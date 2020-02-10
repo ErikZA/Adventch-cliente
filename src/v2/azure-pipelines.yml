@@ -35,8 +35,8 @@ steps:
   displayName: 'npm build'
 
 - bash: |
-   find dist/$(envName) -type f -exec sh -c "gzip < {} > {}.gz" \;
-   find dist/$(envName) -type f -not -name "*.gz" -exec sh -c "brotli {}" \;
+   find src/v2/dist/$(envName) -type f -exec sh -c "gzip < {} > {}.gz" \;
+   find src/v2/dist/$(envName) -type f -not -name "*.gz" -exec sh -c "brotli {}" \;
   displayName: 'Compress build files'
 
 - task: PublishBuildArtifacts@1
