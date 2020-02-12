@@ -1,0 +1,19 @@
+.container {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  background: #2575fc;
+  background: -webkit-linear-gradient(left, #6a11cb, #2575fc);
+}
+
+.card-login {
+  background: white;
+  width: 450px;
+  height: 500px;
+  border: 1px solid gray;
+  border-radius: 10px;
+}
+
+::ng-deep .mat-horizontal-stepper-header-container {
+  display: none !important;
+}
