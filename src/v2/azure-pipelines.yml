@@ -12,8 +12,6 @@ strategy:
   matrix:
     prod:
       envName: "prod"
-    homolog:
-      envName: "homolog"
   maxParallel: 2
 
 pool:
