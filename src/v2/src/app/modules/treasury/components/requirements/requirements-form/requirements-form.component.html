@@ -17,7 +17,7 @@
                 <mat-error *ngIf="formRequirement.get('name').hasError('pattern')">Digite um nome válido.</mat-error>
             </mat-form-field>
             <mat-form-field fxFlex>
-                <textarea matInput type="text" formControlName="description" placeholder="Descrição" required minlength="3" maxlength="200"> </textarea>
+                <textarea matInput type="text" formControlName="description" placeholder="Descrição" required minlength="3" maxlength="800"> </textarea>
                 <mat-error *ngIf="formRequirement.get('description').hasError('required')">Este campo é obrigatório</mat-error>
                 <mat-error *ngIf="formRequirement.get('description').hasError('minlength')">Descrição pequena, digite um descrição com mais de 3 dígitos</mat-error>
                 <mat-error *ngIf="formRequirement.get('description').hasError('maxlenght')">Descrição grande, digite um descrição com menos de 200 dígitos</mat-error>

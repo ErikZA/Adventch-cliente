@@ -66,7 +66,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
     this.formRequirement = this.formBuilder.group({
       position: ['', [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
-      description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
+      description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(800), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
       score: ['', [Validators.required]],
       date: ['', [Validators.required]],
       isAnual: ['', [Validators.required]]
