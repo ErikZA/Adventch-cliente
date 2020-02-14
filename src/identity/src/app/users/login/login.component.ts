@@ -1,13 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IUrlParams } from '../shared/interfaces/url-params.interface';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Oauth2Service } from '../shared/services/oauth2.service';
-import { switchMap, skipWhile, tap } from 'rxjs/operators';
-import { IApp } from 'src/app/apps/shared/queries/get-app-by-clientId/view-model/app.interface';
 import { QueriesHandlerService } from '@adventech/ngx-adventech/handlers';
 import { AuthService } from '@adventech/ngx-adventech/auth';
+import { switchMap, skipWhile, tap } from 'rxjs/operators';
+
+import { IUrlParams } from '../shared/interfaces/url-params.interface';
+import { Oauth2Service } from '../shared/services/oauth2.service';
+import { IApp } from 'src/app/apps/shared/queries/get-app-by-clientId/view-model/app.interface';
 import { GetAppByClientIdQuery } from 'src/app/apps/shared/queries/get-app-by-clientId/get-app-by-clientId.query';
+import { HttpClient } from '@angular/common/http';
+
+import { environment } from '../../../environments/environment';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +20,9 @@ import { GetAppByClientIdQuery } from 'src/app/apps/shared/queries/get-app-by-cl
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+
+  private client_id: string;
+  private redirect_uri: string;
 
   hide = true;
   loginForm: FormGroup;
@@ -26,48 +34,31 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private oauth2Service: Oauth2Service,
     private authService: AuthService,
-    private querieshandler: QueriesHandlerService,
+    private http: HttpClient,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
     this.initForm();
-    this.route.queryParams
-      .pipe(
-        skipWhile(({ client_id }) => !client_id),
-        switchMap((queryParams: Params) => this.querieshandler.handle<IApp>(new GetAppByClientIdQuery(queryParams.clientId))),
-        tap(app => this.app = app.data[0]),
-        tap(() => window.addEventListener('storage', this.storageEventListener.bind(this)))
-      ).subscribe((data) => {
-        console.log(data);
+    this.route.queryParams.subscribe((res: any) => {
+      const { client_id, redirect_uri } = res;
+
+      if (client_id !== undefined && redirect_uri !== undefined) {
+        this.client_id = client_id;
+        this.redirect_uri = redirect_uri;
+      } else {
+        this.client_id = environment.client_id;
+        this.redirect_uri = `http://${window.location.host}`;
+      }
+    })
+
+
+    const lastLogin = localStorage.getItem('lastLogin');
+    if (lastLogin) {
+      this.loginForm.patchValue({
+        email: lastLogin
       });
-    // .subscribe(params => {
-    //   if (!this.urlParams.client_id) {
-    //     return;
-    //   }
-    //   this.urlParams = {
-    //     client_id: params.client_id,
-    //     redirect_uri: params.redirect_uri,
-    //     response_type: params.response_type,
-    //     scope: params.scope,
-    //     state: params.state
-    //   };
-
-    //   this.appsService
-    //     .getAppByClientId(params.client_id)
-    //     .subscribe(app => {
-    //       this.app = app;
-    //       // this.titleService.setTitle(`${app.name}: Login`);
-    //     });
-
-    //   window.addEventListener('storage', this.storageEventListener.bind(this));
-
-    //   const lastLogin = localStorage.getItem('lastLogin');
-    //   if (lastLogin) {
-    //     this.loginForm.patchValue({
-    //       email: lastLogin
-    //     });
-    //   }
-    // });
+    }
   }
 
   private initForm(): void {
@@ -78,7 +69,25 @@ export class LoginComponent implements OnInit {
   }
 
   public loginSubmit(): void {
+    const { email, password } = this.loginForm.value;
+    const form = {
+      client_id: this.client_id,
+      redirect_uri: this.redirect_uri,
+      response_type: "token",
+      email,
+      password
+    }
 
+    this.http.post(`${environment.identityApiUrl}/Users/login`, JSON.stringify(form)).subscribe((res: any) => {
+      const { access_token, url } = res.resultData;
+      const email = this.loginForm.controls["email"].value
+      localStorage.setItem("lastLogin", email);
+      localStorage.setItem("token", access_token);
+      window.location.href = url
+      this.snackBar.open('Login OK.', 'LOGIN', { duration: 3000 })
+    }, err => {
+      this.snackBar.open('Email ou Senha invalidos.', 'LOGIN', { duration: 3000 })
+    });
   }
 
   private storageEventListener(ev: StorageEvent) {

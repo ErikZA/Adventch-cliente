@@ -6,14 +6,14 @@ import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
   {
-    path: 'oauth2', children: [
+    path: '', children: [
       { path: 'authorize', component: LoginComponent },
       { path: 'callback', component: EmptyComponent },
       { path: 'logout', component: EmptyComponent },
       { path: 'setTokens', component: EmptyComponent }
     ]
   },
-  { path: '', redirectTo: 'oauth2/authorize', pathMatch: 'full' },
+  { path: '', redirectTo: 'authorize', pathMatch: 'full' },
 ];
 
 @NgModule({
