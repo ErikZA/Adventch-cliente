@@ -1,18 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params } from '@angular/router';
-import { QueriesHandlerService } from '@adventech/ngx-adventech/handlers';
-import { AuthService } from '@adventech/ngx-adventech/auth';
-import { switchMap, skipWhile, tap } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material';
 
 import { IUrlParams } from '../shared/interfaces/url-params.interface';
-import { Oauth2Service } from '../shared/services/oauth2.service';
 import { IApp } from 'src/app/apps/shared/queries/get-app-by-clientId/view-model/app.interface';
-import { GetAppByClientIdQuery } from 'src/app/apps/shared/queries/get-app-by-clientId/get-app-by-clientId.query';
-import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../environments/environment';
-import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-login',
@@ -32,14 +27,13 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private oauth2Service: Oauth2Service,
-    private authService: AuthService,
     private http: HttpClient,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
     this.initForm();
+
     this.route.queryParams.subscribe((res: any) => {
       const { client_id, redirect_uri } = res;
 
@@ -88,83 +82,7 @@ export class LoginComponent implements OnInit {
     }, err => {
       this.snackBar.open('Email ou Senha invalidos.', 'LOGIN', { duration: 3000 })
     });
+
   }
-
-  private storageEventListener(ev: StorageEvent) {
-    if (!this.loginRunning && ev.key === 'access_token' && ev.newValue !== null && ev.newValue !== '') {
-      this.oauth2Service
-        .redirect(this.urlParams.redirect_uri, this.authService.getAccessToken(), this.authService.getIdToken(), this.urlParams.state);
-    }
-  }
-
-  // public login() {
-  //   if (!this.passValue) {
-  //     this.translateService.get('login.wrong-password').subscribe(str => {
-  //       this.snackBar.open(str, 'OK', { duration: 2000 });
-  //     });
-  //     this.passwordInput.nativeElement.focus();
-  //     return;
-  //   }
-  //   if (!this.urlParams) {
-  //     return;
-  //   }
-  //   this.loginRunning = true;
-  //   this.authService.login(this.params.client_id, this.params.redirect_uri, this.params.response_type, this.params.scope, this.emailValue, this.passValue).subscribe(data => {
-  //     if (data.restriction == ECompanyRestrictionType.passwordExpired) {
-  //       const dialogRef = this.dialog.open(PasswordRecoveryDialogComponent, { width: '400px', data: { client_id: this.params.client_id, email: this.emailValue } });
-  //       const instance = (<PasswordRecoveryDialogComponent>dialogRef.componentInstance);
-  //       instance.currentTab = 1;
-  //       instance.code = 'changeExpiredPassword';
-  //       dialogRef.afterClosed().subscribe();
-  //     } else if (data.restriction == ECompanyRestrictionType.emailNotConfirmedRestriction) {
-  //       this.authService.sendConfirmationEmail(this.params.client_id, this.emailValue).subscribe(rs => { }, err => {
-  //         this.translateService.get('login.email-confirmation-dialog.unable-to-send-email').subscribe(str => {
-  //           this.snackBar.open(str, 'OK', { duration: 2000 });
-  //         });
-  //       });
-  //       const dialogRef = this.dialog.open(EmailConfirmationDialogComponent, {
-  //         width: '500px',
-  //         data: { client_id: this.params.client_id, email: this.emailValue, instructionType: ECompanyRestrictionType.emailNotConfirmedRestriction }
-  //       });
-  //       dialogRef.afterClosed().subscribe();
-  //     } else if (data.restriction == ECompanyRestrictionType.exceededLoginAttempts) {
-  //       this.authService.sendExceededLoginAttemptsEmail(this.params.client_id, this.emailValue).subscribe(rs => { }, err => {
-  //         this.translateService.get('login.email-confirmation-dialog.unable-to-send-email').subscribe(str => {
-  //           this.snackBar.open(str, 'OK', { duration: 2000 });
-  //         });
-  //       });
-  //       const dialogRef = this.dialog.open(EmailConfirmationDialogComponent, {
-  //         width: '500px',
-  //         data: { client_id: this.params.client_id, email: this.emailValue, instructionType: ECompanyRestrictionType.exceededLoginAttempts }
-  //       });
-  //       dialogRef.afterClosed().subscribe();
-  //     }
-
-  //     if (!data.url) {
-  //       this.translateService.get('login.no-url-redirect').subscribe(str => {
-  //         this.snackBar.open(str, 'OK', { duration: 2000 });
-  //       });
-  //       return;
-  //     }
-
-  //     if (!this.authService.getAccessToken())
-  //       return;
-  //     localStorage.setItem('lastLogin', this.emailValue);
-
-  //     this.authService.redirect(data.url, data.access_token, data.id_token, this.params.state);
-  //     this.loginRunning = false;
-  //   }, error => {
-  //     this.loginRunning = false;
-  //     if (error.status === 401) {
-  //       this.translateService.get('login.wrong-password').subscribe(str => {
-  //         this.snackBar.open(str, 'OK', { duration: 2000 });
-  //         this.passwordInput.nativeElement.value = '';
-  //         this.passwordInput.nativeElement.focus();
-  //       });
-  //     }
-  //   });
-  // }
-
-
 
 }

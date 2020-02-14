@@ -10,10 +10,10 @@ const routes: Routes = [
       { path: 'authorize', component: LoginComponent },
       { path: 'callback', component: EmptyComponent },
       { path: 'logout', component: EmptyComponent },
-      { path: 'setTokens', component: EmptyComponent }
+      { path: 'setTokens', component: EmptyComponent },
+      { path: '', redirectTo: 'authorize', pathMatch: 'full' },
     ]
   },
-  { path: '', redirectTo: 'authorize', pathMatch: 'full' },
 ];
 
 @NgModule({
