@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { UsersRoutingModule } from './users-routing.module';
 import { LoginComponent } from './login/login.component';
 import { SharedModule } from '../shared/shared.module';
-import { AppsService } from '../apps/shared/services/apps.service';
 
 
 @NgModule({
@@ -16,8 +15,6 @@ import { AppsService } from '../apps/shared/services/apps.service';
     SharedModule,
     UsersRoutingModule
   ],
-  providers: [
-    AppsService
-  ]
+  providers: []
 })
 export class UsersModule { }

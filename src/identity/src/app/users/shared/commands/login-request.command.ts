@@ -17,16 +17,16 @@ export class LoginRequestCommand implements ICommand {
 
   getError(handler: CommandsHandlerService): ICommandResult {
     if (!this.client_id) {
-      return { errorCode: EErrorCode.invalidParameters, errorMessage: 'Parameter client_id cannot be null.' } as IQexCommandResult;
+      return { errorCode: EErrorCode.invalidParameters, errorMessage: 'Parameter client_id cannot be null.' } as ICommandResult;
     }
     if (!this.redirect_uri) {
-      return { errorCode: EErrorCode.invalidParameters, errorMessage: 'Parameter redirect_uri cannot be null.' } as IQexCommandResult;
+      return { errorCode: EErrorCode.invalidParameters, errorMessage: 'Parameter redirect_uri cannot be null.' } as ICommandResult;
     }
     if (!this.email) {
-      return { errorCode: EErrorCode.invalidParameters, errorMessage: 'Parameter email cannot be null.' } as IQexCommandResult;
+      return { errorCode: EErrorCode.invalidParameters, errorMessage: 'Parameter email cannot be null.' } as ICommandResult;
     }
     if (!this.password) {
-      return { errorCode: EErrorCode.invalidParameters, errorMessage: 'Parameter password cannot be null.' } as IQexCommandResult;
+      return { errorCode: EErrorCode.invalidParameters, errorMessage: 'Parameter password cannot be null.' } as ICommandResult;
     }
 
     return null;
