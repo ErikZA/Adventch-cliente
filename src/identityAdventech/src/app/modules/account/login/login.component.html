@@ -1,0 +1,23 @@
+<div class="container-login">
+
+    <div class="main_login">
+
+        <form [formGroup]="loginForm">
+
+            <mat-form-field appearance="fill" class="uk-width-1">
+                <mat-label>Input</mat-label>
+                <input matInput formControlName="email">
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="uk-width-1">
+                <mat-label>Input</mat-label>
+                <input matInput formControlName="password">
+            </mat-form-field>
+
+            <button [disabled]="!loginForm.valid">Entrar</button>
+
+        </form>
+
+    </div>
+
+</div>
