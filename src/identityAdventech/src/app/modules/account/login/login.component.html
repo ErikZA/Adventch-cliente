@@ -1,0 +1,32 @@
+<div class="container-login">
+
+    <div class="main_login">
+
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+            <div class="logo">
+                <img src="../../../../assets/img/logo_advente-tech.png" alt="">
+            </div>
+
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Senha</mat-label>
+                <input matInput formControlName="password">
+            </mat-form-field>
+
+            <div class="uk-flex uk-flex-row uk-flex-middle">
+                <div class="uk-flex-1">
+                    <a class="uk-text-small uk-text-uppercase">Recuperar Senha</a>
+                </div>
+                <button mat-flat-button color="rimary" [disabled]="!loginForm.valid">Entrar</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

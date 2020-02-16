@@ -1,0 +1,41 @@
+.profile{
+    width: 350px;
+    max-height: 400px;
+    background: #FFF;
+    position: fixed;
+    top:70px;
+    right: 30px;
+    padding: 10px;
+    border-radius: 5px;
+    border:1px solid #eee;
+    box-shadow:5px 5px 25px 0px rgba(46,61,73,.2);
+    overflow-x: auto;
+
+    .information{
+        padding-bottom: 20px;
+
+        .name{
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+
+        span{
+            display: block;
+        }
+    }
+
+    .unity{
+        margin-bottom: 20px;
+
+        li{
+            border-top:1px solid #eee;
+            padding: 10px;
+            color:#000;
+        }
+
+        li:hover {
+            background-color: #EEE;
+        }
+    }
+
+}
