@@ -4,16 +4,23 @@ import { Store } from '@ngrx/store';
 import { IsLogin } from '../../action/auth.action';
 import { Routes, Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { HttpClient } from '@angular/common/http';
+
+import { environment } from '../../../environments/environment';
+import { readUser } from 'src/app/action/user.action';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  public uri = environment.identityApiUrl;
+
   constructor(
     private store: Store<any>,
     private router: Router,
-    private jwt: JwtHelperService
+    private jwt: JwtHelperService,
+    private http: HttpClient,
   ) { }
 
   checkLogin() {
@@ -27,8 +34,14 @@ export class AuthService {
   }
 
   getUser() {
-    const decodeToken = this.jwt.decodeToken();
-    console.log(decodeToken);
+    const { sub } = JSON.parse(localStorage.getItem("user"));
+    this.http.get(`${this.uri}/Users/${sub}`).subscribe((res: any) => {
+      this.store.dispatch(readUser(res.data[0]))
+    });
+  }
+
+  decodeToken() {
+    return this.jwt.decodeToken();
   }
 
   getMainToken() {
@@ -40,7 +53,7 @@ export class AuthService {
   };
 
   getCurrentUser() {
-    const user = this.getLocalStorage("currentUser");
+    const user = this.getLocalStorage("user");
     return user;
   }
 
