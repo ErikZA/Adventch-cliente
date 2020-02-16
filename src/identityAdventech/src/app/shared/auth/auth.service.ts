@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { IsLogin } from '../../action/auth.action';
 import { Routes, Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
@@ -11,16 +12,23 @@ export class AuthService {
 
   constructor(
     private store: Store<any>,
-    private router: Router
+    private router: Router,
+    private jwt: JwtHelperService
   ) { }
 
   checkLogin() {
     const token = this.getMainToken();
     if (token !== undefined && token !== null) {
       this.store.dispatch(IsLogin(true));
+      this.getUser();
     } else {
       this.store.dispatch(IsLogin(false));
     }
+  }
+
+  getUser() {
+    const decodeToken = this.jwt.decodeToken();
+    console.log(decodeToken);
   }
 
   getMainToken() {

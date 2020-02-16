@@ -24,7 +24,7 @@ export class AuthRoute implements CanActivate {
             return true
         }
 
-        // this.router.navigate(['/'])
+        this.router.navigate(['/'])
 
         return false
     }
