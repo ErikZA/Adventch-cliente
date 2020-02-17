@@ -12,13 +12,18 @@ import { IsLogin } from '../../actions/auth.action';
 })
 export class NavbarComponent implements OnInit {
 
+  private authentication$: Observable<AuthModel>;
+  private user$: Observable<any>;
+
   public isLogin = false;
-  authentication$: Observable<AuthModel>;
+  public user;
 
   constructor(
     private store: Store<any>,
   ) {
     this.authentication$ = store.select('auth');
+    this.user$ = store.select('user')
+    this.user$.subscribe((res) => this.user = res);
   }
 
   ngOnInit() {

@@ -26,9 +26,10 @@ import { authReducer } from './reducers/auth.reducer';
 // Services
 import { AuthGuard } from './shared/auth/auth.guard';
 import { JwtModule } from '@auth0/angular-jwt';
-import { AccountModule } from './modules/account/account.module';
 import { fieldReducer } from './reducers/field.reducer';
 import { SubscriptionModule } from './modules/subscription/subscription.module';
+import { HomeModule } from './modules/home/home.module';
+import { UserReducer } from './reducers/user.reducer';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -55,7 +56,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     MaterialModule,
     HttpClientModule,
     RequestInterceptor,
-    AccountModule,
+    HomeModule,
     SubscriptionModule,
     NgxMaskModule.forRoot(options),
     TranslateModule.forRoot({
@@ -80,6 +81,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
       product: productReducer,
       auth: authReducer,
       field: fieldReducer,
+      user: UserReducer
     }),
   ],
   providers: [

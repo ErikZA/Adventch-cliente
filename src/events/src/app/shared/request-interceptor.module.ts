@@ -16,11 +16,14 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class HttpsRequestInterceptor implements HttpInterceptor {
-  constructor(private _router: Router) {}
+  constructor(private _router: Router) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let myHeaders = new HttpHeaders().set('Content-Type', 'application/json');
-    myHeaders = myHeaders.append('Authorization', 'Bearer ' + JSON.parse(localStorage.getItem('token')));
+    const { alias } = JSON.parse(localStorage.getItem("user"));
+    let myHeaders = req.headers
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${JSON.parse(localStorage.getItem('token'))}`)
+      .set('un-alias', alias);
 
     // if (!_.endsWith(this._router.url, 'auth/login') && !_.startsWith(this._router.url, 'https://viacep.com.br')) {
     //   myHeaders = myHeaders.append('Authorization', 'Bearer ' + JSON.parse(localStorage.getItem('token')));
@@ -50,4 +53,4 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
     }
   ]
 })
-export class RequestInterceptor {}
+export class RequestInterceptor { }

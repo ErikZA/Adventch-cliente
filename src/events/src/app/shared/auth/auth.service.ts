@@ -3,16 +3,40 @@ import { Store } from '@ngrx/store';
 
 import { IsLogin } from '../../actions/auth.action';
 import { Routes, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+
+import { environment } from '../../../environments/environment';
+import { readUser } from 'src/app/actions/user.action';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  public uri = environment.identityApiUrl;
+
   constructor(
     private store: Store<any>,
-    private router: Router
+    private router: Router,
+    private http: HttpClient,
   ) { }
+
+  checkLogin() {
+    const token = this.getMainToken();
+    if (token !== undefined && token !== null) {
+      this.store.dispatch(IsLogin(true));
+      this.getUser();
+    } else {
+      this.store.dispatch(IsLogin(false));
+    }
+  }
+
+  getUser() {
+    const { id } = JSON.parse(localStorage.getItem("user"));
+    this.http.get(`${this.uri}/Users/${id}`).subscribe((res: any) => {
+      this.store.dispatch(readUser(res.data[0]))
+    });
+  }
 
   getMainToken() {
     return this.getLocalStorage("token");
