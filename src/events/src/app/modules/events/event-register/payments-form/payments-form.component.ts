@@ -18,10 +18,10 @@ export class PaymentsFormComponent implements OnInit {
   filteredOptions: Observable<Payment[]>;
 
   public accounts: Payment[] = [
-    { name: "guilherme", account: 2334, agency: 34534, bank: '' },
-    { name: "vinicius", account: 2334, agency: 34534, bank: '' },
-    { name: "mendonça", account: 2334, agency: 34534, bank: '' },
-    { name: "ferreira", account: 2334, agency: 34534, bank: '' },
+    { id: 1, name: "guilherme", account: 2334, agency: 34534, bank: '', type: 1 },
+    { id: 2, name: "vinicius", account: 2334, agency: 34534, bank: '', type: 1 },
+    { id: 3, name: "mendonça", account: 2334, agency: 34534, bank: '', type: 1 },
+    { id: 4, name: "ferreira", account: 2334, agency: 34534, bank: '', type: 1 },
   ]
 
   constructor(
@@ -52,6 +52,7 @@ export class PaymentsFormComponent implements OnInit {
       this.formPayments.controls["installmentAmount"].value,
       this.formPayments.controls["installmentLimit"].value,
       this.formPayments.controls["bankAccountId"].value,
+      this.formPayments.controls["paymentType"].value,
     ))
   }
 

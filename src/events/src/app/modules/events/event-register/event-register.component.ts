@@ -47,7 +47,7 @@ export class EventRegisterComponent implements OnInit {
       street: ['', Validators.required],
       neighborhood: ['', Validators.required],
       city: ['', Validators.required],
-      uf: ['', Validators.required],
+      state: ['', Validators.required],
       complement: [''],
       number: [''],
     })
@@ -56,7 +56,8 @@ export class EventRegisterComponent implements OnInit {
       cashValue: ['', Validators.compose([Validators.required, Validators.min(1)])],
       installmentAmount: ['', Validators.compose([Validators.required, Validators.min(1)])],
       installmentLimit: ['', Validators.compose([Validators.required, Validators.min(1)])],
-      bankAccountId: ['', Validators.required]
+      bankAccountId: ['', Validators.required],
+      paymentType: ['', Validators.required]
     })
 
   }

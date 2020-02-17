@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { AddInformation } from '../../../../actions/newEvent.action';
 import { ReadFields } from '../../../../actions/field.action';
 import { FieldModel } from 'src/app/models/fields.model';
+import { FieldsService } from 'src/app/modules/settings/fields/fields.service';
 
 @Component({
   selector: 'app-information-form',
@@ -17,17 +18,21 @@ export class InformationFormComponent implements OnInit {
   @Input('formInformation') formInformation: FormGroup;
 
   public field$: Observable<any>;
-  public fields: FieldModel[] = [];
+  public fields: FieldModel[];
 
   constructor(
     public store: Store<any>,
+    private field: FieldsService
   ) {
     this.field$ = store.select('field')
-    this.store.dispatch(ReadFields());
   }
-
+  
   ngOnInit() {
-    this.field$.subscribe((res: any) => this.fields = res.data);
+    this.field.All()
+    this.field$.subscribe((res: any) => {
+      this.fields = res.data
+      console.log(res);
+    });
   }
 
   sendInformation() {

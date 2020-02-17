@@ -5,9 +5,9 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { RemoveProcuts, AddProducts, ReadProducts } from 'src/app/actions/products.action';
-import { Products, ProductsReducer } from 'src/app/models/event.model';
+import { Products, ProductsReducer, EventModel } from 'src/app/models/event.model';
 import { RegisterEvent } from 'src/app/actions/newEvent.action';
-import { SnackBarService } from 'src/app/shared/snack-bar/snack-bar.service';
+import { EventRegisterService } from '../event-register.service';
 
 @Component({
   selector: 'app-products-form',
@@ -20,13 +20,16 @@ export class ProductsFormComponent implements OnInit {
 
   public products: Products[] = [];
   public product$: Observable<ProductsReducer>;
+  public event$: Observable<any>;
+  public event: EventModel;
 
   constructor(
     public store: Store<any>,
     public router: Router,
-    public snackbar: SnackBarService
+    private events: EventRegisterService
   ) {
     this.product$ = store.select('product')
+    this.event$ = store.select('newevent')
     this.store.dispatch(ReadProducts());
   }
 
@@ -49,7 +52,10 @@ export class ProductsFormComponent implements OnInit {
   finish() {
     this.store.dispatch(RegisterEvent());
     this.router.navigate(['/eventos'])
-    this.snackbar.open("check_circle", "Eventos criado com success", 2000, "success")
+    this.event$.subscribe((res: any) => {
+      console.log(res);
+      this.events.Create(res);
+    });
   }
 
 }

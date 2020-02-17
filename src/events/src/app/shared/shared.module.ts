@@ -15,6 +15,8 @@ import { SnackBarComponent } from './snack-bar/snack-bar.component';
 // Services
 import { SnackBarService } from './snack-bar/snack-bar.service';
 import { AuthService } from './auth/auth.service';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpRequestInterceptor } from './http-interceptor';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,7 @@ import { AuthService } from './auth/auth.service';
   entryComponents: [SnackBarComponent],
   providers: [
     SnackBarService,
-    AuthService
+    AuthService,
   ]
 })
 export class SharedModule { }

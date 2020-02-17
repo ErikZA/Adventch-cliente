@@ -2,23 +2,24 @@
 
     <div class="uk-flex-1 uk-padding-small">
 
-        <div *ngIf="fields?.length > 0">
-            <div *ngFor="let field of fields; let i = index"
-                class="uk-flex uk-flex-row uk-flex-middle uk-margin-small-bottom">
+        <div *ngIf="fields?.data?.length > 0">
+            <div *ngFor="let field of fields.data" class="uk-flex uk-flex-row uk-flex-middle uk-margin-small-bottom">
                 <div class="uk-flex-1">
-                    <span class="uk-display-block uk-text-large"> {{ field.name }} </span>
+                    <span class="uk-display-block uk-text-large"> {{ field?.name }} </span>
                 </div>
                 <div class="decription-column">
-                    <span class="uk-display-block">Tipo: {{ fieldTypes[field.fieldTypeId - 1].name }} </span>
-                    <span class="uk-display-block">Obrigatorio: {{ field.isRequired ? "Sim" : "Não" }} </span>
+                    <!-- <span class="uk-display-block">Tipo: {{ fieldTypes[field.fieldTypeId - 1].name }} </span>
+                    <span class="uk-display-block">Obrigatorio: {{ field.isRequired ? "Sim" : "Não" }} </span> -->
                 </div>
                 <div class="uk-margin-small-left">
-                    <a uk-icon="trash" (click)="removeField(i)"></a>
+                    <a uk-icon="pencil" (click)="isEdit = true" routerLink="/configuracoes/campos" [queryParams]="{id:field.id}"
+                        class="uk-margin-small-right"></a>
+                    <a uk-icon="trash" (click)="removeField(field.id)"></a>
                 </div>
             </div>
         </div>
 
-        <div *ngIf="fields?.length === 0" class="uk-text-center alert">
+        <div *ngIf="fields?.data?.length === 0" class="uk-text-center alert">
             <span>Você não tem campos adicionais cadastrados</span>
         </div>
 
@@ -57,7 +58,13 @@
                 <mat-slide-toggle formControlName="isRequired"></mat-slide-toggle>
             </div>
 
-            <button mat-flat-button color="primary" (click)="addField()" [disabled]="!formFields.valid">Cadastrar</button>
+            <button mat-flat-button color="primary" (click)="addField()" *ngIf="!isEdit"
+                [disabled]="!formFields.valid">Cadastrar</button>
+
+            <button mat-button color="primary" (click)="cleanFormEdit()" class="uk-margin-small-right"
+                *ngIf="isEdit">Cancelar</button>
+            <button mat-flat-button color="primary" (click)="updateField()" *ngIf="isEdit"
+                [disabled]="!formFields.valid">Atualizar</button>
 
         </form>
     </div>

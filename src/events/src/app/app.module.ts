@@ -7,7 +7,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { registerLocaleData } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import localePt from '@angular/common/locales/pt';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -20,7 +20,6 @@ import { newEvent } from './reducers/newEvent.reducer';
 import { MaterialModule } from './shared/material.module';
 import { productReducer } from './reducers/products.reducer';
 import { eventReducer } from './reducers/event.reducer';
-import { RequestInterceptor } from './shared/request-interceptor.module';
 import { authReducer } from './reducers/auth.reducer';
 
 // Services
@@ -30,6 +29,8 @@ import { fieldReducer } from './reducers/field.reducer';
 import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { HomeModule } from './modules/home/home.module';
 import { UserReducer } from './reducers/user.reducer';
+import { HttpRequestInterceptor } from './shared/http-interceptor';
+import { SettingService } from './modules/settings/setting.service';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -55,7 +56,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     AppRoutingModule,
     MaterialModule,
     HttpClientModule,
-    RequestInterceptor,
     HomeModule,
     SubscriptionModule,
     NgxMaskModule.forRoot(options),
@@ -70,7 +70,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        whitelistedDomains: ['localhost:5001', 'api-store.adven.tech'],
+        whitelistedDomains: ['localhost:5003', 'localhost:5002'],
         blacklistedRoutes: ['viacep.com.br']
       }
     }),
@@ -87,6 +87,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
   providers: [
     AuthGuard,
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

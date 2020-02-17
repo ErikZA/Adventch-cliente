@@ -25,13 +25,13 @@ export class AdressFormComponent implements OnInit {
   getCep() {
     const cep = this.formAdrees.controls["cep"].value
 
-    this.http.get(`https://viacep.com.br/ws/${cep}/json`).subscribe((res: any) => {
+    this.http.get(`https://viacep.com.br/ws/${cep}/json`, { headers: {} }).subscribe((res: any) => {
       const { localidade, bairro, logradouro, uf } = res;
 
       this.formAdrees.controls["city"].setValue(localidade)
       this.formAdrees.controls["neighborhood"].setValue(bairro)
       this.formAdrees.controls["street"].setValue(logradouro)
-      this.formAdrees.controls["uf"].setValue(uf)
+      this.formAdrees.controls["state"].setValue(uf)
     })
 
   }
@@ -42,7 +42,7 @@ export class AdressFormComponent implements OnInit {
       this.formAdrees.controls["street"].value,
       this.formAdrees.controls["neighborhood"].value,
       this.formAdrees.controls["city"].value,
-      this.formAdrees.controls["uf"].value,
+      this.formAdrees.controls["state"].value,
       this.formAdrees.controls["complement"].value,
       this.formAdrees.controls["number"].value,
     ));

@@ -4,12 +4,14 @@ export class EventModel {
     public description: string;
     public adrees: Address;
     public realizationDate: Date;
+    public registrationDate: Date;
     public coupons: Coupons[];
     public products: Products[];
     public cashValue: string;
     public installmentAmount: string;
     public installmentLimit: number;
-    public receiptAccountId: string;
+    public bankAccountId: string;
+    public paymentType: string;
 }
 
 export class EventResponseModel {
@@ -19,11 +21,13 @@ export class EventResponseModel {
         public description: string,
         public adrees: Address,
         public realizationDate: Date,
+        public registrationDate: Date,
         public coupons: Coupons[],
         public cashValue: string,
         public installmentAmount: string,
         public installmentLimit: number,
-        public receiptAccountId: string,
+        public bankAccountId: string,
+        public paymentType: string,
     ) { }
 }
 
@@ -33,7 +37,7 @@ export class Address {
         public street: string,
         public neighborhood: string,
         public city: string,
-        public uf: string,
+        public state: string,
         public complement: string,
         public number: number,
     ) { }
@@ -68,9 +72,11 @@ export class ProductsReducer {
 
 export class Payment {
     constructor(
+        public id: number,
         public name: string,
         public account: number,
         public agency: number,
         public bank: string,
+        public type: number,
     ) { }
 }

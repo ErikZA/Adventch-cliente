@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
 import { EventModel } from 'src/app/models/event.model';
+import { MatSnackBar } from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class EventRegisterService {
 
   constructor(
     private http: HttpClient,
+    private snackbar: MatSnackBar,
   ) { }
 
   async One(id: string) {
@@ -23,8 +25,12 @@ export class EventRegisterService {
     return await this.http.get(`${this.uri}/Events`).toPromise();
   }
 
-  async Create(event: EventModel) {
-    return await this.http.post(`${this.uri}/Events`, event).toPromise()
+  Create(event: EventModel) {
+    console.log(event)
+    this.http.post(`${this.uri}/Events`, JSON.stringify(event)).subscribe(res => {
+      console.log(res);
+      this.snackbar.open("check_circle", "Eventos criado com success", 2000, "success")
+    })
   }
 
 

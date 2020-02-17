@@ -4,7 +4,7 @@ import { coupons } from '../actions/coupon.action';
 import { produts } from '../actions/products.action';
 import CouponModel from '../modules/events/event-register/Coupon.model';
 
-export const AddInformation = (name: string, description: string, subscriptionLimit: number, realizationDate: string, registrationDate: string) => {
+export const AddInformation = (name: string, description: string, subscriptionLimit: number, realizationDate: any, registrationDate: any) => {
   return {
     type: "ADD_INFORMATION",
     payload: {
@@ -29,24 +29,25 @@ export const AddAdress = (
   street: string,
   neighborhood: string,
   city: string,
-  uf: string,
+  state: string,
   complement: string,
   number: number,
 ) => {
   return {
     type: "ADD_ADRESS",
-    payload: { cep, street, neighborhood, city, uf, complement, number }
+    payload: { cep, street, neighborhood, city, state, complement, number }
   }
 }
 
-export const AddPayments = (cashValue: number, installmentAmount: number, installmentLimit: number, receiptAccountId: string) => {
+export const AddPayments = (cashValue: number, installmentAmount: number, installmentLimit: number, bankAccountId: string, paymentType: number) => {
   return {
     type: "ADD_PAYMENTS",
     payload: {
       cashValue,
       installmentAmount,
       installmentLimit,
-      receiptAccountId
+      bankAccountId,
+      paymentType
     }
   }
 }

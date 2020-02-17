@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
 // Modules
@@ -16,6 +16,7 @@ import { AdressFormComponent } from './event-register/adress-form/adress-form.co
 
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { EventRegisterService } from './event-register/event-register.service';
+import { HttpRequestInterceptor } from 'src/app/shared/http-interceptor';
 
 export const MY_MOMENT_FORMATS = {
   parseInput: '2 LT',
@@ -47,6 +48,7 @@ export const MY_MOMENT_FORMATS = {
   providers: [
     { provide: OWL_DATE_TIME_LOCALE, useValue: MY_MOMENT_FORMATS },
     EventRegisterService,
+    { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },
   ]
 })
 export class EventRegisterModule { }
