@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
       this.auth.getUser();
       this.store.dispatch(IsLogin(true));
       if (this.isRedirect) {
-        window.location.href = `${this.redirect_url}/?token=${access_token}`;
+        window.location.href = `${this.redirect_url}/?token=${access_token}&alias=${default_company_alias}`;
         this.isRedirect = false;
       } else {
         this.router.navigate(['/']);
