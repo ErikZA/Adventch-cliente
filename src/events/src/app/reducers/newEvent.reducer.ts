@@ -20,7 +20,7 @@ export function newEvent(state = event, action: ActionModel) {
             state.coupons = { ...action.payload }
             return state
         case "ADD_ADRESS":
-            state.adrees = { ...action.payload }
+            state.address = { ...action.payload }
             return state;
         case "ADD_PAYMENTS":
             const { cashValue, installmentAmount, installmentLimit, bankAccountId, paymentType } = action.payload;

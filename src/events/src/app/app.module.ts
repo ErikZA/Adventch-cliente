@@ -31,7 +31,8 @@ import { HomeModule } from './modules/home/home.module';
 import { UserReducer } from './reducers/user.reducer';
 import { HttpRequestInterceptor } from './shared/http-interceptor';
 import { SettingService } from './modules/settings/setting.service';
-
+import { NgxViacepModule } from '@brunoc/ngx-viacep';
+import { BankAccountReducer } from './reducers/bankAccount.reducer';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -58,6 +59,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     HttpClientModule,
     HomeModule,
     SubscriptionModule,
+    NgxViacepModule,
     NgxMaskModule.forRoot(options),
     TranslateModule.forRoot({
       loader: {
@@ -81,7 +83,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
       product: productReducer,
       auth: authReducer,
       field: fieldReducer,
-      user: UserReducer
+      user: UserReducer,
+      bankAccount: BankAccountReducer,
     }),
   ],
   providers: [

@@ -1,0 +1,23 @@
+.form {
+    width: 250px;
+    margin-left: 20px;
+    padding: 15px;
+}
+
+.bank_account{
+    width: 100%;
+    border-bottom: 1px solid #eee;
+    padding:10px 0;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    span{
+        display: block;
+    }
+
+}
+.bank_account:last-child{
+    border-bottom: none;
+}

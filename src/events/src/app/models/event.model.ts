@@ -1,8 +1,8 @@
 export class EventModel {
     public name: string;
-    public numberSubscriptions: number;
+    public subscriptionLimit: number;
     public description: string;
-    public adrees: Address;
+    public address: Address;
     public realizationDate: Date;
     public registrationDate: Date;
     public coupons: Coupons[];
@@ -17,17 +17,18 @@ export class EventModel {
 export class EventResponseModel {
     constructor(
         public name: string,
-        public numberSubscriptions: number,
         public description: string,
-        public adrees: Address,
+        public subscriptionLimit: number,
         public realizationDate: Date,
         public registrationDate: Date,
-        public coupons: Coupons[],
         public cashValue: string,
         public installmentAmount: string,
         public installmentLimit: number,
         public bankAccountId: string,
         public paymentType: string,
+        public address: Address,
+        public coupons: Coupons[],
+        public products: Products[],
     ) { }
 }
 

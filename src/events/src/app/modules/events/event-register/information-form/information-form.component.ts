@@ -22,17 +22,17 @@ export class InformationFormComponent implements OnInit {
 
   constructor(
     public store: Store<any>,
-    private field: FieldsService
+    private field: FieldsService,
   ) {
     this.field$ = store.select('field')
+    field.All()
   }
-  
+
   ngOnInit() {
-    this.field.All()
-    this.field$.subscribe((res: any) => {
-      this.fields = res.data
-      console.log(res);
-    });
+    // this.field$.subscribe((res: any) => {
+    //   console.log(res);
+    //   this.fields = res.data
+    // });
   }
 
   sendInformation() {

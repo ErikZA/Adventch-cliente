@@ -27,6 +27,10 @@
             <mat-step>
                 <ng-template matStepLabel>Produtos</ng-template>
                 <app-products-form [formProduct]="formProduct"></app-products-form>
+
+                <button mat-flat-button matStepperNext color="primary" (click)="createEvents()">
+                    Finalizar
+                </button>
             </mat-step>
         </mat-horizontal-stepper>
 

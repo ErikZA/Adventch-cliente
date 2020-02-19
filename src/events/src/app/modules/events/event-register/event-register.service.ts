@@ -29,7 +29,7 @@ export class EventRegisterService {
     console.log(event)
     this.http.post(`${this.uri}/Events`, JSON.stringify(event)).subscribe(res => {
       console.log(res);
-      this.snackbar.open("check_circle", "Eventos criado com success", 2000, "success")
+      this.snackbar.open("check_circle", "Eventos criado com success", { duration: 2000 })
     })
   }
 

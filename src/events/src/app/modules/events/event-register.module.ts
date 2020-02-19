@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 // Modules
 import { SharedModule } from '../../shared/shared.module';
@@ -46,8 +46,9 @@ export const MY_MOMENT_FORMATS = {
     OwlNativeDateTimeModule,
   ],
   providers: [
-    { provide: OWL_DATE_TIME_LOCALE, useValue: MY_MOMENT_FORMATS },
     EventRegisterService,
+    DatePipe,
+    { provide: OWL_DATE_TIME_LOCALE, useValue: MY_MOMENT_FORMATS },
     { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },
   ]
 })

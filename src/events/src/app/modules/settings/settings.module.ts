@@ -12,12 +12,15 @@ import { FieldsComponent } from './fields/fields.component';
 import { ListComponent } from './list/list.component';
 import { SettingService } from './setting.service';
 import { FieldsService } from './fields/fields.service';
+import { BankAccountComponent } from './bank-account/bank-account.component';
+import { BankAccountService } from './bank-account/bank-account.service';
 
 @NgModule({
   declarations: [
     SettingComponent,
     FieldsComponent,
-    ListComponent
+    ListComponent,
+    BankAccountComponent
   ],
   imports: [
     CommonModule,
@@ -30,6 +33,7 @@ import { FieldsService } from './fields/fields.service';
   providers: [
     SettingService,
     FieldsService,
+    BankAccountService,
     { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },
   ]
 })
