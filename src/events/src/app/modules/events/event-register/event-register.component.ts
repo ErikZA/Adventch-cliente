@@ -98,7 +98,6 @@ export class EventRegisterComponent implements OnInit {
       coupons,
       produts
     );
-    console.log(eventForm);
     this.event.Create(eventForm)
   }
 

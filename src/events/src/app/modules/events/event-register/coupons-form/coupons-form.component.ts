@@ -5,7 +5,6 @@ import { Store, select } from '@ngrx/store';
 
 import CouponModel, { CouponReducer } from '../Coupon.model';
 import { Read, Add, Remove } from '../../../../actions/coupon.action';
-import { AddCoupon } from '../../../../actions/newEvent.action';
 
 @Component({
   selector: 'app-coupons-form',
@@ -41,10 +40,6 @@ export class CouponsFormComponent implements OnInit {
 
   removeCoupon(index) {
     Remove(index);
-  }
-
-  sendCoupons() {
-    this.store.dispatch(AddCoupon(this.coupons));
   }
 
 }

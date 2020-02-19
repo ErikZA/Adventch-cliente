@@ -9,6 +9,8 @@ import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { registerLocaleData } from '@angular/common';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import localePt from '@angular/common/locales/pt';
+import { JwtModule } from '@auth0/angular-jwt';
+import { NgxViacepModule } from '@brunoc/ngx-viacep';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,23 +18,19 @@ import { SharedModule } from './shared/shared.module';
 
 // Reducers
 import { couponReducer } from './reducers/coupon.reducer';
-import { newEvent } from './reducers/newEvent.reducer';
 import { MaterialModule } from './shared/material.module';
 import { productReducer } from './reducers/products.reducer';
 import { eventReducer } from './reducers/event.reducer';
 import { authReducer } from './reducers/auth.reducer';
+import { BankAccountReducer } from './reducers/bankAccount.reducer';
 
 // Services
 import { AuthGuard } from './shared/auth/auth.guard';
-import { JwtModule } from '@auth0/angular-jwt';
 import { fieldReducer } from './reducers/field.reducer';
 import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { HomeModule } from './modules/home/home.module';
 import { UserReducer } from './reducers/user.reducer';
 import { HttpRequestInterceptor } from './shared/http-interceptor';
-import { SettingService } from './modules/settings/setting.service';
-import { NgxViacepModule } from '@brunoc/ngx-viacep';
-import { BankAccountReducer } from './reducers/bankAccount.reducer';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -59,7 +57,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     HttpClientModule,
     HomeModule,
     SubscriptionModule,
-    NgxViacepModule,
     NgxMaskModule.forRoot(options),
     TranslateModule.forRoot({
       loader: {
@@ -78,7 +75,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     }),
     StoreModule.forRoot({
       coupon: couponReducer,
-      newevent: newEvent,
       event: eventReducer,
       product: productReducer,
       auth: authReducer,

@@ -6,7 +6,6 @@ import { Store } from '@ngrx/store';
 
 import { RemoveProcuts, AddProducts, ReadProducts } from 'src/app/actions/products.action';
 import { Products, ProductsReducer, EventModel } from 'src/app/models/event.model';
-import { RegisterEvent } from 'src/app/actions/newEvent.action';
 import { EventRegisterService } from '../event-register.service';
 
 @Component({
@@ -47,15 +46,6 @@ export class ProductsFormComponent implements OnInit {
 
   remove(index: number) {
     RemoveProcuts(index)
-  }
-
-  finish() {
-    this.store.dispatch(RegisterEvent());
-    this.router.navigate(['/eventos'])
-    this.event$.subscribe((res: any) => {
-      console.log(res);
-      this.events.Create(res);
-    });
   }
 
 }

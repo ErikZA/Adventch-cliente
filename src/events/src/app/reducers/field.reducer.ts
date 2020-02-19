@@ -1,6 +1,9 @@
 import { ActionModel } from '../models/action.model';
+import { FieldModelReducer } from '../models/fields.model';
 
-export function fieldReducer(state, action: ActionModel) {
+const field = new FieldModelReducer();
+
+export function fieldReducer(state = field, action: ActionModel) {
 
     switch (action.type) {
         case "READ_FIELDS":

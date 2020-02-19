@@ -1,7 +1,7 @@
 import { ActionModel } from '../models/action.model';
 import { BankAccountModel } from '../models/bankAccount.model';
 
-const bankAccounts: BankAccountModel = new BankAccountModel();
+const bankAccounts: BankAccountModel[] = [];
 
 export function BankAccountReducer(state = bankAccounts, action: ActionModel) {
 

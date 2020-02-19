@@ -1,4 +1,8 @@
-export const ReadEvents = (events) => ({
-    type: "READ_EVENTS",
-    payload: null
-})
+import { EventsModule } from '../modules/events/events.module';
+
+export const ReadEvents = (events: EventsModule[]) => {
+    return {
+        type: "READ_EVENTS",
+        payload: events
+    }
+}

@@ -21,14 +21,14 @@
 
         <div class="uk-flex uk-flex-row uk-margin-small-bottom" *ngFor="let event of events">
             <span class="uk-flex-1"> {{ event.name }} </span>
-            <span class="column-small"> {{ event?.realizationDate[0] | date:"dd/MM/yyyy HH:mm" }} </span>
-            <span class="column-small"> {{ event?.realizationDate[1] | date:"dd/MM/yyyy HH:mm" }} </span>
+            <span class="column-small"> {{ event?.realizationDateBegin | date:"dd/MM/yyyy HH:mm" }} </span>
+            <span class="column-small"> {{ event?.realizationDateEnd | date:"dd/MM/yyyy HH:mm" }} </span>
             <span class="column-small"> {{ event?.cashValue | currency:"BRL" }} </span>
             <span class="column-small"> {{ event?.installmentAmount | currency:"BRL" }} </span>
             <span class="column-small">
                 <a uk-icon="link" uk-tooltip="Link"></a>
-                <a uk-icon="pencil" uk-tooltip="Editar" class="uk-margin-small-left uk-margin-small-right"></a>
-                <a uk-icon="trash" uk-tooltip="Apagar"></a>
+                <!-- <a uk-icon="pencil" uk-tooltip="Editar" class="uk-margin-small-left uk-margin-small-right"></a> -->
+                <a uk-icon="trash" (click)="remove(event.id)" uk-tooltip="Apagar"></a>
             </span>
 
             <!-- <span class="uk-text-large"> {{ event.name }} </span>

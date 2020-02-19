@@ -17,6 +17,8 @@ export class BankAccountComponent implements OnInit {
   public bankAccount$: Observable<any>;
   public bankAccounts: BankAccount[] = [];
 
+  public banks: any[] = [];
+
   constructor(
     public fb: FormBuilder,
     public bank: BankAccountService,
@@ -36,7 +38,7 @@ export class BankAccountComponent implements OnInit {
     })
 
     this.bank.All();
-    this.bank.GetBankTypes();
+    this.bank.GetBank().subscribe((res: any) => this.banks = res.data);
     this.bankAccount$.subscribe(res => this.bankAccounts = res);
 
   }

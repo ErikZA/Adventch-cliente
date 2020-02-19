@@ -31,7 +31,7 @@
             <mat-form-field appearance="outline" class="uk-width-1">
                 <mat-label>Banco</mat-label>
                 <mat-select formControlName="bankId">
-                    <mat-option value="7dH5DR82">Bradesco</mat-option>
+                    <mat-option *ngFor="let b of banks" [value]="b.id"> {{ b.name }} </mat-option>
                 </mat-select>
             </mat-form-field>
 

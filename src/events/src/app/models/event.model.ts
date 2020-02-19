@@ -81,3 +81,12 @@ export class Payment {
         public type: number,
     ) { }
 }
+
+export class PaymentModel {
+    constructor(
+        public id: string,
+        public name: string,
+        public agency: string,
+        public accountNumber: string,
+    ) { }
+}

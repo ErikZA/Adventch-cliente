@@ -40,9 +40,12 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       .pipe(
         retry(1),
         catchError((error: HttpErrorResponse) => {
-          if (error.status === 401) {
-            this.snackBar.open("Você não tem permissão", "OK", { duration: 2000 })
-            this.login.logout();
+          switch (error.status) {
+            case 401:
+              this.snackBar.open("Você não tem permissão", "OK", { duration: 2000 })
+              this.login.logout();
+            case 400:
+              this.snackBar.open(error.error.errorMessage, "Fechar", { duration: 3000 })
           }
           return throwError(error.error);
         })

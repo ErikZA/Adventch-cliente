@@ -1,12 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { AddInformation } from '../../../../actions/newEvent.action';
-import { ReadFields } from '../../../../actions/field.action';
 import { FieldModel } from 'src/app/models/fields.model';
 import { FieldsService } from 'src/app/modules/settings/fields/fields.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-information-form',
@@ -23,26 +22,14 @@ export class InformationFormComponent implements OnInit {
   constructor(
     public store: Store<any>,
     private field: FieldsService,
+    public datePipe: DatePipe
   ) {
     this.field$ = store.select('field')
-    field.All()
   }
 
   ngOnInit() {
-    // this.field$.subscribe((res: any) => {
-    //   console.log(res);
-    //   this.fields = res.data
-    // });
-  }
-
-  sendInformation() {
-    this.store.dispatch(AddInformation(
-      this.formInformation.controls["name"].value,
-      this.formInformation.controls["description"].value,
-      this.formInformation.controls["subscriptionLimit"].value,
-      this.formInformation.controls["realizationDate"].value,
-      this.formInformation.controls["registrationDate"].value,
-    ));
+    this.field.All()
+    this.field$.subscribe((res: any) => this.fields = res.data);
   }
 
 }

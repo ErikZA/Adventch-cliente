@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../environments/environment';
 import { readUser } from 'src/app/actions/user.action';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class AuthService {
     private store: Store<any>,
     private router: Router,
     private http: HttpClient,
+    private jwt: JwtHelperService,
   ) { }
 
   checkLogin() {
@@ -32,7 +34,10 @@ export class AuthService {
   }
 
   getUser() {
+    const { co0 } = this.jwt.decodeToken();
     const { id } = JSON.parse(localStorage.getItem("user"));
+    localStorage.setItem("user", JSON.stringify({ id, alias: co0.split(";")[0] }))
+
     this.http.get(`${this.uri}/Users/${id}`).subscribe((res: any) => {
       this.store.dispatch(readUser(res.data[0]))
     });

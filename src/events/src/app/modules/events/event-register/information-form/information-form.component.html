@@ -46,8 +46,7 @@
     <textarea matInput placeholder="Descrição" formControlName="description"></textarea>
   </mat-form-field>
 
-  <button mat-flat-button matStepperNext color="primary" (click)="sendInformation()"
-    [disabled]="!formInformation.valid">
+  <button mat-flat-button matStepperNext color="primary" [disabled]="!formInformation.valid">
     Continuar
   </button>
 

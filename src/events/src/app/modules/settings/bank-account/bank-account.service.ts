@@ -26,10 +26,12 @@ export class BankAccountService {
     this.bankAccount$ = store.select('bankAccount')
   }
 
-  GetBankTypes() {
-    this.http.get(`${this.uri}/BankAccounts/ListBankTypes`).subscribe(res => {
-      console.log(res);
-    })
+  GetBank() {
+    return this.http.get(`${this.uri}/Bank`);
+  }
+
+  GetMethodPayment() {
+    return this.http.get(`${this.uri}/PaymentTypes`);
   }
 
   All() {
