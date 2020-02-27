@@ -71,7 +71,7 @@ export class FieldsComponent implements OnInit {
 
   addField() {
     const { name, description, guidingText, isRequired, fieldTypeId } = this.formFields.value;
-    this.field.Create(this.formFields, name, description, guidingText, isRequired, fieldTypeId)
+    this.field.Create(this.formFields, name, description, guidingText, isRequired, fieldTypeId, "")
   }
 
   removeField(index: string) {

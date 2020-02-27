@@ -10,7 +10,6 @@ import { registerLocaleData } from '@angular/common';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import localePt from '@angular/common/locales/pt';
 import { JwtModule } from '@auth0/angular-jwt';
-import { NgxViacepModule } from '@brunoc/ngx-viacep';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,13 +22,13 @@ import { productReducer } from './reducers/products.reducer';
 import { eventReducer } from './reducers/event.reducer';
 import { authReducer } from './reducers/auth.reducer';
 import { BankAccountReducer } from './reducers/bankAccount.reducer';
+import { ListReducer } from './reducers/list.reducer';
+import { UserReducer } from './reducers/user.reducer';
 
 // Services
 import { AuthGuard } from './shared/auth/auth.guard';
 import { fieldReducer } from './reducers/field.reducer';
-import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { HomeModule } from './modules/home/home.module';
-import { UserReducer } from './reducers/user.reducer';
 import { HttpRequestInterceptor } from './shared/http-interceptor';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -56,7 +55,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     MaterialModule,
     HttpClientModule,
     HomeModule,
-    SubscriptionModule,
     NgxMaskModule.forRoot(options),
     TranslateModule.forRoot({
       loader: {
@@ -81,6 +79,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
       field: fieldReducer,
       user: UserReducer,
       bankAccount: BankAccountReducer,
+      list: ListReducer
     }),
   ],
   providers: [

@@ -1,0 +1,43 @@
+<div class="bankAccountForm">
+
+    <div class="uk-margin-small-top uk-margin-small-bottom uk-text-center">
+        <span>Nova Conta</span>
+    </div>
+
+    <form [formGroup]="formBankAccount">
+        <div class="formContent">
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Nome da Conta</mat-label>
+                <input matInput type="text" placeholder="Nome da Conta" formControlName="name">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Banco</mat-label>
+                <mat-select formControlName="bankId">
+                    <mat-option *ngFor="let b of banks" [value]="b.id"> {{ b.name }} </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Agencia</mat-label>
+                <input matInput type="text" placeholder="Agencia" formControlName="agency">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Conta</mat-label>
+                <input matInput type="text" placeholder="Conta" formControlName="accountNumber">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Número do convênio</mat-label>
+                <input matInput type="number" min="1" placeholder="Número do convênio"
+                    formControlName="agreementNumber">
+            </mat-form-field>
+        </div>
+
+    </form>
+</div>
+
+<button class="btn" (click)="createBankAccount()" [disabled]="!formBankAccount.valid">
+    Cadastrar
+</button>

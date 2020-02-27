@@ -30,8 +30,9 @@ export class FieldsService {
     })
   }
 
-  Create(form: FormGroup, name: string, description: string, guidingText: string, isRequired: boolean, fieldTypeId: number) {
-    this.http.post(`${this.uri}/Fields`, JSON.stringify({ name, description, guidingText, isRequired, fieldTypeId })).subscribe((res: any) => {
+  Create(form: FormGroup, name: string, description: string, guidingText: string, isRequired: boolean, fieldTypeId: number, fieldListId: string) {
+    console.log({ name, description, guidingText, isRequired, fieldTypeId, fieldListId: "" });
+    this.http.post(`${this.uri}/Fields`, JSON.stringify({ name, description, guidingText, isRequired, fieldTypeId, fieldListId: "" })).subscribe((res: any) => {
       this.All();
       this.snackBar.open("Campo adicional criado", "Fechar", { duration: 2000 })
       form.reset();

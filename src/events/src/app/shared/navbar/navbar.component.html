@@ -1,27 +1,17 @@
 <div class="main_header">
     <div class="container">
 
-        <div class="uk-flex uk-flex-row uk-flex-middle" style="height:60px">
+        <div class="uk-flex uk-flex-row uk-flex-middle" style="height:50px">
             <div class="uk-flex-1">
-                <i uk-icon="icon:calendar;ratio:2"></i>
             </div>
             <div *ngIf="!isLogin">
-                <button mat-button class="actived">Entrar</button>
+                <a [href]="urlIdentity" mat-button class="actived">Entrar</a>
             </div>
             <div class="uk-flex uk-flex-row" *ngIf="isLogin">
-
-                <button mat-button class="uk-margin-small-right item-hidden" routerLink="/eventos"
-                    routerLinkActive="actived">
-                    Meus Eventos
-                </button>
 
                 <button mat-button class="uk-margin-small-right item-hidden" routerLink="/inscricoes"
                     routerLinkActive="actived">
                     Novo Evento
-                </button>
-
-                <button mat-button class="item-hidden" routerLink="/configuracoes" routerLinkActive="actived">
-                    Configurações
                 </button>
 
                 <button mat-button [matMenuTriggerFor]="menu" fxLayout="row" fxLayoutAlign="center center">
@@ -50,6 +40,5 @@
 
             </div>
         </div>
-
     </div>
 </div>

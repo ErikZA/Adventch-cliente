@@ -43,8 +43,26 @@ $accent-color: mat-color($accent-palete);
 
 html, body { 
     font-family: Roboto, "Helvetica Neue", sans-serif; 
+    background: #EEE;
 }
 
+ul {
+    margin:0;
+    padding: 0;
+}
+
+li, li:hover{
+    list-style: none;
+}
+
+a,a:hover{
+    text-decoration: none;
+}
+
+.mat-dialog-container{
+    padding: 0 !important;
+    border-radius: 15px !important;
+}
 
 .container {
     max-width: 95%;

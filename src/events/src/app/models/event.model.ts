@@ -12,6 +12,7 @@ export class EventModel {
     public installmentLimit: number;
     public bankAccountId: string;
     public paymentType: string;
+    public eventFields: string[];
 }
 
 export class EventResponseModel {
@@ -29,6 +30,7 @@ export class EventResponseModel {
         public address: Address,
         public coupons: Coupons[],
         public products: Products[],
+        public eventFields: any[],
     ) { }
 }
 

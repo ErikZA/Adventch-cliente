@@ -5,8 +5,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { RemoveProcuts, AddProducts, ReadProducts } from 'src/app/actions/products.action';
-import { Products, ProductsReducer, EventModel } from 'src/app/models/event.model';
-import { EventRegisterService } from '../event-register.service';
+import { Products, ProductsReducer } from 'src/app/models/event.model';
 
 @Component({
   selector: 'app-products-form',
@@ -19,16 +18,12 @@ export class ProductsFormComponent implements OnInit {
 
   public products: Products[] = [];
   public product$: Observable<ProductsReducer>;
-  public event$: Observable<any>;
-  public event: EventModel;
 
   constructor(
     public store: Store<any>,
     public router: Router,
-    private events: EventRegisterService
   ) {
     this.product$ = store.select('product')
-    this.event$ = store.select('newevent')
     this.store.dispatch(ReadProducts());
   }
 
@@ -38,10 +33,10 @@ export class ProductsFormComponent implements OnInit {
 
   add() {
     AddProducts(
+      this.formProduct,
       this.formProduct.controls["name"].value,
       this.formProduct.controls["value"].value,
     )
-    this.formProduct.reset();
   }
 
   remove(index: number) {

@@ -14,13 +14,18 @@ import { SettingService } from './setting.service';
 import { FieldsService } from './fields/fields.service';
 import { BankAccountComponent } from './bank-account/bank-account.component';
 import { BankAccountService } from './bank-account/bank-account.service';
+import { BankAccountFormComponent } from './bank-account/bank-account-form/bank-account-form.component';
+import { ListFormComponent } from './list/list-form/list-form.component';
+import { ListService } from './list/list.service';
 
 @NgModule({
   declarations: [
     SettingComponent,
     FieldsComponent,
     ListComponent,
-    BankAccountComponent
+    BankAccountComponent,
+    BankAccountFormComponent,
+    ListFormComponent
   ],
   imports: [
     CommonModule,
@@ -34,7 +39,12 @@ import { BankAccountService } from './bank-account/bank-account.service';
     SettingService,
     FieldsService,
     BankAccountService,
+    ListService,
     { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },
+  ],
+  entryComponents: [
+    BankAccountFormComponent,
+    ListFormComponent
   ]
 })
 export class SettingsModule { }

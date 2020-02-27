@@ -1,27 +1,15 @@
-<div class="container">
-
-    <div>
-        <span class="title">Configurações</span>
-    </div>
-
-    <div class="uk-margin-medium-top">
-
-        <div class="header">
-            <a class="uk-flex-1" routerLink="/configuracoes/campos" routerLinkActive="actived">
-                Campos adicionais
-            </a>
-
-            <a class="uk-flex-1" routerLink="/configuracoes/listas" routerLinkActive="actived">
-                Lista
-            </a>
-
-            <a class="uk-flex-1" routerLink="/configuracoes/contas" routerLinkActive="actived">
-                Contas Bancarias
-            </a>
+<div class="header">
+    <div class="container">
+        <div class="title">
+            <span>Configurações</span>
         </div>
-
-        <router-outlet></router-outlet>
-
+        <div>
+            <a routerLink="/configuracoes/campos" routerLinkActive="actived">Campos adicionais</a>
+            <a routerLink="/configuracoes/listas" routerLinkActive="actived">Lista</a>
+            <a routerLink="/configuracoes/contas" routerLinkActive="actived">Contas Bancarias</a>
+        </div>
     </div>
-
+</div>
+<div class="container">
+    <router-outlet></router-outlet>
 </div>

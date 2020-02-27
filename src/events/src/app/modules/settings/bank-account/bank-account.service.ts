@@ -8,6 +8,8 @@ import { ReadBankAccount } from 'src/app/actions/bankAccount.action';
 import { FormGroup } from '@angular/forms';
 import { format } from 'url';
 import { SnackBarService } from 'src/app/shared/snack-bar/snack-bar.service';
+import { MatDialogRef } from '@angular/material';
+import { BankAccountFormComponent } from './bank-account-form/bank-account-form.component';
 
 @Injectable({
   providedIn: 'root'
@@ -40,11 +42,19 @@ export class BankAccountService {
     })
   }
 
-  Crate(form: FormGroup, name: string, bankId: string, agency: string, accountNumber: string, agreementNumber: string) {
+  Crate(dialog: MatDialogRef<BankAccountFormComponent>, form: FormGroup, name: string, bankId: string, agency: string, accountNumber: string, agreementNumber: string) {
     this.http.post(`${this.uri}/BankAccounts`, JSON.stringify({ name, bankId, agency, accountNumber, agreementNumber })).subscribe((res: any) => {
       form.reset();
       this.All();
       this.snakBank.open("check", "Conta criado com sucesso", 2000, "SUCCESS")
+      dialog.close();
+    })
+  }
+
+  Remove(id: string) {
+    this.http.delete(`${this.uri}/BankAccounts/${id}?Id=${id}`).subscribe((res: any) => {
+      this.All();
+      this.snakBank.open("check", "Conta removido com sucesso", 2000, "SUCCESS")
     })
   }
 

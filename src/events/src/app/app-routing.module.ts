@@ -12,8 +12,7 @@ const routes: Routes = [
   { path: 'eventos', loadChildren: '../app/modules/events/events.module#EventsModule', canActivate: [AuthGuard] },
   { path: 'configuracoes', loadChildren: '../app/modules/settings/settings.module#SettingsModule', canActivate: [AuthGuard] },
   { path: '', component: HomeComponent, canActivate: [AuthRouteService] },
-  { path: ':id', component: SubscriptionListComponent },
-  { path: ':id/:id', component: SubscriptionComponent },
+  { path: ':id', loadChildren: './modules/subscription/subscription.module#SubscriptionModule' },
 ];
 
 @NgModule({

@@ -24,7 +24,10 @@ export class EventListComponent implements OnInit {
 
   ngOnInit() {
     this.service.All();
-    this.event$.subscribe(res => this.events = res)
+    this.event$.subscribe(res => {
+      console.log(res);
+      this.events = res
+    })
   }
 
   remove(id: string) {

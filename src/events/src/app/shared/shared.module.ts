@@ -15,11 +15,13 @@ import { SnackBarComponent } from './snack-bar/snack-bar.component';
 // Services
 import { SnackBarService } from './snack-bar/snack-bar.service';
 import { AuthService } from './auth/auth.service';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
     NavbarComponent,
-    SnackBarComponent
+    SnackBarComponent,
+    SidebarComponent
   ],
   imports: [
     CommonModule,
@@ -37,7 +39,8 @@ import { AuthService } from './auth/auth.service';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxMaskModule
+    NgxMaskModule,
+    SidebarComponent
   ],
   entryComponents: [SnackBarComponent],
   providers: [

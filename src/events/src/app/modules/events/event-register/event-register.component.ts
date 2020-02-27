@@ -7,6 +7,12 @@ import { EventResponseModel } from 'src/app/models/event.model';
 import { coupons } from '../../../actions/coupon.action';
 import { produts } from '../../../actions/products.action';
 
+class FieldIdModel {
+  constructor(
+    public idField: string,
+  ) { }
+}
+
 @Component({
   selector: 'app-event-register',
   templateUrl: './event-register.component.html',
@@ -38,6 +44,7 @@ export class EventRegisterComponent implements OnInit {
       subscriptionLimit: ['', Validators.compose([Validators.required, Validators.min(1), Validators.minLength(1)])],
       realizationDate: ['', Validators.required],
       registrationDate: ['', Validators.required],
+      eventFields: [''],
     });
 
     this.formCoupon = this.fb.group({
@@ -72,7 +79,7 @@ export class EventRegisterComponent implements OnInit {
   }
 
   createEvents() {
-    const { name, description, subscriptionLimit, realizationDate, registrationDate } = this.formInformation.value;
+    const { name, description, subscriptionLimit, realizationDate, registrationDate, eventFields } = this.formInformation.value;
     const { cashValue, installmentAmount, installmentLimit, bankAccountId, paymentType } = this.formPayments.value
     const realization = {
       begin: this.datePipe.transform(realizationDate[0], 'yyyy/MM/dd h:mm:ss'),
@@ -82,6 +89,12 @@ export class EventRegisterComponent implements OnInit {
       begin: this.datePipe.transform(registrationDate[0], 'yyyy/MM/dd h:mm:ss'),
       end: this.datePipe.transform(registrationDate[0], 'yyyy/MM/dd h:mm:ss')
     };
+
+    let fields = [{}];
+
+    for (let i in eventFields){
+      fields.push({idField:eventFields[i]})
+    }
 
     let eventForm: EventResponseModel = new EventResponseModel(
       name,
@@ -96,7 +109,8 @@ export class EventRegisterComponent implements OnInit {
       paymentType,
       { ...this.formAdrees.value },
       coupons,
-      produts
+      produts,
+      fields
     );
     this.event.Create(eventForm)
   }

@@ -1,30 +1,58 @@
 <div class="container">
 
-    <div class="uk-text-center uk-margin-medium-top">
+    <div class="uk-text-center uk-margin-medium-top header">
         <span class="uk-text-large uk-display-block uk-text-uppercase"> {{ association }} </span>
         <span class="uk-text-uppercase uk-margin-small-top uk-text-small"> Próximos eventos </span>
     </div>
 
     <div class="uk-margin-medium-top">
 
-        <a class="card-events" *ngFor="let m of number" [routerLink]="['nome-do-evento-vai-aqui']">
-            <span class="uk-text-large">Nome do evento</span>
+        <a class="card-events" *ngFor="let c of events" [routerLink]="[c.id]">
+            <div class="uk-padding-small">
+                <div class="uk-text-center">
+                    <span class="uk-text-large"> {{ c?.name }} </span>
+                </div>
 
-            <span class="uk-flex uk-flex-row uk-flex-middle">
-                <i uk-icon="calendar"></i>
-                <span class="uk-margin-small-right uk-text-small">06/04</span>
-                <i uk-icon="clock"></i>
-                <span class="uk-text-small">14:30</span>
-            </span>
+                <div class="uk-margin-small-top">
+                    <span class="uk-text-uppercase uk-text-small uk-text-muted">Data de inscrição</span>
+                    <span class="uk-flex uk-flex-row uk-flex-middle">
+                        <i uk-icon="calendar" class="uk-margin-small-right"></i>
+                        <span class="uk-margin-small-right uk-text-small">
+                            {{ c?.registrationDateBegin | date:'dd/MM/yyyy hh:mm' }} -
+                            {{ c?.registrationDateEnd | date:'dd/MM/yyyy hh:mm' }}
+                        </span>
+                    </span>
+                </div>
 
+                <div class="uk-margin-small-top">
+                    <span class="uk-text-uppercase uk-text-small uk-text-muted">Data do evento</span>
+                    <span class="uk-flex uk-flex-row uk-flex-middle">
+                        <i uk-icon="calendar" class="uk-margin-small-right"></i>
+                        <span class="uk-margin-small-right uk-text-small">
+                            {{ c?.realizationDateBegin | date:'dd/MM/yyyy hh:mm' }} -
+                            {{ c?.realizationDateBegin | date:'dd/MM/yyyy hh:mm' }}
+                        </span>
+                    </span>
+                </div>
 
-            <span class="uk-flex uk-flex-row uk-flex-middle uk-margin-small-bottom">
-                <i uk-icon="location"></i>
-                <span class="uk-margin-small-left uk-text-small">
-                    Rua Saguaçu - 335 - Saguaçu - Joinville
-                </span>
-            </span>
+                <div class="uk-margin-small-top">
+                    <span class="uk-text-uppercase uk-text-small uk-text-muted">Data do evento</span>
+                    <span class="uk-flex uk-flex-row uk-flex-middle">
+                        <i uk-icon="location" class="uk-margin-small-right"></i>
+                        <span class="uk-margin-small-right uk-text-small">
+                            {{ c?.street }} - {{ c?.number }} -
+                            {{ c?.neighborhood }} - {{ c?.city }}
+                        </span>
+                    </span>
+                </div>
+
+            </div>
+
+            <div>
+                <button class="btn_register">Increver</button>
+            </div>
         </a>
+
 
     </div>
 

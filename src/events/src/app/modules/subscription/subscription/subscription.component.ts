@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { SubscriptionService } from '../subscription.service';
 
 @Component({
   selector: 'app-subscription',
@@ -12,11 +13,15 @@ export class SubscriptionComponent implements OnInit {
   public products;
 
   constructor(
-    public router: ActivatedRoute
+    public router: ActivatedRoute,
+    private _subscription: SubscriptionService,
   ) { }
 
   ngOnInit() {
-    this.router.params.subscribe((res: any) => this.nameEvent = res.id);
+    this.router.params.subscribe((res: any) => {
+      this.nameEvent = res.id
+      this._subscription.OneEvent(res.id)
+    });
   }
 
 }

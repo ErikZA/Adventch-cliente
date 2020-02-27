@@ -6,6 +6,7 @@ import { EventListComponent } from './event-list/event-list.component';
 import { EventsRoutingModule } from './events-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { HttpRequestInterceptor } from 'src/app/shared/http-interceptor';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { HttpRequestInterceptor } from 'src/app/shared/http-interceptor';
   imports: [
     CommonModule,
     EventsRoutingModule,
-    SharedModule
+    SharedModule,
+    RouterModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },

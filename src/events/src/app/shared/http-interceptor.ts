@@ -17,7 +17,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const { alias } = JSON.parse(localStorage.getItem("user"));
+    const { alias } = JSON.parse(localStorage.getItem("user")) || '';
     const token = JSON.parse(localStorage.getItem("token"));
 
     const headers = request.headers

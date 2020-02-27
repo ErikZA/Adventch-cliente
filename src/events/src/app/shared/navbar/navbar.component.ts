@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthModel } from 'src/app/models/auth.model';
 
 import { IsLogin } from '../../actions/auth.action';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-navbar',
@@ -17,6 +18,7 @@ export class NavbarComponent implements OnInit {
 
   public isLogin = false;
   public user;
+  public urlIdentity = environment.identityApi;
 
   constructor(
     private store: Store<any>,
