@@ -30,6 +30,7 @@ import { AuthGuard } from './shared/auth/auth.guard';
 import { fieldReducer } from './reducers/field.reducer';
 import { HomeModule } from './modules/home/home.module';
 import { HttpRequestInterceptor } from './shared/http-interceptor';
+import { SidebarReducer } from './reducers/sidebar.reducer';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -79,7 +80,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
       field: fieldReducer,
       user: UserReducer,
       bankAccount: BankAccountReducer,
-      list: ListReducer
+      list: ListReducer,
+      sidebar: SidebarReducer
     }),
   ],
   providers: [

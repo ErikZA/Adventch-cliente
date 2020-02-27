@@ -38,6 +38,10 @@
     </form>
 </div>
 
-<button class="btn" (click)="createBankAccount()" [disabled]="!formBankAccount.valid">
+<button class="btn" (click)="createBankAccount()" [disabled]="!formBankAccount.valid" *ngIf="!isEdit">
     Cadastrar
+</button>
+
+<button class="btn" (click)="UpdateBankAccount()" [disabled]="!formBankAccount.valid" *ngIf="isEdit">
+    Atualizar
 </button>

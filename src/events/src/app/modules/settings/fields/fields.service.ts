@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
+import { FormGroup } from '@angular/forms';
+import { MatSnackBar, MatDialogRef } from '@angular/material';
 
 import { environment } from '../../../../environments/environment';
-import { Store } from '@ngrx/store';
 import { ReadFields } from 'src/app/actions/field.action';
-import { MatSnackBar } from '@angular/material';
-import { FormGroup } from '@angular/forms';
+import { FieldFormComponent } from './field-form/field-form.component';
 
 @Injectable({
   providedIn: 'root'
@@ -30,20 +31,21 @@ export class FieldsService {
     })
   }
 
-  Create(form: FormGroup, name: string, description: string, guidingText: string, isRequired: boolean, fieldTypeId: number, fieldListId: string) {
-    console.log({ name, description, guidingText, isRequired, fieldTypeId, fieldListId: "" });
-    this.http.post(`${this.uri}/Fields`, JSON.stringify({ name, description, guidingText, isRequired, fieldTypeId, fieldListId: "" })).subscribe((res: any) => {
+  Create(dialog: MatDialogRef<FieldFormComponent>, form: FormGroup, name: string, description: string, guidingText: string, isRequired: boolean, fieldTypeId: number, fieldListId: string) {
+    this.http.post(`${this.uri}/Fields`, JSON.stringify({ name, description, guidingText, isRequired, fieldTypeId, fieldListId })).subscribe((res: any) => {
       this.All();
       this.snackBar.open("Campo adicional criado", "Fechar", { duration: 2000 })
       form.reset();
+      dialog.close();
     })
   }
 
-  Update(form: FormGroup, id: string, name: string, description: string, guidingText: string, isRequired: boolean, fieldTypeId: number) {
-    this.http.put(`${this.uri}/Fields/${id}?Id=${id}`, JSON.stringify({ id, name, description, guidingText, isRequired, fieldTypeId })).subscribe((res: any) => {
+  Update(dialog: MatDialogRef<FieldFormComponent>, form: FormGroup, id: string, name: string, description: string, guidingText: string, isRequired: boolean, fieldTypeId: number, fieldListId: string) {
+    this.http.put(`${this.uri}/Fields/${id}?Id=${id}`, JSON.stringify({ id, name, description, guidingText, isRequired, fieldTypeId, fieldListId })).subscribe((res: any) => {
       this.All();
       this.snackBar.open("Campo adicional atualizado", "Fechar", { duration: 2000 })
       form.reset();
+      dialog.close();
     })
   }
 

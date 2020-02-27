@@ -1,7 +1,16 @@
 .information{
     width: 350px;
-    height: 500px;
-    padding: 10px;
+    padding: 25px 10px;
+    background: #FFF;
+    border-radius: 15px;
+    box-shadow: 0 0 20px -5px rgba(0,0,0,.10);
+}
+
+.form{
+    background: #FFF;
+    border-radius: 15px;
+    box-shadow: 0 0 20px -5px rgba(0,0,0,.10);
+    padding: 15px;
 }
 
 .container-values{

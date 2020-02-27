@@ -37,7 +37,7 @@
                 <span>{{ c?.accountNumber }} </span>
             </div>
             <div>
-                <a class="btn_border btn_border_blue" uk-icon="pencil"></a>
+                <a class="btn_border btn_border_blue" (click)="UpdateOpenFormBankAccount(c.id)" uk-icon="pencil"></a>
                 <a class="btn_border btn_border_red" (click)="RemoveBankAccount(c.id)" uk-icon="trash"></a>
             </div>
         </div>

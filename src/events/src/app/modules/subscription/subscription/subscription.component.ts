@@ -11,6 +11,7 @@ export class SubscriptionComponent implements OnInit {
 
   public nameEvent: string;
   public products;
+  public event: Event;
 
   constructor(
     public router: ActivatedRoute,
@@ -20,7 +21,10 @@ export class SubscriptionComponent implements OnInit {
   ngOnInit() {
     this.router.params.subscribe((res: any) => {
       this.nameEvent = res.id
-      this._subscription.OneEvent(res.id)
+      this._subscription.OneEvent(res.id).subscribe((res: any) => {
+        const { events } = res.data[0]
+        this.event = events[0]
+      })
     });
   }
 

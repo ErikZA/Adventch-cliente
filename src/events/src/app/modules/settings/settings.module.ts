@@ -17,6 +17,7 @@ import { BankAccountService } from './bank-account/bank-account.service';
 import { BankAccountFormComponent } from './bank-account/bank-account-form/bank-account-form.component';
 import { ListFormComponent } from './list/list-form/list-form.component';
 import { ListService } from './list/list.service';
+import { FieldFormComponent } from './fields/field-form/field-form.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { ListService } from './list/list.service';
     ListComponent,
     BankAccountComponent,
     BankAccountFormComponent,
-    ListFormComponent
+    ListFormComponent,
+    FieldFormComponent
   ],
   imports: [
     CommonModule,
@@ -44,7 +46,8 @@ import { ListService } from './list/list.service';
   ],
   entryComponents: [
     BankAccountFormComponent,
-    ListFormComponent
+    ListFormComponent,
+    FieldFormComponent
   ]
 })
 export class SettingsModule { }

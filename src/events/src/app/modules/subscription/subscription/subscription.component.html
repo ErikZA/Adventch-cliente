@@ -1,16 +1,14 @@
 <div class="container">
 
     <div class="uk-flex uk-flex-row uk-margin-medium-top">
-        <div class="uk-flex-1">
+        <div class="uk-flex-1 uk-margin-small-right form">
 
             <mat-horizontal-stepper labelPosition="bottom" [linear]="true" #stepper>
                 <mat-step>
                     <ng-template matStepLabel>Identificação</ng-template>
-                    ola1
                 </mat-step>
                 <mat-step>
                     <ng-template matStepLabel>Pagamento</ng-template>
-                    ola3
                 </mat-step>
             </mat-horizontal-stepper>
 
@@ -19,18 +17,19 @@
 
             <div>
                 <span class="uk-text-large uk-display-block uk-text-center">
-                    {{ nameEvent }}
+                    {{ event?.name }}
                 </span>
                 <span class="uk-flex uk-flex-row uk-flex-middle uk-margin-medium-top">
                     <i uk-icon="location" class="uk-margin-small-right"></i>
                     <span>
-                        Rua Saguçu 355 - Saguaçu - Joinville.
+                        {{ event?.street }} - {{ event?.number }} - {{ event?.neighborhood }} - {{ event?.city }}.
                     </span>
                 </span>
                 <span class="uk-flex uk-flex-row uk-flex-middle uk-margin-small-top">
                     <i uk-icon="clock" class="uk-margin-small-right"></i>
                     <span>
-                        18/04/2020 15:30 - 19/04/2020 14:30
+                        {{ event?.realizationDateBegin | date:'dd/MM/yyyy hh:mm' }} -
+                        {{ event?.realizationDateEnd | date:'dd/MM/yyyy hh:mm' }}
                     </span>
                 </span>
             </div>
@@ -50,26 +49,17 @@
 
             <div class="uk-margin-medium-top uk-flex uk-flex-row">
                 <span class="uk-text-uppercase uk-flex-1">SubTotal</span>
-                <span> {{ 140 | currency:'BRL' }} </span>
+                <span> {{ event?.cashValue | currency:'BRL' }} </span>
             </div>
 
             <div class="uk-flex uk-flex-row">
                 <span class="uk-text-uppercase uk-flex-1">Desconto</span>
-                <span> {{ -140 | currency:'BRL' }} </span>
+                <span> {{ 0 | currency:'BRL' }} </span>
             </div>
 
             <div class="uk-flex uk-flex-row">
                 <span class="uk-text-uppercase uk-flex-1 uk-text-bold">Total</span>
                 <span> {{ 140 | currency:'BRL' }} </span>
-            </div>
-
-            <div class="uk-margin-medium-top">
-                <mat-form-field appearance="outline" class="uk-width-1">
-                    <mat-label>Cupom de Desconto</mat-label>
-                    <input matInput placeholder="Cupom de Desconto">
-                </mat-form-field>
-
-                <button mat-flat-button color="primary" class="uk-width-1">Aplicar</button>
             </div>
 
         </div>

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SubscriptionService } from '../subscription.service';
+import { Store } from '@ngrx/store';
+import { Sidebar } from 'src/app/actions/sidebar.action';
 
 @Component({
   selector: 'app-subscription-list',
@@ -15,6 +17,7 @@ export class SubscriptionListComponent implements OnInit {
   constructor(
     public router: ActivatedRoute,
     private _subscription: SubscriptionService,
+    private store: Store<any>,
   ) { }
 
   ngOnInit() {
@@ -25,6 +28,8 @@ export class SubscriptionListComponent implements OnInit {
         this.events = res.data[0].events;
       });
     });
+
+    this.store.dispatch(Sidebar(false, "side"))
 
   }
 

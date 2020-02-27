@@ -1,5 +1,5 @@
 <mat-sidenav-container class="sidebar-container">
-    <mat-sidenav class="sidebar" #sidenav [mode]="mode.value" [opened]="true">
+    <mat-sidenav class="sidebar" #sidenav [mode]="mode.value" [opened]="open">
 
         <div class="uk-text-center uk-margin-small-bottom">
             <div class="uk-display-block header_icon">
@@ -23,14 +23,5 @@
 
     <mat-sidenav-content>
         <ng-content></ng-content>
-        <p><button mat-button (click)="sidenav.toggle()">Toggle</button></p>
-        <!-- <p>
-            <mat-radio-group class="example-radio-group" [formControl]="mode">
-                <label>Mode:</label>
-                <mat-radio-button value="over">Over</mat-radio-button>
-                <mat-radio-button value="side">Side</mat-radio-button>
-                <mat-radio-button value="push">Push</mat-radio-button>
-            </mat-radio-group>
-        </p> -->
     </mat-sidenav-content>
 </mat-sidenav-container>

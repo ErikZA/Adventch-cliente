@@ -35,6 +35,13 @@ export class BankAccountComponent implements OnInit {
     })
   }
 
+  UpdateOpenFormBankAccount(id: string) {
+    this.dialog.open(BankAccountFormComponent, {
+      width: '300',
+      data: { id }
+    })
+  }
+
   RemoveBankAccount(id: string) {
     this.bank.Remove(id)
   }

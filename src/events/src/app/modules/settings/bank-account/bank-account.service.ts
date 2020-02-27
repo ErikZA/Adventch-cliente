@@ -36,6 +36,10 @@ export class BankAccountService {
     return this.http.get(`${this.uri}/PaymentTypes`);
   }
 
+  async One(id: string) {
+    return await this.http.get(`${this.uri}/BankAccounts/${id}?BanckAccountId=${id}`).toPromise();
+  }
+
   All() {
     this.http.get(`${this.uri}/BankAccounts`).subscribe((res: any) => {
       this.store.dispatch(ReadBankAccount(res.data));
@@ -47,6 +51,15 @@ export class BankAccountService {
       form.reset();
       this.All();
       this.snakBank.open("check", "Conta criado com sucesso", 2000, "SUCCESS")
+      dialog.close();
+    })
+  }
+
+  Update(dialog: MatDialogRef<BankAccountFormComponent>, form: FormGroup, id: string, name: string, bankId: string, agency: string, accountNumber: string, agreementNumber: string) {
+    this.http.put(`${this.uri}/BankAccounts/${id}`, JSON.stringify({ id, name, bankId, agency, accountNumber, agreementNumber })).subscribe((res: any) => {
+      form.reset();
+      this.All();
+      this.snakBank.open("check", "Conta atualizada com sucesso", 2000, "SUCCESS")
       dialog.close();
     })
   }

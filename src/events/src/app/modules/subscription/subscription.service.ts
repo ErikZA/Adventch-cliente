@@ -15,7 +15,7 @@ export class SubscriptionService {
   ) { }
 
   OneEvent(id: string) {
-    // return this.http.get(`${this.uri}/`)
+    return this.http.get(`${this.uri}/Companies/event/${id}?EventId=${id}`)
   }
 
   AllEvents(aliasName: string) {

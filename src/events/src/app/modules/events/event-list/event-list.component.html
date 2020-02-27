@@ -19,6 +19,7 @@
     <div class="uk-margin-medium-top" *ngIf="events?.length > 0">
 
         <div class="card-events" *ngFor="let c of events">
+
             <div class="uk-padding-small">
                 <div class="uk-text-center">
                     <span class="uk-text-large"> {{ c?.name }} </span>
@@ -60,9 +61,10 @@
             </div>
 
             <div class="uk-text-center uk-flex uk-flex-row uk-padding-small">
-                <a class="uk-flex-1" target="_blach" uk-icon="link"></a>
+                <a class="uk-flex-1" uk-tooltip="Link do Evento" [routerLink]="['/',c.aliasName,c.id]" target="_blach"
+                    uk-icon="link"></a>
                 <!-- <a class="uk-flex-1" uk-icon="pencil"></a> -->
-                <a class="uk-flex-1" (click)="remove(c?.id)" uk-icon="trash"></a>
+                <a class="uk-flex-1" uk-tooltip="Apagar Evento" (click)="remove(c?.id)" uk-icon="trash"></a>
             </div>
         </div>
 

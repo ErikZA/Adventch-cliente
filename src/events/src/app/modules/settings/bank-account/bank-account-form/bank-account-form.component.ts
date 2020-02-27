@@ -13,6 +13,9 @@ export class BankAccountFormComponent implements OnInit {
   public formBankAccount: FormGroup;
   public banks: any[] = [];
 
+  public id: string;
+  public isEdit = false;
+
   constructor(
     public dialogRef: MatDialogRef<BankAccountFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -29,11 +32,31 @@ export class BankAccountFormComponent implements OnInit {
       agreementNumber: ['', [Validators.required]],
     })
     this.bank.GetBank().subscribe((res: any) => this.banks = res.data);
+
+    if (this.data !== undefined && this.data !== null) {
+      this.id = this.data.id;
+      this.bank.One(this.data.id).then((res: any) => {
+        this.isEdit = true;
+        const { name, bankId, agency, accountNumber, agreementNumber } = res.data[0];
+        this.formBankAccount.controls["name"].setValue(name);
+        this.formBankAccount.controls["agency"].setValue(agency);
+        this.formBankAccount.controls["bankId"].setValue(bankId);
+        this.formBankAccount.controls["accountNumber"].setValue(accountNumber);
+        this.formBankAccount.controls["agreementNumber"].setValue(agreementNumber);
+      })
+
+    }
+
   }
 
   createBankAccount() {
     const { name, bankId, agency, accountNumber, agreementNumber } = this.formBankAccount.value;
     this.bank.Crate(this.dialogRef, this.formBankAccount, name, bankId, agency, accountNumber, agreementNumber);
+  }
+
+  UpdateBankAccount() {
+    const { name, bankId, agency, accountNumber, agreementNumber } = this.formBankAccount.value;
+    this.bank.Update(this.dialogRef, this.formBankAccount, this.id, name, bankId, agency, accountNumber, agreementNumber);
   }
 
 }
