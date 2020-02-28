@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 import { SubscriptionListComponent } from './subscription-list/subscription-list.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { SubscriptionService } from './subscription.service';
+import { RouterSubscriptionModule } from './router-subscription.module';
 
 @NgModule({
   declarations: [
@@ -14,7 +16,11 @@ import { SharedModule } from 'src/app/shared/shared.module';
   imports: [
     CommonModule,
     RouterModule,
-    SharedModule
+    SharedModule,
+    RouterSubscriptionModule
+  ],
+  providers: [
+    SubscriptionService
   ]
 })
 export class SubscriptionModule { }

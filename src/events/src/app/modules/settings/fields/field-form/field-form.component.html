@@ -1,0 +1,58 @@
+<div class="listform">
+
+    <div class="uk-text-center uk-margin-small">
+        <span>Novo Campo Adicional</span>
+    </div>
+
+
+    <form [formGroup]="formFields">
+
+        <mat-form-field appearance="outline" class="uk-width-1">
+            <mat-label>Nome do campo</mat-label>
+            <input matInput placeholder="Placeholder" formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="uk-width-1">
+            <mat-label>Tipo do campo</mat-label>
+            <mat-select formControlName="fieldTypeId" [(ngModel)]="filedType">
+                <mat-option *ngFor="let fieldType of fieldTypes" [value]="fieldType.id"> {{ fieldType.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="uk-width-1"
+            *ngIf="filedType === 3 || filedType === 4 || filedType === 5 || filedType === 6">
+            <mat-label>Lista</mat-label>
+            <mat-select formControlName="fieldListId">
+                <mat-option *ngFor="let l of lists" [value]="l.id"> {{ l.name }} </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="uk-width-1">
+            <textarea matInput placeholder="Descrição do campo" #description maxlength="4000"
+                formControlName="description"></textarea>
+            <mat-hint align="end">{{description.value?.length || 0}}/4000</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="uk-width-1" autocapitalize="true">
+            <textarea style="height: auto !important;" #guidingText maxlength="4000" matInput
+                placeholder="Texto de Orientação" formControlName="guidingText"></textarea>
+            <mat-hint align="end">{{guidingText.value?.length || 0}}/4000</mat-hint>
+        </mat-form-field>
+
+        <div class="uk-margin-small-bottom">
+            <span class="uk-margin-small-right">Campo obrigatorio:</span>
+            <mat-slide-toggle formControlName="isRequired"></mat-slide-toggle>
+        </div>
+
+
+    </form>
+</div>
+
+<button class="btn" (click)="CreateField()" *ngIf="!isEdit" [disabled]="!formFields.valid">
+    Cadastrar
+</button>
+
+<button class="btn" (click)="UpdateField()" *ngIf="isEdit" [disabled]="!formFields.valid">
+    Atualizar
+</button>

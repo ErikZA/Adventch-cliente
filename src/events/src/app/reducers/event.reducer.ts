@@ -1,11 +1,13 @@
 import { ActionModel } from '../models/action.model';
+import { EventModel } from '../models/event.model';
 
-export function eventReducer(state, action: ActionModel) {
+const event = new EventModel();
+
+export function eventReducer(state = event, action: ActionModel) {
 
     switch (action.type) {
         case "READ_EVENTS":
-            const events = JSON.parse(localStorage.getItem("events"));
-            return events
+            return action.payload
         default:
             return state;
     }

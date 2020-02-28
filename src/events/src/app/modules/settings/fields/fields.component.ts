@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { MatDialog } from '@angular/material';
 
 import { SettingService } from '../setting.service';
-import { FieldTypeModel } from 'src/app/models/fieldTypes.model';
 import { FieldModel } from 'src/app/models/fields.model';
-
-import { ReadFields, AddField, RemoveField } from '../../../actions/field.action';
+import { FieldsService } from './fields.service';
+import { FieldFormComponent } from './field-form/field-form.component';
 
 @Component({
   selector: 'app-fields',
@@ -16,49 +15,37 @@ import { ReadFields, AddField, RemoveField } from '../../../actions/field.action
 })
 export class FieldsComponent implements OnInit {
 
-  public field: Observable<FieldModel>;
+  public field$: Observable<FieldModel>;
   public fields: FieldModel[] = [];
 
-  public formFields: FormGroup;
-  public fieldTypes: FieldTypeModel[] = [];
-
   constructor(
-    public fb: FormBuilder,
     public setting: SettingService,
+    private field: FieldsService,
+    private dialog: MatDialog,
     private store: Store<any>,
   ) {
-    this.field = store.select('field')
-    this.store.dispatch(ReadFields());
+    this.field$ = store.select('field')
   }
 
   ngOnInit() {
+    this.field.All();
+    this.field$.subscribe((res: any) => this.fields = res.data);
+  }
 
-    this.formFields = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
-      guidingText: [''],
-      isRequired: [''],
-      fieldTypeId: ['', Validators.required],
+  OpenDialogFields() {
+    this.dialog.open(FieldFormComponent, {
+      width: '300'
     })
-
-    this.field.subscribe((res: any) => this.fields = res.data);
-    this.setting.getFieldTypes().then((res: any) => this.fieldTypes = res.data);
-
   }
 
-  addField() {
-    this.store.dispatch(AddField(
-      this.formFields,
-      this.formFields.controls["name"].value,
-      this.formFields.controls["description"].value,
-      this.formFields.controls["guidingText"].value,
-      this.formFields.controls["isRequired"].value,
-      this.formFields.controls["fieldTypeId"].value,
-    ));
+  UpdateOpenDialogFields(id: string) {
+    this.dialog.open(FieldFormComponent, {
+      width: '300',
+      data: { id }
+    })
   }
 
-  removeField(index: number) {
-    this.store.dispatch(RemoveField(index));
+  removeField(index: string) {
+    this.field.Remove(index);
   }
-
 }

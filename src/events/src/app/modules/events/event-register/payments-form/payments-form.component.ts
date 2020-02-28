@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { Payment } from 'src/app/models/event.model';
+import { PaymentModel } from 'src/app/models/event.model';
 import { Store } from '@ngrx/store';
-import { AddPayments } from 'src/app/actions/newEvent.action';
+import { BankAccountService } from 'src/app/modules/settings/bank-account/bank-account.service';
+import { BankAccount } from 'src/app/models/bankAccount.model';
 
 @Component({
   selector: 'app-payments-form',
@@ -15,44 +15,24 @@ export class PaymentsFormComponent implements OnInit {
 
   @Input('formPayments') formPayments: FormGroup;
 
-  filteredOptions: Observable<Payment[]>;
+  private bankAccount$: Observable<any>;
 
-  public accounts: Payment[] = [
-    { name: "guilherme", account: 2334, agency: 34534, bank: '' },
-    { name: "vinicius", account: 2334, agency: 34534, bank: '' },
-    { name: "mendonça", account: 2334, agency: 34534, bank: '' },
-    { name: "ferreira", account: 2334, agency: 34534, bank: '' },
-  ]
+  public bankAccounts: BankAccount[] = [];
+  public methosPayments: any = [];
 
   constructor(
-    private store: Store<any>
-  ) { }
+    private store: Store<any>,
+    private account: BankAccountService,
+  ) {
+    this.bankAccount$ = store.select('bankAccount');
+    this.account.All();
+  }
 
   ngOnInit() {
-    this.filteredOptions = this.formPayments.controls['bankAccountId'].valueChanges.pipe(
-      startWith(''),
-      map(value => typeof value === 'string' ? value : value.name),
-      map(name => name ? this._filter(name) : this.accounts.slice())
-    )
-  }
-
-  displayFn(accounts?: any): string | undefined {
-    return accounts ? accounts.name : undefined;
-  }
-
-  private _filter(name: string): any[] {
-    const filterValue = name.toLowerCase();
-
-    return this.accounts.filter(option => option.name.toLowerCase().indexOf(filterValue) === 0);
-  }
-
-  sendPayments() {
-    this.store.dispatch(AddPayments(
-      this.formPayments.controls["cashValue"].value,
-      this.formPayments.controls["installmentAmount"].value,
-      this.formPayments.controls["installmentLimit"].value,
-      this.formPayments.controls["bankAccountId"].value,
-    ))
+    this.account.GetMethodPayment().subscribe((res: any) => this.methosPayments = res.data);
+    this.bankAccount$.subscribe((res: any) => {
+      this.bankAccounts = res
+    });
   }
 
 }

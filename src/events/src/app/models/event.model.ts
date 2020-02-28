@@ -1,29 +1,36 @@
 export class EventModel {
     public name: string;
-    public numberSubscriptions: number;
+    public subscriptionLimit: number;
     public description: string;
-    public adrees: Address;
+    public address: Address;
     public realizationDate: Date;
+    public registrationDate: Date;
     public coupons: Coupons[];
     public products: Products[];
     public cashValue: string;
     public installmentAmount: string;
     public installmentLimit: number;
-    public receiptAccountId: string;
+    public bankAccountId: string;
+    public paymentType: string;
+    public eventFields: string[];
 }
 
 export class EventResponseModel {
     constructor(
         public name: string,
-        public numberSubscriptions: number,
         public description: string,
-        public adrees: Address,
+        public subscriptionLimit: number,
         public realizationDate: Date,
-        public coupons: Coupons[],
+        public registrationDate: Date,
         public cashValue: string,
         public installmentAmount: string,
         public installmentLimit: number,
-        public receiptAccountId: string,
+        public bankAccountId: string,
+        public paymentType: string,
+        public address: Address,
+        public coupons: Coupons[],
+        public products: Products[],
+        public eventFields: any[],
     ) { }
 }
 
@@ -33,7 +40,7 @@ export class Address {
         public street: string,
         public neighborhood: string,
         public city: string,
-        public uf: string,
+        public state: string,
         public complement: string,
         public number: number,
     ) { }
@@ -68,9 +75,20 @@ export class ProductsReducer {
 
 export class Payment {
     constructor(
+        public id: number,
         public name: string,
         public account: number,
         public agency: number,
         public bank: string,
+        public type: number,
+    ) { }
+}
+
+export class PaymentModel {
+    constructor(
+        public id: string,
+        public name: string,
+        public agency: string,
+        public accountNumber: string,
     ) { }
 }

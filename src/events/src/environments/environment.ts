@@ -2,11 +2,16 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+const client_id = '398b7981-6c29-4a27-b67b-6d6edf5548e9';
+const base_url = 'http://localhost:4302';
+
 export const environment = {
   production: false,
   name: 'dev',
   project: 'events',
-  eventsApiUrl: 'https://localhost:5001/api/events/v1',
+  eventsApiUrl: 'http://localhost:5003/api/events/v1',
+  identityApiUrl: 'http://localhost:5000/api/identity/v1',
+  identityApi: `http://localhost:4200/oauth2/auth?client_id=${client_id}&redirect_url=${base_url}`
 };
 
 /*

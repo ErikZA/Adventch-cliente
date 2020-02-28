@@ -14,8 +14,8 @@ export class SettingService {
     public http: HttpClient
   ) { }
 
-  async getFieldTypes() {
-    return await this.http.get(`${this.uri}/Fields/fieldtypes`).toPromise();
+  getFieldTypes() {
+    return this.http.get(`${this.uri}/Fields/fieldtypes`);
   }
 
 }

@@ -40,8 +40,7 @@ export class AuthGuard implements CanActivate, CanLoad {
             // }
             return true;
         }
-        console.log("loyout here");
-        this.service.logout();
+        // this.service.logout();
         return false;
     }
 }

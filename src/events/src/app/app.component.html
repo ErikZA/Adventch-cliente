@@ -1,4 +1,4 @@
-<app-navbar *ngIf="isLogin"></app-navbar>
-<div [class.container-router]="isLogin">
+<app-sidebar>
+    <app-navbar></app-navbar>
     <router-outlet></router-outlet>
-</div>
+</app-sidebar>

@@ -5,7 +5,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthService, ICompanyUserAssociation } from '@adventech/ngx-adventech/auth/public-api';
 
 import { environment } from '../../../environments/environment';
 
@@ -13,27 +12,25 @@ import { environment } from '../../../environments/environment';
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
-    private authService: AuthService,
     public snackBar: MatSnackBar,
     private translate: TranslateService,
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    const companyAlias = (this.authService.getCurrentAssociation() || {} as ICompanyUserAssociation).companyAlias || '';
-    const token = this.authService.getAccessToken() || '';
     const headers = req.headers
-      .set('Authorization', 'Bearer ' + token)
-      .set('un-alias', companyAlias);
+      // .set('Authorization', 'Bearer ' + token)
+      // .set('un-alias', companyAlias);
+      .set('Content-Type', 'application/json')
 
-    let requestedUrl = req.url;
-    if (!req.url.startsWith('http') && !req.url.includes('/assets/')) {
-      const apiUrl = environment.identityApiUrl;
-      requestedUrl = req.url.includes(apiUrl) ? req.url : apiUrl + req.url;
-    }
+    // let requestedUrl = req.url;
+    // if (!req.url.startsWith('http') && !req.url.includes('/assets/')) {
+    //   const apiUrl = environment.identityApiUrl;
+    //   requestedUrl = req.url.includes(apiUrl) ? req.url : apiUrl + req.url;
+    // }
 
     const authReq = req.clone({
       headers,
-      url: requestedUrl
+      // url: requestedUrl
     });
 
     return next.handle(authReq)
@@ -48,7 +45,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 .afterDismissed()
                 .subscribe((res) => {
                   if (res) {
-                    this.authService.logout(window.location.href);
+                    console.log("Logout")
                   }
                 });
             } else if (err.status === 403) {

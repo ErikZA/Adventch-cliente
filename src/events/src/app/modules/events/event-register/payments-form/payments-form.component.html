@@ -1,15 +1,15 @@
 <form [formGroup]="formPayments">
 
-    <div class="contianer-input">
-        <mat-form-field appearance="outline" class="uk-flex-1">
-            <mat-label>Valor à vista</mat-label>
-            <input type="number" matInput min="1" placeholder="Valor á vista" formControlName="cashValue">
-        </mat-form-field>
+  <div class="contianer-input">
+    <mat-form-field appearance="outline" class="uk-flex-1">
+      <mat-label>Valor à vista</mat-label>
+      <input type="number" matInput min="1" placeholder="Valor á vista" formControlName="cashValue">
+    </mat-form-field>
 
-        <mat-form-field appearance="outline" class="uk-flex-1 margin-input">
-            <mat-label>Valor parcelado</mat-label>
-            <input type="number" matInput min="1" placeholder="Valor parcelado" formControlName="installmentAmount">
-        </mat-form-field>
+    <mat-form-field appearance="outline" class="uk-flex-1 margin-input">
+      <mat-label>Valor parcelado</mat-label>
+      <input type="number" matInput min="1" placeholder="Valor parcelado" formControlName="installmentAmount">
+    </mat-form-field>
 
     <mat-form-field appearance="outline" class="uk-flex-1">
       <mat-label>Quantidade de parcelas</mat-label>
@@ -17,19 +17,23 @@
     </mat-form-field>
   </div>
 
-
   <mat-form-field appearance="outline" class="uk-width-1">
-    <input matInput placeholder="Conta do Banco" [matAutocomplete]="auto" formControlName="bankAccountId">
-    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-      <mat-option *ngFor="let a of filteredOptions | async" [value]="a">
-        <span> {{a.name}} | </span>
-        <small> Conta: {{a.account}} |</small>
-        <small> Agencia: {{a.agency}} </small>
+    <mat-label>Contas Bancarias</mat-label>
+    <mat-select formControlName="bankAccountId">
+      <mat-option *ngFor="let b of bankAccounts" [value]="b.id">
+        {{ b?.name }}
       </mat-option>
-    </mat-autocomplete>
+    </mat-select>
   </mat-form-field>
 
-  <button mat-flat-button matStepperNext color="primary" (click)="sendPayments()" [disabled]="!formPayments.valid">
+  <mat-form-field appearance="outline" class="uk-width-1">
+    <mat-label>Tipo de Pagamento</mat-label>
+    <mat-select formControlName="paymentType">
+      <mat-option *ngFor="let m of methosPayments" [value]="m.id"> {{ m.name }} </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-flat-button matStepperNext color="primary" [disabled]="!formPayments.valid">
     Continuar
   </button>
 

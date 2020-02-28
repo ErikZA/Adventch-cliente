@@ -1,22 +1,25 @@
-.title{
-    font-size: 26px;
-    font-weight: 300;
-}
-
 .header{
-    width:100%;
-    height: 40.5px;
-    border-bottom: 2px solid #DDD;
+    width: 100%;
+    background-color: rgb(67, 77, 180);
+    color:#FFF;
+    
+    .title{
+        padding:30px 0;
+    }
 
-    a {
+    a{
+        margin-right: 10px;
+        padding: 3px 10px;
+        color:#FFF;
         display: inline-block;
-        padding:10px 20px;
-        color:#000;
-        text-decoration: none;
     }
 
     .actived{
-        border-bottom: 2px solid #0C5390;
+        border-bottom: 2px solid #FFF;
     }
+}
 
+.title{
+    font-size: 26px;
+    font-weight: 300;
 }

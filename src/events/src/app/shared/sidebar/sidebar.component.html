@@ -1,0 +1,27 @@
+<mat-sidenav-container class="sidebar-container">
+    <mat-sidenav class="sidebar" #sidenav [mode]="mode.value" [opened]="open">
+
+        <div class="uk-text-center uk-margin-small-bottom">
+            <div class="uk-display-block header_icon">
+                <i uk-icon="icon:calendar;ratio:2"></i>
+            </div>
+        </div>
+
+        <ul>
+            <a routerLink="/eventos">
+                <li routerLinkActive="actived">
+                    Eventos
+                </li>
+            </a>
+            <a routerLink="/configuracoes">
+                <li routerLinkActive="actived">
+                    Configurações
+                </li>
+            </a>
+        </ul>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <ng-content></ng-content>
+    </mat-sidenav-content>
+</mat-sidenav-container>

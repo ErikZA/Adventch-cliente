@@ -7,8 +7,9 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { registerLocaleData } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import localePt from '@angular/common/locales/pt';
+import { JwtModule } from '@auth0/angular-jwt';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,20 +17,20 @@ import { SharedModule } from './shared/shared.module';
 
 // Reducers
 import { couponReducer } from './reducers/coupon.reducer';
-import { newEvent } from './reducers/newEvent.reducer';
 import { MaterialModule } from './shared/material.module';
 import { productReducer } from './reducers/products.reducer';
 import { eventReducer } from './reducers/event.reducer';
-import { RequestInterceptor } from './shared/request-interceptor.module';
 import { authReducer } from './reducers/auth.reducer';
+import { BankAccountReducer } from './reducers/bankAccount.reducer';
+import { ListReducer } from './reducers/list.reducer';
+import { UserReducer } from './reducers/user.reducer';
 
 // Services
 import { AuthGuard } from './shared/auth/auth.guard';
-import { JwtModule } from '@auth0/angular-jwt';
-import { AccountModule } from './modules/account/account.module';
 import { fieldReducer } from './reducers/field.reducer';
-import { SubscriptionModule } from './modules/subscription/subscription.module';
-
+import { HomeModule } from './modules/home/home.module';
+import { HttpRequestInterceptor } from './shared/http-interceptor';
+import { SidebarReducer } from './reducers/sidebar.reducer';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -54,9 +55,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     AppRoutingModule,
     MaterialModule,
     HttpClientModule,
-    RequestInterceptor,
-    AccountModule,
-    SubscriptionModule,
+    HomeModule,
     NgxMaskModule.forRoot(options),
     TranslateModule.forRoot({
       loader: {
@@ -69,22 +68,26 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        whitelistedDomains: ['localhost:5001', 'api-store.adven.tech'],
+        whitelistedDomains: ['localhost:5003', 'localhost:5002'],
         blacklistedRoutes: ['viacep.com.br']
       }
     }),
     StoreModule.forRoot({
       coupon: couponReducer,
-      newevent: newEvent,
       event: eventReducer,
       product: productReducer,
       auth: authReducer,
       field: fieldReducer,
+      user: UserReducer,
+      bankAccount: BankAccountReducer,
+      list: ListReducer,
+      sidebar: SidebarReducer
     }),
   ],
   providers: [
     AuthGuard,
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

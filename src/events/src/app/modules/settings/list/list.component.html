@@ -1,1 +1,40 @@
-<p>list works!</p>
+<div class="uk-flex uk-flex-row uk-margin-small-top uk-margin-small-bottom">
+    <div class="uk-flex-1"></div>
+    <div>
+        <button class="btn_new_bank_account" (click)="OpenListForm()">Nova Lista</button>
+    </div>
+</div>
+
+<div class="bankAccountList">
+
+    <div class="uk-padding-small uk-text-center" *ngIf="lists?.length === 0">
+        <span>Você não tem contas cadastradas</span>
+    </div>
+
+    <div *ngIf="lists?.length > 0">
+        <div class="uk-flex uk-flex-row uk-margin-small-bottom" style="border-bottom: 1px solid #eee;">
+            <div class="uk-flex-1 padding">
+                <span class="uk-text-uppercase uk-text-small">nome</span>
+            </div>
+            <div class="uk-flex-1 padding">
+                <span class="uk-text-uppercase uk-text-small">descrição</span>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="lists?.length > 0">
+        <div class="bank_account" *ngFor="let l of lists">
+            <div class="uk-flex-1 padding">
+                <span> {{ l?.name }} </span>
+            </div>
+            <div class="uk-flex-1 padding">
+                <span>{{ l?.description }} </span>
+            </div>
+            <div>
+                <a class="btn_border btn_border_blue" (click)="UpdateOpenListForm(l.id)" uk-icon="pencil"></a>
+                <a class="btn_border btn_border_red" (click)="Remove(l.id)" uk-icon="trash"></a>
+            </div>
+        </div>
+    </div>
+
+</div>

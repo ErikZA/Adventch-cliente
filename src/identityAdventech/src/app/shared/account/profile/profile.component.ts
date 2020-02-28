@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -7,9 +10,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileComponent implements OnInit {
 
-  constructor() { }
+  public user$: Observable<any>;
+  public user;
+
+  constructor(
+    private store: Store<any>,
+    private auth: AuthService
+  ) {
+    this.user$ = store.select('user')
+  }
 
   ngOnInit() {
+    this.user$.subscribe(res => this.user = res);
+  }
+
+  logout() {
+    this.auth.logout();
   }
 
 }

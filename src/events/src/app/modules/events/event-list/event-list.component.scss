@@ -1,24 +1,38 @@
+.header{
+    width: 100%;
+    background-color: rgb(67, 77, 180);
+    color:#FFF;
+    
+    .title{
+        padding:30px 0;
+    }
+
+    a{
+        margin-right: 10px;
+        padding: 3px 10px;
+        color:#FFF;
+        display: inline-block;
+    }
+
+    .actived{
+        border-bottom: 2px solid #FFF;
+    }
+}
+
 .title{
     font-size: 26px;
     font-weight: 300;
 }
 
-.container-event{
-    width: calc(320px - 20px);
-    background: #FFF;
-    padding: 10px;
-    border-radius: 5px;
+.card-events{
+    width:320px;
     display: inline-block;
-    margin-bottom:10px;
-    margin-right:10px;
-    border:1px solid #DDD;
+    margin: 0 10px 20px 0;
+    color:#000;
+    border-radius: 15px;
+    box-shadow: 0 0 4px 0 rgba(17, 22, 26, 0.16), 0 2px 4px 0 rgba(17, 22, 26, 0.08), 0 4px 8px 0 rgba(17, 22, 26, 0.08);
 }
 
 .container-event:last-child{
     margin-right: 0;
-}
-
-.column-small{
-    width: 150px;
-    margin-right: 10px;
 }

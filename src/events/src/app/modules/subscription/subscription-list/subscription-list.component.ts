@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { SubscriptionService } from '../subscription.service';
+import { Store } from '@ngrx/store';
+import { Sidebar } from 'src/app/actions/sidebar.action';
 
 @Component({
   selector: 'app-subscription-list',
@@ -9,15 +12,24 @@ import { ActivatedRoute } from '@angular/router';
 export class SubscriptionListComponent implements OnInit {
 
   public association: string;
-  public number = [1, 2, 3, 4, 5, 6];
+  public events: any;
 
   constructor(
     public router: ActivatedRoute,
+    private _subscription: SubscriptionService,
+    private store: Store<any>,
   ) { }
 
   ngOnInit() {
 
-    this.router.params.subscribe((res: any) => this.association = res.id);
+    this.router.params.subscribe((res: any) => {
+      this.association = res.id
+      this._subscription.AllEvents(res.id).subscribe((res: any) => {
+        this.events = res.data[0].events;
+      });
+    });
+
+    this.store.dispatch(Sidebar(false, "side"))
 
   }
 

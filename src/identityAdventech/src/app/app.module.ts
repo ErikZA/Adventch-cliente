@@ -16,6 +16,9 @@ import { AuthReducer } from './reducers/auth.reducer';
 // Services
 import { AuthGuard } from './shared/auth/auth.guard';
 import { MAT_DATE_LOCALE } from '@angular/material';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpErrorInterceptor } from './shared/httpError.interceptor';
+import { UserReducer } from './reducers/user.reducer';
 
 export function tokenGetter() {
   return JSON.parse(localStorage.getItem("token"));
@@ -33,7 +36,8 @@ export function tokenGetter() {
     HomeModule,
     SharedModule,
     StoreModule.forRoot({
-      auth: AuthReducer
+      auth: AuthReducer,
+      user: UserReducer
     }),
     JwtModule.forRoot({
       config: {
@@ -46,6 +50,11 @@ export function tokenGetter() {
   providers: [
     AuthGuard,
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

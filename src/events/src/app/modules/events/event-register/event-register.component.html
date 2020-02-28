@@ -1,9 +1,15 @@
-<div class="container">
-
-    <div class="uk-margin-medium-bottom">
-        <span class="title">Criar Evento</span>
+<div class="header">
+    <div class="container">
+        <div class="title">
+            <span>Novo Evento</span>
+        </div>
+        <div>
+            <a routerLink="/eventos" routerLinkActive="actived">Eventos</a>
+            <a routerLink="/inscricoes" routerLinkActive="actived">Novo Evento</a>
+        </div>
     </div>
-
+</div>
+<div class="container">
     <div>
 
         <mat-horizontal-stepper linear labelPosition="bottom" #stepper>
@@ -27,6 +33,10 @@
             <mat-step>
                 <ng-template matStepLabel>Produtos</ng-template>
                 <app-products-form [formProduct]="formProduct"></app-products-form>
+
+                <button mat-flat-button matStepperNext color="primary" (click)="createEvents()">
+                    Finalizar
+                </button>
             </mat-step>
         </mat-horizontal-stepper>
 

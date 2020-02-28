@@ -1,12 +1,28 @@
 .card-events{
-    width:310px;
-    padding: 10px;
-    border:1px solid #DDD;
+    width:320px;
     display: inline-block;
     margin: 0 10px 20px;
     color:#000;
+    border-radius: 15px;
+    box-shadow: 0 0 4px 0 rgba(17, 22, 26, 0.16), 0 2px 4px 0 rgba(17, 22, 26, 0.08), 0 4px 8px 0 rgba(17, 22, 26, 0.08);
 }
 
 a{
     text-decoration: none;
+}
+
+.btn_register{
+    width:100%;
+    padding: 15px;
+    border:none;
+    text-transform: uppercase;
+    color:#FFFF;
+    background-color: #4C55BE;
+    border-radius: 0 0 15px 15px;
+    cursor: pointer;
+}
+
+.header{
+    border-bottom: 1px solid #DDD;
+    padding-bottom: 20px;
 }
