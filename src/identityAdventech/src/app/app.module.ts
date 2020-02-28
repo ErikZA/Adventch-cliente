@@ -42,7 +42,7 @@ export function tokenGetter() {
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        whitelistedDomains: ['localhost:5000'],
+        whitelistedDomains: ['https://adventech-v4-identity-api.azurewebsites.net'],
         blacklistedRoutes: []
       }
     }),

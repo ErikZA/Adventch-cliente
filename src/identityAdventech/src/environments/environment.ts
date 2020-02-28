@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   name: 'dev',
   project: 'identity',
-  client_id: '307316f6-be2e-43c5-92c4-688dfb797c1a',
+  client_id: '4ae023d4-4d86-4b0e-bcba-2ecba154ce53',
   redirect_url: 'http://localhost:4200',
   identityApiUrl: 'http://localhost:5000/api/identity/v1',
 };

@@ -72,7 +72,8 @@ export class EventRegisterComponent implements OnInit {
       cashValue: ['', Validators.compose([Validators.required, Validators.min(1)])],
       installmentAmount: ['', Validators.compose([Validators.required, Validators.min(1)])],
       installmentLimit: ['', Validators.compose([Validators.required, Validators.min(1)])],
-      bankAccountId: ['', Validators.required],
+      bankAccountId: [''],
+      cieloAccountId: [''],
       paymentType: ['', Validators.required]
     })
 
@@ -92,8 +93,8 @@ export class EventRegisterComponent implements OnInit {
 
     let fields = [{}];
 
-    for (let i in eventFields){
-      fields.push({idField:eventFields[i]})
+    for (let i in eventFields) {
+      fields.push({ idField: eventFields[i] })
     }
 
     let eventForm: EventResponseModel = new EventResponseModel(
@@ -110,7 +111,8 @@ export class EventRegisterComponent implements OnInit {
       { ...this.formAdrees.value },
       coupons,
       produts,
-      fields
+      fields,
+      [],
     );
     this.event.Create(eventForm)
   }

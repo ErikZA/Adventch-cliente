@@ -1,0 +1,35 @@
+<div class="bankAccountForm">
+
+    <div class="uk-margin-small-top uk-margin-small-bottom uk-text-center">
+        <span>Nova Conta Cielo</span>
+    </div>
+
+    <form [formGroup]="formCieloAccount">
+        <div class="formContent">
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Nome da Conta</mat-label>
+                <input matInput type="text" placeholder="Nome da Conta" formControlName="name">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Merchant ID</mat-label>
+                <input matInput type="text" placeholder="Merchant ID" formControlName="merchantId">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1">
+                <mat-label>Merchant Key</mat-label>
+                <input matInput type="text" placeholder="Merchant Key" formControlName="merchantKey">
+            </mat-form-field>
+
+        </div>
+
+    </form>
+</div>
+
+<button class="btn" (click)="Create()" [disabled]="!formCieloAccount.valid" *ngIf="!isEdit">
+    Cadastrar
+</button>
+
+<button class="btn" (click)="Update()" [disabled]="!formCieloAccount.valid" *ngIf="isEdit">
+    Atualizar
+</button>

@@ -33,14 +33,9 @@ export class AuthGuard implements CanActivate, CanLoad {
     private checkAccess() {
         const token = this.service.getMainToken();
         if (!this.jwtHelper.isTokenExpired(token) && token !== null && token !== undefined && this.isLogin) {
-            // const user = this.service.getCurrentUser();
-            // if (user === null || user === undefined) {
-            //     this.router.navigate(['/']);
-            //     return false;
-            // }
             return true;
         }
-        // this.service.logout();
+        this.service.logout();
         return false;
     }
 }

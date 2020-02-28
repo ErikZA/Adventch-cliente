@@ -1,0 +1,83 @@
+<form [formGroup]="formInformation">
+
+    <mat-form-field appearance="outline" class="uk-width-1">
+        <mat-label>Nome</mat-label>
+        <input type="text" matInput placeholder="Nome" formControlName="name">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="uk-width-1">
+        <mat-label>Email</mat-label>
+        <input type="text" matInput placeholder="Email" formControlName="email">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="uk-width-1">
+        <mat-label>CPF</mat-label>
+        <input type="text" matInput placeholder="CPF" formControlName="cpf">
+    </mat-form-field>
+
+    <div *ngFor="let f of getItem.controls;let i = index">
+        <div [formGroup]="f">
+            <mat-form-field appearance="outline" class="uk-width-1" *ngIf="fields[i]?.fieldTypeId === 1">
+                <mat-label> {{ fields[i]?.name }} </mat-label>
+                <input type="text" matInput [placeholder]="fields[i].name" [formControlName]="fields[i].name">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1" *ngIf="fields[i]?.fieldTypeId === 2">
+                <mat-label>{{ fields[i]?.name }}</mat-label>
+                <textarea matInput [placeholder]="fields[i].name" [formControlName]="fields[i].name"></textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1" *ngIf="fields[i]?.fieldTypeId === 3">
+                <mat-label>{{ fields[i]?.name }}</mat-label>
+                <mat-select multiple [formControlName]="fields[i].name">
+                    <mat-option *ngFor="let item of fields[i].fieldList.items" [value]="item.id">
+                        {{item.description}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1" *ngIf="fields[i]?.fieldTypeId === 4">
+                <mat-label>{{ fields[i]?.name }}</mat-label>
+                <mat-select [formControlName]="fields[i].name">
+                    <mat-option *ngFor="let item of fields[i].fieldList.items" [value]="item.id">
+                        {{item.description}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div *ngIf="fields[i]?.fieldTypeId === 5">
+                <span class="uk-diaplay-block">{{ fields[i]?.name }}</span>
+                <mat-checkbox class="uk-display-block uk-margin-small-left"
+                    *ngFor="let item of fields[i].fieldList.items" [formControlName]="fields[i].name">
+                    {{ item.description }}
+                </mat-checkbox>
+            </div>
+
+            <div *ngIf="fields[i]?.fieldTypeId === 6">
+                <span class="uk-diaplay-block">{{ fields[i]?.name }}</span>
+                <mat-radio-group [formControlName]="fields[i].name">
+                    <mat-radio-button class="uk-display-block uk-margin-small-left"
+                        *ngFor="let item of fields[i].fieldList.items" [value]="item.description">
+                        {{ item.description }}
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+
+            <mat-form-field appearance="outline" class="uk-width-1" *ngIf="fields[i].fieldTypeId === 7">
+                <mat-label>{{ fields[i]?.name }}</mat-label>
+                <input type="number" matInput [placeholder]="fields[i].name" [formControlName]="fields[i].name">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="uk-width-1" *ngIf="fields[i].fieldTypeId === 8">
+                <mat-label>{{ fields[i]?.name }}</mat-label>
+                <input [matDatepicker]="picker" matInput [placeholder]="fields[i].name"
+                    [formControlName]="fields[i].name">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+
+    </div>
+
+    <button matStepperNext [disabled]="!formInformation.valid">Proximo</button>
+</form>
