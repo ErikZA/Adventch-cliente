@@ -9,7 +9,7 @@ trigger:
     - master
   paths:
     include:
-      - src/identity/*
+      - src/identityAdventech/*
 
 strategy:
   matrix:
@@ -36,7 +36,7 @@ steps:
   enabled: false
 
 - script: |
-    npm install --prefix src/identity
+    npm install --prefix src/identityAdventech
   displayName: 'npm install'
 
 - task: Bash@3
@@ -47,16 +47,16 @@ steps:
   enabled: false
 
 - script: |
-    npm run build --prefix src/identity
+    npm run build --prefix src/identityAdventech
   displayName: 'npm build'
 
 - bash: |
-    find src/identity/dist -type f -exec sh -c "gzip < {} > {}.gz" \;
-    find src/identity/dist -type f -not -name "*.gz" -exec sh -c "brotli {}" \;
+    find src/identityAdventech/dist -type f -exec sh -c "gzip < {} > {}.gz" \;
+    find src/identityAdventech/dist -type f -not -name "*.gz" -exec sh -c "brotli {}" \;
   displayName: 'Compress build files'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifact'
   inputs:
-    PathtoPublish: src/identity/dist
+    PathtoPublish: src/identityAdventech/dist
     ArtifactName: dist
