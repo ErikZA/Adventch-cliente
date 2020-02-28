@@ -23,6 +23,12 @@ pool:
   demands: npm
 
 steps:
+- task: npmAuthenticate@0
+  displayName: 'npm authenticate'
+  inputs:
+    workingFile: src/identity/.npmrc
+    customEndpoint: 'vsts-npm-auth'
+    
 - task: NodeTool@0
   inputs:
     versionSpec: '10.x'
