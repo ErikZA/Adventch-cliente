@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { AuthService } from 'src/app/shared/auth/auth.service';
 
 @Component({
   selector: 'app-oauth2',
@@ -20,7 +21,8 @@ export class Oauth2Component implements OnInit {
     private router: Router,
     private snackBar: MatSnackBar,
     private store: Store<any>,
-    private jwt: JwtHelperService
+    private jwt: JwtHelperService,
+    private auth: AuthService
   ) {
     this.auth$ = store.select('auth');
   }
@@ -31,6 +33,7 @@ export class Oauth2Component implements OnInit {
     this.routerActived.queryParams.subscribe((res: any) => {
       const { client_id, redirect_url } = res;
       if (client_id !== undefined && redirect_url !== undefined) {
+        this.auth.getUser();
         if (this.isLogin) {
           this.redirect_url(redirect_url)
         }
