@@ -1,18 +1,30 @@
 export class EventModel {
     public name: string;
-    public subscriptionLimit: number;
     public description: string;
-    public address: Address;
+    public subscriptionLimit: number;
     public realizationDate: Date;
     public registrationDate: Date;
-    public coupons: Coupons[];
-    public products: Products[];
     public cashValue: string;
     public installmentAmount: string;
     public installmentLimit: number;
     public bankAccountId: string;
     public paymentType: string;
-    public eventFields: string[];
+    public address: Address;
+    public coupons: Coupons[];
+    public products: Products[];
+    public eventFields: any[];
+    public fields: FieldsModel[];
+}
+
+export class FieldsModel {
+    constructor(
+        public id: string,
+        public name: string,
+        public description: string,
+        public fieldListId: string,
+        public isRequired: string,
+        public fieldTypeId: string,
+    ) { }
 }
 
 export class EventResponseModel {
@@ -31,6 +43,7 @@ export class EventResponseModel {
         public coupons: Coupons[],
         public products: Products[],
         public eventFields: any[],
+        public fields: FieldsModel[],
     ) { }
 }
 

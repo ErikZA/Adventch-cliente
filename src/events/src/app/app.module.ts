@@ -24,6 +24,7 @@ import { authReducer } from './reducers/auth.reducer';
 import { BankAccountReducer } from './reducers/bankAccount.reducer';
 import { ListReducer } from './reducers/list.reducer';
 import { UserReducer } from './reducers/user.reducer';
+import { CieloAccountReducer } from './reducers/cielo.reducers';
 
 // Services
 import { AuthGuard } from './shared/auth/auth.guard';
@@ -31,6 +32,7 @@ import { fieldReducer } from './reducers/field.reducer';
 import { HomeModule } from './modules/home/home.module';
 import { HttpRequestInterceptor } from './shared/http-interceptor';
 import { SidebarReducer } from './reducers/sidebar.reducer';
+import { SubscriptionReducer } from './reducers/subscription.reducer';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -81,7 +83,9 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
       user: UserReducer,
       bankAccount: BankAccountReducer,
       list: ListReducer,
-      sidebar: SidebarReducer
+      sidebar: SidebarReducer,
+      cielo: CieloAccountReducer,
+      subscription: SubscriptionReducer
     }),
   ],
   providers: [

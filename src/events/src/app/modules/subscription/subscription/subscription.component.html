@@ -4,11 +4,14 @@
         <div class="uk-flex-1 uk-margin-small-right form">
 
             <mat-horizontal-stepper labelPosition="bottom" [linear]="true" #stepper>
-                <mat-step>
+                <mat-step [stepControl]="formInformation">
                     <ng-template matStepLabel>Identificação</ng-template>
+                    <app-identification [formInformation]="formInformation"></app-identification>
                 </mat-step>
                 <mat-step>
                     <ng-template matStepLabel>Pagamento</ng-template>
+                    <app-payment [typePayment]="boleto"></app-payment>
+                    {{ event | json }}
                 </mat-step>
             </mat-horizontal-stepper>
 
@@ -36,13 +39,10 @@
 
             <div class="uk-margin-medium-top">
                 <span class="uk-text-uppercase uk-text-muted">Produtos</span>
-                <div class="uk-flex uk-flex-row">
-                    <span class="uk-flex-1"> Produto 1 </span>
-                    <span> {{ 100 | currency:"BRL" }} </span>
-                </div>
-                <div class="uk-flex uk-flex-row">
-                    <span class="uk-flex-1"> Produto 1 </span>
-                    <span> {{ 100 | currency:"BRL" }} </span>
+                <div class="uk-flex uk-flex-row" *ngFor="let product of products">
+                    <input type="checkbox">
+                    <span class="uk-flex-1"> {{ product?.name }} </span>
+                    <span> {{ product?.value | currency:"BRL" }} </span>
                 </div>
             </div>
 

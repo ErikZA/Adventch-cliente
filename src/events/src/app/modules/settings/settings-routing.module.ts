@@ -7,6 +7,7 @@ import { SettingComponent } from './setting/setting.component';
 import { FieldsComponent } from './fields/fields.component';
 import { ListComponent } from './list/list.component';
 import { BankAccountComponent } from './bank-account/bank-account.component';
+import { CieloAccountComponent } from './cielo-account/cielo-account.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
       { path: 'campos', component: FieldsComponent },
       { path: 'listas', component: ListComponent },
       { path: 'contas', component: BankAccountComponent },
+      { path: 'contas-cielo', component: CieloAccountComponent },
       { path: '', redirectTo: '/configuracoes/campos', pathMatch: 'full' }
     ]
   }

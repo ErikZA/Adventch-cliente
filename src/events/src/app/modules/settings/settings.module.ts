@@ -18,6 +18,8 @@ import { BankAccountFormComponent } from './bank-account/bank-account-form/bank-
 import { ListFormComponent } from './list/list-form/list-form.component';
 import { ListService } from './list/list.service';
 import { FieldFormComponent } from './fields/field-form/field-form.component';
+import { CieloAccountComponent } from './cielo-account/cielo-account.component';
+import { CieloAccountFormComponent } from './cielo-account/cielo-account-form/cielo-account-form.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { FieldFormComponent } from './fields/field-form/field-form.component';
     BankAccountComponent,
     BankAccountFormComponent,
     ListFormComponent,
-    FieldFormComponent
+    FieldFormComponent,
+    CieloAccountComponent,
+    CieloAccountFormComponent
   ],
   imports: [
     CommonModule,
@@ -47,7 +51,8 @@ import { FieldFormComponent } from './fields/field-form/field-form.component';
   entryComponents: [
     BankAccountFormComponent,
     ListFormComponent,
-    FieldFormComponent
+    FieldFormComponent,
+    CieloAccountFormComponent
   ]
 })
 export class SettingsModule { }

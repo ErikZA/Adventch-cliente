@@ -18,6 +18,13 @@
   </div>
 
   <mat-form-field appearance="outline" class="uk-width-1">
+    <mat-label>Tipo de Pagamento</mat-label>
+    <mat-select formControlName="paymentType" [(ngModel)]="typePayment">
+      <mat-option *ngFor="let m of methosPayments" [value]="m.id"> {{ m.name }} </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="uk-width-1" *ngIf="typePayment === '2' || typePayment === '1'">
     <mat-label>Contas Bancarias</mat-label>
     <mat-select formControlName="bankAccountId">
       <mat-option *ngFor="let b of bankAccounts" [value]="b.id">
@@ -26,10 +33,12 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="outline" class="uk-width-1">
-    <mat-label>Tipo de Pagamento</mat-label>
-    <mat-select formControlName="paymentType">
-      <mat-option *ngFor="let m of methosPayments" [value]="m.id"> {{ m.name }} </mat-option>
+  <mat-form-field appearance="outline" class="uk-width-1" *ngIf="typePayment === '4' || typePayment === '1'">
+    <mat-label>Contas Cielo</mat-label>
+    <mat-select formControlName="cieloAccountId">
+      <mat-option *ngFor="let b of cieloAccounts" [value]="b.id">
+        {{ b?.name }}
+      </mat-option>
     </mat-select>
   </mat-form-field>
 

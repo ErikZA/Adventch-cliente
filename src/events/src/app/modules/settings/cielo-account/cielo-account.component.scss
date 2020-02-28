@@ -1,0 +1,48 @@
+.bankAccountList{
+    background: #FFF;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px -5px rgba(0, 0, 0, .10);
+}
+
+.bank_account{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    span{
+        font-size: 1.2em;
+        font-weight: normal;
+    }
+    
+    .padding{
+        padding:8px 0;
+    }
+
+}
+
+.btn_new_bank_account{
+    padding: 8px 10px;
+    border-radius: 5px;
+    border:none;
+    background-color: #4C55BE;
+    color:#FFF;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.btn_border{
+    padding: 10px;
+    transition: .3s;
+}
+
+.btn_border_red:hover{
+    background-color: #EA2B1F;
+    color:#FFF;
+}
+
+.btn_border_blue:hover{
+    background-color: #4C55BE;
+    color:#FFF;
+}

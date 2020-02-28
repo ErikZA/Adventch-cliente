@@ -7,11 +7,15 @@ import { SubscriptionComponent } from './subscription/subscription.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SubscriptionService } from './subscription.service';
 import { RouterSubscriptionModule } from './router-subscription.module';
+import { PaymentComponent } from './subscription/payment/payment.component';
+import { IdentificationComponent } from './subscription/identification/identification.component';
 
 @NgModule({
   declarations: [
     SubscriptionListComponent,
-    SubscriptionComponent
+    SubscriptionComponent,
+    PaymentComponent,
+    IdentificationComponent
   ],
   imports: [
     CommonModule,

@@ -6,6 +6,7 @@
                 <a (click)="openSidebar()" *ngIf="isLogin">
                     <i style="color:#FFF" uk-icon="menu"></i>
                 </a>
+                <img  class="logo" src="../../../assets/img/adventech-white.png" alt="">
             </div>
             <div *ngIf="!isLogin">
                 <a [href]="urlIdentity" mat-button class="actived">Entrar</a>
