@@ -6,7 +6,7 @@ const client_id = '398b7981-6c29-4a27-b67b-6d6edf5548e9';
 const base_url = 'http://localhost:4302';
 
 export const environment = {
-  production: false,
+  production: true,
   name: 'dev',
   project: 'events',
   eventsApiUrl: 'http://localhost:5003/api/events/v1',
