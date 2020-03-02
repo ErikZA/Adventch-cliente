@@ -47,7 +47,7 @@ steps:
   enabled: false
 
 - script: |
-    npm run build --prefix src/events env=prod --prod
+    npm run build-$(envName) 
   displayName: 'npm build'
 
 - bash: |
