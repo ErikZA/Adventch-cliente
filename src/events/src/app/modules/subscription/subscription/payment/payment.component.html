@@ -1,0 +1,76 @@
+<mat-accordion>
+    <mat-expansion-panel *ngIf="typePayment === 1 || typePayment === 2">
+        <mat-expansion-panel-header>
+            <mat-panel-title (click)="getMethodPayment(2)">
+                <mat-radio-button value="2" class="uk-width-1">Boleto</mat-radio-button>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div>
+            <form [formGroup]="formBillet" class="uk-margin-small-top">
+                <mat-form-field appearance="outline" class="uk-width-1">
+                    <mat-label>CEP</mat-label>
+                    <input type="text" (blur)="getCep()" matInput placeholder="CEP" formControlName="postalCode">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="uk-width-1">
+                    <mat-label>Stado</mat-label>
+                    <input type="text" matInput placeholder="Stado" formControlName="state">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="uk-width-1">
+                    <mat-label>Cidade</mat-label>
+                    <input type="text" matInput placeholder="Cidade" formControlName="city">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="uk-width-1">
+                    <mat-label>Barrio</mat-label>
+                    <input type="text" matInput placeholder="Barrio" formControlName="neighborhood">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="uk-width-1">
+                    <mat-label>Rua</mat-label>
+                    <input type="text" matInput placeholder="Rua" formControlName="address">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="uk-width-1">
+                    <mat-label>Numero</mat-label>
+                    <input type="text" matInput placeholder="Numero" formControlName="number">
+                </mat-form-field>
+
+            </form>
+        </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel *ngIf="typePayment === 1 || typePayment === 4">
+        <mat-expansion-panel-header>
+            <mat-panel-title (click)="getMethodPayment(4)">
+                <mat-radio-button value="4" class="uk-width-1">Cartão de Credito</mat-radio-button>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div>
+            <form [formGroup]="formcreditCard">
+
+                <mat-form-field appearance="outline" class="uk-width-1">
+                    <mat-label>Nome</mat-label>
+                    <input type="text" matInput placeholder="Rua" formControlName="holder">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="uk-width-1">
+                    <mat-label>Numero</mat-label>
+                    <input type="text" matInput placeholder="Numero" formControlName="cardNumber">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="uk-width-1">
+                    <mat-label>Data de expiração</mat-label>
+                    <input type="text" matInput placeholder="Rua" formControlName="expirationDate">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="uk-width-1">
+                    <mat-label>CCV</mat-label>
+                    <input type="text" matInput placeholder="CCV" formControlName="securityCode">
+                </mat-form-field>
+
+            </form>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>

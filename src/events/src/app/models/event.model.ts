@@ -23,9 +23,21 @@ export class FieldsModel {
         public description: string,
         public fieldListId: string,
         public isRequired: string,
-        public fieldTypeId: string,
+        public fieldTypeId: number,
+        public value: string,
     ) { }
 }
+
+export class FieldsModel2 {
+    public id: string;
+    public name: string;
+    public description: string;
+    public fieldListId: string;
+    public isRequired: string;
+    public fieldTypeId: string;
+    public value: string;
+}
+
 
 export class EventResponseModel {
     constructor(
