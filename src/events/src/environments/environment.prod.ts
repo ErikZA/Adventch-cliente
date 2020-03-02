@@ -3,7 +3,7 @@ const base_url = 'https://eventos.adven.tech';
 
 export const environment = {
   production: true,
-  name: 'dev',
+  name: 'prod',
   project: 'events',
   eventsApiUrl: 'https://api-eventos.adven.tech/api/events/v1',
   identityApiUrl: 'https://api-identity.adven.tech/api/identity/v1',
