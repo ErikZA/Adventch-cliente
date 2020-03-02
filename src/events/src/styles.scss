@@ -59,6 +59,10 @@ a,a:hover{
     text-decoration: none;
 }
 
+button:focus{
+    outline: none;
+}
+
 .mat-dialog-container{
     padding: 0 !important;
     border-radius: 15px !important;

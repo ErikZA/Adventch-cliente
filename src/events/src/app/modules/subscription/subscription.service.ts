@@ -19,7 +19,17 @@ export class SubscriptionService {
   }
 
   AllEvents(aliasName: string) {
-    return this.http.get(`${this.uri}/Companies/${aliasName}?AliasName=${aliasName}`)
+    return this.http.get(`${this.uri}/Companies/${aliasName}?AliasName=${aliasName}`).toPromise();
+  }
+
+  Coupon(name: string) {
+    return this.http.get(`${this.uri}/Coupon/validate/${name}?NameCoupon=${name}`)
+  }
+
+  Subscription(subscription) {
+    this.http.post(`${this.uri}/Registration`, JSON.stringify(subscription)).subscribe((res: any) => {
+      console.log(res);
+    })
   }
 
 }

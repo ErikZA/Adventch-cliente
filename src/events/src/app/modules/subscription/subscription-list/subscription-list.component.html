@@ -1,4 +1,20 @@
-<div class="container">
+<div *ngIf="isInvalidAliasName">
+
+    <div class="uk-text-center uk-margin-medium-top">
+        <span class="uk-text-large">
+            Não encontramos essa empresa!
+        </span>
+    </div>
+    <div class="uk-text-center uk-margin-small-top">
+        <img style="border-radius: 15px;" src="https://media1.giphy.com/media/13mfGIwrAqiM8/giphy.gif?cid=790b7611d1149d20fa67d11c370481dfe9fe4f9c799b83b5&rid=giphy.gif"
+            alt="">
+    </div>
+
+
+</div>
+
+
+<div class="container" *ngIf="!isInvalidAliasName">
 
     <div class="uk-text-center uk-margin-medium-top header">
         <span class="uk-text-large uk-display-block uk-text-uppercase"> {{ association }} </span>
@@ -58,9 +74,5 @@
                 </div>
             </a>
         </div>
-
-
     </div>
-
-
 </div>

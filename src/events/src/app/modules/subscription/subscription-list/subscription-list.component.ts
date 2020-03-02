@@ -13,6 +13,7 @@ export class SubscriptionListComponent implements OnInit {
 
   public association: string;
   public events: any;
+  public isInvalidAliasName = false;
 
   constructor(
     public router: ActivatedRoute,
@@ -24,9 +25,11 @@ export class SubscriptionListComponent implements OnInit {
 
     this.router.params.subscribe((res: any) => {
       this.association = res.id
-      this._subscription.AllEvents(res.id).subscribe((res: any) => {
+      this._subscription.AllEvents(res.id).then((res: any) => {
         this.events = res.data[0].events;
-      });
+      }).catch(err => {
+        if (err.totalRows === 0) this.isInvalidAliasName = true;
+      })
     });
 
     this.store.dispatch(Sidebar(false, "side"))

@@ -1,3 +1,8 @@
+.container_subscription{
+    display: flex;
+    flex-direction: row;
+}
+
 .information{
     width: 350px;
     padding: 25px 10px;
@@ -20,4 +25,54 @@
 
 .cupons{
     text-decoration: line-through;;
+}
+
+.btn{
+    width: 100%;
+    padding: 15px 0;
+    border:none;
+    border-radius: 5px;
+    background-color: #4C55BE;
+    color:#FFF;
+    transition: .3;
+}
+
+.btn:disabled{
+    background: #eee;
+    color:#555;
+}
+
+.coupon_input{
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px 0 0 5px;
+    border:1px solid #eee;
+}
+
+.coupon_input:active{
+    outline: none;
+}
+
+.coupon_btn{
+    border-radius: 0 5px 5px 0;
+    border:none;
+    background-color: #4C55BE;
+    padding: 0 10px;
+    color:#FFF;
+}
+
+.coupon_btn:disabled{
+    background: #eee;
+    color:#555;
+}
+
+@media(max-width:800px){
+    .container_subscription{
+        flex-direction: column;
+    }
+
+    .information{
+        width: 100%;
+        margin-top:20px
+    }
 }

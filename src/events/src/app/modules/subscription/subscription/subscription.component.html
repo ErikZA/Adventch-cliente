@@ -1,17 +1,17 @@
 <div class="container">
 
-    <div class="uk-flex uk-flex-row uk-margin-medium-top">
+    <div class="container_subscription uk-margin-medium-top uk-margin-medium-bottom">
         <div class="uk-flex-1 uk-margin-small-right form">
 
             <mat-horizontal-stepper labelPosition="bottom" [linear]="true" #stepper>
-                <mat-step [stepControl]="formInformation">
+                <mat-step [stepControl]="formIdentity">
                     <ng-template matStepLabel>Identificação</ng-template>
-                    <app-identification [formInformation]="formInformation"></app-identification>
+                    <app-identification (emitterEvent)="fields($event)" [formInformation]="formIdentity">
+                    </app-identification>
                 </mat-step>
                 <mat-step>
                     <ng-template matStepLabel>Pagamento</ng-template>
-                    <app-payment [typePayment]="boleto"></app-payment>
-                    {{ event | json }}
+                    <app-payment [formBillet]="formBillet" [formcreditCard]="formcreditCard" (methodPayment)="getTypePayment($event)"></app-payment>
                 </mat-step>
             </mat-horizontal-stepper>
 
@@ -37,12 +37,17 @@
                 </span>
             </div>
 
-            <div class="uk-margin-medium-top">
+            <div class="uk-margin-medium-top" *ngIf="products?.length > 0">
                 <span class="uk-text-uppercase uk-text-muted">Produtos</span>
-                <div class="uk-flex uk-flex-row" *ngFor="let product of products">
-                    <input type="checkbox">
-                    <span class="uk-flex-1"> {{ product?.name }} </span>
-                    <span> {{ product?.value | currency:"BRL" }} </span>
+                <div class="uk-flex uk-flex-row" *ngFor="let product of products; let i = index">
+                    <mat-checkbox (change)="addProduct(product.id,product.value,i,$event)">
+                        <div class="uk-flex uk-flex-row">
+                            <div class="uk-flex-1">
+                                <span> {{ product?.name }} </span>
+                            </div>
+                            <span> {{ product?.value | currency:"BRL" }} </span>
+                        </div>
+                    </mat-checkbox>
                 </div>
             </div>
 
@@ -54,12 +59,25 @@
 
             <div class="uk-flex uk-flex-row">
                 <span class="uk-text-uppercase uk-flex-1">Desconto</span>
-                <span> {{ 0 | currency:'BRL' }} </span>
+                <span> {{ discount | currency:'BRL' }} </span>
             </div>
 
             <div class="uk-flex uk-flex-row">
                 <span class="uk-text-uppercase uk-flex-1 uk-text-bold">Total</span>
-                <span> {{ 140 | currency:'BRL' }} </span>
+                <span> {{ total | currency:'BRL' }} </span>
+            </div>
+
+            <form [formGroup]="formCoupon" class="uk-margin-medium-top">
+                <div class="uk-flex uk-flex-row">
+                    <div class="uk-flex-1">
+                        <input type="text" class="coupon_input" formControlName="name" placeholder="Nome do coupon">
+                    </div>
+                    <button (click)="sendCoupon()" class="coupon_btn" [disabled]="!formCoupon.valid">Aplicar desconto</button>
+                </div>
+            </form>
+
+            <div class="uk-margin-medium-top">
+                <button (click)="pay()" [disabled]="!formIdentity.valid && !formBillet.valid || !formIdentity.valid && !formcreditCard.valid" class="btn">Finalizar</button>
             </div>
 
         </div>
