@@ -16,7 +16,7 @@ export class SidebarComponent implements OnInit {
   public open = true;
   public isLogin: boolean;
 
-  public mode = new FormControl('over');
+  public mode = new FormControl('side');
   public shouldRun = [/(^|\.)plnkr\.co$/, /(^|\.)stackblitz\.io$/].some(h => h.test(window.location.host));
 
   constructor(
