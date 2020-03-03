@@ -40,6 +40,10 @@ export class AuthService {
     });
   }
 
+  validToken(token: string) {
+    return this.http.get(`${this.uri}/Oauth2/${token}?Token=${token}`).toPromise();
+  }
+
   decodeToken() {
     return this.jwt.decodeToken();
   }

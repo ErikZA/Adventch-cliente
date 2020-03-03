@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { AuthService } from 'src/app/shared/auth/auth.service';
+import { IsLogin } from 'src/app/action/auth.action';
 
 @Component({
   selector: 'app-oauth2',
@@ -33,7 +34,6 @@ export class Oauth2Component implements OnInit {
     this.routerActived.queryParams.subscribe((res: any) => {
       const { client_id, redirect_url } = res;
       if (client_id !== undefined && redirect_url !== undefined) {
-        this.auth.getUser();
         if (this.isLogin) {
           this.redirect_url(redirect_url)
         }
@@ -46,7 +46,15 @@ export class Oauth2Component implements OnInit {
   redirect_url(url: string) {
     const token = JSON.parse(localStorage.getItem("token"));
     const { alias } = JSON.parse(localStorage.getItem("user"));
-    window.location.href = `${url}/?token=${token}&alias=${alias}`
+    this.auth.validToken(token).then((res: any) => {
+      console.log(res);
+      if (res.data[0].isValid) {
+        window.location.href = `${url}/?token=${token}&alias=${alias}`
+      } else {
+        localStorage.clear();
+        this.store.dispatch(IsLogin(false));
+      }
+    })
   }
 
 }
