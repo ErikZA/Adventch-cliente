@@ -11,7 +11,7 @@ import { AuthService } from '../../auth/auth.service';
 export class ProfileComponent implements OnInit {
 
   public user$: Observable<any>;
-  public user;
+  public user: any;
 
   constructor(
     private store: Store<any>,

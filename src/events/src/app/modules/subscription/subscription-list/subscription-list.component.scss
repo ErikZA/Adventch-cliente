@@ -26,3 +26,11 @@ a{
     border-bottom: 1px solid #DDD;
     padding-bottom: 20px;
 }
+
+@media(max-width:400px){
+    .card-events{
+        max-width: 95%;
+        display: block;
+        margin:0 auto 20px;
+    }
+}

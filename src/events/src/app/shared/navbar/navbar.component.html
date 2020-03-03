@@ -6,11 +6,14 @@
                 <a (click)="openSidebar()">
                     <i style="color:#FFF" uk-icon="menu"></i>
                 </a>
-                <img class="logo" src="../../../assets/img/adventech-white.png" alt="">
+                <a routerLink="/">
+                    <img class="logo" src="../../../assets/img/adventech-white.png" alt="">
+                </a>
             </div>
             <div *ngIf="!isLogin">
                 <a [href]="urlIdentity" mat-button class="actived">Entrar</a>
             </div>
+
             <!-- <div>
                 <button mat-button *ngIf="isLogin" [matMenuTriggerFor]="menu">
                     <i style="color:#FFF" uk-icon="grid"></i>
