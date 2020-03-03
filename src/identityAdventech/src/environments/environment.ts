@@ -17,9 +17,6 @@ export const environment = {
   redirect_url: 'https://login.adven.tech',
   identityApiUrl: 'https://api-identity.adven.tech/api/identity/v1',
 };
-
-
-Change environment
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
