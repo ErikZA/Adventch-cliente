@@ -66,7 +66,7 @@ export class SubscriptionComponent implements OnInit {
       cardNumber: ['', Validators.required],
       holder: ['', Validators.required],
       expirationDate: ['', Validators.required],
-      securityCode: ['', Validators.required],
+      securityCode: ['', [Validators.required,Validators.minLength(3),Validators.maxLength(3)]],
     })
 
     const fields = this.formIdentity.controls.fieldResponses as FormArray
@@ -113,7 +113,7 @@ export class SubscriptionComponent implements OnInit {
     const { name } = this.formCoupon.value;
     this._subscription.Coupon(name).subscribe((res: any) => {
       if (res.totalRows <= 0) {
-        this.snackbar.open("Coupom invalido", "Fechar", { duration: 2000 })
+        this.snackbar.open("Cupom invalido", "Fechar", { duration: 2000 })
       } else {
         const { couponId, percentage } = res.data[0];
         this.couponId = couponId
@@ -134,7 +134,7 @@ export class SubscriptionComponent implements OnInit {
         daysToExpire: 5,
         amount: this.total,
         paymentLocation: "Pagável em qualquer banco até o vencimento",
-        billetMessages: ["Aqui vai uma mensagem"]
+        billetMessages: [""]
       },
       cardData: {
         amount: this.total,
@@ -152,7 +152,6 @@ export class SubscriptionComponent implements OnInit {
       couponId: this.couponId,
       products: this.productsSelect,
     }
-    console.log(JSON.stringify(pay))
     this._subscription.Subscription(pay);
   }
 
