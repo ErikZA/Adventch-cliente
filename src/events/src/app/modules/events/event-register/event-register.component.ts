@@ -6,12 +6,8 @@ import { EventRegisterService } from './event-register.service';
 import { EventResponseModel } from 'src/app/models/event.model';
 import { coupons } from '../../../actions/coupon.action';
 import { produts } from '../../../actions/products.action';
-
-class FieldIdModel {
-  constructor(
-    public idField: string,
-  ) { }
-}
+import { Store } from '@ngrx/store';
+import { loaded } from 'src/app/actions/loading.action';
 
 @Component({
   selector: 'app-event-register',
@@ -32,8 +28,10 @@ export class EventRegisterComponent implements OnInit {
   constructor(
     public fb: FormBuilder,
     private event: EventRegisterService,
-    public datePipe: DatePipe
+    public datePipe: DatePipe,
+    private store: Store<any>,
   ) {
+    store.dispatch(loaded(true));
   }
 
   ngOnInit() {
@@ -81,7 +79,7 @@ export class EventRegisterComponent implements OnInit {
 
   createEvents() {
     const { name, description, subscriptionLimit, realizationDate, registrationDate, eventFields } = this.formInformation.value;
-    const { cashValue, installmentAmount, installmentLimit, bankAccountId, paymentType } = this.formPayments.value
+    const { cashValue, installmentAmount, installmentLimit, bankAccountId, paymentType, cieloAccountId } = this.formPayments.value
     const realization = {
       begin: this.datePipe.transform(realizationDate[0], 'yyyy/MM/dd h:mm:ss'),
       end: this.datePipe.transform(realizationDate[1], 'yyyy/MM/dd h:mm:ss'),
@@ -107,6 +105,7 @@ export class EventRegisterComponent implements OnInit {
       installmentAmount,
       installmentLimit,
       bankAccountId,
+      cieloAccountId,
       paymentType,
       { ...this.formAdrees.value },
       coupons,

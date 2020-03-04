@@ -3,8 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard } from './shared/auth/auth.guard';
 import { AuthRouteService } from './shared/auth/authRoute.guard';
-import { SubscriptionListComponent } from './modules/subscription/subscription-list/subscription-list.component';
-import { SubscriptionComponent } from './modules/subscription/subscription/subscription.component';
 import { HomeComponent } from './modules/home/home.component';
 
 const routes: Routes = [

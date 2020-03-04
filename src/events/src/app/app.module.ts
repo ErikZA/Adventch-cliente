@@ -33,6 +33,7 @@ import { HomeModule } from './modules/home/home.module';
 import { HttpRequestInterceptor } from './shared/http-interceptor';
 import { SidebarReducer } from './reducers/sidebar.reducer';
 import { SubscriptionReducer } from './reducers/subscription.reducer';
+import { LoadingReducer } from './reducers/loading.reducer';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -85,7 +86,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
       list: ListReducer,
       sidebar: SidebarReducer,
       cielo: CieloAccountReducer,
-      subscription: SubscriptionReducer
+      subscription: SubscriptionReducer,
+      loaded: LoadingReducer
     }),
   ],
   providers: [

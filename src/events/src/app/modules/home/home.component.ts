@@ -6,6 +6,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from '../../../environments/environment';
 import { IsLogin } from 'src/app/actions/auth.action';
 import { AuthService } from 'src/app/shared/auth/auth.service';
+import { loaded } from 'src/app/actions/loading.action';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +23,9 @@ export class HomeComponent implements OnInit {
     private store: Store<any>,
     private jwt: JwtHelperService,
     private auth: AuthService
-  ) { }
+  ) {
+    store.dispatch(loaded(true))
+  }
 
   ngOnInit() {
     this.activedRouter.queryParams.subscribe((res: any) => {

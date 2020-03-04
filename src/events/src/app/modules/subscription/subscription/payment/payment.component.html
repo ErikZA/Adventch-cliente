@@ -9,7 +9,8 @@
             <form [formGroup]="formBillet" class="uk-margin-small-top">
                 <mat-form-field appearance="outline" class="uk-width-1">
                     <mat-label>CEP</mat-label>
-                    <input type="text" (blur)="getCep()" matInput placeholder="CEP" formControlName="postalCode">
+                    <input type="text" mask="00000-000" (blur)="getCep()" matInput placeholder="CEP"
+                        formControlName="postalCode">
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="uk-width-1">
@@ -52,23 +53,48 @@
 
                 <mat-form-field appearance="outline" class="uk-width-1">
                     <mat-label>Nome</mat-label>
-                    <input type="text" matInput placeholder="Rua" formControlName="holder">
+                    <input type="text" matInput placeholder="Nome" formControlName="holder">
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="uk-width-1">
                     <mat-label>Numero</mat-label>
-                    <input type="text" matInput placeholder="Numero" formControlName="cardNumber">
+                    <div class="uk-flex uk-flex-row uk-flex-middle">
+                        <div class="uk-flex-1">
+                            <input type="text" mask="0000 0000 0000 0000" maxlength="19" matInput placeholder="Numero"
+                                (input)="selectCardBrand($event.target.value)" formControlName="cardNumber">
+                        </div>
+                        <div>
+                            <img *ngIf="cardFlag === 'elo'" class="icon_card" src="../../../../../assets/cards/elo.svg"
+                                alt="">
+                            <img *ngIf="cardFlag === 'master'" class="icon_card"
+                                src="../../../../../assets/cards/mastercard.svg" alt="">
+                            <img *ngIf="cardFlag === 'visa'" class="icon_card"
+                                src="../../../../../assets/cards/visa.svg.svg" alt="">
+                        </div>
+                    </div>
+
+
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="uk-width-1">
                     <mat-label>Data de expiração</mat-label>
-                    <input type="text" matInput placeholder="Rua" formControlName="expirationDate">
+                    <input type="text" mask="00/00" matInput maxlength="7" placeholder="03/27"
+                        formControlName="expirationDate">
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="uk-width-1">
                     <mat-label>CCV</mat-label>
-                    <input type="text" min="3" max="3" matInput placeholder="CCV" formControlName="securityCode">
+                    <input type="text" minlength="3" maxlength="3" matInput placeholder="CCV"
+                        formControlName="securityCode">
                 </mat-form-field>
+
+                <!-- <mat-form-field appearance="outline" class="uk-width-1" *ngIf="fields[i]?.fieldTypeId === 3">
+                    <mat-label> Parcelamento </mat-label>
+                    <mat-select [formControlName]="fields[i].name">
+                        <mat-option></mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+
 
             </form>
         </div>

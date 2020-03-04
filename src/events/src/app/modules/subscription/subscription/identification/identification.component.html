@@ -12,7 +12,7 @@
 
     <mat-form-field appearance="outline" class="uk-width-1">
         <mat-label>CPF</mat-label>
-        <input type="text" matInput placeholder="CPF" formControlName="cpf">
+        <input type="text" mask="000.000.000-00" matInput placeholder="CPF" formControlName="cpf">
     </mat-form-field>
 
     <div *ngFor="let f of getItem.controls;let i = index">
@@ -85,5 +85,6 @@
         </div>
 
     </div>
-    <button class="btn" (click)="eventEmmiter()" matStepperNext [disabled]="!formInformation.valid">Proximo</button>
+
+    <button class="btn uk-margin-medium-top" (click)="eventEmmiter()" matStepperNext [disabled]="!formInformation.valid">Proximo</button>
 </form>

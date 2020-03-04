@@ -1,0 +1,24 @@
+.container_dialog_confirm{
+    width: 300px;
+}
+
+.btn{
+    width: 100%;
+    padding: 15px 0;
+    border:none;
+    border-radius: 0 0 15px 15px;
+    background-color: #4C55BE;
+    color:#FFF;
+    transition: .3;
+}
+
+.icon{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 15px;
+    padding: 15px;
+    border-radius: 50%;
+    background-color: green;
+    color:#FFF;
+    text-align: center;
+}
