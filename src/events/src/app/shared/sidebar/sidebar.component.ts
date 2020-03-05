@@ -16,7 +16,7 @@ export class SidebarComponent implements OnInit {
   public open = true;
   public isLogin: boolean;
 
-  public mode = new FormControl('side');
+  public mode = new FormControl('over');
   public shouldRun = [/(^|\.)plnkr\.co$/, /(^|\.)stackblitz\.io$/].some(h => h.test(window.location.host));
 
   constructor(
@@ -29,7 +29,6 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     this.sidebar$.subscribe((res: any) => {
       this.open = res.open
-      this.mode.setValue(res.action)
     });
 
     this.auth$.subscribe(res => this.isLogin = res)

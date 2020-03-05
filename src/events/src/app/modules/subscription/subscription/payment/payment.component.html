@@ -88,13 +88,14 @@
                         formControlName="securityCode">
                 </mat-form-field>
 
-                <!-- <mat-form-field appearance="outline" class="uk-width-1" *ngIf="fields[i]?.fieldTypeId === 3">
+                <mat-form-field appearance="outline" class="uk-width-1">
                     <mat-label> Parcelamento </mat-label>
-                    <mat-select [formControlName]="fields[i].name">
-                        <mat-option></mat-option>
+                    <mat-select #x formControlName="installments">
+                        <mat-option *ngFor="let p of parcelamento;let i = index" [value]="i+1">
+                            {{ i+1 }} - {{ p.value | currency:"BRL" }}
+                        </mat-option>
                     </mat-select>
-                </mat-form-field> -->
-
+                </mat-form-field>
 
             </form>
         </div>

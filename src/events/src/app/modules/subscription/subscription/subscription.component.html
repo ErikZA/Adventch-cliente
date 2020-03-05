@@ -1,8 +1,15 @@
-<div class=" container uk-animation-slide-top-small">
+<div class="container uk-animation-slide-top-small uk-padding-large uk-padding-remove-left uk-padding-remove-right">
 
-    <div class="container_subscription uk-margin-medium-top uk-margin-medium-bottom">
-        <div class="uk-flex-1 uk-margin-small-right form">
+    <div class="uk-text-center header">
+        <span class="uk-text-large uk-display-block uk-text-uppercase"> adventech </span>
+        <a class="uk-text-uppercase uk-margin-small-top uk-text-small" routerLink="../">
+            <i uk-icon="arrow-left"></i>
+            <span>Voltar</span>
+        </a>
+    </div>
 
+    <div class="container_subscription">
+        <div class="uk-flex-1 form">
             <mat-horizontal-stepper labelPosition="bottom" [linear]="true" #stepper>
                 <mat-step [stepControl]="formIdentity">
                     <ng-template matStepLabel>Identificação</ng-template>
@@ -15,7 +22,6 @@
                         (methodPayment)="getTypePayment($event)"></app-payment>
                 </mat-step>
             </mat-horizontal-stepper>
-
         </div>
         <div class="information">
 

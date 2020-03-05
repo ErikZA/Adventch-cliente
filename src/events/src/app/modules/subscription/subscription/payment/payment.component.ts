@@ -20,6 +20,7 @@ export class PaymentComponent implements OnInit {
   public typePayment: number;
   public cardFlag: string;
 
+  public parcelamento: any[] = [];
   constructor(
     private store: Store<any>,
   ) {
@@ -29,6 +30,15 @@ export class PaymentComponent implements OnInit {
   ngOnInit() {
     this.payment$.subscribe(res => {
       this.typePayment = res.paymentType
+
+      for (let i = 1; i <= res.installmentLimit; i++) {
+        if (i === 1) {
+          this.parcelamento.push({ value: res.cashValue });
+        } else if (i > 1) {
+          this.parcelamento.push({ value: (res.installmentAmount / i).toFixed(2) })
+        }
+      }
+
     });
     this.methodPayment.emit(0);
   }

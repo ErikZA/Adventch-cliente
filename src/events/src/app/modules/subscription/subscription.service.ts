@@ -36,12 +36,12 @@ export class SubscriptionService {
 
   Subscription(alias: string, subscription) {
     this.store.dispatch(loaded(false));
-    this.http.post(`${this.uri}/Registration`, JSON.stringify(subscription)).subscribe((res: any) => {
-      const { name, email } = res.resultData;
+    this.http.post(`${this.uri}/Registration`, JSON.stringify(subscription)).toPromise().then((res: any) => {
+      const { name, email } = res.resultData.registration;
       this.store.dispatch(loaded(true));
       this.OpenDialogConfirm(name, email)
       this.router.navigate([`/${alias}`])
-    })
+    }).finally(() => this.store.dispatch(loaded(true)))
   }
 
   OpenDialogConfirm(name: string, email: string) {

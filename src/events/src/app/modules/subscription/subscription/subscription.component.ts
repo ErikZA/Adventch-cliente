@@ -71,6 +71,7 @@ export class SubscriptionComponent implements OnInit {
       holder: ['', Validators.required],
       expirationDate: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]],
       securityCode: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]],
+      installments: ['', Validators.required]
     })
 
     const fields = this.formIdentity.controls.fieldResponses as FormArray
@@ -138,7 +139,7 @@ export class SubscriptionComponent implements OnInit {
 
   pay() {
     const { name, email, cpf } = this.formIdentity.value;
-    const { cardNumber, holder, expirationDate, securityCode } = this.formcreditCard.value;
+    const { cardNumber, holder, expirationDate, securityCode, installments } = this.formcreditCard.value;
     const pay = {
       ...this.formIdentity.value,
       fieldResponses: this.fieldResponses,
@@ -158,7 +159,7 @@ export class SubscriptionComponent implements OnInit {
         amount: this.total,
         merchantOrderId: "",
         customerName: "",
-        installments: 1,
+        installments: installments,
         creditCardData: {
           cardNumber: cardNumber,
           holder: holder,

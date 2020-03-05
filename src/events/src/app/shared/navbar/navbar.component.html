@@ -3,11 +3,11 @@
 
         <div class="uk-flex uk-flex-row uk-flex-middle" style="height:50px">
             <div class="uk-flex-1">
-                <a (click)="openSidebar()">
-                    <i style="color:#FFF" uk-icon="menu"></i>
+                <a (click)="openSidebar()" class="uk-margin-small-right">
+                    <i style="color:#FFF" uk-icon="icon:menu;ratio:1.4"></i>
                 </a>
-                <a routerLink="/">
-                    <img class="logo" src="../../../assets/img/adventech-white.png" alt="">
+                <a routerLink="/" class="logo">
+                    <img src="../../../assets/img/adventech-white.png" alt="">
                 </a>
             </div>
             <div *ngIf="!isLogin">

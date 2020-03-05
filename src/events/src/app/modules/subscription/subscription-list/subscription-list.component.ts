@@ -25,7 +25,6 @@ export class SubscriptionListComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.router.params.subscribe((res: any) => {
       this.association = res.id
       this._subscription.AllEvents(res.id).then((res: any) => {
@@ -34,9 +33,6 @@ export class SubscriptionListComponent implements OnInit {
         if (err.totalRows === 0) this.isInvalidAliasName = true;
       }).finally(() => this.store.dispatch(loaded(true)));
     });
-
-    this.store.dispatch(Sidebar(false, "side"))
-
   }
 
 }
