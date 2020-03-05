@@ -29,7 +29,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.activedRouter.queryParams.subscribe((res: any) => {
-      console.log(res);
       if (res.token !== undefined && res.token !== null && res.alias !== undefined && res.alias !== null) {
         const { sub } = this.jwt.decodeToken(res.token)
         localStorage.setItem("token", JSON.stringify(res.token))
