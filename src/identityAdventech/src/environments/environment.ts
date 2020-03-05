@@ -2,14 +2,16 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
-  // production: true,
-  // name: 'dev',
-  // project: 'identity',
-  // client_id: '4ae023d4-4d86-4b0e-bcba-2ecba154ce53',
-  // redirect_url: 'http://localhost:4200',
-  // identityApiUrl: 'http://localhost:5000/api/identity/v1',
+// export const environment = {
+//   production: false,
+//   name: 'dev',
+//   project: 'identity',
+//   client_id: '4ae023d4-4d86-4b0e-bcba-2ecba154ce53',
+//   redirect_url: 'http://localhost:4200',
+//   identityApiUrl: 'http://localhost:5000/api/identity/v1',
+// };
 
+export const environment = {
   production: true,
   name: 'dev',
   project: 'identity',
@@ -17,6 +19,8 @@ export const environment = {
   redirect_url: 'https://login.adven.tech',
   identityApiUrl: 'https://api-identity.adven.tech/api/identity/v1',
 };
+
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
