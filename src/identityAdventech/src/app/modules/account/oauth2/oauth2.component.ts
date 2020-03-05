@@ -47,8 +47,7 @@ export class Oauth2Component implements OnInit {
     const token = JSON.parse(localStorage.getItem("token"));
     const { alias } = JSON.parse(localStorage.getItem("user"));
     this.auth.validToken(token).then((res: any) => {
-      console.log(res);
-      window.location.href = `${url}/?token=${token}&alias=${alias}`
+      window.location.href = `${url}#/?token=${token}&alias=${alias}`
     }).catch(err => {
       localStorage.clear();
       this.store.dispatch(IsLogin(false));
