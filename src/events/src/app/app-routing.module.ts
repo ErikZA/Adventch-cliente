@@ -3,8 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard } from './shared/auth/auth.guard';
 import { AuthRouteService } from './shared/auth/authRoute.guard';
-import { SubscriptionListComponent } from './modules/subscription/subscription-list/subscription-list.component';
-import { SubscriptionComponent } from './modules/subscription/subscription/subscription.component';
 import { HomeComponent } from './modules/home/home.component';
 
 const routes: Routes = [
@@ -16,7 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

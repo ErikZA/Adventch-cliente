@@ -31,24 +31,11 @@ export class NavbarComponent implements OnInit {
     this.user$ = store.select('user')
     this.sidebar$ = store.select('sidebar')
     this.user$.subscribe((res) => this.user = res);
-    this.getScreenSize()
   }
 
   ngOnInit() {
     this.authentication$.subscribe((res: any) => this.isLogin = res);
     this.sidebar$.subscribe((res: any) => this.open = res.open);
-  }
-
-  @HostListener('window:resize', ['$event'])
-  getScreenSize(event?) {
-    this.sizeWindow = window.innerWidth;
-
-    if (window.innerWidth <= 800) {
-      this.store.dispatch(Sidebar(false, "over"))
-    } else if (window.innerWidth > 800) {
-      this.store.dispatch(Sidebar(true, "side"))
-    }
-
   }
 
   logout() {

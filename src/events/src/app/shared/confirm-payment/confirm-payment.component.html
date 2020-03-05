@@ -1,0 +1,17 @@
+<div class="container_dialog_confirm">
+    <div class="uk-padding-small">
+        <div class="uk-text-center">
+            <div class="icon">
+                <i uk-icon="icon:check;ratio:3"></i>
+            </div>
+            <span class="uk-display-block uk-text-large uk-text-capitalize">Olá, {{ data?.name }} </span>
+            <span class="uk-display-block">Sua incrição foi realizada com sucesso</span>
+        </div>
+        <div class="uk-margin-small-top uk-text-center">
+            Enviamos um email para <b> {{ data?.email }} </b> com todas as informação.
+        </div>
+    </div>
+    <button class="btn" (click)="close()">
+        Fechar
+    </button>
+</div>

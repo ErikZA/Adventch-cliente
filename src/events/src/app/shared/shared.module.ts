@@ -16,12 +16,16 @@ import { SnackBarComponent } from './snack-bar/snack-bar.component';
 import { SnackBarService } from './snack-bar/snack-bar.service';
 import { AuthService } from './auth/auth.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { LoadingComponent } from './loading/loading.component';
+import { ConfirmPaymentComponent } from './confirm-payment/confirm-payment.component';
 
 @NgModule({
   declarations: [
     NavbarComponent,
     SnackBarComponent,
-    SidebarComponent
+    SidebarComponent,
+    LoadingComponent,
+    ConfirmPaymentComponent
   ],
   imports: [
     CommonModule,
@@ -40,9 +44,13 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     FormsModule,
     ReactiveFormsModule,
     NgxMaskModule,
-    SidebarComponent
+    SidebarComponent,
+    LoadingComponent
   ],
-  entryComponents: [SnackBarComponent],
+  entryComponents: [
+    SnackBarComponent,
+    ConfirmPaymentComponent,
+  ],
   providers: [
     SnackBarService,
     AuthService,

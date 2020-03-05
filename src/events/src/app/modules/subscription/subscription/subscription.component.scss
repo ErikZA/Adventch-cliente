@@ -1,3 +1,7 @@
+.header{
+    padding-bottom: 20px;
+}
+
 .container_subscription{
     display: flex;
     flex-direction: row;
@@ -16,6 +20,7 @@
     border-radius: 15px;
     box-shadow: 0 0 20px -5px rgba(0,0,0,.10);
     padding: 15px;
+    margin-right: 10px;
 }
 
 .container-values{
@@ -74,5 +79,9 @@
     .information{
         width: 100%;
         margin-top:20px
+    }
+
+    .form{
+        margin-right: 0;
     }
 }

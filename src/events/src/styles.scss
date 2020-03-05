@@ -39,6 +39,11 @@ $accent-color: mat-color($accent-palete);
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    outline: none;
+}
+
+*:hover{
+    outline: none;
 }
 
 html, body { 

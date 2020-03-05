@@ -8,6 +8,7 @@ export class EventModel {
     public installmentAmount: string;
     public installmentLimit: number;
     public bankAccountId: string;
+    public cieloAccountId: string;
     public paymentType: string;
     public address: Address;
     public coupons: Coupons[];
@@ -50,6 +51,7 @@ export class EventResponseModel {
         public installmentAmount: string,
         public installmentLimit: number,
         public bankAccountId: string,
+        public cieloAccountId: string,
         public paymentType: string,
         public address: Address,
         public coupons: Coupons[],

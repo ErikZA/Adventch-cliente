@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 
 import { EventModel } from 'src/app/models/event.model';
 import { EventRegisterService } from '../event-register/event-register.service';
+import { loaded } from 'src/app/actions/loading.action';
 
 @Component({
   selector: 'app-event-list',
@@ -20,11 +21,15 @@ export class EventListComponent implements OnInit {
     private service: EventRegisterService,
   ) {
     this.event$ = store.select('event')
+    store.dispatch(loaded(true));
   }
 
   ngOnInit() {
     this.service.All();
-    this.event$.subscribe(res => this.events = res)
+    this.event$.subscribe(res => {
+      this.events = res
+      console.log(res);
+    })
   }
 
   remove(id: string) {

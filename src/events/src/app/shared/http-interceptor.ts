@@ -46,6 +46,8 @@ export class HttpRequestInterceptor implements HttpInterceptor {
               this.login.logout();
             case 400:
               this.snackBar.open(error.error.errorMessage, "Fechar", { duration: 3000 })
+            case 409:
+              this.snackBar.open(error.error.errorMessage, "Fechar", { duration: 2000 })
           }
           return throwError(error.error);
         })

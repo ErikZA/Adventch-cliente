@@ -1,8 +1,15 @@
-<div class="container">
+<div class="container uk-animation-slide-top-small uk-padding-large uk-padding-remove-left uk-padding-remove-right">
 
-    <div class="container_subscription uk-margin-medium-top uk-margin-medium-bottom">
-        <div class="uk-flex-1 uk-margin-small-right form">
+    <div class="uk-text-center header">
+        <span class="uk-text-large uk-display-block uk-text-uppercase"> adventech </span>
+        <a class="uk-text-uppercase uk-margin-small-top uk-text-small" routerLink="../">
+            <i uk-icon="arrow-left"></i>
+            <span>Voltar</span>
+        </a>
+    </div>
 
+    <div class="container_subscription">
+        <div class="uk-flex-1 form">
             <mat-horizontal-stepper labelPosition="bottom" [linear]="true" #stepper>
                 <mat-step [stepControl]="formIdentity">
                     <ng-template matStepLabel>Identificação</ng-template>
@@ -11,10 +18,10 @@
                 </mat-step>
                 <mat-step>
                     <ng-template matStepLabel>Pagamento</ng-template>
-                    <app-payment [formBillet]="formBillet" [formcreditCard]="formcreditCard" (methodPayment)="getTypePayment($event)"></app-payment>
+                    <app-payment [formBillet]="formBillet" [formcreditCard]="formcreditCard"
+                        (methodPayment)="getTypePayment($event)"></app-payment>
                 </mat-step>
             </mat-horizontal-stepper>
-
         </div>
         <div class="information">
 
@@ -72,12 +79,16 @@
                     <div class="uk-flex-1">
                         <input type="text" class="coupon_input" formControlName="name" placeholder="Nome do coupon">
                     </div>
-                    <button (click)="sendCoupon()" class="coupon_btn" [disabled]="!formCoupon.valid">Aplicar desconto</button>
+                    <button (click)="sendCoupon()" class="coupon_btn" [disabled]="couponId?.length > 0">
+                        Aplicar Desconto
+                    </button>
                 </div>
             </form>
 
             <div class="uk-margin-medium-top">
-                <button (click)="pay()" [disabled]="!formIdentity.valid && !formBillet.valid || !formIdentity.valid && !formcreditCard.valid" class="btn">Finalizar</button>
+                <button (click)="pay()" [disabled]="!formBillet.valid && !formcreditCard.valid" class="btn">
+                    Finalizar
+                </button>
             </div>
 
         </div>
