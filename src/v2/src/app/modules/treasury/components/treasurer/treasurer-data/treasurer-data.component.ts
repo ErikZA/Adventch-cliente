@@ -1,6 +1,7 @@
+import { PagedResult } from './../../../../../shared/paged-result';
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, Subscription, Observable } from 'rxjs';
+import { Subject, Subscription, Observable, pipe } from 'rxjs';
 import { MatSnackBar, MatPaginator, MatExpansionPanel, PageEvent } from '@angular/material';
 
 import { TreasuryService } from '../../../treasury.service';
@@ -43,6 +44,10 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   functionsSelecteds: number[] = [];
   functionsData: Filter[] = [];
 
+  private dataStore = {
+    treasurers:  []
+  };
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('matExpansionPanel') panelFilter: MatExpansionPanel;
   treasurers$: Observable<any>;
@@ -65,7 +70,10 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     private filterService: FilterService,
     private reportService: ReportService,
     private districtService: DistrictService
-  ) { super(router); }
+  ) { super(router);
+      this.dataStore = {
+      treasurers: []
+    };}
 
   ngOnInit() {
     this.getPreferenceFilter();
@@ -115,7 +123,10 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
     this.treasurers$ = this.treasurerService
       .getTreasurers(id, params)
       .pipe(
-        tap(data => this.length = data.rowCount)
+        tap(data => {
+            this.length = data.rowCount;
+            this.dataStore.treasurers = data.results;
+          })
       );
   }
 
@@ -204,6 +215,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
         })
       );
   }
+
   private loadAnalysts(): Observable<any> {
     this.analystsData = [];
     return this.treasureService.loadAnalysts(auth.getCurrentUnit().id)
@@ -259,10 +271,13 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   }
 
   private getDataParams(): any {
+    const ids = this.dataStore.treasurers.map(m => m.id);
+    console.log(ids);
     return {
-      functionIds: this.functionsSelecteds,
-      districtIds: this.districtsSelecteds,
-      analystIds: this.analystsSelecteds
+      functions: this.filterText.length === 0 ? '[VAZIO]' : this.filterText,
+      treasurersIds: String(ids.length === 0 ? 0 : ids),
+      districts: this.reportService.getParams(this.districtsSelecteds, this.districtsData),
+      analysts: this.reportService.getParams(this.analystsSelecteds, this.analystsData)
     };
   }
 
