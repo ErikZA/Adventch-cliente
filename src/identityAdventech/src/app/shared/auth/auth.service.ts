@@ -35,7 +35,7 @@ export class AuthService {
 
   getUser() {
     const { id } = JSON.parse(localStorage.getItem("user"));
-    this.http.get(`${this.uri}/Users/${id}`).subscribe((res: any) => {
+    this.http.get(`${this.uri}/Users/${id}?UserId=${id}`).subscribe((res: any) => {
       this.store.dispatch(readUser(res.data[0]))
     });
   }
