@@ -112,36 +112,22 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return this.avaliationsRequirements ? this.avaliationsRequirements.reduce((prev, r) => prev + r.note, 0) : 0;
   }
 
-  private updateCheck(checked: boolean, id: number, valueMax: number, valueMin: number, valueNow: number):number {
-    let midlle = valueMax;
+  private updateCheck(id: number,  valueNow: number): number {
     const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
-       if (checked) {
-        if (!isNaN(parseInt( ((valueMax / 2) + ''), 10))) {
-          midlle = parseInt( ((valueMax / 2) + ''), 10);
-        }
-       evaluation.note =  this.adjustsSlider(valueMax, valueMin, valueNow, midlle, evaluation.note);
-       this.noteIsFull(id, evaluation.note, valueMax, midlle);
-       return evaluation.note;
-      }
-       return valueMax;
-
+        if (!isNaN(parseInt( (valueNow + ''), 10))) {
+         this.noteIsFull(id, parseInt( (valueNow + ''), 10), evaluation.note);
+         return evaluation.note = parseInt( (valueNow + ''), 10);
+         }
+       return valueNow;
   }
 
-
-  private adjustsSlider(valueMax: number, valueMin: number, valueNow: number, midlle: number, note: number): number {
-     if  ((valueNow < valueMax && valueNow > midlle) && note > valueNow) {
-      return   midlle;
-    } else if ( (valueNow < valueMax && valueNow < midlle) &&  note < valueNow )  {
-      return   midlle;
-    } else if ( (valueNow < valueMax && valueNow > midlle) &&  note < valueNow ) {
-       return   valueMax;
-    } else if ( (valueNow < valueMax && valueNow > valueMin) &&  note > valueNow ) {
-       return   valueMin;
-    } else if ( note < midlle) {
-      return  midlle;
-    }
-     return midlle;
-  }
+  private noteIsFull(id, valueNow: number, valueMax: number) {
+    if (valueNow === valueMax) {
+       this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = false; }} );
+     } else   if (valueNow < valueMax) {
+       this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = true; }} );
+     }
+   }
 
   private createAvaliationRequirement(note: number, idRequirement: number): AvaliationRequirementAvaliationFormInterface {
     return {
@@ -150,18 +136,8 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  private noteIsFull(id, valueNow: number, valueMax: number, midlle: number) {
-   if (valueNow === valueMax) {
-      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = false; }} );
-    } else if (valueNow < midlle) {
-      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = true; }} );
-    } else   if (valueNow < valueMax) {
-      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = true; }} );
-    }
-  }
-
-  private getCurrentNote(id: number):number {
-    let evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
+  private getCurrentNote(id: number): number {
+    const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
     return evaluation.note;
   }
 
