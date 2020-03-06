@@ -112,17 +112,22 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return this.avaliationsRequirements ? this.avaliationsRequirements.reduce((prev, r) => prev + r.note, 0) : 0;
   }
 
-  private updateCheck(checked: boolean, id: number,  valueNow: number):number {
-    console.log(valueNow)
+  private updateCheck(id: number,  valueNow: number): number {
     const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
-       if (checked) {
-        if (!isNaN(parseInt( (valueNow +''), 10))) {
-          console.log(this.sumTotalOfRequirements());
-         return evaluation.note = parseInt( (valueNow +''), 10);
+        if (!isNaN(parseInt( (valueNow + ''), 10))) {
+         this.noteIsFull(id, parseInt( (valueNow + ''), 10), evaluation.note);
+         return evaluation.note = parseInt( (valueNow + ''), 10);
          }
-       }
        return valueNow;
   }
+
+  private noteIsFull(id, valueNow: number, valueMax: number) {
+    if (valueNow === valueMax) {
+       this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = false; }} );
+     } else   if (valueNow < valueMax) {
+       this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = true; }} );
+     }
+   }
 
   private createAvaliationRequirement(note: number, idRequirement: number): AvaliationRequirementAvaliationFormInterface {
     return {
@@ -131,8 +136,8 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  private getCurrentNote(id: number):number {
-    let evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
+  private getCurrentNote(id: number): number {
+    const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
     return evaluation.note;
   }
 

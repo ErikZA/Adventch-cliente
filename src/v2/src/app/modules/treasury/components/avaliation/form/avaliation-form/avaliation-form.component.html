@@ -3,7 +3,7 @@
 </div>
 <form [formGroup]="formAvaliation" fxLayout="column"  layout-align="center"  ngStyle.gt-sm="margin: 0px 20px" ngStyle.lt-md="margin: 0px 5px" *ngIf="!loading" (keydown.enter)="$event.preventDefault()">
     <app-header-form [title]="getTitleLabel()"></app-header-form>
-    <div fxLayout="row" fxLayout.lt-md="row"  layout-align="center" ngStyle.gt-xs="width: 90%">
+    <div fxLayout="row" fxLayout.lt-md="row"  layout-align="center" ngStyle.gt-xs="width: 80%">
       <div ngStyle.gt-xs="width: 15%" ngStyle.lt.md="width: 0%"></div>
         <div fxLayout="column wrap" fxFlex layout-align="center">
             <app-observations-information class="observation-info"></app-observations-information>
