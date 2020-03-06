@@ -112,35 +112,16 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return this.avaliationsRequirements ? this.avaliationsRequirements.reduce((prev, r) => prev + r.note, 0) : 0;
   }
 
-  private updateCheck(checked: boolean, id: number, valueMax: number, valueMin: number, valueNow: number):number {
-    let midlle = valueMax;
+  private updateCheck(checked: boolean, id: number,  valueNow: number):number {
+    console.log(valueNow)
     const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
        if (checked) {
-        if (!isNaN(parseInt( ((valueMax / 2) + ''), 10))) {
-          midlle = parseInt( ((valueMax / 2) + ''), 10);
-        }
-       evaluation.note =  this.adjustsSlider(valueMax, valueMin, valueNow, midlle, evaluation.note);
-       this.noteIsFull(id, evaluation.note, valueMax, midlle);
-       return evaluation.note;
-      }
-       return valueMax;
-
-  }
-
-
-  private adjustsSlider(valueMax: number, valueMin: number, valueNow: number, midlle: number, note: number): number {
-     if  ((valueNow < valueMax && valueNow > midlle) && note > valueNow) {
-      return   midlle;
-    } else if ( (valueNow < valueMax && valueNow < midlle) &&  note < valueNow )  {
-      return   midlle;
-    } else if ( (valueNow < valueMax && valueNow > midlle) &&  note < valueNow ) {
-       return   valueMax;
-    } else if ( (valueNow < valueMax && valueNow > valueMin) &&  note > valueNow ) {
-       return   valueMin;
-    } else if ( note < midlle) {
-      return  midlle;
-    }
-     return midlle;
+        if (!isNaN(parseInt( (valueNow +''), 10))) {
+          console.log(this.sumTotalOfRequirements());
+         return evaluation.note = parseInt( (valueNow +''), 10);
+         }
+       }
+       return valueNow;
   }
 
   private createAvaliationRequirement(note: number, idRequirement: number): AvaliationRequirementAvaliationFormInterface {
@@ -148,16 +129,6 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
       idRequirement: idRequirement,
       note: note
     };
-  }
-
-  private noteIsFull(id, valueNow: number, valueMax: number, midlle: number) {
-   if (valueNow === valueMax) {
-      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = false; }} );
-    } else if (valueNow < midlle) {
-      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = true; }} );
-    } else   if (valueNow < valueMax) {
-      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = true; }} );
-    }
   }
 
   private getCurrentNote(id: number):number {
