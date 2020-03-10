@@ -112,19 +112,21 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return this.avaliationsRequirements ? this.avaliationsRequirements.reduce((prev, r) => prev + r.note, 0) : 0;
   }
 
-  private updateCheck(id: number,  valueNow: number): number {
+  private updateCheck(id: number,  valueNow: number, valueMax: number): number {
     const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
         if (!isNaN(parseInt( (valueNow + ''), 10))) {
-         this.noteIsFull(id, parseInt( (valueNow + ''), 10), evaluation.note);
+         this.noteIsFull(id, parseInt( (valueNow + ''), 10), evaluation.note, valueMax);
          return evaluation.note = parseInt( (valueNow + ''), 10);
          }
        return valueNow;
   }
 
-  private noteIsFull(id, valueNow: number, valueMax: number) {
+  private noteIsFull(id, valueNow: number, valuelast: number, valueMax: number) {
     if (valueNow === valueMax) {
        this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = false; }} );
-     } else   if (valueNow < valueMax) {
+     } else if (valueNow > valuelast) {
+      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = false; }} );
+    } else   if (valueNow < valueMax && valueNow <= valuelast) {
        this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = true; }} );
      }
    }

@@ -13,7 +13,7 @@
           min="0"
           max="{{requirement.score}}"
           thumbLabel
-          (change)="sliderScore.value = updateCheck(requirement.id, sliderScore.value)"
+          (change)="sliderScore.value = updateCheck(requirement.id, sliderScore.value, requirement.score)"
           tickInterval="{{requirement.score /2}}"
           step="{{requirement.score /2}}">
         </mat-slider>
