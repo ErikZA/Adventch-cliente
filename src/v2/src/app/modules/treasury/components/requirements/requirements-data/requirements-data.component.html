@@ -72,9 +72,11 @@
               <span class="text-bold">Descrição:</span>
               <span ngStyle.gt-xs="width: 80%" ngStyle.lt.md="width: 20%"  ngStyle.lt.md="word-wrap: break-word" class="breakWord">{{ requirement.description }}</span>
             </div>
-            <div  fxLayout="row wrap" fxLayoutGap="5px">
-              <span class="text-bold">Tipo:</span>
-              <span >{{ (requirement.isAnual ? "Anual" : "Mensal") }}</span>
+            <div  [ngSwitch]="requirement.evaluationTypeId" fxLayout="row wrap" fxLayoutGap="5px">
+                          <span class="text-bold">Tipo:</span>
+                          <span *ngSwitchCase="0">Mensal</span>
+                          <span *ngSwitchCase="1">Anual</span>
+                          <span *ngSwitchCase="3">Semanal</span>
             </div>
           </div>
           <mat-action-row>

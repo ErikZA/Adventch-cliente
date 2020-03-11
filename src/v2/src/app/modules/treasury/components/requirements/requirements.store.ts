@@ -129,25 +129,29 @@ export class RequirementStore {
                     || data.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
                     || data.description.toLowerCase().indexOf(search.toLowerCase()) !== -1
                     || moment(data.date).format('DD/MM/YYYY').toString().indexOf(search.toLowerCase()) !== -1
-                    || this.filterStatus(search.toLowerCase(), data.isAnual);
+                    || this.filterStatus(search.toLowerCase(), data.evaluationTypeId);
             });
         }
     }
 
-    private filterStatus(search: string, isAnual: boolean): boolean {
-        if (isAnual === false) {
+    private filterStatus(search: string, evaluationTypeId: number): boolean {
+        if (evaluationTypeId === 1) {
             return 'anual'.indexOf(search) !== -1;
         }
-        if (isAnual === true) {
-            return 'mensal'.indexOf(search) !== -1;
+        if (evaluationTypeId === 3) {
+            return 'semanal'.indexOf(search) !== -1;
+        }
+        if (evaluationTypeId === 0) {
+          return 'mensal'.indexOf(search) !== -1;
         }
         return false;
     }
 
-    public searchStatus(isAnual: boolean, requirement: Requirement[]): Requirement[] {
+    public searchStatus(evaluationTypeId: number, requirement: Requirement[]): Requirement[] {
         // tslint:disable-next-line:triple-equals
-        return requirement.filter(f => f.isAnual == isAnual);
+        return requirement.filter(f => f.evaluationTypeId == evaluationTypeId);
     }
+
     public searchInPeriod(year: number, requirement: Requirement[]) {
         return requirement.filter(f => new Date(f.date).getFullYear() === year);
     }

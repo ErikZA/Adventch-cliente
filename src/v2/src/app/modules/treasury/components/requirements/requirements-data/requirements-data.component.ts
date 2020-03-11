@@ -58,7 +58,7 @@ export class RequirementDataComponent extends AbstractSidenavContainer implement
     this.loadPeriods();
     this.getData()
       .pipe(
-      switchMap(() => this.search$)
+        switchMap(() => this.search$)
       ).subscribe(search => {
         this.filterText = search;
         this.search();
@@ -80,11 +80,11 @@ export class RequirementDataComponent extends AbstractSidenavContainer implement
     return this.requirementsService
       .getRequirements(id)
       .pipe(
-      map(p => p.sort((a, b) => a.position - b.position)),
-      tap((data: RequirementDataInterface[]) => {
-        this.requirements = data;
-        this.requirementsCache = data;
-      })
+        map(p => p.sort((a, b) => a.position - b.position)),
+        tap((data: RequirementDataInterface[]) => {
+          this.requirements = data;
+          this.requirementsCache = data;
+        })
       );
   }
 
@@ -106,10 +106,10 @@ export class RequirementDataComponent extends AbstractSidenavContainer implement
     this.subsConfirmRemove = this.confirmDialogService
       .confirm('Remover registro', 'Você deseja realmente remover este requisito?', 'REMOVER')
       .pipe(
-      skipWhile(res => res !== true),
-      switchMap(() => this.requirementsService.deleteRequirement(requirement.id)),
-      switchMap(() => this.getData()),
-      tap(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 30000 }))
+        skipWhile(res => res !== true),
+        switchMap(() => this.requirementsService.deleteRequirement(requirement.id)),
+        switchMap(() => this.getData()),
+        tap(() => this.snackBar.open('Removido com sucesso', 'OK', { duration: 30000 }))
       ).subscribe();
   }
 
@@ -126,20 +126,52 @@ export class RequirementDataComponent extends AbstractSidenavContainer implement
   }
 
   private searchStatus(requirementsFilttered): RequirementDataInterface[] {
-    if (this.typesSelecteds.length === 2 || this.typesSelecteds.length === 0) {// Todos ou nenhum
+    if (this.typesSelecteds.length === 3 || this.typesSelecteds.length === 0) {// Todos ou nenhum
       return requirementsFilttered;
     }
-    if (this.typesSelecteds[0] === 1) {
-      return requirementsFilttered.filter(f => f.isAnual);
+    if (this.typesSelecteds.length === 2) {
+      return this.doFielter(requirementsFilttered);
     }
-    return requirementsFilttered.filter(f => !f.isAnual);
+    if (this.typesSelecteds[0] === 1) {
+      return requirementsFilttered.filter(f => f.evaluationTypeId === 1);
+    }
+    if (this.typesSelecteds[0] === 0) {
+      return requirementsFilttered.filter(f => f.evaluationTypeId === 0);
+    } else {
+      return requirementsFilttered.filter(f => f.evaluationTypeId === 3);
+    }
+  }
+
+  private doFielter(requirementsFilttered): RequirementDataInterface[]{
+      if ((this.typesSelecteds[0] === 1 && this.typesSelecteds[1] === 0) ||
+        (this.typesSelecteds[1] === 1 && this.typesSelecteds[0] === 0)) {
+        return requirementsFilttered.filter(elemnt => {
+          if (elemnt.evaluationTypeId === 1 || elemnt.evaluationTypeId === 0) {
+            return elemnt;
+          }
+        });
+      }
+      if ((this.typesSelecteds[0] === 1 && this.typesSelecteds[1] === 3) ||
+        (this.typesSelecteds[1] === 1 && this.typesSelecteds[0] === 3)) {
+        return requirementsFilttered.filter(elemnt => {
+          if (elemnt.evaluationTypeId === 1 || elemnt.evaluationTypeId === 3) {
+            return elemnt;
+          }
+        });
+      } else {
+      return requirementsFilttered.filter(elemnt => {
+        if (elemnt.evaluationTypeId === 0 || elemnt.evaluationTypeId === 3) {
+          return elemnt;
+        }
+      });
+    }
   }
 
   private searchYear(requirementsFilttered: RequirementDataInterface[]): RequirementDataInterface[] {
     if (this.yearsSelecteds.length === 0) {
       return requirementsFilttered;
     }
-    return requirementsFilttered.filter(f =>  this.checkYear(f.date));
+    return requirementsFilttered.filter(f => this.checkYear(f.date));
   }
 
   private checkYear(date): boolean {
@@ -189,12 +221,13 @@ export class RequirementDataComponent extends AbstractSidenavContainer implement
   private loadTypes(): void {
     this.typesData.push(new Filter(1, 'Anual'));
     this.typesData.push(new Filter(0, 'Mensal'));
+    this.typesData.push(new Filter(3, 'Semanal'));
   }
 
   public disableReport(): boolean {
     const types = this.typesSelecteds.length === 0
-    || this.typesSelecteds.length === 1
-    || this.typesSelecteds.length === this.typesData.length;
+      || this.typesSelecteds.length === 1
+      || this.typesSelecteds.length === this.typesData.length;
     const years = (this.yearsData.length === 1 && this.yearsSelecteds.length === 0) || this.yearsSelecteds.length === 1;
     if (types && years) {
       return false;

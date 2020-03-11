@@ -4,7 +4,7 @@ export interface RequirementDataInterface {
   name: string;
   description: string;
   score: number;
-  isAnual: boolean;
+  evaluationTypeId: number;
   date: Date;
   hasAvaliation: boolean;
 }

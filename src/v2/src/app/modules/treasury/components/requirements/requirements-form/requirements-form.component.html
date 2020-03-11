@@ -24,16 +24,16 @@
                 <mat-error *ngIf="formRequirement.get('description').hasError('pattern')">Digite um descrição válido.</mat-error>
             </mat-form-field>
             <mat-form-field>
-                <mat-select placeholder="Tipo" formControlName="isAnual" required>
-                    <mat-option value=0>Mensal</mat-option>
-                    <mat-option value=1>Anual</mat-option>
-                    <mat-option value=3>Semanal</mat-option>
+                <mat-select placeholder="Tipo" formControlName="evaluationTypeId" required>
+                    <mat-option [value]="3">Semanal</mat-option>
+                    <mat-option [value]="0">Mensal</mat-option>
+                    <mat-option [value]="1">Anual</mat-option>
                 </mat-select>
-                <mat-error *ngIf="formRequirement.get('isAnual').hasError('required')">Este campo é obrigatório</mat-error>
+                <mat-error *ngIf="formRequirement.get('evaluationTypeId').hasError('required')">Este campo é obrigatório</mat-error>
             </mat-form-field>
             <mat-form-field fxFlex>
                 <input matInput type="number" formControlName="score" placeholder="Nota" required minlength="1" maxlength="200">
-                <mat-error *ngIf="formRequirement.get('isAnual').hasError('required')">Este campo é obrigatório</mat-error>
+                <mat-error *ngIf="formRequirement.get('score').hasError('required')">Este campo é obrigatório</mat-error>
             </mat-form-field>
             <mat-form-field fxFlex>
                 <input matInput ng-bind="date | date:'MM/dd/yyyy'" [matDatepicker]="pickerBirth" placeholder="Data" formControlName="date" required>

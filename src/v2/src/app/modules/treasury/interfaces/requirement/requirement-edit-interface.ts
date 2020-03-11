@@ -4,7 +4,7 @@ export interface RequirementEditInterface {
   name: string;
   description: string;
   score: number;
-  isAnual: boolean;
+  evaluationTypeId: number;
   date: Date;
   hasAvaliation: boolean;
 }

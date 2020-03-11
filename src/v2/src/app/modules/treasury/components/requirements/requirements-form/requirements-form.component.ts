@@ -69,7 +69,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(800), Validators.pattern(/^[^ ]+( [^ ]+)*$/)]],
       score: ['', [Validators.required]],
       date: ['', [Validators.required]],
-      isAnual: ['', [Validators.required]]
+      evaluationTypeId: ['', [Validators.required]]
     });
   }
 
@@ -95,6 +95,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
   }
 
   private sendDataNew(): Observable<boolean> {
+    console.log(this.getDataNew());
     return this.requirementsService.postRequirement(this.getDataNew());
   }
 
@@ -113,12 +114,12 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
   private getDataEdit(): RequirementUpdateInterface {
     const _requirement = this.formRequirement.value;
     return {
-      position: this.requirement.position,
-      name: this.requirement.name,
+      position: _requirement.position,
+      name: _requirement.name,
       description: _requirement.description,
-      score: this.requirement.score,
-      isAnual: this.requirement.isAnual,
-      date: this.requirement.date,
+      score: _requirement.score,
+      evaluationTypeId: _requirement.evaluationTypeId,
+      date: _requirement.date,
     };
   }
 
@@ -139,7 +140,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
       name: this.requirement.name,
       description: this.requirement.description,
       score: this.requirement.score,
-      isAnual: this.requirement.isAnual.toString(),
+      evaluationTypeId: this.requirement.evaluationTypeId,
       date: this.requirement.date,
     });
   }
@@ -147,7 +148,7 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
   private disable() {
     this.formRequirement.controls['name'].disable();
     this.formRequirement.controls['score'].disable();
-    this.formRequirement.controls['isAnual'].disable();
+    this.formRequirement.controls['evaluationTypeId'].disable();
     this.formRequirement.controls['date'].disable();
   }
 }
