@@ -25,8 +25,9 @@
             </mat-form-field>
             <mat-form-field>
                 <mat-select placeholder="Tipo" formControlName="isAnual" required>
-                    <mat-option value="false">Mensal</mat-option>
-                    <mat-option value="true">Anual</mat-option>
+                    <mat-option value=0>Mensal</mat-option>
+                    <mat-option value=1>Anual</mat-option>
+                    <mat-option value=3>Semanal</mat-option>
                 </mat-select>
                 <mat-error *ngIf="formRequirement.get('isAnual').hasError('required')">Este campo é obrigatório</mat-error>
             </mat-form-field>

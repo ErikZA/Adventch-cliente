@@ -26,6 +26,13 @@
                 </mat-select>
                 <mat-error *ngIf="form.get('district').hasError('required')">Este campo é obrigatório</mat-error>
             </mat-form-field>
+            <mat-form-field>
+              <mat-select placeholder="Remessa" formControlName="shipping" required>
+                  <mat-option value="false">Mensal</mat-option>
+                  <mat-option value="true">Semanal</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.get('shipping').hasError('required')">Este campo é obrigatório</mat-error>
+          </mat-form-field>
             <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap.gt-sm="20px">
                 <mat-form-field fxFlex="30%">
                     <mat-select placeholder="Estado" formControlName="state" required name="Estado">

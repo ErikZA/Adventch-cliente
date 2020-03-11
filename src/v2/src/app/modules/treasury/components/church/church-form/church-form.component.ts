@@ -76,7 +76,8 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
       city: [{value: null, disabled: true}, Validators.required],
       address: [null, Validators.required],
       complement: [null],
-      cep: [null, Validators.required]
+      cep: [null, Validators.required],
+      shipping: [null, Validators.required]
     });
   }
 
@@ -160,7 +161,8 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
       city: church.city.id,
       address: church.address,
       complement: church.complement,
-      cep: church.cep
+      cep: church.cep,
+      shipping: church.isMonth.toString()
     });
   }
 }
