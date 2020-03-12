@@ -2,7 +2,7 @@
     <h4  class="text-grey">Avaliar Requisitos</h4>
     <mat-divider></mat-divider>
     <div class="text-requirement-color" *ngFor="let requirement of requirementsAvaliation">
-    <div  fxLayout="row" fxLayout.md="column"  fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start" >
+    <div *ngIf="requirement.evaluationTypeId===3" fxLayout="row" fxLayout.md="column"  fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start" >
         <div fxFlex fxFlex.gt-sm="20%">{{ requirement.name }}</div>
         <div fxLayout="row"  fxFlex="30%">
             <div style="padding: 5px">0</div>

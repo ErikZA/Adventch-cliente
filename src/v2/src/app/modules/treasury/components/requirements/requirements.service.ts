@@ -51,8 +51,8 @@ export class RequirementsService {
       .get<RequirementAvaliationChurchInterface[]>(url);
   }
 
-  public getRequirementsByUnitMonthly(unitId: number, year: number): Observable<RequirementAvaliationChurchInterface[]> {
-    const url = `${this.baseURl}unit/${unitId}/monthly/year/${year}`;
+  public getRequirementsByUnitMonthlyAndWeekly(unitId: number, year: number): Observable<RequirementAvaliationChurchInterface[]> {
+    const url = `${this.baseURl}unit/${unitId}/monthly/week/year/${year}`;
     return this.http
       .get<RequirementAvaliationChurchInterface[]>(url);
   }

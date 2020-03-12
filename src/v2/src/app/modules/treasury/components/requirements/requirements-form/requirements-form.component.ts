@@ -95,7 +95,6 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
   }
 
   private sendDataNew(): Observable<boolean> {
-    console.log(this.getDataNew());
     return this.requirementsService.postRequirement(this.getDataNew());
   }
 
