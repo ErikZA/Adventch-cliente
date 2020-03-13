@@ -63,18 +63,19 @@ export class AvaliationObservationFormComponent implements OnInit, OnDestroy {
   }
 
   public checkIsLoading(): boolean {
-    if((this.church !== undefined && this.church !== null) &&  (this.formAvaliation !== undefined && this.formAvaliation !== null))
-      return this.loading =false;
-    else
+    if((this.church !== undefined && this.church !== null) &&  (this.formAvaliation !== undefined && this.formAvaliation !== null)){
+      return this.loading = false;
+    } else {
       return true;
+    }
   }
 
    saveObservation() {
      if (!this.formObservation.valid) {
        return;
      }
-     this.formObservation.setValue({date:this.formAvaliation.get('date').value,
-     church:this.church.id, description: this.formObservation.get('description').value});
+     this.formObservation.setValue({date: this.formAvaliation.get('date').value,
+     church: this.church.id, description: this.formObservation.get('description').value});
      console.log(this.formObservation.value);
      const unit = auth.getCurrentUnit();
      const responsible = auth.getCurrentUser();

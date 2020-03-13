@@ -14,8 +14,7 @@ import {
 } from '../../../../interfaces/avaliation/avaliation-requirement-avaliation-form-interface';
 import { AvaliationRequirementEditInterface } from '../../../../interfaces/avaliation/avaliation-requirement-edit-interface';
 import { FormGroup } from '@angular/forms';
-import { ChurchAvaliationFormInterface } from "../../../../interfaces/avaliation/church-avaliation-form-interface";
-
+import { ChurchAvaliationFormInterface } from '../../../../interfaces/avaliation/church-avaliation-form-interface';
 
 @Component({
   selector: 'app-avaliation-requirement-form',
@@ -37,9 +36,14 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   @Input()
   formAvaliation: FormGroup;
 
-
+  sunTotal: number;
   year: number;
-
+  saturday = new Array();
+  matriz: {
+    indice: number,
+    arrayRequiremen: AvaliationRequirementAvaliationFormInterface[],
+    date: string
+  }[];
 
   requirementsAvaliation: RequirementAvaliationChurchInterface[];
   avaliationsRequirements: AvaliationRequirementAvaliationFormInterface[];
@@ -50,12 +54,14 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.calcSaturday();
     this.sub1 = this.route.params
       .pipe(
         skipWhile(({ year }) => !year),
         tap(({ year }) => this.year = year),
         switchMap(({ year }) => this.loadRequirements(year)),
-        tap(() => this.editRequirement())
+        tap(() => this.editRequirement()),
+        tap(() => this.populeteMatriz())
       ).subscribe();
   }
 
@@ -100,7 +106,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     this.requirementsAvaliation.forEach(ra => {
       ra.isFull = false;
       this.avaliationsRequirements
-        .push(this.createAvaliationRequirement(ra.score, ra.id));
+        .push(this.createAvaliationRequirement(ra.score, ra.id, ra.evaluationTypeId, ra.isFull, ra.score, ra.name));
     });
   }
 
@@ -109,55 +115,117 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   }
 
   public sumTotalOfRequirements(): number {
-    return this.avaliationsRequirements ? this.avaliationsRequirements.reduce((prev, r) => prev + r.note, 0) : 0;
+    this.sunTotal = 0;
+    if (this.matriz !== undefined && this.matriz != null) {
+      this.matriz.forEach(req => {
+        if (req.indice < (this.saturday.length - 1)) {
+          this.sunTotal += req.arrayRequiremen ? req.arrayRequiremen.filter( reqFilter => reqFilter.evaluationTypeId === 3)
+          .reduce((prev, r) => prev + r.note, 0) : 0;
+        } else {
+          this.sunTotal += req.arrayRequiremen ? req.arrayRequiremen.reduce((prev, r) => prev + r.note, 0) : 0;
+        }
+      });
+    }
+    return this.sunTotal;
   }
 
-  private updateCheck(id: number, valueNow: number, valueMax: number): number {
-    const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
+  public updateCheck(id: number, valueNow: number, valueMax: number, indice: number): number {
+    const requeriments = this.matriz.find(ar => ar.indice === indice);
+    const evaluation = requeriments.arrayRequiremen.find(ar => ar.idRequirement === id);
     if (!isNaN(parseInt((valueNow + ''), 10))) {
-      this.noteIsFull(id, parseInt((valueNow + ''), 10), evaluation.note, valueMax);
+      this.noteIsFull(id, parseInt((valueNow + ''), 10), evaluation.note, valueMax, indice);
       return evaluation.note = parseInt((valueNow + ''), 10);
     }
     return valueNow;
   }
 
-  private noteIsFull(id, valueNow: number, valuelast: number, valueMax: number) {
+  private noteIsFull(id: number, valueNow: number, valuelast: number, valueMax: number, indice: number) {
+    const requeriments = this.matriz.find(ar => ar.indice === indice);
+    const evaluation = requeriments.arrayRequiremen.find(ar => ar.idRequirement === id);
     if (valueNow === valueMax) {
-      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = false; } });
+      evaluation.isFull = false;
     } else if (valueNow > valuelast) {
-      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = false; } });
+      evaluation.isFull = false;
     } else if (valueNow < valueMax && valueNow <= valuelast) {
-      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = true; } });
+      evaluation.isFull = true;
     }
-    this.calcsaturday();
+    console.log(this.church);
   }
 
-  private calcsaturday() {
+  public updateWeekCheck(id: number, valueNow: number, valueMax: number, indice: number): number {
+    const requeriments = this.matriz.find(ar => ar.indice === indice);
+    const evaluation = requeriments.arrayRequiremen.find(ar => ar.idRequirement === id);
+    if (!isNaN(parseInt((valueNow + ''), 10))) {
+      this.noteIsFull(id, parseInt((valueNow + ''), 10), evaluation.note, valueMax, indice);
+      return evaluation.note = parseInt((valueNow + ''), 10);
+    }
+    return valueNow;
+  }
+
+  private calcSaturday() {
     const d = new Date();
     const getTot = this.daysInMonth(d.getMonth(), d.getFullYear());
-    const sat = new Array();
-    for (const i = 1; i <= getTot; i++) {
+    for (let i = 1; i <= getTot; i++) {
       const newDate = new Date(d.getFullYear(), d.getMonth(), i);
       if (newDate.getDay() === 6) {
-        sat.push(i);
+        this.saturday.push(newDate.toLocaleDateString());
       }
     }
-    console.log(sat);
   }
 
   private daysInMonth(month: number, year: number) {
     return new Date(year, month, 0).getDate();
   }
 
-  private createAvaliationRequirement(note: number, idRequirement: number): AvaliationRequirementAvaliationFormInterface {
+  public isAnual(): boolean {
+    if (this.requirementsAvaliation !== undefined && this.requirementsAvaliation != null) {
+      return this.requirementsAvaliation.every(req => req.evaluationTypeId !== 1);
+    }
+  }
+
+  private populeteMatriz() {
+    this.matriz = [];
+    if (this.avaliationsRequirements !== undefined && this.avaliationsRequirements != null) {
+      for (let i = 0; i < this.saturday.length; i++) {
+        this.matriz.push({
+          indice: i,
+          arrayRequiremen: this.avaliationsRequirements.map(req => {
+            return {
+              idRequirement: req.idRequirement,
+              score: req.score,
+              name: req.name,
+              note: req.note,
+              isFull: req.isFull,
+              evaluationTypeId: req.evaluationTypeId
+            };
+          }),
+          date: this.saturday[i]
+        });
+      }
+    }
+  }
+
+  private createAvaliationRequirement(noteNow: number, idRequirementNow: number,
+    idEvaluationNow: number, isFullNow: boolean, scoreNow: number, nameNow: string):
+    AvaliationRequirementAvaliationFormInterface {
     return {
-      idRequirement: idRequirement,
-      note: note
+      idRequirement: idRequirementNow,
+      score: scoreNow,
+      note: noteNow,
+      isFull: isFullNow,
+      evaluationTypeId: idEvaluationNow,
+      name: nameNow
     };
   }
 
-  private getCurrentNote(id: number): number {
+  public getCurrentNote(id: number): number {
     const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
+    return evaluation.note;
+  }
+
+  public getCurrentWeekNote(id: number, indice: number): number {
+    const requeriments = this.matriz.find(ar => ar.indice === indice);
+    const evaluation = requeriments.arrayRequiremen.find(ar => ar.idRequirement === id);
     return evaluation.note;
   }
 
