@@ -12,6 +12,9 @@ import { AvaliationEditInterface } from '../../../../interfaces/avaliation/avali
 import {
   AvaliationRequirementAvaliationFormInterface
 } from '../../../../interfaces/avaliation/avaliation-requirement-avaliation-form-interface';
+import {
+  AvaliationRequirementAvaliationFormInterfaceWeekly
+} from '../../../../interfaces/avaliation/avaliation-requirement-avaliation-form-interface-weekly';
 import { AvaliationRequirementEditInterface } from '../../../../interfaces/avaliation/avaliation-requirement-edit-interface';
 import { FormGroup } from '@angular/forms';
 import { ChurchAvaliationFormInterface } from '../../../../interfaces/avaliation/church-avaliation-form-interface';
@@ -129,6 +132,16 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return this.sunTotal;
   }
 
+  public sumTotalOfRequirementsMonth(): number {
+    return this.avaliationsRequirements ? this.avaliationsRequirements.filter(reqFilter => reqFilter.evaluationTypeId === 0)
+    .reduce((prev, r) => prev + r.note, 0) : 0;
+  }
+
+  public sumTotalOfRequirementsYearly(): number {
+    return this.avaliationsRequirements ? this.avaliationsRequirements.filter(reqFilter => reqFilter.evaluationTypeId === 1)
+    .reduce((prev, r) => prev + r.note, 0) : 0;
+  }
+
   public updateCheck(id: number, valueNow: number, valueMax: number, indice: number): number {
     const requeriments = this.matriz.find(ar => ar.indice === indice);
     const evaluation = requeriments.arrayRequiremen.find(ar => ar.idRequirement === id);
@@ -150,6 +163,25 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
       evaluation.isFull = true;
     }
     console.log(this.church);
+  }
+
+  public updateYearCheck(id: number, valueNow: number, valueMax: number): number {
+    const evaluation = this.avaliationsRequirements.find(ar => ar.idRequirement === id);
+    if (!isNaN(parseInt((valueNow + ''), 10))) {
+      this.noteIsYearFull(id, parseInt((valueNow + ''), 10), evaluation.note, valueMax);
+      return evaluation.note = parseInt((valueNow + ''), 10);
+    }
+    return valueNow;
+  }
+
+  private noteIsYearFull(id: number, valueNow: number, valuelast: number, valueMax: number) {
+    if (valueNow === valueMax) {
+      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = false; }} );
+    } else if (valueNow > valuelast) {
+     this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = false; }} );
+   } else   if (valueNow < valueMax && valueNow <= valuelast) {
+      this.requirementsAvaliation.forEach(ra => { if (ra.id === id) { ra.isFull = true; }} );
+    }
   }
 
   public updateWeekCheck(id: number, valueNow: number, valueMax: number, indice: number): number {
@@ -177,12 +209,17 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return new Date(year, month, 0).getDate();
   }
 
-  public isAnual(): boolean {
+  public isYearly(): boolean {
     if (this.requirementsAvaliation !== undefined && this.requirementsAvaliation != null) {
       return this.requirementsAvaliation.every(req => req.evaluationTypeId !== 1);
     }
   }
 
+  public isMonth(): boolean {
+    if (this.church !== undefined && this.church != null) {
+      return this.church.isMonth;
+    }
+  }
   private populeteMatriz() {
     this.matriz = [];
     if (this.avaliationsRequirements !== undefined && this.avaliationsRequirements != null) {
@@ -229,7 +266,25 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return evaluation.note;
   }
 
-  public getAvaliationsRequirement(): AvaliationRequirementAvaliationFormInterface[] {
-    return this.avaliationsRequirements;
+  public getAvaliationsRequirementWeekly(): AvaliationRequirementAvaliationFormInterfaceWeekly[] {
+    const matrizWeek: any[] = [];
+    this.matriz.forEach(data => {
+      matrizWeek.push(
+      data.arrayRequiremen.map( req => {
+        return {
+          idWeek: data.indice,
+          idRequirement: req.idRequirement,
+          note: req.note,
+          evaluationTypeId: req.evaluationTypeId
+        } as AvaliationRequirementAvaliationFormInterfaceWeekly;
+      }));
+    });
+    return matrizWeek;
+  }
+  public getAvaliationsRequirementMonthly(): AvaliationRequirementAvaliationFormInterface[] {
+    return this.avaliationsRequirements.filter(req => req.evaluationTypeId === 0);
+  }
+  public getAvaliationsRequirementYearly(): AvaliationRequirementAvaliationFormInterface[] {
+    return this.avaliationsRequirements.filter(req => req.evaluationTypeId === 1);
   }
 }

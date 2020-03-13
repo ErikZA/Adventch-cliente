@@ -28,8 +28,8 @@
             </mat-form-field>
             <mat-form-field>
               <mat-select placeholder="Remessa" formControlName="shipping" required>
-                  <mat-option value="false">Mensal</mat-option>
-                  <mat-option value="true">Semanal</mat-option>
+                  <mat-option value="true">Mensal</mat-option>
+                  <mat-option value="false">Semanal</mat-option>
               </mat-select>
               <mat-error *ngIf="form.get('shipping').hasError('required')">Este campo é obrigatório</mat-error>
           </mat-form-field>

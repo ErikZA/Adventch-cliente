@@ -6,6 +6,8 @@ import { AvaliationEditInterface } from '../../interfaces/avaliation/avaliation-
 import { NewAvaliationInterface } from '../../interfaces/avaliation/new-avaliation-interface';
 import { UpdateAvaliationInterface } from '../../interfaces/avaliation/update-avaliation-interface';
 import { PagedResult } from '../../../../shared/paged-result';
+import { NewAvaliationInterfaceWeek } from '../../interfaces/avaliation/new-avaliation-interface-week';
+import { UpdateAvaliationInterfaceWeekly } from '../../interfaces/avaliation/update-avaliation-interface-week';
 
 @Injectable({
   providedIn: 'root'
@@ -63,6 +65,18 @@ export class AvaliationService {
     const url = `${this.baseURL}monthly`;
     return this.http
       .post<boolean>(url, avaliation);
+  }
+
+  public postNewAvaliationWeekly(avaliation: NewAvaliationInterfaceWeek): Observable<boolean> {
+    const url = `${this.baseURL}weekly`;
+    return this.http
+      .post<boolean>(url, avaliation);
+  }
+
+  public putUpdateAvaliationWeekly(id: number, avaliation: UpdateAvaliationInterfaceWeekly): Observable<boolean> {
+    const url = `${this.baseURL}${id}/weekly`;
+    return this.http
+      .put<boolean>(url, avaliation);
   }
 
   public putUpdateAvaliationYearly(id: number, avaliation: UpdateAvaliationInterface): Observable<boolean> {

@@ -153,6 +153,7 @@ export class ChurchFormComponent implements OnInit, OnDestroy {
   }
 
   private setValues(church: Church): void {
+    console.log(church)
     this.form.patchValue({
       name: church.name,
       code: church.code,

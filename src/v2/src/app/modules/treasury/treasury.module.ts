@@ -40,7 +40,9 @@ import { TreasurerService } from './components/treasurer/treasurer.service';
 import { DistrictService } from './components/districts/district.service';
 import { CardCountFeaturesComponent } from './components/dashboard/card-count-features/card-count-features.component';
 import { DashboardTreasuryService } from './components/dashboard/dashboard-treasury.service';
-import { AvaliationObservationFormComponent } from './components/avaliation/form/avaliation-observation-form/avaliation-observation-form.component';
+import {
+  AvaliationObservationFormComponent
+ } from './components/avaliation/form/avaliation-observation-form/avaliation-observation-form.component';
 
 
 @NgModule({
