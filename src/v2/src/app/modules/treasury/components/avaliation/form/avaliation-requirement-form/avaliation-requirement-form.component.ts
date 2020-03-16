@@ -162,7 +162,6 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     } else if (valueNow < valueMax && valueNow <= valuelast) {
       evaluation.isFull = true;
     }
-    console.log(this.church);
   }
 
   public updateYearCheck(id: number, valueNow: number, valueMax: number): number {
@@ -266,7 +265,17 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return evaluation.note;
   }
 
+  private filterWeek(requeriment: AvaliationRequirementAvaliationFormInterfaceWeekly): boolean {
+      if (requeriment.evaluationTypeId === 0 &&  requeriment.idWeek === (this.saturday.length-1)) {
+        return true;
+      } else if (requeriment.evaluationTypeId === 3) {
+        return true;
+      }
+      return false;
+  }
+
   public getAvaliationsRequirementWeekly(): AvaliationRequirementAvaliationFormInterfaceWeekly[] {
+    const matrizWeek2: any[] = [];
     const matrizWeek: any[] = [];
     this.matriz.forEach(data => {
       matrizWeek.push(
@@ -279,7 +288,10 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
         } as AvaliationRequirementAvaliationFormInterfaceWeekly;
       }));
     });
-    return matrizWeek;
+      matrizWeek.forEach( data => {
+      matrizWeek2.push(data.filter(element => this.filterWeek(element)));
+    });
+    return matrizWeek2;
   }
   public getAvaliationsRequirementMonthly(): AvaliationRequirementAvaliationFormInterface[] {
     return this.avaliationsRequirements.filter(req => req.evaluationTypeId === 0);

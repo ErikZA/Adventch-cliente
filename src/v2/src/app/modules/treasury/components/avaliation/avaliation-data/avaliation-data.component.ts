@@ -88,6 +88,12 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     ).subscribe();
     this.subscribeFilters = this.loadFilter()
       .subscribe();
+
+      this.churchesAvaliations$.pipe(
+        tap(data => {
+           console.log(data.results);
+          })
+      ).subscribe();
   }
 
   ngOnDestroy(): void {
@@ -230,6 +236,24 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
       this.router
         .navigate([
           churchAvaliation.id, 'mensal', 'novo',
+          { month: this.filterMonth, year: this.filterYear }
+        ], { relativeTo: this.route });
+    }
+  }
+
+  public weekly(churchAvaliation: ChurchAvaliationDataInterface) {
+    const avaliation = churchAvaliation
+      .avaliations
+      .find(a => a.isMensal && this.getYear(a.date) === this.filterYear && this.getMonth(a.date) === this.filterMonth);
+    if (avaliation) {
+      this.router.navigate([
+        churchAvaliation.id, 'semanal', avaliation.id, 'editar',
+        { month: this.filterMonth, year: this.filterYear }
+      ], { relativeTo: this.route });
+    } else {
+      this.router
+        .navigate([
+          churchAvaliation.id, 'semanal', 'novo',
           { month: this.filterMonth, year: this.filterYear }
         ], { relativeTo: this.route });
     }

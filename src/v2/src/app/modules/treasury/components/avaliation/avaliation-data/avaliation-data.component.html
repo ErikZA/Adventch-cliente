@@ -158,10 +158,15 @@
           </div>
           <mat-action-row fxLayout="row" fxLayout.xs="column"
             *ngIf="checkHasAvaliation(churchAvaliations) || churchAvaliations.avaliations.lenght !== 0">
-            <ng-template [Feature]="52">
+            <ng-template *ngIf="churchAvaliations.isMonth else elseBlockMonth" [Feature]="52">
               <button mat-button *ngIf="checkFinalizedMonthly(churchAvaliations)"
                 style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal"
                 (click)="mensal(churchAvaliations)">AVALIAR</button>
+            </ng-template>
+            <ng-template #elseBlockMonth [Feature]="56">
+              <button mat-button *ngIf="checkFinalizedMonthly(churchAvaliations)"
+                style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação semanal"
+                (click)="weekly(churchAvaliations)">AVALIAR SEMANAL/MENSAL</button>
             </ng-template>
             <ng-template [Feature]="53">
               <button mat-button *ngIf="checkFinalizedYearly(churchAvaliations)"

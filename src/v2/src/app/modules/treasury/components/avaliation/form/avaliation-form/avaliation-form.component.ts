@@ -62,6 +62,8 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
         delay(500)
       ).subscribe(() => this.loading = false);
     this.avaliationDataComponent.openSidenav();
+
+    console.log(this.type);
   }
 
   ngOnDestroy(): void {
@@ -161,14 +163,20 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
       this.sendDataNew();
   }
 
-  //arrumar aki!!
   private sendDataUpdate(): Observable<boolean> {
-    if (this.type === EFeatures.AvaliarAnualmente) {
-      return this.sendDataUpdateYearly();
-    } else if (this.type === EFeatures.AvaliarMensalmente) {
-      return this.sendDataUpdateMonthly();
-    } else {
-      return this.sendDataUpdateWeekly();
+    switch (this.type) {
+      case EFeatures.AvaliarAnualmente: {
+        return this.sendDataUpdateYearly();
+      }
+      case EFeatures.AvaliarMensalmente: {
+        return this.sendDataUpdateMonthly();
+      }
+      case EFeatures.AvaliarSemanalmente: {
+        return this.sendDataUpdateWeekly();
+      }
+      default : {
+        return null;
+      }
     }
   }
 
@@ -219,14 +227,20 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
     };
   }
 
- //arrumar aki!!
   private sendDataNew(): Observable<boolean> {
-    if (this.type === EFeatures.AvaliarAnualmente) {
-      return  this.sendDataNewYearly();
-    } else if (this.type === EFeatures.AvaliarMensalmente) {
-      return this.sendDataNewMonthly();
-    } else {
-      return this.sendDataNewWeekly();
+    switch (this.type) {
+      case EFeatures.AvaliarAnualmente: {
+        return  this.sendDataNewYearly();
+      }
+      case EFeatures.AvaliarMensalmente: {
+        return this.sendDataNewMonthly();
+      }
+      case EFeatures.AvaliarSemanalmente: {
+        return this.sendDataNewWeekly();
+      }
+      default : {
+        return null;
+      }
     }
   }
 
