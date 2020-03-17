@@ -88,12 +88,6 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
     ).subscribe();
     this.subscribeFilters = this.loadFilter()
       .subscribe();
-
-      this.churchesAvaliations$.pipe(
-        tap(data => {
-           console.log(data.results);
-          })
-      ).subscribe();
   }
 
   ngOnDestroy(): void {

@@ -38,7 +38,13 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   church: ChurchAvaliationFormInterface;
   @Input()
   formAvaliation: FormGroup;
+  @Input()
+  month: number;
+  @Input()
+  year2: number;
 
+
+  load = true;
   sunTotal: number;
   year: number;
   saturday = new Array();
@@ -64,7 +70,8 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
         tap(({ year }) => this.year = year),
         switchMap(({ year }) => this.loadRequirements(year)),
         tap(() => this.editRequirement()),
-        tap(() => this.populeteMatriz())
+        tap(() => this.populeteMatriz()),
+        tap(() => this.loadNotesWeekly())
       ).subscribe();
   }
 
@@ -98,9 +105,22 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 
   private getRequirementsForm(year: number): Observable<RequirementAvaliationChurchInterface[]> {
     const { id } = auth.getCurrentUnit();
-    return this.type === EFeatures.AvaliarAnualmente ? this.requirementService
-      .getRequirementsByUnitYearly(id, year) : this.requirementService
-        .getRequirementsByUnitMonthlyAndWeekly(id, year);
+    switch (this.type) {
+      case EFeatures.AvaliarAnualmente: {
+        return this.requirementService
+        .getRequirementsByUnitYearly(id, year);
+      }
+      case EFeatures.AvaliarMensalmente: {
+        return this.requirementService
+      .getRequirementsByUnitMonthly(id, year);
+      }
+      case EFeatures.AvaliarSemanalmente: {
+        return this.requirementService
+        .getRequirementsByUnitWeekly(id, year);
+      }
+      default:
+        return null;
+    }
   }
 
   private setRequirementsInForm(data: RequirementAvaliationChurchInterface[]): void {
@@ -194,14 +214,18 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   }
 
   private calcSaturday() {
-    const d = new Date();
-    const getTot = this.daysInMonth(d.getMonth(), d.getFullYear());
+    console.log(this.month)
+    console.log(this.year2)
+    const getTot = this.daysInMonth(this.year2, (this.month - 1) );
+    console.log(getTot)
     for (let i = 1; i <= getTot; i++) {
-      const newDate = new Date(d.getFullYear(), d.getMonth(), i);
+      const newDate = new Date(this.year2, (this.month - 1), i);
+      console.log(newDate)
       if (newDate.getDay() === 6) {
         this.saturday.push(newDate.toLocaleDateString());
       }
     }
+    console.log(this.saturday)
   }
 
   private daysInMonth(month: number, year: number) {
@@ -259,6 +283,20 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     return evaluation.note;
   }
 
+  private loadNotesWeekly() {
+    if (this.checkIsEdit() && this.load) {
+      this.matriz.forEach( mat => mat.arrayRequiremen.forEach( req => {
+        this.avaliation.avaliationsRequirements
+        .forEach( prop => {
+          if (prop.idWeek === mat.indice && prop.requirement.id === req.idRequirement) {
+                req.note = prop.note;
+          }
+        });
+      }));
+      this.load = false;
+    }
+  }
+
   public getCurrentWeekNote(id: number, indice: number): number {
     const requeriments = this.matriz.find(ar => ar.indice === indice);
     const evaluation = requeriments.arrayRequiremen.find(ar => ar.idRequirement === id);
@@ -266,7 +304,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   }
 
   private filterWeek(requeriment: AvaliationRequirementAvaliationFormInterfaceWeekly): boolean {
-      if (requeriment.evaluationTypeId === 0 &&  requeriment.idWeek === (this.saturday.length-1)) {
+      if (requeriment.evaluationTypeId === 0 &&  requeriment.idWeek === (this.saturday.length - 1)) {
         return true;
       } else if (requeriment.evaluationTypeId === 3) {
         return true;
@@ -275,7 +313,6 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   }
 
   public getAvaliationsRequirementWeekly(): AvaliationRequirementAvaliationFormInterfaceWeekly[] {
-    const matrizWeek2: any[] = [];
     const matrizWeek: any[] = [];
     this.matriz.forEach(data => {
       matrizWeek.push(
@@ -288,7 +325,12 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
         } as AvaliationRequirementAvaliationFormInterfaceWeekly;
       }));
     });
-      matrizWeek.forEach( data => {
+    return this.filterMatriz(matrizWeek);
+  }
+
+  private filterMatriz(matrizWeek) {
+    const matrizWeek2: any[] = [];
+    matrizWeek.forEach( data => {
       matrizWeek2.push(data.filter(element => this.filterWeek(element)));
     });
     return matrizWeek2;

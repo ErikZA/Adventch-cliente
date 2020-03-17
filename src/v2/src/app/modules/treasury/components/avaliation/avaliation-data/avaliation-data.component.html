@@ -161,17 +161,17 @@
             <ng-template *ngIf="churchAvaliations.isMonth else elseBlockMonth" [Feature]="52">
               <button mat-button *ngIf="checkFinalizedMonthly(churchAvaliations)"
                 style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal"
-                (click)="mensal(churchAvaliations)">AVALIAR</button>
+                (click)="mensal(churchAvaliations)">AVALIAR MENSAL</button>
             </ng-template>
             <ng-template #elseBlockMonth [Feature]="56">
               <button mat-button *ngIf="checkFinalizedMonthly(churchAvaliations)"
                 style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação semanal"
-                (click)="weekly(churchAvaliations)">AVALIAR SEMANAL/MENSAL</button>
+                (click)="weekly(churchAvaliations)">AVALIAR SEMANAL / MENSAL</button>
             </ng-template>
             <ng-template [Feature]="53">
               <button mat-button *ngIf="checkFinalizedYearly(churchAvaliations)"
                 style="background-color: #314762!important; color: #fff" matTooltip="Avaliação anual"
-                (click)="anual(churchAvaliations)">ANUAL</button>
+                (click)="anual(churchAvaliations)">AVALIAR ANUAL</button>
             </ng-template>
             <ng-template [Feature]="54">
               <button mat-button *ngIf="checkHasAvaliation(churchAvaliations)"

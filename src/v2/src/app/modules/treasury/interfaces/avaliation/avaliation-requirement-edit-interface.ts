@@ -3,5 +3,6 @@ import { RequirementAvaliationEditInterface } from '../requirement/requirement-a
 export interface AvaliationRequirementEditInterface {
   id: number;
   note: number;
+  idWeek: number;
   requirement: RequirementAvaliationEditInterface;
 }

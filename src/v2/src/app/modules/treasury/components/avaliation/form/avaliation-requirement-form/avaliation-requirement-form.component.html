@@ -2,16 +2,15 @@
   <h4 class="text-grey">Avaliar Requisitos</h4>
   <mat-divider></mat-divider>
 
+
   <div *ngIf="isYearly(); then thenBlock else elseBlock"></div>
-
-
   <ng-template #thenBlock>
-
     <div *ngIf="isMonth(); then thenBlockMonth else elseBlockMonth"></div>
-
     <ng-template #elseBlockMonth>
+      <div *ngIf="type===60 && checkIsEdit(); then editiWeek else blockEditWeek"></div>
 
-      <div *ngFor="let itemMatriz of matriz, let i = index">
+      <ng-template #editiWeek>
+        <div *ngFor="let itemMatriz of matriz, let i = index">
         <h4 class="text-black">{{i+1}} Semana</h4>
         <div class="text-requirement-color" *ngFor="let requirement of itemMatriz.arrayRequiremen">
 
@@ -61,6 +60,57 @@
       </div>
     </ng-template>
 
+      <ng-template #blockEditWeek>
+      <div *ngFor="let itemMatriz of matriz, let i = index">
+        <h4 class="text-black">{{i+1}} Semana</h4>
+        <div class="text-requirement-color" *ngFor="let requirement of itemMatriz.arrayRequiremen">
+
+          <div *ngIf="requirement.evaluationTypeId===3" fxLayout="row" fxLayout.md="column" fxLayout.xs="column"
+            fxLayout.sm="column" fxLayoutAlign="start">
+            <div fxFlex fxFlex.gt-sm="20%">{{ requirement.name }}</div>
+            <div fxLayout="row" fxFlex="30%">
+              <div style="padding: 5px">0</div>
+
+              <mat-slider #sliderScore value="{{getCurrentWeekNote(requirement.idRequirement, i)}}" min="0"
+                max="{{requirement.score}}" thumbLabel
+                (change)="sliderScore.value = updateWeekCheck(requirement.idRequirement, sliderScore.value, requirement.score, i)"
+                tickInterval="{{requirement.score /2}}" step="{{requirement.score /2}}">
+              </mat-slider>
+
+              <div style="padding: 5px">{{requirement.score}}</div>
+            </div>
+            <app-avaliation-observation-form [church]="church" [formAvaliation]="formAvaliation"
+              *ngIf="requirement.isFull">
+            </app-avaliation-observation-form>
+          </div>
+
+          <div *ngIf="requirement.evaluationTypeId===0 && (i+1)===saturday.length" fxLayout="row" fxLayout.md="column"
+            fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start">
+            <div fxFlex fxFlex.gt-sm="20%">{{ requirement.name }}</div>
+            <div fxLayout="row" fxFlex="30%">
+              <div style="padding: 5px">0</div>
+
+              <mat-slider #sliderScore value="{{getCurrentNote(requirement.idRequirement)}}" min="0"
+                max="{{requirement.score}}" thumbLabel
+                (change)="sliderScore.value = updateCheck(requirement.idRequirement, sliderScore.value, requirement.score, i)"
+                tickInterval="{{requirement.score /2}}" step="{{requirement.score /2}}">
+              </mat-slider>
+
+              <div style="padding: 5px">{{requirement.score}}</div>
+            </div>
+            <app-avaliation-observation-form [church]="church" [formAvaliation]="formAvaliation"
+              *ngIf="requirement.isFull">
+            </app-avaliation-observation-form>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-requirement" fxLayout="row" fxLayoutAlign="start">
+        <span fxFlex fxFlex.gt-sm="21%">TOTAL</span>
+        <span fxFlex fxFlex.gt-sm="21%">{{ sumTotalOfRequirements() }}</span>
+      </div>
+    </ng-template>
+  </ng-template>
 
     <ng-template #thenBlockMonth>
 
@@ -115,7 +165,6 @@
         </app-avaliation-observation-form>
       </div>
     </div>
-
     <div class="result-requirement" fxLayout="row" fxLayoutAlign="start">
       <span fxFlex fxFlex.gt-sm="21%">TOTAL</span>
       <span fxFlex fxFlex.gt-sm="21%">{{ sumTotalOfRequirementsYearly() }}</span>

@@ -133,7 +133,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
       case EFeatures.AvaliarAnualmente:
         return `${this.church.name} - ANUAL (${this.year})`;
       case EFeatures.AvaliarMensalmente:
-        return `${this.church.name} - MENSAL (${this.month}/${this.year})`;
+        return `${this.church.name} - SEMANAL / MENSAL (${this.month}/${this.year})`;
       default:
         break;
     }
