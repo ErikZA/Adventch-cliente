@@ -71,7 +71,8 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
         switchMap(({ year }) => this.loadRequirements(year)),
         tap(() => this.editRequirement()),
         tap(() => this.populeteMatriz()),
-        tap(() => this.loadNotesWeekly())
+        tap(() => this.loadNotesWeekly()),
+        tap(()=> this.matrizOrder())
       ).subscribe();
   }
 
@@ -233,6 +234,12 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  private matrizOrder() {
+    this.matriz.forEach( mat => {
+      mat.arrayRequiremen.sort();
+      mat.arrayRequiremen.reverse();
+    });
+  }
   public isMonth(): boolean {
     if (this.church !== undefined && this.church != null) {
       return this.church.isMonth;
