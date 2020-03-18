@@ -114,10 +114,10 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
     const _requirement = this.formRequirement.value;
     return {
       position: _requirement.position,
-      name: _requirement.name,
+      name: this.requirement.name,
       description: _requirement.description,
-      score: _requirement.score,
-      evaluationTypeId: _requirement.evaluationTypeId,
+      score: this.requirement.score,
+      evaluationTypeId: this.requirement.evaluationTypeId,
       date: _requirement.date,
     };
   }
@@ -148,6 +148,5 @@ export class RequirementFormComponent implements OnInit, OnDestroy {
     this.formRequirement.controls['name'].disable();
     this.formRequirement.controls['score'].disable();
     this.formRequirement.controls['evaluationTypeId'].disable();
-    this.formRequirement.controls['date'].disable();
   }
 }

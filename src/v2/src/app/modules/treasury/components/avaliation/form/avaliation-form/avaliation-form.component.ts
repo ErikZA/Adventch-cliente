@@ -62,8 +62,6 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
         delay(500)
       ).subscribe(() => this.loading = false);
     this.avaliationDataComponent.openSidenav();
-
-    console.log(this.type);
   }
 
   ngOnDestroy(): void {

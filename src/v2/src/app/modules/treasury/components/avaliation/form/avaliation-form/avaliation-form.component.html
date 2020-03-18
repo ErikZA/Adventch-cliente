@@ -13,7 +13,7 @@
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
-            <app-avaliation-requirement-form [month]="month" [year2]="year" [avaliation]="avaliation" [type]="type" [formAvaliation]="formAvaliation" [church]="church"></app-avaliation-requirement-form>
+            <app-avaliation-requirement-form [month]="month" [yearNow]="year" [avaliation]="avaliation" [type]="type" [formAvaliation]="formAvaliation" [church]="church"></app-avaliation-requirement-form>
             <div fxLayout="row" fxLayoutAlign="space-between" fxFlexOffset="10px">
                 <a mat-button type="button" style="border: 1px solid black" routerLink="/tesouraria/avaliacoes">CANCELAR</a>
                 <button mat-raised-button type="submit" (click)="saveAvaliation()" color="primary" [disabled]="isSending">SALVAR</button>

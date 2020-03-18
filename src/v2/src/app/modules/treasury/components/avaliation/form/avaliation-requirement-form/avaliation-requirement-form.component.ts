@@ -41,7 +41,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   @Input()
   month: number;
   @Input()
-  year2: number;
+  yearNow: number;
 
 
   load = true;
@@ -133,7 +133,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private checkIsEdit(): boolean {
+  public checkIsEdit(): boolean {
     return this.avaliation !== undefined && this.avaliation !== null;
   }
 
@@ -214,22 +214,17 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
   }
 
   private calcSaturday() {
-    console.log(this.month)
-    console.log(this.year2)
-    const getTot = this.daysInMonth(this.year2, (this.month - 1) );
-    console.log(getTot)
-    for (let i = 1; i <= getTot; i++) {
-      const newDate = new Date(this.year2, (this.month - 1), i);
-      console.log(newDate)
+    const getTot = this.daysInMonth( new Date(this.yearNow, this.month) );
+    for (let i = 1; i <= getTot.getDate(); i++) {
+      const newDate = new Date(getTot.getFullYear(), getTot.getMonth(), i);
       if (newDate.getDay() === 6) {
         this.saturday.push(newDate.toLocaleDateString());
       }
     }
-    console.log(this.saturday)
   }
 
-  private daysInMonth(month: number, year: number) {
-    return new Date(year, month, 0).getDate();
+  private daysInMonth(date: Date): Date {
+    return  new Date(date.getFullYear(), date.getMonth(), 0);
   }
 
   public isYearly(): boolean {
