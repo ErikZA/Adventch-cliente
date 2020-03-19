@@ -10,8 +10,10 @@
             <mat-expansion-panel-header>
                 <mat-panel-description>
                     <span fxFlex fxFlex.gt-sm="60%">Descrição</span>
-                    <span fxFlex fxFlex.gt-sm="20%">Status</span>
-                    <span fxFlex fxFlex.gt-sm="20%">Ação</span>
+                    <span fxFlex fxFlex.gt-sm="60%">Requisiro</span>
+                    <span fxFlex fxFlex.gt-sm="60%">Referência</span>
+                    <span fxFlex fxFlex.gt-sm="10%">Status</span>
+                    <span fxFlex style="text-align: right" fxFlex.gt-sm="20%">Ação</span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
             <mat-divider></mat-divider>
@@ -20,7 +22,12 @@
                     <div fxFlex fxFlex.gt-sm="60%">
                         {{ observation.description }}
                     </div>
-                    <div fxFlex fxFlex.gt-sm="20%">
+                    <div fxFlex fxFlex.gt-sm="60%">
+                      {{ observation.requirement.id > 0 ? observation.requirement.name : setEnumWeek(observation.idReferenceEvaliation)}}</div>
+                  <div fxFlex fxFlex.gt-sm="60%">
+                    {{ setEnumWeek(observation.idReferenceEvaliation) }}
+                </div>
+                    <div fxFlex fxFlex.gt-sm="10%">
                         {{ observation.status === 2 ? 'Finalizada' : 'Aberta' }}
                     </div>
                     <div fxFlex fxFlex.gt-sm="20%">

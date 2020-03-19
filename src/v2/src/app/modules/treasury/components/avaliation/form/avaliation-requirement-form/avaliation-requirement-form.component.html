@@ -28,7 +28,7 @@
 
               <div style="padding: 5px">{{requirement.score}}</div>
             </div>
-            <app-avaliation-observation-form [church]="church" [formAvaliation]="formAvaliation"
+            <app-avaliation-observation-form [church]="church" [requeriment]="requirement.idRequirement" [indice]="i+1" [formAvaliation]="formAvaliation"
               *ngIf="requirement.isFull">
             </app-avaliation-observation-form>
           </div>
@@ -47,7 +47,7 @@
 
               <div style="padding: 5px">{{requirement.score}}</div>
             </div>
-            <app-avaliation-observation-form [church]="church" [formAvaliation]="formAvaliation"
+            <app-avaliation-observation-form [church]="church" [requeriment]="requirement.idRequirement" [indice]="i+1" [formAvaliation]="formAvaliation"
               *ngIf="requirement.isFull">
             </app-avaliation-observation-form>
           </div>
@@ -79,7 +79,7 @@
 
               <div style="padding: 5px">{{requirement.score}}</div>
             </div>
-            <app-avaliation-observation-form [church]="church" [formAvaliation]="formAvaliation"
+            <app-avaliation-observation-form [church]="church" [requeriment]="requirement.idRequirement" [indice]="i+1" [formAvaliation]="formAvaliation"
               *ngIf="requirement.isFull">
             </app-avaliation-observation-form>
           </div>
@@ -98,7 +98,7 @@
 
               <div style="padding: 5px">{{requirement.score}}</div>
             </div>
-            <app-avaliation-observation-form [church]="church" [formAvaliation]="formAvaliation"
+            <app-avaliation-observation-form [church]="church" [requeriment]="requirement.idRequirement" [indice]="i+1" [formAvaliation]="formAvaliation"
               *ngIf="requirement.isFull">
             </app-avaliation-observation-form>
           </div>
@@ -130,7 +130,7 @@
 
             <div style="padding: 5px">{{requirement.score}}</div>
           </div>
-          <app-avaliation-observation-form [church]="church" [formAvaliation]="formAvaliation" *ngIf="requirement.isFull">
+          <app-avaliation-observation-form [church]="church" [requeriment]="requirement.id" [indice]="requirement.evaluationTypeId" [formAvaliation]="formAvaliation" *ngIf="requirement.isFull">
           </app-avaliation-observation-form>
         </div>
       </div>
@@ -161,7 +161,7 @@
 
           <div style="padding: 5px">{{requirement.score}}</div>
         </div>
-        <app-avaliation-observation-form [church]="church" [formAvaliation]="formAvaliation" *ngIf="requirement.isFull">
+        <app-avaliation-observation-form [church]="church" [requeriment]="requirement.id" [indice]="9" [formAvaliation]="formAvaliation" *ngIf="requirement.isFull">
         </app-avaliation-observation-form>
       </div>
     </div>
