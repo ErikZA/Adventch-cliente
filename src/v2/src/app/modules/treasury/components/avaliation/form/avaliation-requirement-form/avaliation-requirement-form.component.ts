@@ -72,7 +72,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
         tap(() => this.editRequirement()),
         tap(() => this.populeteMatriz()),
         tap(() => this.loadNotesWeekly()),
-        tap(()=> this.matrizOrder())
+        tap(() => this.matrizOrder())
       ).subscribe();
   }
 
@@ -236,7 +236,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
 
   private matrizOrder() {
     this.matriz.forEach( mat => {
-      mat.arrayRequiremen.sort();
+      mat.arrayRequiremen.sort(function(a, b) {return a.evaluationTypeId - b.evaluationTypeId; });
       mat.arrayRequiremen.reverse();
     });
   }
@@ -320,7 +320,7 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
       matrizWeek.push(
       data.arrayRequiremen.map( req => {
         return {
-          idWeek: data.indice,
+          idWeek:  data.indice,
           idRequirement: req.idRequirement,
           note: req.note,
           evaluationTypeId: req.evaluationTypeId
@@ -334,6 +334,11 @@ export class AvaliationRequirementFormComponent implements OnInit, OnDestroy {
     const matrizWeek2: any[] = [];
     matrizWeek.forEach( data => {
       matrizWeek2.push(data.filter(element => this.filterWeek(element)));
+    });
+    matrizWeek2.forEach( data => {
+      data.forEach(element => {
+        element.idWeek = element.evaluationTypeId === 3 ? (element.idWeek + 1) : 0;
+      });
     });
     return matrizWeek2;
   }

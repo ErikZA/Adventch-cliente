@@ -23,6 +23,7 @@ import { ResponsibleObservationListFilterInterface } from '../../../interfaces/o
 import {
   AnalystDistrictChurchObservationListFilterInterface
 } from '../../../interfaces/observation/analyst-district-church-observation-list-filter-interface';
+import { EWeeks, Weeks } from '../../../../../shared/models/weeks.enum';
 
 @Component({
   selector: 'app-observation-data',
@@ -124,6 +125,11 @@ export class ObservationDataComponent extends AbstractSidenavContainer implement
         tap(data => this.length = data.rowCount)
       );
   }
+
+  public setEnumWeek(value: EWeeks): string {
+    return new Weeks(value).getWeekName();
+  }
+
 
   private appendParamsArray(params: HttpParams, name: string, array: Array<any>): HttpParams {
     if (array.length > 0) {

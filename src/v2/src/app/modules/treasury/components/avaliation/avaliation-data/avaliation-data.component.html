@@ -158,6 +158,9 @@
           </div>
           <mat-action-row fxLayout="row" fxLayout.xs="column"
             *ngIf="checkHasAvaliation(churchAvaliations) || churchAvaliations.avaliations.lenght !== 0">
+              <button mat-button
+                style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal"
+                (click)="openDialog(churchAvaliations.id)">VISUALIZAR AVALIAÇÕES</button>
             <ng-template *ngIf="churchAvaliations.isMonth else elseBlockMonth" [Feature]="52">
               <button mat-button *ngIf="checkFinalizedMonthly(churchAvaliations)"
                 style="background-color: #687A8F!important; color: #fff" matTooltip="Avaliação mensal"

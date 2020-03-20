@@ -9,6 +9,9 @@ import { PagedResult } from '../../../../shared/paged-result';
 import { NewAvaliationInterfaceWeek } from '../../interfaces/avaliation/new-avaliation-interface-week';
 import { UpdateAvaliationInterfaceWeekly } from '../../interfaces/avaliation/update-avaliation-interface-week';
 
+import {AvaliationRequirementsInterface} from '../../interfaces/avaliation/avaliation-requirements-interface';
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,6 +26,12 @@ export class AvaliationService {
     const url = `${this.baseURL}units/${unitId}`;
     return this.http
       .get<PagedResult<ChurchAvaliationDataInterface>>(url, { params });
+  }
+
+  public getEvaliationAndRequirementsForm(churchId: number, month: number, year: number ): Observable<AvaliationRequirementsInterface[]> {
+    const url = `${this.baseURL}monthly/yearly/${churchId}/${month}/${year}`;
+    return this.http
+      .get<AvaliationRequirementsInterface[]>(url);
   }
 
   public finalizeAnnualAvaliation(avaliationId: number, data: { userId: number }): Observable<boolean> {

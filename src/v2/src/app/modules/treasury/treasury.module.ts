@@ -43,6 +43,7 @@ import { DashboardTreasuryService } from './components/dashboard/dashboard-treas
 import {
   AvaliationObservationFormComponent
  } from './components/avaliation/form/avaliation-observation-form/avaliation-observation-form.component';
+import { AvaliationDataDialogComponent } from './components/avaliation/avaliation-data-dialog/avaliation-data-dialog.component';
 
 
 @NgModule({
@@ -72,7 +73,8 @@ import {
     AvaliationRequirementFormComponent,
     ObservationsInformationComponent,
     CardCountFeaturesComponent,
-    AvaliationObservationFormComponent
+    AvaliationObservationFormComponent,
+    AvaliationDataDialogComponent
   ],
   providers: [
     TreasuryService,
@@ -90,7 +92,8 @@ import {
     ObservationDataComponent
   ],
   entryComponents: [
-    AvaliationReportComponent
+    AvaliationReportComponent,
+    AvaliationDataDialogComponent
   ]
 })
 export class TreasuryModule { }

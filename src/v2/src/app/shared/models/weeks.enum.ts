@@ -8,7 +8,7 @@ export enum EWeeks {
   Semana_6 = 7,
   Anual = 9,
   NaoPossui = -1
-  /*Mapping from dbo.software*/
+  /*Mapping from dbo.reference_evaluation*/
 }
 
 export class Weeks {
@@ -22,17 +22,17 @@ export class Weeks {
       case 0:
         return 'Mensal';
       case 1:
-        return 'Semana-1';
+        return '1º Semana';
       case 2:
-        return 'Semana-2';
+        return '2º Semana';
       case 3:
-        return 'Semana-3';
+        return '3º Semana';
       case 4:
-        return 'Semana-4';
+        return '4º Semana';
       case 5:
-        return 'Semana-5';
+        return '5º Semana';
       case 6:
-        return 'Semana-6';
+        return '6º Semana';
       case 9:
         return 'Anual';
       case -1:

@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar, MatPaginator, MatExpansionPanel, PageEvent } from '@angular/material';
+import { MatSnackBar, MatPaginator, MatExpansionPanel, PageEvent, MatDialog} from '@angular/material';
 
 import { Subject, Subscription, Observable } from 'rxjs';
 
@@ -22,6 +22,7 @@ import { DistrictService } from '../../districts/district.service';
 import { PagedResult } from '../../../../../shared/paged-result';
 import { HttpParams } from '@angular/common/http';
 import { AvaliationScoreDataInterface } from '../../../interfaces/avaliation/avaliantion-score-data-interface';
+import { AvaliationDataDialogComponent } from '../avaliation-data-dialog/avaliation-data-dialog.component';
 
 @Component({
   selector: 'app-avaliation-data',
@@ -66,6 +67,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   pageEvent: PageEvent;
   filter = false;
   constructor(
+    public dialog: MatDialog,
     public router: Router,
     private route: ActivatedRoute,
     private reportService: ReportService,
@@ -497,5 +499,11 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
       year: this.filterYear,
       churchId: id
     };
+  }
+
+  public openDialog(id: number) {
+    this.dialog.open(AvaliationDataDialogComponent, {
+      data: id
+    });
   }
 }
