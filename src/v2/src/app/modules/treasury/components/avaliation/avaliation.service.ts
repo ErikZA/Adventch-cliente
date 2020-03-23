@@ -34,6 +34,12 @@ export class AvaliationService {
       .get<AvaliationRequirementsInterface[]>(url);
   }
 
+  public getEvaliationAndRequirementsSumYearForm(churchId: number, year: number ): Observable<AvaliationRequirementsInterface[]> {
+    const url = `${this.baseURL}sumYearly/${churchId}/${year}`;
+    return this.http
+      .get<AvaliationRequirementsInterface[]>(url);
+  }
+
   public finalizeAnnualAvaliation(avaliationId: number, data: { userId: number }): Observable<boolean> {
     const url = `${this.baseURL}finalize/${avaliationId}/yearly`;
     return this.http

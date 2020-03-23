@@ -10,7 +10,8 @@ export enum EMonth {
   Setembro = 'Setembro',
   Outubro = 'Outubro',
   Novembro = 'Novembro',
-  Dezembro = 'Dezembro'
+  Dezembro = 'Dezembro',
+  Geral = 'Geral'
   /*Mapping from dbo.software*/
 }
 
@@ -46,6 +47,8 @@ export class Months {
         return 11;
       case 'Dezembro':
         return 12;
+      case 'Geral':
+        return 13;
       default:
         return -1;
     }

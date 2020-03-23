@@ -23,6 +23,7 @@ import { PagedResult } from '../../../../../shared/paged-result';
 import { HttpParams } from '@angular/common/http';
 import { AvaliationScoreDataInterface } from '../../../interfaces/avaliation/avaliantion-score-data-interface';
 import { AvaliationDataDialogComponent } from '../avaliation-data-dialog/avaliation-data-dialog.component';
+import { ChurchFilter } from '../../../interfaces/avaliation/evaluarion-church-filter-interface';
 
 @Component({
   selector: 'app-avaliation-data',
@@ -161,7 +162,8 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   }
 
   public getChurchScoreInTheYear(churchAvaliations: ChurchAvaliationDataInterface): number {
-    const avaliations = churchAvaliations.avaliations.filter(a => this.getYear(a.date) === this.filterYear);
+    const avaliations = churchAvaliations.avaliations.
+    filter(a => this.getYear(a.date) === this.filterYear);
     return !avaliations ? 0 : avaliations
       .reduce((a, b) => a + b.total, 0);
   }
@@ -503,7 +505,10 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
 
   public openDialog(id: number) {
     this.dialog.open(AvaliationDataDialogComponent, {
-      data: id
+      data: {
+        churchId: id,
+        year: this.filterYear
+      } as ChurchFilter
     });
   }
 }
