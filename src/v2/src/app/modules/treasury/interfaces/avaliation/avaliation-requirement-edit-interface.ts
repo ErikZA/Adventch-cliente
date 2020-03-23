@@ -1,7 +1,7 @@
-import { RequirementAvaliationEditInterface } from '../requirement/requirement-avaliation-edit-interface';
-
+import {RequirementAvaliationChurchInterface} from '../requirement/requirement-avaliation-church-interface';
 export interface AvaliationRequirementEditInterface {
   id: number;
   note: number;
-  requirement: RequirementAvaliationEditInterface;
+  idWeek: number;
+  requirement: RequirementAvaliationChurchInterface;
 }

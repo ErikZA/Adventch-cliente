@@ -10,4 +10,5 @@ export interface ChurchDataInterface {
   cep: string;
   city: CityChurchDataInterface;
   district: DistrictChurchDataInterface;
+  isMonth: boolean;
 }

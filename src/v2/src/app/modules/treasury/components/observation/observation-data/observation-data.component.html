@@ -125,6 +125,14 @@
               <span class="text-bold">Descrição:</span>
               <span>{{ observation.description }}</span>
             </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+              <span class="text-bold">Requisito:</span>
+              <span>{{ observation.requirement.id > 0 ? observation.requirement.name : setEnumWeek(observation.idReferenceEvaliation)}}</span>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="5px">
+              <span class="text-bold">Referência</span>
+              <span>{{ setEnumWeek(observation.idReferenceEvaliation) }}</span>
+            </div>
           </div>
 
           <mat-action-row fxLayout="row" fxLayout.xs="column">

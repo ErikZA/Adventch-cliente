@@ -16,6 +16,8 @@ import { auth } from '../../../../../../auth/auth';
 import { NewAvaliationInterface } from '../../../../interfaces/avaliation/new-avaliation-interface';
 import { MatSnackBar } from '@angular/material';
 import { UpdateAvaliationInterface } from '../../../../interfaces/avaliation/update-avaliation-interface';
+import { NewAvaliationInterfaceWeek } from '../../../../interfaces/avaliation/new-avaliation-interface-week';
+import { UpdateAvaliationInterfaceWeekly } from '../../../../interfaces/avaliation/update-avaliation-interface-week';
 
 @Component({
   selector: 'app-avaliation-form',
@@ -130,6 +132,8 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
         return `${this.church.name} - ANUAL (${this.year})`;
       case EFeatures.AvaliarMensalmente:
         return `${this.church.name} - MENSAL (${this.month}/${this.year})`;
+      case EFeatures.AvaliarSemanalmente:
+        return `${this.church.name} - SEMANAL / MENSAL (${this.month}/${this.year})`;
       default:
         break;
     }
@@ -160,33 +164,84 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
   }
 
   private sendDataUpdate(): Observable<boolean> {
-    return this.type === EFeatures.AvaliarAnualmente ? this.sendDataUpdateYearly() : this.sendDataUpdateMonthly();
+    switch (this.type) {
+      case EFeatures.AvaliarAnualmente: {
+        return this.sendDataUpdateYearly();
+      }
+      case EFeatures.AvaliarMensalmente: {
+        return this.sendDataUpdateMonthly();
+      }
+      case EFeatures.AvaliarSemanalmente: {
+        return this.sendDataUpdateWeekly();
+      }
+      default : {
+        return null;
+      }
+    }
   }
 
   private sendDataUpdateMonthly(): Observable<boolean> {
-    const avaliation = this.mapToUpdateAvaliation();
+    const avaliation = this.mapToUpdateAvaliationMonthly();
     return this.avaliationService
       .putUpdateAvaliationMonthly(this.avaliation.id, avaliation);
   }
 
   private sendDataUpdateYearly(): Observable<boolean> {
-    const avaliation = this.mapToUpdateAvaliation();
+    const avaliation = this.mapToUpdateAvaliationYearly();
     return this.avaliationService
       .putUpdateAvaliationYearly(this.avaliation.id, avaliation);
   }
+  private sendDataUpdateWeekly(): Observable<boolean> {
+    const avaliation = this.mapToUpdateAvaliationWeekly();
+    return this.avaliationService
+      .putUpdateAvaliationWeekly(this.avaliation.id, avaliation);
+  }
 
-  private mapToUpdateAvaliation(): UpdateAvaliationInterface {
+  private mapToUpdateAvaliationMonthly(): UpdateAvaliationInterface {
     const { id } = auth.getCurrentUser();
     return {
       dateArrival: this.formAvaliation.get('date').value,
       idUser: id,
       avaliationRequirements: this.avaliationRequirementFormComponent
-        .getAvaliationsRequirement()
+        .getAvaliationsRequirementMonthly()
+    };
+  }
+
+  private mapToUpdateAvaliationYearly(): UpdateAvaliationInterface {
+    const { id } = auth.getCurrentUser();
+    return {
+      dateArrival: this.formAvaliation.get('date').value,
+      idUser: id,
+      avaliationRequirements: this.avaliationRequirementFormComponent
+        .getAvaliationsRequirementYearly()
+    };
+  }
+
+  private mapToUpdateAvaliationWeekly(): UpdateAvaliationInterfaceWeekly {
+    const { id } = auth.getCurrentUser();
+    return {
+      dateArrival: this.formAvaliation.get('date').value,
+      idUser: id,
+      avaliationRequirements: this.avaliationRequirementFormComponent
+        .getAvaliationsRequirementWeekly()
     };
   }
 
   private sendDataNew(): Observable<boolean> {
-    return this.type === EFeatures.AvaliarAnualmente ? this.sendDataNewYearly() : this.sendDataNewMonthly();
+    switch (this.type) {
+      case EFeatures.AvaliarAnualmente: {
+        return  this.sendDataNewYearly();
+      }
+      case EFeatures.AvaliarMensalmente: {
+        return this.sendDataNewMonthly();
+      }
+      case EFeatures.AvaliarSemanalmente: {
+        return this.sendDataNewWeekly();
+      }
+      default : {
+        return null;
+      }
+    }
   }
 
   private sendDataNewYearly(): Observable<boolean> {
@@ -201,6 +256,12 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
       .postNewAvaliationMonthly(avaliation);
   }
 
+  private sendDataNewWeekly(): Observable<boolean> {
+    const avaliation = this.mapToNewAvaliationWeekly();
+    return this.avaliationService
+      .postNewAvaliationWeekly(avaliation);
+  }
+
   private mapToNewAvaliationYearly(): NewAvaliationInterface {
     const { id } = auth.getCurrentUser();
     return {
@@ -209,7 +270,7 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
       idChurch: this.church.id,
       idUser: id,
       avaliationRequirements: this.avaliationRequirementFormComponent
-        .getAvaliationsRequirement()
+        .getAvaliationsRequirementYearly()
     };
   }
 
@@ -227,7 +288,19 @@ export class AvaliationFormComponent implements OnInit, OnDestroy {
       idChurch: this.church.id,
       idUser: id,
       avaliationRequirements: this.avaliationRequirementFormComponent
-        .getAvaliationsRequirement()
+        .getAvaliationsRequirementMonthly()
+    };
+  }
+
+  private mapToNewAvaliationWeekly(): NewAvaliationInterfaceWeek {
+    const { id } = auth.getCurrentUser();
+    return {
+      date: this.setDateMonthy(),
+      dateArrival: this.formAvaliation.get('date').value,
+      idChurch: this.church.id,
+      idUser: id,
+      avaliationRequirements: this.avaliationRequirementFormComponent
+        .getAvaliationsRequirementWeekly()
     };
   }
 

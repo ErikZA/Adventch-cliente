@@ -134,6 +134,24 @@ const routes: Routes = [
             }
           },
           {
+            path: ':id/semanal/novo',
+            component: AvaliationFormComponent,
+            canActivate: [FeatureGuard],
+            canLoad: [FeatureGuard],
+            data: {
+              feature: EFeatures.AvaliarSemanalmente
+            }
+          },
+          {
+            path: ':id/semanal/:idAvaliation/editar',
+            component: AvaliationFormComponent,
+            canActivate: [FeatureGuard],
+            canLoad: [FeatureGuard],
+            data: {
+              feature: EFeatures.AvaliarSemanalmente
+            }
+          },
+          {
             path: ':id/anual/novo',
             component: AvaliationFormComponent,
             canActivate: [FeatureGuard],

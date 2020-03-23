@@ -19,6 +19,7 @@ export enum EFeatures {
   AvaliarMensalmente = 52,
   AvaliarAnualmente = 53,
   FinalizarAvaliacao = 54,
+  AvaliarSemanalmente = 60,
   Requisitos = 55,
   ChatSuporte = 57
 }

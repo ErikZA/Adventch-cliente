@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar, MatPaginator, MatExpansionPanel, PageEvent } from '@angular/material';
+import { MatSnackBar, MatPaginator, MatExpansionPanel, PageEvent, MatDialog} from '@angular/material';
 
 import { Subject, Subscription, Observable } from 'rxjs';
 
@@ -22,6 +22,8 @@ import { DistrictService } from '../../districts/district.service';
 import { PagedResult } from '../../../../../shared/paged-result';
 import { HttpParams } from '@angular/common/http';
 import { AvaliationScoreDataInterface } from '../../../interfaces/avaliation/avaliantion-score-data-interface';
+import { AvaliationDataDialogComponent } from '../avaliation-data-dialog/avaliation-data-dialog.component';
+import { ChurchFilter } from '../../../interfaces/avaliation/evaluarion-church-filter-interface';
 
 @Component({
   selector: 'app-avaliation-data',
@@ -66,6 +68,7 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   pageEvent: PageEvent;
   filter = false;
   constructor(
+    public dialog: MatDialog,
     public router: Router,
     private route: ActivatedRoute,
     private reportService: ReportService,
@@ -159,7 +162,8 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
   }
 
   public getChurchScoreInTheYear(churchAvaliations: ChurchAvaliationDataInterface): number {
-    const avaliations = churchAvaliations.avaliations.filter(a => this.getYear(a.date) === this.filterYear);
+    const avaliations = churchAvaliations.avaliations.
+    filter(a => this.getYear(a.date) === this.filterYear);
     return !avaliations ? 0 : avaliations
       .reduce((a, b) => a + b.total, 0);
   }
@@ -230,6 +234,24 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
       this.router
         .navigate([
           churchAvaliation.id, 'mensal', 'novo',
+          { month: this.filterMonth, year: this.filterYear }
+        ], { relativeTo: this.route });
+    }
+  }
+
+  public weekly(churchAvaliation: ChurchAvaliationDataInterface) {
+    const avaliation = churchAvaliation
+      .avaliations
+      .find(a => a.isMensal && this.getYear(a.date) === this.filterYear && this.getMonth(a.date) === this.filterMonth);
+    if (avaliation) {
+      this.router.navigate([
+        churchAvaliation.id, 'semanal', avaliation.id, 'editar',
+        { month: this.filterMonth, year: this.filterYear }
+      ], { relativeTo: this.route });
+    } else {
+      this.router
+        .navigate([
+          churchAvaliation.id, 'semanal', 'novo',
           { month: this.filterMonth, year: this.filterYear }
         ], { relativeTo: this.route });
     }
@@ -479,5 +501,14 @@ export class AvaliationDataComponent extends AbstractSidenavContainer implements
       year: this.filterYear,
       churchId: id
     };
+  }
+
+  public openDialog(id: number) {
+    this.dialog.open(AvaliationDataDialogComponent, {
+      data: {
+        churchId: id,
+        year: this.filterYear
+      } as ChurchFilter
+    });
   }
 }

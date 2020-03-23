@@ -1,0 +1,665 @@
+<mat-tab-group class="table-container"  (selectedTabChange)="getMonth($event.tab.textLabel)">
+  <mat-tab  label="Geral">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span style="text-align: center" fxFlex.gt-sm="35%" fxFlex>Nome</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Tipo</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="18%" fxHide.lt-sm>Nota Maxima</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="18%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Porcentagem</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListA">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListA>
+        <mat-accordion>
+          <div *ngFor="let elementRequirement of elementRequirementsSum">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="35%">
+                {{ elementRequirement.requirementName }}
+              </p>
+              <p fxFlex.gt-sm="12%">
+                {{ getTypeRequeriment(elementRequirement.evaluationTypeId) }}
+              </p>
+              <p style="text-align: center;" fxFlex.gt-sm="18%">
+                {{ elementRequirement.requirementScore }}
+              </p>
+              <p style="text-align: center;" fxFlex.gt-sm="18%">
+                {{ elementRequirement.note }}
+              </p>
+              <div fxFlex.gt-sm="12%" fxHide.lt-sm>
+                  {{ calcPercent(elementRequirement.requirementScore, elementRequirement.note) }}
+              </div>
+            </mat-panel-description>
+          </div>
+          </mat-accordion>
+        <mat-accordion>
+          <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+            <p style="color: black"  fxFlex.gt-sm="35%">
+              <span>TOTAL:</span>
+            </p>
+            <p style="align-items: center;" fxFlex.gt-sm="12%">
+            </p>
+            <p style="text-align: center; color: black" fxFlex.gt-sm="18%">
+              <span>{{ sumMaxScore() }}</span>
+            </p>
+            <p style="text-align: center; color: black" fxFlex.gt-sm="18%">
+            <span>{{ sumMaxNote() }}</span>
+            </p>
+            <div style="align-items: center; color: black"  fxFlex.gt-sm="12%" fxHide.lt-sm>
+            {{calcPercent(sumMaxScore(), sumMaxNote())}}
+            </div>
+            </mat-panel-description>
+          </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab  label="Janeiro">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListC">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListC>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab value="Fevereiro" label="Fevereiro">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListB">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListB>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab label="Março">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListF">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListF>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab label="Abril">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListG">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListG>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab label="Maio">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListH">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListH>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab label="Junho">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListJ">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListJ>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab label="Julho">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListK">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListK>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab label="Agosto">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListL">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListL>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab label="Setembro">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListX">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListX>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab label="Outubro">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListV">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListV>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab label="Novembro">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListQ">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListQ>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+  <mat-tab label="Dezembro">
+    <mat-list>
+      <mat-list-item>
+        <h3 matLine fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex.gt-sm="30%" fxFlex>Nome</span>
+          <span fxFlex.gt-sm="26%" fxFlex>Referência</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Nota</span>
+          <span fxFlex fxFlex.gt-sm="12%" fxHide.lt-sm>Pontuação</span>
+          <span style="text-align: center" fxFlex fxFlex.gt-sm="10%" fxHide.lt-sm>Status</span>
+        </h3>
+      </mat-list-item>
+    </mat-list>
+    <ng-container>
+      <ng-container *ngIf=" isAvaliation() else dataListP">
+        <div fxLayout="column" fxLayoutAlign="center center" style="height: 80vh;">
+          <mat-icon style="font-size: 180px;height: 180px; line-height: 180px; width: 180px; color: grey;">find_in_page
+          </mat-icon>
+          <p style="color: gray">Nenhuma avaliação encontrada</p>
+        </div>
+      </ng-container>
+      <ng-template #dataListP>
+        <mat-accordion>
+          <div *ngFor="let avaliation of evaliationAndRequirementsForm">
+            <div *ngFor="let requirements of avaliation.avaliationsRequirements">
+            <mat-panel-description fxLayout="row" fxLayoutAlign="start center" fxFlex>
+              <p fxFlex.gt-sm="30%">
+                {{ requirements.requirement.name }}
+              </p>
+
+              <p fxFlex.gt-sm="26%">
+                {{ setEnumWeek(requirements.idWeek) }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.requirement.score }}
+              </p>
+              <p style="align-items: center;" fxFlex.gt-sm="12%">
+                {{ requirements.note }}
+              </p>
+              <div fxFlex.gt-sm="10%" fxHide.lt-sm>
+                <div
+                  style="white-space: line-wrap; text-align: center; color: white; font-size: 11px; padding: 5px; width: 100px;"
+                  [className]="getClassNameStatusColor(avaliation.status)">{{ getLabelStatusName(avaliation.status) }}</div>
+              </div>
+            </mat-panel-description>
+          </div>
+           </div>
+        </mat-accordion>
+        </ng-template>
+    </ng-container>
+  </mat-tab>
+</mat-tab-group>

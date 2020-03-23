@@ -158,6 +158,12 @@ export class TreasuryService {
       .post<Observation>(url, data);
   }
 
+  saveRequirementObservation(data): Observable<Observation> {
+    const url = '/treasury/observations/saveRequirementObservation';
+    return this.http
+      .post<Observation>(url, data);
+  }
+
   deleteObservation(id): Observable<boolean> {
     const url = '/treasury/observations/deleteObservation/' + id;
     return this.http

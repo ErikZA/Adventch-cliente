@@ -6,7 +6,7 @@ export class Requirement {
   name: string;
   description: string;
   score: number;
-  isAnual: boolean;
+  evaluationTypeId: number;
   removed: boolean;
   unitid: number;
   hasAvaliation: boolean;

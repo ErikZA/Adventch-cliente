@@ -6,6 +6,7 @@ export interface ChurchAvaliationDataInterface {
   id: number;
   code: string;
   name: string;
+  isMonth: boolean;
   district: DistrictChurchAvaliationDataInterface;
   avaliations: AvaliationDataInterface[];
   avaliationScore: AvaliationScoreDataInterface[];

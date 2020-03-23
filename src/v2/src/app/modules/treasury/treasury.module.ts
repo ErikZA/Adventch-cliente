@@ -40,7 +40,10 @@ import { TreasurerService } from './components/treasurer/treasurer.service';
 import { DistrictService } from './components/districts/district.service';
 import { CardCountFeaturesComponent } from './components/dashboard/card-count-features/card-count-features.component';
 import { DashboardTreasuryService } from './components/dashboard/dashboard-treasury.service';
-import { AvaliationObservationFormComponent } from './components/avaliation/form/avaliation-observation-form/avaliation-observation-form.component';
+import {
+  AvaliationObservationFormComponent
+ } from './components/avaliation/form/avaliation-observation-form/avaliation-observation-form.component';
+import { AvaliationDataDialogComponent } from './components/avaliation/avaliation-data-dialog/avaliation-data-dialog.component';
 
 
 @NgModule({
@@ -70,7 +73,8 @@ import { AvaliationObservationFormComponent } from './components/avaliation/form
     AvaliationRequirementFormComponent,
     ObservationsInformationComponent,
     CardCountFeaturesComponent,
-    AvaliationObservationFormComponent
+    AvaliationObservationFormComponent,
+    AvaliationDataDialogComponent
   ],
   providers: [
     TreasuryService,
@@ -88,7 +92,8 @@ import { AvaliationObservationFormComponent } from './components/avaliation/form
     ObservationDataComponent
   ],
   entryComponents: [
-    AvaliationReportComponent
+    AvaliationReportComponent,
+    AvaliationDataDialogComponent
   ]
 })
 export class TreasuryModule { }

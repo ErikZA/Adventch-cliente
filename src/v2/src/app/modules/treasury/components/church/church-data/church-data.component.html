@@ -82,6 +82,15 @@
                             <span class="text-bold">Código:</span>
                             <span>{{ church.code }}</span>
                         </div>
+                        <div fxLayout="row wrap" fxLayoutGap="5px">
+                          <span *ngIf="church.isMonth; then month else week"></span>
+                          <ng-template #month >
+                            <span class="text-bold">Remessa:</span>
+                            <span>Mensal</span> </ng-template>
+                          <ng-template #week>
+                            <span class="text-bold">Remessa:</span>
+                            <span>Semanal</span>  </ng-template>
+                      </div>
                         <div fxLayout="row wrap" fxLayoutGap="5px" fxHide.gt-xs>
                             <span class="text-bold">Distrito:</span>
                             <ng-container *ngIf="church.district !== undefined && church.district !== null; else notDisctrictInfo">

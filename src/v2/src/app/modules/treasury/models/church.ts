@@ -6,6 +6,7 @@ export class Church {
   id: number;
   codeId: string;
   unit: Unit;
+  isMonth: boolean;
   city: City;
   address: string;
   complement: string;

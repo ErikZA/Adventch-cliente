@@ -3,7 +3,7 @@ export interface RequirementNewInterface {
   name: string;
   description: string;
   score: number;
-  isAnual: boolean;
+  evaluationTypeId: number;
   date: Date;
   unitId: number;
 }

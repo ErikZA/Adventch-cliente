@@ -73,7 +73,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   ) { super(router);
       this.dataStore = {
       treasurers: []
-    };}
+    }; }
 
   ngOnInit() {
     this.getPreferenceFilter();
@@ -125,7 +125,6 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
       .pipe(
         tap(data => {
             this.length = data.rowCount;
-            this.dataStore.treasurers = data.results;
           })
       );
   }
@@ -255,6 +254,7 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
 
   public generateGeneralReport(): void {
     const data = this.getDataParams();
+    console.log(data);
     this.reportService.reportTreasurersGeral(data).subscribe(urlData => {
       const fileUrl = URL.createObjectURL(urlData);
       let element;
@@ -271,8 +271,18 @@ export class TreasurerDataComponent extends AbstractSidenavContainer implements 
   }
 
   private getDataParams(): any {
-    const ids = this.dataStore.treasurers.map(m => m.id);
-    console.log(ids);
+
+    const { id } = auth.getCurrentUnit();
+    this.treasurerService
+      .getAllTreasurers(id)
+      .pipe(
+          tap(data => {
+            this.dataStore.treasurers = data;
+            })
+        ).subscribe();
+
+        const ids = this.dataStore.treasurers.map(m => m.id);
+
     return {
       functions: this.filterText.length === 0 ? '[VAZIO]' : this.filterText,
       treasurersIds: String(ids.length === 0 ? 0 : ids),

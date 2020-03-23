@@ -7,6 +7,7 @@ import { ObservationAvaliationFormInterface } from '../../../../interfaces/obser
 import { ConfirmDialogService } from '../../../../../../core/components/confirm-dialog/confirm-dialog.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { MatSnackBar } from '@angular/material';
+import { EWeeks, Weeks } from '../../../../../../shared/models/weeks.enum';
 
 @Component({
   selector: 'app-observations-information',
@@ -21,7 +22,6 @@ export class ObservationsInformationComponent implements OnInit, OnDestroy {
   expanded = false;
   observations: ObservationAvaliationFormInterface[];
   alreadySearched = false;
-
   constructor(
     private route: ActivatedRoute,
     private observationService: ObservationService,
@@ -41,6 +41,9 @@ export class ObservationsInformationComponent implements OnInit, OnDestroy {
     if (!this.alreadySearched) {
       this.subObservations = this.getData()
         .subscribe();
+    } else {
+      this.subObservations = this.getData()
+      .subscribe();
     }
   }
 
@@ -50,9 +53,8 @@ export class ObservationsInformationComponent implements OnInit, OnDestroy {
       .pipe(
         skipWhile(({ id }) => !id),
         skipWhile(({ year }) => !year),
-        switchMap(({ id, year }) => this.getObservationsChurch(id, year))
-      );
-  }
+        switchMap(({ id, year }) => this.getObservationsChurch(id, year))  );
+    }
 
   public getObservationsChurch(churchId, year): Observable<ObservationAvaliationFormInterface[]> {
     return this.observationService
@@ -70,6 +72,10 @@ export class ObservationsInformationComponent implements OnInit, OnDestroy {
         skipWhile(res => res !== true),
         switchMap(() => this.sendFinalize(observationId))
       ).subscribe();
+  }
+
+  public setEnumWeek(value: EWeeks): string {
+    return new Weeks(value).getWeekName();
   }
 
 

@@ -1,21 +1,14 @@
 import {Component, OnInit, OnDestroy, ViewChildren, ViewChild, Input} from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-
 import { MatSnackBar } from '@angular/material';
 
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Church } from '../../../../models/church';
 import { Observation } from '../../../../models/observation';
 import { TreasuryService } from '../../../../treasury.service';
-import { ObservationDataComponent } from '../../../observation/observation-data/observation-data.component';
-import {AvaliationFormComponent} from "../avaliation-form/avaliation-form.component";
-import {ChurchAvaliationFormInterface} from "../../../../interfaces/avaliation/church-avaliation-form-interface";
-import {auth} from "../../../../../../auth/auth";
-import {EObservationStatus} from "../../../../models/enums";
-import {tap} from "rxjs/operators";
-import {AbstractSidenavContainer} from "../../../../../../shared/abstract-sidenav-container.component";
-
+import {ChurchAvaliationFormInterface} from '../../../../interfaces/avaliation/church-avaliation-form-interface';
+import {auth} from '../../../../../../auth/auth';
+import {EObservationStatus} from '../../../../models/enums';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-avaliation-observation-form',
@@ -36,12 +29,13 @@ export class AvaliationObservationFormComponent implements OnInit, OnDestroy {
   church: ChurchAvaliationFormInterface;
   @Input()
   formAvaliation: FormGroup;
+  @Input()
+  requeriment: number;
+  @Input()
+  indice: number;
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private service: TreasuryService,
     private snackBar: MatSnackBar,
     private treasuryService: TreasuryService) { }
 
@@ -63,18 +57,19 @@ export class AvaliationObservationFormComponent implements OnInit, OnDestroy {
   }
 
   public checkIsLoading(): boolean {
-    if((this.church !== undefined && this.church !== null) &&  (this.formAvaliation !== undefined && this.formAvaliation !== null))
-      return this.loading =false;
-    else
+    if((this.church !== undefined && this.church !== null) &&  (this.formAvaliation !== undefined && this.formAvaliation !== null)){
+      return this.loading = false;
+    } else {
       return true;
+    }
   }
 
    saveObservation() {
      if (!this.formObservation.valid) {
        return;
      }
-     this.formObservation.setValue({date:this.formAvaliation.get('date').value,
-     church:this.church.id, description: this.formObservation.get('description').value});
+     this.formObservation.setValue({date: this.formAvaliation.get('date').value,
+     church: this.church.id, description: this.formObservation.get('description').value});
      console.log(this.formObservation.value);
      const unit = auth.getCurrentUnit();
      const responsible = auth.getCurrentUser();
@@ -82,13 +77,15 @@ export class AvaliationObservationFormComponent implements OnInit, OnDestroy {
      console.log(...this.formObservation.value);
      const data = {
        id: !!this.observation ? this.observation.id : 0,
+       idRequeriment: this.requeriment,
+       idWeek: this.indice,
        responsible: responsible.id,
        unit: unit.id,
        status: EObservationStatus.Open,
        ...this.formObservation.value
      };
      this.treasuryService
-       .saveObservation(data)
+       .saveRequirementObservation(data)
        .pipe(
          tap(() => {
            this.isSending = false;
@@ -102,7 +99,7 @@ export class AvaliationObservationFormComponent implements OnInit, OnDestroy {
      this.closeObservation();
    }
 
-   private closeObservation(){
+   private closeObservation() {
       this.isValid = false;
    }
 }
